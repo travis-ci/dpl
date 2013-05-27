@@ -23,8 +23,12 @@ module DPL
         api.post_key File.read(file)
       end
 
+      def remove_key
+        api.delete_key(option(:key_name))
+      end
+
       def push_app
-        system "git push git@heroku.com:#{option(:app)}.git HEAD:master -f"
+        system "git push #{option(:git)} HEAD:master -f"
       end
 
       def run(command)

@@ -15,7 +15,7 @@ module DPL
     end
 
     def self.requires(name, version = "> 0")
-      gem(name, *args)
+      gem(name, version)
     rescue LoadError
       system("gem install %s -v %p" % [name, version])
       Gem.clear_paths
@@ -34,6 +34,7 @@ module DPL
     end
 
     def deploy
+      rm_rf ".dpl"
       mkdir_p ".dpl"
 
       check_auth
@@ -50,7 +51,10 @@ module DPL
       Array(options[:run]).each do |command|
         run(command)
       end
+    ensure
+      remove_key if needs_key?
     end
+
 
     def needs_key?
       true
@@ -69,6 +73,7 @@ module DPL
         file.write "exec ssh -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i #{key_path} -- \"$@\"\n"
       end
 
+      chmod(0740, path)
       ENV['GIT_SSH'] = path
     end
 
