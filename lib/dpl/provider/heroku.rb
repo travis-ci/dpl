@@ -32,7 +32,7 @@ module DPL
       end
 
       def run(command)
-        data           = heroku.post_ps(option(:app), command, :attach => true).body
+        data           = api.post_ps(option(:app), command, :attach => true).body
         rendezvous_url = data['rendezvous_url']
         Rendezvous.start(:url => rendezvous_url) unless rendezvous_url.nil?
       end
