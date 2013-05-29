@@ -55,7 +55,6 @@ module DPL
       remove_key if needs_key?
     end
 
-
     def needs_key?
       true
     end
