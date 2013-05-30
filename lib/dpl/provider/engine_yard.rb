@@ -1,6 +1,6 @@
 module DPL
-  module Provider
-    class EngineYard
+  class Provider
+    class EngineYard < Provider
       requires 'engineyard'
       requires 'engineyard-cloud-client'
 

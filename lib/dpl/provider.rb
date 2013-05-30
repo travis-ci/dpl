@@ -5,7 +5,8 @@ module DPL
   class Provider
     include FileUtils
 
-    autoload :Heroku, 'dpl/provider/heroku'
+    autoload :Heroku,     'dpl/provider/heroku'
+    autoload :EngineYard, 'dpl/provider/engine_yard'
 
     def self.new(context, options)
       return super if self < Provider
