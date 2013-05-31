@@ -7,6 +7,7 @@ module DPL
 
     autoload :Heroku,     'dpl/provider/heroku'
     autoload :EngineYard, 'dpl/provider/engine_yard'
+    autoload :DotCloud,   'dpl/provider/dot_cloud'
 
     def self.new(context, options)
       return super if self < Provider
@@ -22,6 +23,10 @@ module DPL
       Gem.clear_paths
     ensure
       require name
+    end
+
+    def self.pip(name, command = name)
+      system "pip install #{name}" if `which #{command}`.chop.empty?
     end
 
     attr_reader :context, :options
@@ -58,6 +63,9 @@ module DPL
 
     def needs_key?
       true
+    end
+
+    def check_app
     end
 
     def create_key(file)
