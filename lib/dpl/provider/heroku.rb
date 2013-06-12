@@ -39,7 +39,7 @@ module DPL
 
       def deploy
         super
-      rescue ::Heroku::API::Errors::NotFound=> error
+      rescue ::Heroku::API::Errors::NotFound => error
         raise Error, "#{error.message} (wrong app #{options[:app].inspect}?)", error.backtrace
       rescue ::Heroku::API::Errors::Unauthorized => error
         raise Error, "#{error.message} (wrong API key?)", error.backtrace
