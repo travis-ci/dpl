@@ -7,6 +7,10 @@ module DPL
         system "echo #{option(:api_key)} | dotcloud setup --api-key"
       end
 
+      def check_app
+        `dotcloud connect #{option(:app)}`
+      end
+
       def needs_key?
         false
       end
