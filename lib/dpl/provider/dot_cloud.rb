@@ -20,7 +20,7 @@ module DPL
       end
 
       def run(command)
-        service = option[:instance] || option[:service] || 'www'
+        service = options[:instance] || options[:service] || 'www'
         `dotcloud -A #{option(:app)} #{service} #{command}`
       end
     end
