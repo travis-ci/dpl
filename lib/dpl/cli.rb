@@ -37,7 +37,7 @@ module DPL
     def fold(message)
       self.fold_count += 1
       print "travis_fold:start:dpl.#{fold_count}\r" if options[:fold]
-      puts "\e[33;1m#{message}\e[0m"
+      puts "\e[33m#{message}\e[0m"
       yield
     ensure
       print "\ntravis_fold:end:dpl.#{fold_count}\r" if options[:fold]
