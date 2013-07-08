@@ -36,12 +36,11 @@ module DPL
         end
 
         def slug_url
-          "https://api.anvilworks.org/slugs/4da48704-7495-416f-981a-83890a1c7e55.tgz"
-          # @slug_url ||= begin
-          #   ::Anvil.headers["X-Heroku-User"] = user
-          #   ::Anvil.headers["X-Heroku-App"]  = option(:app)
-          #   ::Anvil::Engine.build "."
-          # end
+          @slug_url ||= begin
+            ::Anvil.headers["X-Heroku-User"] = user
+            ::Anvil.headers["X-Heroku-App"]  = option(:app)
+            ::Anvil::Engine.build "."
+          end
         end
 
         def release_url
