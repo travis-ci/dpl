@@ -1,6 +1,7 @@
 module DPL
   class Provider
     class DotCloud < Provider
+      experimental "dotCloud"
       pip 'dotcloud'
 
       def check_auth

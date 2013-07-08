@@ -1,6 +1,8 @@
 module DPL
   class Provider
     class EngineYard < Provider
+      experimental "Engine Yard"
+
       requires 'engineyard'
       requires 'engineyard-cloud-client'
 

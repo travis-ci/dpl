@@ -16,6 +16,10 @@ module DPL
       const_get(name).new(context, options)
     end
 
+    def self.experimental(name)
+      puts "", "!!! #{name} support is experimental !!!", ""
+    end
+
     def self.requires(name, options = {})
       version = options[:version] || '> 0'
       load    = options[:load]    || name
