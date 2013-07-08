@@ -16,25 +16,27 @@ module DPL
         end
 
         def push_app
-          Excon.post release_url,
+          response = Excon.post release_url,
             :body    => { "slug_url" => slug_url, "description" => "Travis CI deploy" }.to_json,
             :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
 
+          print "\nDeploying slug "
           while response.status == 202
             location = response.headers['Location']
-            response = Excon.get("https://:#{token}@cisaurus.heroku.com#{location}")
-            sleep(0.1)
+            response = Excon.get("https://:#{option(:api_key)}@cisaurus.heroku.com#{location}")
+            sleep(1)
             print '.'
           end
 
+          puts
           raise Error, 'deploy failed' unless response.status == 200
         end
 
         def slug_url
           @slug_url ||= begin
-            Anvil.headers["X-Heroku-User"] = user
-            Anvil.headers["X-Heroku-App"]  = option(:app)
-            Anvil::Engine.build "."
+            ::Anvil.headers["X-Heroku-User"] = user
+            ::Anvil.headers["X-Heroku-App"]  = option(:app)
+            ::Anvil::Engine.build "."
           end
         end
 
