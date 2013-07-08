@@ -22,13 +22,13 @@ describe DPL::Provider do
 
     example "installed" do
       example_provider.should_receive(:gem).with("foo", "~> 1.4")
-      example_provider.requires("foo", "~> 1.4")
+      example_provider.requires("foo", :version => "~> 1.4")
     end
 
     example "missing" do
       example_provider.should_receive(:gem).with("foo", "~> 1.4").and_raise(LoadError)
       example_provider.should_receive(:system).with('gem install foo -v "~> 1.4"')
-      example_provider.requires("foo", "~> 1.4")
+      example_provider.requires("foo", :version => "~> 1.4")
     end
   end
 
