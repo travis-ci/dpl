@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.require_path          = 'lib'
   s.required_ruby_version = '>= 1.8.7'
 
-  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rspec', '~> 2.13.0'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'simplecov'
 end
