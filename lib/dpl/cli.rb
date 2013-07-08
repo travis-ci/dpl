@@ -8,7 +8,7 @@ module DPL
     end
 
     OPTION_PATTERN = /\A--([a-z][a-z_\-]*)(?:=(.+))?\z/
-    attr_accessor :options
+    attr_accessor :options, :fold_count
 
     def initialize(*args)
       options = {}
@@ -23,7 +23,8 @@ module DPL
         end
       end
 
-      self.options = default_options.merge(options)
+      self.fold_count = 0
+      self.options    = default_options.merge(options)
     end
 
     def run
@@ -31,6 +32,15 @@ module DPL
       provider.deploy
     rescue Error => error
       options[:debug] ? raise(error) : die(error.message)
+    end
+
+    def fold(message)
+      self.fold_count += 1
+      puts "\e[33;1m#{message}\e[0m"
+      print "travis_fold:start:dpl.#{fold_count}\r" if options[:fold]
+      yield
+    ensure
+      print "\ntravis_fold:end:dpl.#{fold_count}\r" if options[:fold]
     end
 
     def default_options

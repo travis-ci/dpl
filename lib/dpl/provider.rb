@@ -11,9 +11,12 @@ module DPL
 
     def self.new(context, options)
       return super if self < Provider
-      name = super.option(:provider).to_s.downcase.gsub(/[^a-z]/, '')
-      raise Error, 'could not find provider %p' % options[:provider] unless name = constants.detect { |c| c.to_s.downcase == name }
-      const_get(name).new(context, options)
+
+      context.fold("Installing deploy dependencies") do
+        name = super.option(:provider).to_s.downcase.gsub(/[^a-z]/, '')
+        raise Error, 'could not find provider %p' % options[:provider] unless name = constants.detect { |c| c.to_s.downcase == name }
+        const_get(name).new(context, options)
+      end
     end
 
     def self.experimental(name)
@@ -49,19 +52,21 @@ module DPL
       rm_rf ".dpl"
       mkdir_p ".dpl"
 
-      check_auth
-      check_app
+      context.fold("Preparing deploy") do
+        check_auth
+        check_app
 
-      if needs_key?
-        create_key(".dpl/id_rsa")
-        setup_key(".dpl/id_rsa.pub")
-        setup_git_ssh(".dpl/git-ssh", ".dpl/id_rsa")
+        if needs_key?
+          create_key(".dpl/id_rsa")
+          setup_key(".dpl/id_rsa.pub")
+          setup_git_ssh(".dpl/git-ssh", ".dpl/id_rsa")
+        end
       end
 
-      push_app
+      context.fold("Deploying application") { push_app }
 
       Array(options[:run]).each do |command|
-        run(command)
+        context.fold("Running %p" % command) { run(command) }
       end
     ensure
       remove_key if needs_key?
