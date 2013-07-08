@@ -28,16 +28,20 @@ module DPL
             print '.'
           end
 
-          puts
-          raise Error, 'deploy failed' unless response.status == 200
+          if response.status.between? 200, 299
+            puts " success!"
+          else
+            raise Error, "deploy failed, anvil response: #{response.body}"
+          end
         end
 
         def slug_url
-          @slug_url ||= begin
-            ::Anvil.headers["X-Heroku-User"] = user
-            ::Anvil.headers["X-Heroku-App"]  = option(:app)
-            ::Anvil::Engine.build "."
-          end
+          "https://api.anvilworks.org/slugs/4da48704-7495-416f-981a-83890a1c7e55.tgz"
+          # @slug_url ||= begin
+          #   ::Anvil.headers["X-Heroku-User"] = user
+          #   ::Anvil.headers["X-Heroku-App"]  = option(:app)
+          #   ::Anvil::Engine.build "."
+          # end
         end
 
         def release_url
