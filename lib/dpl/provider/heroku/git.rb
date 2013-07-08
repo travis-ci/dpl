@@ -10,8 +10,12 @@ module DPL
           @api ||= ::Heroku::API.new(:user => options[:user], :password => options[:password])
         end
 
+        def user
+          @user ||= api.get_user.body["email"]
+        end
+
         def check_auth
-          log "authenticated as %s" % api.get_user.body["email"]
+          log "authenticated as %s" % user
         end
 
         def check_app

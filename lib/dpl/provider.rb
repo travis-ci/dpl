@@ -16,13 +16,15 @@ module DPL
       const_get(name).new(context, options)
     end
 
-    def self.requires(name, version = "> 0")
+    def self.requires(name, options = {})
+      version = options[:version] || '> 0'
+      load    = options[:load]    || name
       gem(name, version)
     rescue LoadError
       system("gem install %s -v %p" % [name, version])
       Gem.clear_paths
     ensure
-      require name
+      require load
     end
 
     def self.pip(name, command = name)
