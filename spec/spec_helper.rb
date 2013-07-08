@@ -6,3 +6,9 @@ SimpleCov.start do
   add_filter "/spec/"
   add_group 'Library', 'lib'
 end
+
+class DummyContext
+  def fold(message)
+    yield
+  end
+end

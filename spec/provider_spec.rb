@@ -3,16 +3,16 @@ require 'dpl/provider'
 
 describe DPL::Provider do
   let(:example_provider) { Class.new(described_class)}
-  subject(:provider) { example_provider.new(nil, :app => 'example', :key_name => 'foo', :run => ["foo", "bar"]) }
+  subject(:provider) { example_provider.new(DummyContext.new, :app => 'example', :key_name => 'foo', :run => ["foo", "bar"]) }
 
   before { described_class.const_set(:Example, example_provider) }
   after { described_class.send(:remove_const, :Example) }
 
   describe :new do
-    example { described_class.new(nil, :provider => "example") .should be_an(example_provider) }
-    example { described_class.new(nil, :provider => "Example") .should be_an(example_provider) }
-    example { described_class.new(nil, :provider => "exa_mple").should be_an(example_provider) }
-    example { described_class.new(nil, :provider => "exa-mple").should be_an(example_provider) }
+    example { described_class.new(DummyContext.new, :provider => "example") .should be_an(example_provider) }
+    example { described_class.new(DummyContext.new, :provider => "Example") .should be_an(example_provider) }
+    example { described_class.new(DummyContext.new, :provider => "exa_mple").should be_an(example_provider) }
+    example { described_class.new(DummyContext.new, :provider => "exa-mple").should be_an(example_provider) }
   end
 
   describe :requires do
