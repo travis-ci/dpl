@@ -10,7 +10,7 @@ module DPL
         strategy = options[:strategy] || 'anvil'
         constant = constants.detect { |c| c.to_s.downcase == strategy }
         raise Error, 'unknown strategy %p' % strategy unless constant
-        constant.new(constant, options)
+        const_get(constant).new(constant, options)
       end
     end
   end
