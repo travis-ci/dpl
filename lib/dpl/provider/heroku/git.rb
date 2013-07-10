@@ -42,6 +42,10 @@ module DPL
           Rendezvous.start(:url => rendezvous_url) unless rendezvous_url.nil?
         end
 
+        def restart
+          api.post_ps_restart option(:app)
+        end
+
         def deploy
           super
         rescue ::Heroku::API::Errors::NotFound => error

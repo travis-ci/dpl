@@ -66,7 +66,11 @@ module DPL
       context.fold("Deploying application") { push_app }
 
       Array(options[:run]).each do |command|
-        context.fold("Running %p" % command) { run(command) }
+        if command == 'restart'
+          context.fold("Restarting application") { restart }
+        else
+          context.fold("Running %p" % command) { run(command) }
+        end
       end
     ensure
       remove_key if needs_key?

@@ -83,6 +83,13 @@ describe DPL::Provider::Heroku do
       end
     end
 
+    describe :restart do
+      example do
+        api.should_receive(:post_ps_restart).with("example")
+        provider.restart
+      end
+    end
+
     describe :deploy do
       example "not found error" do
         provider.should_receive(:api) { raise ::Heroku::API::Errors::NotFound.new("the message", nil) }.at_least(:once)
