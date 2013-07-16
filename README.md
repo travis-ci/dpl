@@ -7,5 +7,6 @@ Usage:
 Supported providers:
 
 * Heroku
+* Nodejitsu
 * Engine Yard (experimental)
 * dotCloud (experimental)

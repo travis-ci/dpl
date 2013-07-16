@@ -2,8 +2,6 @@ module DPL
   class Provider
     class Nodejitsu < Provider
       CONFIG_FILE = '.dpl/jitsu.json'
-
-      experimental "Nodejitsu"
       requires 'json'
       npm_g 'jitsu'
 
