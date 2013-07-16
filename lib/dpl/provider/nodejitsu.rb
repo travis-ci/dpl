@@ -34,7 +34,7 @@ module DPL
       end
 
       def push_app
-        system "jitsu deploy -j #{CONFIG_FILE}"
+        system "jitsu deploy -j #{CONFIG_FILE} --release=yes"
       end
     end
   end
