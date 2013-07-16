@@ -22,7 +22,7 @@ module DPL
       def check_app
         error "missing package.json" unless File.exist? 'package.json'
 
-        package = JSON.parse('package.json')
+        package = JSON.parse File.read('package.json')
         message = "missing %s in package.json, see https://www.nodejitsu.com/documentation/appendix/package-json/"
         error message % "subdomain"    unless package['subdomain']
         error message % "node version" unless package['engines'] and package['engines']['node']
