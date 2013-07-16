@@ -8,6 +8,7 @@ module DPL
     autoload :Heroku,     'dpl/provider/heroku'
     autoload :EngineYard, 'dpl/provider/engine_yard'
     autoload :DotCloud,   'dpl/provider/dot_cloud'
+    autoload :Nodejitsu,  'dpl/provider/nodejitsu'
 
     def self.new(context, options)
       return super if self < Provider
@@ -36,6 +37,10 @@ module DPL
 
     def self.pip(name, command = name)
       system "pip install #{name}" if `which #{command}`.chop.empty?
+    end
+
+    def self.npm_g(name, command = name)
+      system "npm install -g #{name}" if `which #{command}`.chop.empty?
     end
 
     attr_reader :context, :options
@@ -102,6 +107,14 @@ module DPL
 
     def log(message)
       $stderr.puts(message)
+    end
+
+    def run(command)
+      error "running commands not supported"
+    end
+
+    def error(message)
+      raise Error, message
     end
   end
 end
