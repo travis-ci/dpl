@@ -7,7 +7,7 @@ module DPL
 
       def config
         {
-          "username"     => option(:username),
+          "username"     => option(:username, :user_name, :user),
           "apiToken"     => option(:api_key),
           "apiTokenName" => "travis"
         }

@@ -49,8 +49,10 @@ module DPL
       @context, @options = context, options
     end
 
-    def option(name)
-      options.fetch(name) { raise Error, "missing #{name}" }
+    def option(name, *alternatives)
+      options.fetch(name) do
+        alternatives.any? ? option(*alternatives) : raise(Error, "missing #{name}")
+      end
     end
 
     def deploy
