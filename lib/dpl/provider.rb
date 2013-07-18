@@ -56,6 +56,8 @@ module DPL
     end
 
     def deploy
+      cleanup
+
       rm_rf ".dpl"
       mkdir_p ".dpl"
 
@@ -81,6 +83,15 @@ module DPL
       end
     ensure
       remove_key if needs_key?
+    end
+
+    def sha
+      @sha ||= ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
+    end
+
+    def cleanup
+      system "git reset --hard #{sha}"
+      system "git clean -dffqx"
     end
 
     def needs_key?
