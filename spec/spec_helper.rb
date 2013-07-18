@@ -8,6 +8,9 @@ SimpleCov.start do
 end
 
 class DummyContext
+  def shell(command)
+  end
+
   def fold(message)
     yield
   end

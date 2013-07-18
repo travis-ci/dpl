@@ -69,7 +69,7 @@ describe DPL::Provider::Heroku do
     describe :push_app do
       example do
         provider.options[:git] = "git://something"
-        provider.should_receive(:system).with("git push git://something HEAD:master -f")
+        provider.context.should_receive(:shell).with("git push git://something HEAD:master -f")
         provider.push_app
       end
     end

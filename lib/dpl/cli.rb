@@ -50,6 +50,10 @@ module DPL
       }
     end
 
+    def shell(command)
+      system(command)
+    end
+
     def die(message)
       $stderr.puts(message)
       exit 1

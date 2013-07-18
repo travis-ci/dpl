@@ -27,7 +27,7 @@ describe DPL::Provider do
 
     example "missing" do
       example_provider.should_receive(:gem).with("foo", "~> 1.4").and_raise(LoadError)
-      example_provider.should_receive(:system).with('gem install foo -v "~> 1.4"')
+      example_provider.context.should_receive(:shell).with('gem install foo -v "~> 1.4"')
       example_provider.requires("foo", :version => "~> 1.4")
     end
   end
@@ -41,7 +41,7 @@ describe DPL::Provider do
 
     example "missing" do
       example_provider.should_receive(:`).with("which foo").and_return("")
-      example_provider.should_receive(:system).with("pip install foo")
+      example_provider.context.should_receive(:shell).with("pip install foo")
       example_provider.pip("foo")
     end
   end
@@ -71,7 +71,7 @@ describe DPL::Provider do
 
   describe :create_key do
     example do
-      provider.should_receive(:system).with('ssh-keygen -t rsa -N "" -C foo -f thekey')
+      provider.context.should_receive(:shell).with('ssh-keygen -t rsa -N "" -C foo -f thekey')
       provider.create_key('thekey')
     end
   end

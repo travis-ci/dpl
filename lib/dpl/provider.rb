@@ -29,18 +29,26 @@ module DPL
       load    = options[:load]    || name
       gem(name, version)
     rescue LoadError
-      system("gem install %s -v %p" % [name, version])
+      context.shell("gem install %s -v %p" % [name, version])
       Gem.clear_paths
     ensure
       require load
     end
 
+    def self.context
+      self
+    end
+
+    def self.shell(command)
+      system(command)
+    end
+
     def self.pip(name, command = name)
-      system "pip install #{name}" if `which #{command}`.chop.empty?
+      context.shell "pip install #{name}" if `which #{command}`.chop.empty?
     end
 
     def self.npm_g(name, command = name)
-      system "npm install -g #{name}" if `which #{command}`.chop.empty?
+      context.shell "npm install -g #{name}" if `which #{command}`.chop.empty?
     end
 
     attr_reader :context, :options
@@ -90,8 +98,8 @@ module DPL
     end
 
     def cleanup
-      system "git reset --hard #{sha}"
-      system "git clean -dffqx -e .dpl"
+      context.shell "git reset --hard #{sha}"
+      context.shell "git clean -dffqx -e .dpl"
     end
 
     def needs_key?
@@ -102,7 +110,7 @@ module DPL
     end
 
     def create_key(file)
-      system "ssh-keygen -t rsa -N \"\" -C #{option(:key_name)} -f #{file}"
+      context.shell "ssh-keygen -t rsa -N \"\" -C #{option(:key_name)} -f #{file}"
     end
 
     def setup_git_ssh(path, key_path)

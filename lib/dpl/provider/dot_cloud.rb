@@ -5,7 +5,7 @@ module DPL
       pip 'dotcloud'
 
       def check_auth
-        system "echo #{option(:api_key)} | dotcloud setup --api-key"
+        context.shell "echo #{option(:api_key)} | dotcloud setup --api-key"
       end
 
       def check_app
