@@ -56,8 +56,6 @@ module DPL
     end
 
     def deploy
-      cleanup
-
       rm_rf ".dpl"
       mkdir_p ".dpl"
 
@@ -70,6 +68,8 @@ module DPL
           setup_key(".dpl/id_rsa.pub")
           setup_git_ssh(".dpl/git-ssh", ".dpl/id_rsa")
         end
+
+        cleanup
       end
 
       context.fold("Deploying application") { push_app }
@@ -91,7 +91,7 @@ module DPL
 
     def cleanup
       system "git reset --hard #{sha}"
-      system "git clean -dffqx"
+      system "git clean -dffqx -e .dpl"
     end
 
     def needs_key?
