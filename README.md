@@ -10,3 +10,4 @@ Supported providers:
 * Nodejitsu
 * Engine Yard (experimental)
 * dotCloud (experimental)
+* Openshift (experimental)
