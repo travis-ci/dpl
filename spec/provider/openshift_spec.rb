@@ -66,7 +66,7 @@ describe DPL::Provider::Openshift do
 
     describe :push_app do
       example do
-        provider.should_receive(:system).with("git push git://something -f")
+        provider.context.should_receive(:shell).with("git push git://something -f")
         provider.push_app
       end
     end

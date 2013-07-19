@@ -33,7 +33,7 @@ module DPL
       end
 
       def push_app
-        system "git push #{app.git_url} -f"
+        context.shell "git push #{app.git_url} -f"
       end
 
       def restart
