@@ -9,7 +9,7 @@ module DPL
       end
 
       def check_app
-        `dotcloud connect #{option(:app)}`
+        context.shell "dotcloud connect #{option(:app)}"
       end
 
       def needs_key?
@@ -17,12 +17,12 @@ module DPL
       end
 
       def push_app
-        `dotcloud push #{option(:app)}`
+        context.shell "dotcloud push #{option(:app)}"
       end
 
       def run(command)
         service = options[:instance] || options[:service] || 'www'
-        `dotcloud -A #{option(:app)} #{service} #{command}`
+        context.shell "dotcloud -A #{option(:app)} #{service} #{command}"
       end
     end
   end
