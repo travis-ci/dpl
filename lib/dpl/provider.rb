@@ -44,7 +44,7 @@ module DPL
     end
 
     def self.pip(name, command = name)
-      context.shell "pip install #{name}" if `which #{command}`.chop.empty?
+      context.shell "sudo pip install #{name}" if `which #{command}`.chop.empty?
     end
 
     def self.npm_g(name, command = name)
