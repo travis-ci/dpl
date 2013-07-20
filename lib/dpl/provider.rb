@@ -9,6 +9,7 @@ module DPL
     autoload :EngineYard, 'dpl/provider/engine_yard'
     autoload :DotCloud,   'dpl/provider/dot_cloud'
     autoload :Nodejitsu,  'dpl/provider/nodejitsu'
+    autoload :Openshift,  'dpl/provider/openshift'
 
     def self.new(context, options)
       return super if self < Provider
