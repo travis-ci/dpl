@@ -41,7 +41,7 @@ describe DPL::Provider do
 
     example "missing" do
       example_provider.should_receive(:`).with("which foo").and_return("")
-      example_provider.context.should_receive(:shell).with("pip install foo")
+      example_provider.context.should_receive(:shell).with("sudo pip install foo")
       example_provider.pip("foo")
     end
   end
