@@ -90,4 +90,31 @@ describe DPL::Provider do
       provider.log("foo")
     end
   end
+
+  describe :shell do
+    example do
+      example_provider.should_receive(:system).with("command")
+      example_provider.shell("command")
+    end
+  end
+
+  describe :npm_g do
+    example do
+      example_provider.context.should_receive(:shell).with("npm install -g foo")
+      example_provider.npm_g("foo")
+    end
+  end
+
+  describe :run do
+    example do
+      provider.should_receive(:error).with("running commands not supported")
+      provider.run "blah"
+    end
+  end
+
+  describe :error do
+    example do
+      expect { provider.error("Foo") }.to raise_error("Foo")
+    end
+  end
 end
