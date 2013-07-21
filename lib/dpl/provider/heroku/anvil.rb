@@ -41,6 +41,8 @@ module DPL
             ::Anvil.headers["X-Heroku-User"] = user
             ::Anvil.headers["X-Heroku-App"]  = option(:app)
             ::Anvil::Engine.build "."
+          rescue ::Anvil::Builder::BuildError => e
+            raise Error, "deploy failed, anvil build error: #{e.message}"
           end
         end
 
