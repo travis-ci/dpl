@@ -5,8 +5,7 @@ describe DPL::Provider do
   let(:example_provider) { Class.new(described_class)}
   subject(:provider) { example_provider.new(DummyContext.new, :app => 'example', :key_name => 'foo', :run => ["foo", "bar"]) }
 
-  before { described_class.const_set(:Example, example_provider) }
-  after { described_class.send(:remove_const, :Example) }
+  before { stub_const "DPL::Provider::Example", example_provider }
 
   describe :new do
     example { described_class.new(DummyContext.new, :provider => "example") .should be_an(example_provider) }
@@ -64,7 +63,7 @@ describe DPL::Provider do
     end
 
     example "does not need key" do
-      provider.stub(:needs_key?, false)
+      provider.stub(:needs_key? => false)
       provider.deploy
     end
   end
