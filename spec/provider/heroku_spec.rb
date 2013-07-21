@@ -9,13 +9,13 @@ describe DPL::Provider::Heroku do
 
   describe :api do
     it 'accepts an api key' do
-      api = stub(:api)
+      api = double(:api)
       ::Heroku::API.should_receive(:new).with(:api_key => "foo").and_return(api)
       provider.api.should be == api
     end
 
     it 'accepts a user and a password' do
-      api = stub(:api)
+      api = double(:api)
       provider.options.update(:user => "foo", :password => "bar")
       ::Heroku::API.should_receive(:new).with(:user => "foo", :password => "bar").and_return(api)
       provider.api.should be == api
@@ -24,9 +24,9 @@ describe DPL::Provider::Heroku do
 
   context "with fake api" do
     let :api do
-      stub "api",
-        :get_user => stub("get_user", :body => { "email" => "foo@bar.com" }),
-        :get_app  => stub("get_app",  :body => { "name"  => "example", "git_url" => "GIT URL" })
+      double "api",
+        :get_user => double("get_user", :body => { "email" => "foo@bar.com" }),
+        :get_app  => double("get_app",  :body => { "name"  => "example", "git_url" => "GIT URL" })
     end
 
     before do
@@ -76,7 +76,7 @@ describe DPL::Provider::Heroku do
 
     describe :run do
       example do
-        data = stub("data", :body => { "rendezvous_url" => "rendezvous url" })
+        data = double("data", :body => { "rendezvous_url" => "rendezvous url" })
         api.should_receive(:post_ps).with("example", "that command", :attach => true).and_return(data)
         Rendezvous.should_receive(:start).with(:url => "rendezvous url")
         provider.run("that command")

@@ -9,7 +9,7 @@ describe DPL::Provider::Openshift do
 
   describe :api do
     it 'accepts a user and a password' do
-      api = stub(:api)
+      api = double(:api)
       provider.options.update(:user => "foo", :password => "bar")
       ::RHC::Rest::Client.should_receive(:new).with(:user => "foo", :password => "bar", :server => "openshift.redhat.com").and_return(api)
       provider.api.should be == api
@@ -18,14 +18,14 @@ describe DPL::Provider::Openshift do
 
   context "with api" do
     let :api do
-      stub "api",
-        :user => stub(:login => "foo@bar.com"),
-        :find_application => stub(:name => "example", :git_url => "git://something"),
-        :add_key => stub
+      double "api",
+        :user => double(:login => "foo@bar.com"),
+        :find_application => double(:name => "example", :git_url => "git://something"),
+        :add_key => double
     end
     let :app do
-      stub "app",
-        :restart => stub
+      double "app",
+        :restart => double
     end
 
     before do
