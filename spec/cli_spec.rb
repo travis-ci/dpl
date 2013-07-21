@@ -17,7 +17,7 @@ describe DPL::CLI do
 
   describe :run do
     example "triggers deploy" do
-      provider = stub('provider')
+      provider = double('provider')
       DPL::Provider.should_receive(:new).and_return(provider)
       provider.should_receive(:deploy)
 
