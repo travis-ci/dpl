@@ -99,6 +99,7 @@ module DPL
     end
 
     def cleanup
+      return if options[:skip_cleanup]
       context.shell "git reset --hard #{sha}"
       context.shell "git clean -dffqx -e .dpl"
     end

@@ -68,6 +68,21 @@ describe DPL::Provider do
     end
   end
 
+  describe :cleanup do
+    example do
+      provider.should_receive(:sha).and_return("sha")
+      provider.context.should_receive(:shell).with('git reset --hard sha')
+      provider.context.should_receive(:shell).with('git clean -dffqx -e .dpl')
+      provider.cleanup
+    end
+
+    example "skip cleanup" do
+      provider.options.should_receive(:[]).with(:skip_cleanup).and_return("true")
+      provider.context.should_not_receive(:shell)
+      provider.cleanup
+    end
+  end
+
   describe :create_key do
     example do
       provider.context.should_receive(:shell).with('ssh-keygen -t rsa -N "" -C foo -f thekey')
