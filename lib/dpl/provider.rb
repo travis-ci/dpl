@@ -91,7 +91,9 @@ module DPL
         end
       end
     ensure
-      remove_key if needs_key?
+      if needs_key?
+        remove_key rescue nil
+      end
     end
 
     def sha
