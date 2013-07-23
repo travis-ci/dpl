@@ -24,8 +24,9 @@ module DPL
         log "found app #{app.name}"
       end
 
-      def setup_key(file, type='ssh-rsa')
-        api.add_key(option(:key_name), type, File.read(file))
+      def setup_key(file, type = nil)
+        specified_type, content, comment = File.read(file).split
+        api.add_key(option(:key_name), content, type || specified_type)
       end
 
       def remove_key

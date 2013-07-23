@@ -51,8 +51,8 @@ describe DPL::Provider::Openshift do
 
     describe :setup_key do
       example do
-        File.should_receive(:read).with("the file").and_return("foo")
-        api.should_receive(:add_key).with("key", "ssh-rsa", "foo")
+        File.should_receive(:read).with("the file").and_return("ssh-rsa\nfoo")
+        api.should_receive(:add_key).with("key", "foo", "ssh-rsa")
         provider.setup_key("the file")
       end
     end
