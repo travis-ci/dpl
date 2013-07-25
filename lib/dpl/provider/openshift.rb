@@ -1,7 +1,6 @@
 module DPL
   class Provider
     class Openshift < Provider
-      experimental "openshift"
       requires 'rhc'
 
       def api

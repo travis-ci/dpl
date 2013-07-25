@@ -8,6 +8,6 @@ Supported providers:
 
 * Heroku
 * Nodejitsu
+* Openshift
 * Engine Yard (experimental)
 * dotCloud (experimental)
-* Openshift (experimental)
