@@ -4,6 +4,7 @@ gemspec
 group :heroku do
   gem 'rendezvous'
   gem 'heroku-api'
+  gem 'anvil-cli'
 end
 
 group :openshift do
