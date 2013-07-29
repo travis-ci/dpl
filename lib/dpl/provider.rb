@@ -64,37 +64,47 @@ module DPL
       end
     end
 
+    def should_deploy?
+      (not options[:tags_only] or has_tag?)
+    end
+
+    def has_tag?
+      context.shell('git describe --exact-match')
+      $?.success?
+    end
+
     def deploy
       rm_rf ".dpl"
       mkdir_p ".dpl"
+      if should_deploy?
+        context.fold("Preparing deploy") do
+          check_auth
+          check_app
 
-      context.fold("Preparing deploy") do
-        check_auth
-        check_app
+          if needs_key?
+            create_key(".dpl/id_rsa")
+            setup_key(".dpl/id_rsa.pub")
+            setup_git_ssh(".dpl/git-ssh", ".dpl/id_rsa")
+          end
 
+          cleanup
+        end
+
+        context.fold("Deploying application") { push_app }
+
+        Array(options[:run]).each do |command|
+          if command == 'restart'
+            context.fold("Restarting application") { restart }
+          else
+            context.fold("Running %p" % command) { run(command) }
+          end
+        end
+      end
+      ensure
         if needs_key?
-          create_key(".dpl/id_rsa")
-          setup_key(".dpl/id_rsa.pub")
-          setup_git_ssh(".dpl/git-ssh", ".dpl/id_rsa")
-        end
-
-        cleanup
-      end
-
-      context.fold("Deploying application") { push_app }
-
-      Array(options[:run]).each do |command|
-        if command == 'restart'
-          context.fold("Restarting application") { restart }
-        else
-          context.fold("Running %p" % command) { run(command) }
+          remove_key rescue nil
         end
       end
-    ensure
-      if needs_key?
-        remove_key rescue nil
-      end
-    end
 
     def sha
       @sha ||= ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
