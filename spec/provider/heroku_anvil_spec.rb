@@ -42,11 +42,6 @@ describe DPL::Provider::Heroku do
         second_response = double :second_response
         second_response.stub(:status => 200)
 
-        #excon = double(:excon)
-        #stub_const("DPL::Provider::Heroku::Excon", excon)
-
-        #excon.should_receive
-        #
         provider.stub(:slug_url => "http://slug-url")
 
         ENV.should_receive(:[]).with('TRAVIS_COMMIT').and_return('123')
@@ -60,14 +55,25 @@ describe DPL::Provider::Heroku do
     end
 
     describe :slug_url do
-      example do
-        headers = double(:headers)
 
-        ::Anvil.should_receive(:headers).twice.and_return(headers)
-        headers.should_receive(:[]=).with('X-Heroku-User', "foo@bar.com")
-        headers.should_receive(:[]=).with('X-Heroku-App', "example")
+      before(:each) do
+        headers = double(:headers)
+        ::Anvil.should_receive(:headers).at_least(:twice).and_return(headers)
+        headers.should_receive(:[]=).at_least(:once).with('X-Heroku-User', "foo@bar.com")
+        headers.should_receive(:[]=).at_least(:once).with('X-Heroku-App', "example")
+      end
+
+      example "with full buildpack url" do
         ::Anvil::Engine.should_receive(:build).with(".", :buildpack=>"git://some-buildpack.git")
         provider.slug_url
+      end
+
+      example "with buildpack name expansion" do
+        DPL::Provider::Heroku::Anvil::HEROKU_BUILDPACKS.each do |b|
+          provider.options.update(:buildpack => b)
+          ::Anvil::Engine.should_receive(:build).with(".", :buildpack=>described_class::Anvil::HEROKU_BUILDPACK_PREFIX + b)
+          provider.slug_url
+        end
       end
     end
   end
