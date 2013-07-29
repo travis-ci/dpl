@@ -2,6 +2,8 @@ module DPL
   class Provider
     module Heroku
       class Anvil < Git
+        HEROKU_BUILDPACKS = ['ruby', 'nodejs', 'clojure', 'python', 'java', 'gradle', 'grails', 'scala', 'play']
+        HEROKU_BUILDPACK_PREFIX = "https://github.com/heroku/heroku-buildpack-"
         requires 'anvil-cli', :load => 'anvil/engine'
         requires 'excon' # comes with heroku
         requires 'json'
@@ -40,6 +42,9 @@ module DPL
           @slug_url ||= begin
             ::Anvil.headers["X-Heroku-User"] = user
             ::Anvil.headers["X-Heroku-App"]  = option(:app)
+            if HEROKU_BUILDPACKS.include? options[:buildpack]
+              options[:buildpack] = HEROKU_BUILDPACK_PREFIX + options[:buildpack]
+            end
             ::Anvil::Engine.build ".", :buildpack => options[:buildpack]
           rescue ::Anvil::Builder::BuildError => e
             raise Error, "deploy failed, anvil build error: #{e.message}"
