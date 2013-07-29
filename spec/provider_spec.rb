@@ -132,4 +132,19 @@ describe DPL::Provider do
       expect { provider.error("Foo") }.to raise_error("Foo")
     end
   end
+
+  describe :has_tag? do
+    example do
+      provider.context.should_receive(:shell).with('git describe --exact-match')
+      provider.has_tag?
+    end
+  end
+
+  describe :should_deploy? do
+    example "tags_only with tag" do
+      provider.options[:tags_only] = true
+      provider.should_receive(:has_tag?).and_return(true)
+      provider.should_deploy?.should be == true
+    end
+  end
 end
