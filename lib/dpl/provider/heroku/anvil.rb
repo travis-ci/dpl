@@ -40,7 +40,7 @@ module DPL
           @slug_url ||= begin
             ::Anvil.headers["X-Heroku-User"] = user
             ::Anvil.headers["X-Heroku-App"]  = option(:app)
-            ::Anvil::Engine.build "."
+            ::Anvil::Engine.build ".", :buildpack => options[:buildpack]
           rescue ::Anvil::Builder::BuildError => e
             raise Error, "deploy failed, anvil build error: #{e.message}"
           end

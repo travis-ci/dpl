@@ -66,7 +66,7 @@ describe DPL::Provider::Heroku do
         ::Anvil.should_receive(:headers).twice.and_return(headers)
         headers.should_receive(:[]=).with('X-Heroku-User', "foo@bar.com")
         headers.should_receive(:[]=).with('X-Heroku-App', "example")
-        ::Anvil::Engine.should_receive(:build).with(".")
+        ::Anvil::Engine.should_receive(:build).with(".", :buildpack=>"git://some-buildpack.git")
         provider.slug_url
       end
     end
