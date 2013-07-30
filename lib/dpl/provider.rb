@@ -10,6 +10,7 @@ module DPL
     autoload :DotCloud,   'dpl/provider/dot_cloud'
     autoload :Nodejitsu,  'dpl/provider/nodejitsu'
     autoload :Openshift,  'dpl/provider/openshift'
+    autoload :RubyGems,   'dpl/provider/rubygems'
 
     def self.new(context, options)
       return super if self < Provider
