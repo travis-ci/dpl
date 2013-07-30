@@ -10,3 +10,7 @@ end
 group :openshift do
     gem 'rhc'
 end
+
+group :rubygems do
+  gem 'gems'
+end
