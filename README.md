@@ -11,3 +11,4 @@ Supported providers:
 * Openshift
 * Engine Yard (experimental)
 * dotCloud (experimental)
+* RubyGems (experimental)
