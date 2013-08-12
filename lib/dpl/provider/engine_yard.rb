@@ -3,7 +3,6 @@ module DPL
     class EngineYard < Provider
       experimental "Engine Yard"
 
-      requires 'engineyard'
       requires 'engineyard-cloud-client'
 
       def token
@@ -15,7 +14,7 @@ module DPL
       end
 
       def api
-        @api ||= EY::CloudClient.new(token, EY::CLI::UI.new)
+        @api ||= EY::CloudClient.new(:token => token)
       end
 
       def check_auth
@@ -23,47 +22,59 @@ module DPL
       end
 
       def check_app
-        @app = EY::CloudClient::App.all(api).detect do |app|
-          app.name == option(:app)
+        remotes = `git remote -v`.scan(/\t[^\s]+\s/).map { |c| c.strip }.uniq
+        @current_sha = `git rev-parse HEAD`.chomp
+        resolver = api.resolve_app_environments(
+          :app_name => options[:app],
+          :account_name => options[:account],
+          :environment_name => options[:environment],
+          :remotes => remotes)
+        resolver.one_match { @app_env = resolver.matches.first }
+        resolver.no_matches { error resolver.errors.join("\n").inspect }
+        resolver.many_matches do |matches|
+          message = "Multiple matches possible, please be more specific:\n\n"
+          matches.each do |appenv|
+            message << "environment: '#{appenv.environment.name}' account: '#{appenv.environment.account.name}'\n"
+          end
+          error message
         end
+        @app_env
       end
 
-      def setup_key(file)
-        @key = EY::CloudClient::Keypair.create(api, {
-          "name"       => option(:key_name),
-          "public_key" => File.read(file)
-        })
+      def needs_key?
+        false
       end
 
-      def remove_key
-        @key.destroy if @key
+      def cleanup
+        #DONT
       end
 
       def push_app
-        fail
-        EY::CloudClient::Deployment.deploy(api, option(:environment), deploy_args)
-      end
-
-      def deploy_args
-        deploy_args = { :ref => `git log --format="%H" -1`.chop }
-        if options[:run]
-          deploy_args[:migrate]         = true
-          deploy_args[:migrate_command] = Array(options[:run]).map { |c| "(#{c})" }.join(" && ")
-        elsif options.include? :migrate
-          deploy_args[:migrate]         = options[:migrate]
+        print "deploying "
+        deployment = EY::CloudClient::Deployment.deploy(api, @app_env, {:ref => @current_sha})
+        result = poll_for_result(deployment)
+        unless result.successful
+          error "Deployment failed (see logs on Engine Yard)"
         end
-        deploy_args
       end
 
-      def run(command)
-        # commands run by deployment
+      def poll_for_result(deployment)
+        until deployment.finished?
+          sleep 5
+          #TODO: configurable timeout?
+          print "."
+          deployment = EY::CloudClient::Deployment.get(api, deployment.app_environment, deployment.id)
+        end
+        puts "DONE"
+        deployment
       end
 
       def deploy
         super
-      rescue EY::Error => error
-        raise Error, error.message, error.backtrace
+      rescue EY::CloudClient::Error => e
+        error(e.message)
       end
+
     end
   end
 end
