@@ -50,8 +50,16 @@ module DPL
       end
 
       def push_app
+        deploy_opts = {:ref => @current_sha}
+        if command = options[:migrate]
+          if command === true || command === "true"
+            error("\"true\" doesn't look like a migration command, try --migrate=\"rake db:migrate\"")
+          end
+          deploy_opts[:migrate] = true
+          deploy_opts[:migration_command] = command
+        end
         print "deploying "
-        deployment = EY::CloudClient::Deployment.deploy(api, @app_env, {:ref => @current_sha})
+        deployment = EY::CloudClient::Deployment.deploy(api, @app_env, deploy_opts)
         result = poll_for_result(deployment)
         unless result.successful
           error "Deployment failed (see logs on Engine Yard)"
@@ -65,7 +73,7 @@ module DPL
           print "."
           deployment = EY::CloudClient::Deployment.get(api, deployment.app_environment, deployment.id)
         end
-        puts "DONE"
+        puts "DONE: https://cloud.engineyard.com/apps/#{deployment.app.id}/environments/#{deployment.environment.id}/deployments/#{deployment.id}/pretty"
         deployment
       end
 
