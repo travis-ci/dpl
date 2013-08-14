@@ -12,15 +12,7 @@ module DPL
 
       def initialize(context, options)
         super
-
-        if options[:email].nil? || options[:password].nil? || options[:deployment].nil?
-          puts 'The command failed! Please check arguments and try again.'
-          puts "\n\tusage: dpl --provider=cloudControl --deployment='<application>/<deployment>' --email=<email> --password=<password>"
-          puts "\texample: dpl --provider=cloudControl --deployment='testapp/default' --email=me@example.com --password=pass1234"
-
-          exit
-        end
-
+        option(:email) && option(:password) && option(:deployment)
         @app_name, @dep_name = options[:deployment].split('/')
 
         @http = Net::HTTP.new('api.cloudcontrol.com', 443)
