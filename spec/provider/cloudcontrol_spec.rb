@@ -14,7 +14,6 @@ describe DPL::Provider::CloudControl do
   describe 'constructor' do
     it 'with wrong arguments' do
       expect {
-        $stdout.should receive(:write).at_least(3).times
         described_class.new(DummyContext.new, :foo_dep => 'foo_app/default', :email => 'foo@test.com', :password => 'password')
       }.to raise_error(DPL::Error)
     end
