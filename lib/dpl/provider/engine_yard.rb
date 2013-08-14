@@ -1,3 +1,5 @@
+require 'time'
+
 module DPL
   class Provider
     class EngineYard < Provider
