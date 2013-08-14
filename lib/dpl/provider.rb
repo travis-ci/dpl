@@ -5,12 +5,13 @@ module DPL
   class Provider
     include FileUtils
 
-    autoload :Heroku,     'dpl/provider/heroku'
-    autoload :EngineYard, 'dpl/provider/engine_yard'
-    autoload :DotCloud,   'dpl/provider/dot_cloud'
-    autoload :Nodejitsu,  'dpl/provider/nodejitsu'
-    autoload :Openshift,  'dpl/provider/openshift'
-    autoload :RubyGems,   'dpl/provider/rubygems'
+    autoload :Heroku,       'dpl/provider/heroku'
+    autoload :EngineYard,   'dpl/provider/engine_yard'
+    autoload :DotCloud,     'dpl/provider/dot_cloud'
+    autoload :Nodejitsu,    'dpl/provider/nodejitsu'
+    autoload :Openshift,    'dpl/provider/openshift'
+    autoload :RubyGems,     'dpl/provider/rubygems'
+    autoload :CloudControl, 'dpl/provider/cloudcontrol'
 
     def self.new(context, options)
       return super if self < Provider
