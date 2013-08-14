@@ -1,8 +1,6 @@
 module DPL
   class Provider
     class RubyGems < Provider
-      experimental "RubyGems"
-
       requires 'gems'
 
       def setup_auth

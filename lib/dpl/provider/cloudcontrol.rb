@@ -5,8 +5,6 @@ require 'net/https'
 module DPL
   class Provider
     class CloudControl < Provider
-      experimental 'cloudControl'
-
       attr_accessor :app_name
       attr_accessor :dep_name
 

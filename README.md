@@ -10,7 +10,7 @@ Supported providers:
 * Heroku
 * Nodejitsu
 * Openshift
-* Engine Yard (experimental)
+* cloudControl
+* RubyGems
+* Engine Yard
 * dotCloud (experimental)
-* RubyGems (experimental)
-* cloudControl (experimental)

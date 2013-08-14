@@ -3,8 +3,6 @@ require 'time'
 module DPL
   class Provider
     class EngineYard < Provider
-      experimental "Engine Yard"
-
       requires 'engineyard-cloud-client'
 
       def token
