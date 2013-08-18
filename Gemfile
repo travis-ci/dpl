@@ -1,6 +1,10 @@
 source 'https://rubygems.org'
 gemspec
 
+group :cloudfoundry do
+  gem 'cf'
+end
+
 group :heroku do
   gem 'rendezvous'
   gem 'heroku-api'
