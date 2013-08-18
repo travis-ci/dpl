@@ -3,6 +3,7 @@ gemspec
 
 group :cloudfoundry do
   gem 'cf'
+  gem 'activesupport', '~> 3.2'
 end
 
 group :heroku do
@@ -12,7 +13,7 @@ group :heroku do
 end
 
 group :openshift do
-    gem 'rhc'
+  gem 'rhc'
 end
 
 group :rubygems do

@@ -1,6 +1,7 @@
 module DPL
   class Provider
     class CloudFoundry < Provider
+      requires 'activesupport', :version => '~> 3.2', :load => 'active_support'
       requires 'cf'
 
       def check_auth
