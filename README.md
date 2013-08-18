@@ -13,4 +13,5 @@ Supported providers:
 * cloudControl
 * RubyGems
 * Engine Yard
+* Cloud Foundry
 * dotCloud (experimental)

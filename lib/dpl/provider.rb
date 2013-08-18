@@ -12,6 +12,7 @@ module DPL
     autoload :Openshift,    'dpl/provider/openshift'
     autoload :RubyGems,     'dpl/provider/rubygems'
     autoload :CloudControl, 'dpl/provider/cloudcontrol'
+    autoload :CloudFoundry, 'dpl/provider/cloud_foundry'
 
     def self.new(context, options)
       return super if self < Provider
