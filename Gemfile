@@ -1,11 +1,6 @@
 source 'https://rubygems.org'
 gemspec
 
-group :cloudfoundry do
-  gem 'cf'
-  gem 'activesupport', '~> 3.2'
-end
-
 group :heroku do
   gem 'rendezvous'
   gem 'heroku-api'

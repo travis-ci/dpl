@@ -1,10 +1,9 @@
 module DPL
   class Provider
     class CloudFoundry < Provider
-      requires 'activesupport', :version => '~> 3.2', :load => 'active_support'
-      requires 'cf'
 
       def check_auth
+        context.shell "gem install cf"
         context.shell "cf target #{option(:target)}"
         context.shell "cf login --username #{option(:username)} --password #{option(:password)} --organization #{option(:organization)} --space #{option(:space)}"
       end
