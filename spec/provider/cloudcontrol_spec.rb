@@ -37,7 +37,7 @@ describe DPL::Provider::CloudControl do
 
     it 'on deployment not found' do
       provider.should receive(:api_call).and_return double(:code => '410')
-      expect { provider.check_app }.to raise_error 'ERROR: application check failed'
+      expect { provider.check_app }.to raise_error(DPL::Error)
     end
   end
 
@@ -61,7 +61,7 @@ describe DPL::Provider::CloudControl do
     it 'on api failure' do
       provider.should receive(:api_call).with('POST', '/user/foo_user/key', '{"key":"foo_key"}').and_return double(:code => '401')
 
-      expect { provider.setup_key 'file' }.to raise_error 'ERROR: adding key failed'
+      expect { provider.setup_key 'file' }.to raise_error(DPL::Error)
     end
   end
 
@@ -78,7 +78,7 @@ describe DPL::Provider::CloudControl do
 
     it 'on api failure' do
       provider.should receive(:api_call).with('DELETE', '/user/foo_user/key/foo_key_id').and_return double(:code => '410')
-      expect { provider.remove_key }.to raise_error 'ERROR: key removal failed'
+      expect { provider.remove_key }.to raise_error(DPL::Error)
     end
   end
 
@@ -112,7 +112,7 @@ describe DPL::Provider::CloudControl do
 
         expect do
           provider.instance_eval { get_token }
-        end.to raise_error 'ERROR: authorization failed'
+        end.to raise_error(DPL::Error)
       end
     end
 
@@ -165,7 +165,7 @@ describe DPL::Provider::CloudControl do
         provider.should receive(:api_call).with('PUT', '/app/foo_app/deployment/default', '{"version":-1}').and_return double(:code => '410')
         expect do
           provider.instance_eval { deploy_app }
-        end.to raise_error 'ERROR: deployment failed'
+        end.to raise_error(DPL::Error)
       end
     end
 
@@ -184,7 +184,7 @@ describe DPL::Provider::CloudControl do
 
         expect do
           provider.instance_eval { user }
-        end.to raise_error 'ERROR: can not find the user'
+        end.to raise_error(DPL::Error)
       end
     end
   end
