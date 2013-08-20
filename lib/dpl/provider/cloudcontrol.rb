@@ -23,21 +23,21 @@ module DPL
 
       def check_app
         response = api_call('GET', "/app/#{ app_name }/deployment/#{ dep_name }")
-        raise 'ERROR: application check failed' if response.code != '200'
+        error('application check failed') if response.code != '200'
         @repository = JSON.parse(response.body)["branch"]
       end
 
       def setup_key(file)
         data = { 'key' => File.read(file).chomp }
         response = api_call('POST', "/user/#{ user['username'] }/key", JSON.dump(data))
-        raise 'ERROR: adding key failed' if response.code != '200'
+        error('adding key failed') if response.code != '200'
         key = JSON.parse response.body
         @ssh_key_id = key['key_id']
       end
 
       def remove_key
         response = api_call('DELETE', "/user/#{ user['username']}/key/#{ @ssh_key_id }")
-        raise 'ERROR: key removal failed' if response.code != '204'
+        error('key removal failed') if response.code != '204'
       end
 
       def push_app
@@ -52,7 +52,7 @@ module DPL
           request = Net::HTTP::Post.new '/token/'
           request.basic_auth options[:email], options[:password]
           response = @http.request(request)
-          raise 'ERROR: authorization failed' if response.code != '200'
+          error('authorization failed') if response.code != '200'
           return JSON.parse response.body
         end
 
@@ -79,13 +79,13 @@ module DPL
         def deploy_app
           data = {'version' => -1}
           response = api_call('PUT', "/app/#{ app_name }/deployment/#{ dep_name }", JSON.dump(data))
-          raise 'ERROR: deployment failed' if response.code != '200'
+          error('deployment failed - the deployment is already deploying') if response.code != '200'
         end
 
         def user
           if @user.nil?
             response = api_call('GET', '/user/')
-            raise 'ERROR: can not find the user' if response.code != '200'
+            error('can not find the user') if response.code != '200'
             users = JSON.parse response.body
             @user = users[0]
           end
