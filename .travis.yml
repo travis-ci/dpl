@@ -13,3 +13,4 @@ deploy:
   gem: dpl
   on:
     repo: rkh/dpl
+    ruby: 2.0.0
