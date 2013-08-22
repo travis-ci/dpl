@@ -20,4 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'json'
+
+  # prereleases from Travis CI
+  s.version = s.version.succ + "-travis-#{ENV['TRAVIS_JOB_NUMBER']}" if ENV['CI']
 end
