@@ -22,5 +22,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'json'
 
   # prereleases from Travis CI
-  s.version = s.version.to_s.succ + "-travis.#{ENV['TRAVIS_JOB_NUMBER']}" if ENV['CI']
+  s.version = s.version.to_s.succ + ".travis.#{ENV['TRAVIS_JOB_NUMBER']}" if ENV['CI']
 end
