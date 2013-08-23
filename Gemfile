@@ -3,7 +3,6 @@ gemspec
 
 group :cloudfoundry do
   gem 'cf'
-  gem 'activesupport', '~> 3.2'
 end
 
 group :heroku do
