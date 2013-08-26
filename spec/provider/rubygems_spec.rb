@@ -43,7 +43,6 @@ describe DPL::Provider::RubyGems do
   describe :push_app do
     after(:each) do
       File.should_receive(:new).with('File').and_return('Test file')
-      ::Gems.should_receive(:push).with('Test file').and_return('Yes!')
       provider.should_receive(:log).with('Yes!')
       provider.push_app
     end
@@ -52,18 +51,28 @@ describe DPL::Provider::RubyGems do
       provider.options.update(:app => 'example')
       provider.context.should_receive(:shell).with("gem build example.gemspec")
       Dir.should_receive(:glob).with('example-*.gem').and_yield('File')
+      ::Gems.should_receive(:push).with('Test file').and_return('Yes!')
     end
 
     example "with options[:gem]" do
       provider.options.update(:gem => 'example-gem')
       provider.context.should_receive(:shell).with("gem build example-gem.gemspec")
       Dir.should_receive(:glob).with('example-gem-*.gem').and_yield('File')
+      ::Gems.should_receive(:push).with('Test file').and_return('Yes!')
     end
 
     example "with options[:gemspec]" do
       provider.options.update(:gemspec => 'blah.gemspec')
       provider.context.should_receive(:shell).with("gem build blah.gemspec")
       Dir.should_receive(:glob).with('blah-*.gem').and_yield('File')
+      ::Gems.should_receive(:push).with('Test file').and_return('Yes!')
+    end
+
+    example "with options[:host]" do
+      provider.options.update(:host => 'http://example.com')
+      provider.context.should_receive(:shell).with("gem build example.gemspec")
+      Dir.should_receive(:glob).with('example-*.gem').and_yield('File')
+      ::Gems.should_receive(:push).with('Test file', host='http://example.com').and_return('Yes!')
     end
   end
 
