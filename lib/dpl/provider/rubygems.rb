@@ -38,7 +38,11 @@ module DPL
         setup_gem
         context.shell "gem build #{gemspec || option(:gem)}.gemspec"
         Dir.glob("#{gemspec || option(:gem)}-*.gem") do |f|
-          log ::Gems.push File.new f
+          if options[:host]
+            log ::Gems.push(File.new(f), options[:host])
+          else
+            log ::Gems.push(File.new f)
+          end
         end
       end
     end
