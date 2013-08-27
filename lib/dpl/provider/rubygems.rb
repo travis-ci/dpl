@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class RubyGems < Provider
-      requires 'gems'
+      requires 'gems', version: '>= 0.8.3'
 
       def setup_auth
         ::Gems.key = option(:api_key) if options[:api_key]
