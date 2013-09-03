@@ -4,6 +4,8 @@ module DPL
       DEFAULT_SERVER = 'http://www.python.org/pypi'
       PYPIRC_FILE = '~/.pypirc'
 
+      pip 'setuptools'
+
       def config
         {
           :header => '[distutils]',
