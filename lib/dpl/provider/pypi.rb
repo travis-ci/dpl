@@ -4,7 +4,7 @@ module DPL
       DEFAULT_SERVER = 'http://www.python.org/pypi'
       PYPIRC_FILE = '~/.pypirc'
 
-      pip 'setuptools'
+      shell 'wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | sudo python'
 
       def config
         {
