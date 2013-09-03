@@ -16,5 +16,5 @@ group :openshift do
 end
 
 group :rubygems do
-  gem 'gems', '~>0.8.3'
+  gem 'gems', '>= 0.8.3'
 end
