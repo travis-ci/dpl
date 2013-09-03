@@ -22,21 +22,21 @@ describe DPL::Provider::PyPI do
 
   describe :push_app do
     example do
-      provider.context.should_receive(:shell).with("python setup.py register")
+      provider.context.should_receive(:shell).with("python setup.py register -r pypi")
       provider.context.should_receive(:shell).with("python setup.py sdist upload -r pypi")
       provider.push_app
     end
 
     example "with :distributions option" do
       provider.options.update(:distributions => 'sdist bdist')
-      provider.context.should_receive(:shell).with("python setup.py register")
+      provider.context.should_receive(:shell).with("python setup.py register -r pypi")
       provider.context.should_receive(:shell).with("python setup.py sdist bdist upload -r pypi")
       provider.push_app
     end
 
     example "with :server option" do
       provider.options.update(:server => 'http://blah.com')
-      provider.context.should_receive(:shell).with("python setup.py register")
+      provider.context.should_receive(:shell).with("python setup.py register -r http://blah.com")
       provider.context.should_receive(:shell).with("python setup.py sdist upload -r http://blah.com")
       provider.push_app
     end
