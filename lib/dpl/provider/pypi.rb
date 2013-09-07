@@ -55,6 +55,7 @@ module DPL
       def push_app
         context.shell "python setup.py register -r #{options[:server] || 'pypi'}"
         context.shell "python setup.py #{options[:distributions] || 'sdist'} upload -r #{options[:server] || 'pypi'}"
+        context.shell "python setup.py upload_docs --upload-dir #{options[:docs_dir] || 'build/docs'}"
       end
     end
   end

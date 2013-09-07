@@ -24,6 +24,7 @@ describe DPL::Provider::PyPI do
     example do
       provider.context.should_receive(:shell).with("python setup.py register -r pypi")
       provider.context.should_receive(:shell).with("python setup.py sdist upload -r pypi")
+      provider.context.should_receive(:shell).with("python setup.py upload_docs --upload-dir build/docs")
       provider.push_app
     end
 
@@ -31,6 +32,7 @@ describe DPL::Provider::PyPI do
       provider.options.update(:distributions => 'sdist bdist')
       provider.context.should_receive(:shell).with("python setup.py register -r pypi")
       provider.context.should_receive(:shell).with("python setup.py sdist bdist upload -r pypi")
+      provider.context.should_receive(:shell).with("python setup.py upload_docs --upload-dir build/docs")
       provider.push_app
     end
 
@@ -38,6 +40,15 @@ describe DPL::Provider::PyPI do
       provider.options.update(:server => 'http://blah.com')
       provider.context.should_receive(:shell).with("python setup.py register -r http://blah.com")
       provider.context.should_receive(:shell).with("python setup.py sdist upload -r http://blah.com")
+      provider.context.should_receive(:shell).with("python setup.py upload_docs --upload-dir build/docs")
+      provider.push_app
+    end
+
+    example "with :docs_dir option" do
+      provider.options.update(:docs_dir => 'some/dir')
+      provider.context.should_receive(:shell).with("python setup.py register -r pypi")
+      provider.context.should_receive(:shell).with("python setup.py sdist upload -r pypi")
+      provider.context.should_receive(:shell).with("python setup.py upload_docs --upload-dir some/dir")
       provider.push_app
     end
   end
