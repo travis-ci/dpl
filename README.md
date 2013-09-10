@@ -12,6 +12,7 @@ Supported providers:
 * Openshift
 * cloudControl
 * RubyGems
+* PyPi
 * Engine Yard
 * Cloud Foundry
 * dotCloud (experimental)
