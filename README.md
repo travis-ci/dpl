@@ -16,3 +16,4 @@ Supported providers:
 * Engine Yard
 * Cloud Foundry
 * dotCloud (experimental)
+* NPM (experimental)
