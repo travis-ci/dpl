@@ -13,8 +13,8 @@ module DPL
 
       def setup_auth
         File.open(File.expand_path(NPMRC_FILE), 'w') do |f|
-          f.puts("_auth = #{options[:api_key]}")
-          f.puts("email = #{options[:email]}")
+          f.puts("_auth = #{option(:api_key)}")
+          f.puts("email = #{option(:email)}")
         end
       end
 
