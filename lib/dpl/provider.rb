@@ -11,6 +11,7 @@ module DPL
     autoload :Nodejitsu,    'dpl/provider/nodejitsu'
     autoload :Openshift,    'dpl/provider/openshift'
     autoload :RubyGems,     'dpl/provider/rubygems'
+    autoload :NPM,          'dpl/provider/npm'
     autoload :CloudControl, 'dpl/provider/cloudcontrol'
     autoload :CloudFoundry, 'dpl/provider/cloud_foundry'
     autoload :PyPI,         'dpl/provider/pypi'
