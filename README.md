@@ -17,3 +17,4 @@ Supported providers:
 * Cloud Foundry
 * dotCloud (experimental)
 * NPM (experimental)
+* S3 (experimental)
