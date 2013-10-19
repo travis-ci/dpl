@@ -70,6 +70,7 @@ module DPL
     end
 
     def deploy
+      setup_git_credentials
       rm_rf ".dpl"
       mkdir_p ".dpl"
 
@@ -126,6 +127,11 @@ module DPL
 
     def create_key(file)
       context.shell "ssh-keygen -t rsa -N \"\" -C #{option(:key_name)} -f #{file}"
+    end
+
+    def setup_git_credentials
+      context.shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost"
+      context.shell "git config user.name >/dev/null 2>/dev/null || git config user.name `whoami`@localhost"
     end
 
     def setup_git_ssh(path, key_path)
