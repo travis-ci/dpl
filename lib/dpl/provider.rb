@@ -107,8 +107,14 @@ module DPL
 
     def cleanup
       return if options[:skip_cleanup]
-      context.shell "git reset --hard #{sha}"
-      context.shell "git clean -dffqx -e .dpl"
+      context.shell "mv .dpl ~/dpl"
+      context.shell "git stash --all"
+      context.shell "mv ~/dpl .dpl"
+    end
+
+    def uncleanup
+      return if options[:skip_cleanup]
+      context.shell "git stash pop"
     end
 
     def needs_key?
