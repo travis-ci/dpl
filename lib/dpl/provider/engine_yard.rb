@@ -46,7 +46,9 @@ module DPL
       end
 
       def cleanup
-        #DONT
+      end
+
+      def uncleanup
       end
 
       def push_app

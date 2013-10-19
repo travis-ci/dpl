@@ -24,6 +24,8 @@ module DPL
       def cleanup
       end
 
+      def uncleanup
+      end
     end
   end
 end

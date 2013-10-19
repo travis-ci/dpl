@@ -70,9 +70,9 @@ describe DPL::Provider do
 
   describe :cleanup do
     example do
-      provider.should_receive(:sha).and_return("sha")
-      provider.context.should_receive(:shell).with('git reset --hard sha')
-      provider.context.should_receive(:shell).with('git clean -dffqx -e .dpl')
+      provider.context.should_receive(:shell).with('mv .dpl ~/dpl')
+      provider.context.should_receive(:shell).with('git stash --all')
+      provider.context.should_receive(:shell).with('mv ~/dpl .dpl')
       provider.cleanup
     end
 
@@ -80,6 +80,19 @@ describe DPL::Provider do
       provider.options.should_receive(:[]).with(:skip_cleanup).and_return("true")
       provider.context.should_not_receive(:shell)
       provider.cleanup
+    end
+  end
+
+  describe :uncleanup do
+    example do
+      provider.context.should_receive(:shell).with('git stash pop')
+      provider.uncleanup
+    end
+
+    example "skip cleanup" do
+      provider.options.should_receive(:[]).with(:skip_cleanup).and_return("true")
+      provider.context.should_not_receive(:shell)
+      provider.uncleanup
     end
   end
 
