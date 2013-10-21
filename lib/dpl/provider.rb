@@ -21,7 +21,7 @@ module DPL
       return super if self < Provider
 
       context.fold("Installing deploy dependencies") do
-        name = super.option(:provider).to_s.downcase.gsub(/[^a-z]/, '')
+        name = super.option(:provider).to_s.downcase.gsub(/[^a-z0-9]/, '')
         raise Error, 'could not find provider %p' % options[:provider] unless name = constants.detect { |c| c.to_s.downcase == name }
         const_get(name).new(context, options)
       end
