@@ -32,7 +32,7 @@ module DPL
       end
 
       def push_app
-        context.shell "jitsu deploy --localconf #{CONFIG_FILE} --release=yes"
+        context.shell "jitsu deploy --jitsuconf #{File.expand_path(CONFIG_FILE)} --release=yes"
       end
     end
   end
