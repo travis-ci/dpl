@@ -22,3 +22,7 @@ end
 group :rubygems do
   gem 'gems', '>= 0.8.3'
 end
+
+group :sss do
+  gem 'aws-sdk'
+end
