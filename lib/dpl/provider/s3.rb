@@ -2,7 +2,6 @@ module DPL
   class Provider
     class S3 < Provider
       requires 'aws-sdk'
-      experimental "S3"
 
       def api
         @api ||= AWS::S3.new

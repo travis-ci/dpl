@@ -18,4 +18,4 @@ Supported providers:
 * Openshift
 * PyPi
 * RubyGems
-* S3 (experimental)
+* S3
