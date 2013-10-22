@@ -7,14 +7,15 @@ Usage:
 
 Supported providers:
 
+* AppFog
+* Cloud Foundry
+* cloudControl
+* dotCloud (experimental)
+* Engine Yard
 * Heroku
 * Nodejitsu
+* NPM
 * Openshift
-* cloudControl
-* RubyGems
 * PyPi
-* Engine Yard
-* Cloud Foundry
-* dotCloud (experimental)
-* NPM (experimental)
+* RubyGems
 * S3 (experimental)

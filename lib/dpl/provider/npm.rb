@@ -2,7 +2,6 @@ module DPL
   class Provider
     class NPM < Provider
       NPMRC_FILE = '~/.npmrc'
-      experimental "NPM"
 
       def needs_key?
         false

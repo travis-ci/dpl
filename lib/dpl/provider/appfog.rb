@@ -2,7 +2,6 @@ module DPL
   class Provider
     class Appfog < Provider
       requires 'af', :load => 'vmc'
-      experimental "Appfog"
 
       def check_auth
         context.shell "af login --email=#{option(:email)} --password=#{option(:password)}"
