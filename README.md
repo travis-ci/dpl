@@ -39,7 +39,7 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 
 #### Options:
 * **api-key**: Heroku API Key
-* **strategy[git/anvil]**: Deployment strategy for Dpl. Defaults to git.
+* **strategy[git/anvil]**: Deployment strategy for Dpl. Defaults to anvil.
 * **app**: Heroku app name. Defaults to the name of your git repo.
 * **username**: heroku username. Not necessary if api-key is used. Requires git strategy.
 * **password**: heroku password. Not necessary if api-key is used. Requires git strategy.
