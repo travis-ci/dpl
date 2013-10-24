@@ -151,7 +151,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 #### Options:
 
-* **acess-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+* **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **bucket**: S3 Bucket.
 
