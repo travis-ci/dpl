@@ -54,8 +54,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 #### Examples:
 	
     dpl --provider=heroku --api-key=`heroku auth:token`
-	dpl --provider=heroku --username=<username> --password=<password>
-    dpl --provider=heroku --api-key=`heroku auth:token` --strategy=anvil --app=<application>
+	dpl --provider=heroku --strategy=git --username=<username> --password=<password>  --app=<application>
 
 
     
