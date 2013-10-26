@@ -37,7 +37,7 @@ module DPL
       load    = options[:load]    || name
       gem(name, version)
     rescue LoadError
-      context.shell("gem install %s -v %p" % [name, version])
+      context.shell("gem install %s -v %p" % [name, version], retry: true)
       Gem.clear_paths
     ensure
       require load
@@ -47,16 +47,17 @@ module DPL
       self
     end
 
-    def self.shell(command)
+    def self.shell(command, options = {})
+      command = "travis_retry #{command}" if options[:retry]
       system(command)
     end
 
     def self.pip(name, command = name)
-      context.shell "sudo pip install #{name}" if `which #{command}`.chop.empty?
+      context.shell("sudo pip install #{name}", retry: true) if `which #{command}`.chop.empty?
     end
 
     def self.npm_g(name, command = name)
-      context.shell "npm install -g #{name}" if `which #{command}`.chop.empty?
+      context.shell("npm install -g #{name}", retry: true) if `which #{command}`.chop.empty?
     end
 
     attr_reader :context, :options
