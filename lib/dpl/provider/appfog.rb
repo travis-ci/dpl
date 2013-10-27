@@ -15,10 +15,6 @@ module DPL
         context.shell "af update #{options[:app] || File.basename(Dir.getwd)}"
         context.shell "af logout"
       end
-
-      def cleanup
-      end
-
     end
   end
 end
