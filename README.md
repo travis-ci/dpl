@@ -1,21 +1,21 @@
-# Dpl
+# Dpl [![Build Status](https://travis-ci.org/travis-ci/dpl.png?branch=master)](https://travis-ci.org/travis-ci/dpl])
  Dpl (dee-pee-ell) is a deploy tool made for continuous deployment.  Developed and used by Travis CI.
 
-## Supported providers:
+## Supported Providers:
 Dpl supports the following providers:
 
-* AppFog
-* Cloud Foundry
-* cloudControl
-* dotCloud (experimental)
-* Engine Yard
-* Heroku
-* Nodejitsu
-* NPM
-* Openshift
-* PyPi
-* RubyGems
-* S3
+* [AppFog](#appfog)
+* [Cloud Foundry](#cloud-foundry)
+* [cloudControl](#cloudcontroll)
+* [dotCloud (experimental)](#dotcloud)
+* [Engine Yard](#engine-yard)
+* [Heroku](#heroku)
+* [Nodejitsu](#nodejitsu)
+* [NPM](#npm)
+* [Openshift](#openshift)
+* [PyPi](#pypi)
+* [RubyGems](#rubygems)
+* [S3](#s3)
 
 ## Installation:
 
@@ -54,7 +54,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 #### Examples:
 	
     dpl --provider=heroku --api-key=`heroku auth:token`
-	dpl --provider=heroku --strategy=git --username=<username> --password=<password>  --app=<application>
+    dpl --provider=heroku --strategy=git --username=<username> --password=<password>  --app=<application>
 
 
     
@@ -67,7 +67,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **api-key**: Nodejitsu API Key
 
 #### Examples:
-	dpl --provider=nodejitsu --username=<username> --api-key=<api-key>
+    dpl --provider=nodejitsu --username=<username> --api-key=<api-key>
 
 ### Engine Yard:
 
@@ -82,9 +82,9 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 #### Examples:
 
-	dpl --provider=engineyard --api-key=<api-key>
+    dpl --provider=engineyard --api-key=<api-key>
     dpl --provider=engineyard --username=<username> --password=<password> --environment=staging
-	dpl --provider=engineyard --api-key=<api-key> --app=<application> --migrate=`rake db:migrate`
+    dpl --provider=engineyard --api-key=<api-key> --app=<application> --migrate=`rake db:migrate`
 
 ### Openshift:
 
@@ -97,8 +97,8 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 ####Examples:
 
-	dpl --provider=openshift --username=<username> --password=<password> --domain=<domain>
-	dpl --provider=openshift --username=<username> --password=<password> --domain=<domain> --app=<app>
+    dpl --provider=openshift --username=<username> --password=<password> --domain=<domain>
+    dpl --provider=openshift --username=<username> --password=<password> --domain=<domain> --app=<app>
 
 ### cloudControl:
 
@@ -110,7 +110,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 #### Examples:
 
-	dpl --provider=cloudcontroll --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
+    dpl --provider=cloudcontroll --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
 
 ### RubyGems:
 
@@ -120,7 +120,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 #### Examples:
 
-	dpl --provider=rubygems --api-key=<api-key>
+    dpl --provider=rubygems --api-key=<api-key>
 
 ### PyPI:
 
@@ -132,8 +132,8 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 #### Examples:
 
-	dpl --provider=pypi --user=<username> --password=<password>
-	dpl --provider=pypi --user=<username> --password=<password> --server=`https://mypackageindex.com/index`
+    dpl --provider=pypi --user=<username> --password=<password>
+    dpl --provider=pypi --user=<username> --password=<password> --server=`https://mypackageindex.com/index`
 
 ### NPM:
 
@@ -144,7 +144,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 #### Examples:
 
-	dpl --provider=npm --email=<email> --api-key=<api-key>
+    dpl --provider=npm --email=<email> --api-key=<api-key>
 
 ### S3:
 
@@ -156,7 +156,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 #### Examples:
 
-	dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
 
 ### Appfog:
 
@@ -168,6 +168,6 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 #### Examples:
 
-	dpl --provider=appfog --email=<email> --password=<password>
-	dpl --provider=appfog --email=<email> --password=<password> --app=<app>
+    dpl --provider=appfog --email=<email> --password=<password>
+    dpl --provider=appfog --email=<email> --password=<password> --app=<app>
 
