@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version               = DPL::VERSION
   s.author                = "Konstantin Haase"
   s.email                 = "konstantin.mailinglists@googlemail.com"
-  s.homepage              = "https://github.com/rkh/dpl"
+  s.homepage              = "https://github.com/travis-ci/dpl"
   s.summary               = %q{deploy tool}
   s.description           = %q{deploy tool abstraction for clients}
   s.license               = 'MIT'
