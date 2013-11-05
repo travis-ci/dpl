@@ -17,6 +17,7 @@ module DPL
     autoload :CloudControl, 'dpl/provider/cloudcontrol'
     autoload :CloudFoundry, 'dpl/provider/cloud_foundry'
     autoload :PyPI,         'dpl/provider/pypi'
+    autoload :Divshot,      'dpl/provider/divshot'
 
     def self.new(context, options)
       return super if self < Provider
