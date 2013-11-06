@@ -171,3 +171,9 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
     dpl --provider=appfog --email=<email> --password=<password>
     dpl --provider=appfog --email=<email> --password=<password> --app=<app>
 
+### Divshot.io:
+
+#### Options:
+
+* **api-key**: Divshot.io API key
+* **environment**: Which environment (development, staging, production) to deploy to
