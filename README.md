@@ -6,7 +6,7 @@ Dpl supports the following providers:
 
 * [AppFog](#appfog)
 * [Cloud Foundry](#cloud-foundry)
-* [cloudControl](#cloudcontroll)
+* [cloudControl](#cloudcontrol)
 * [dotCloud (experimental)](#dotcloud)
 * [Engine Yard](#engine-yard)
 * [Heroku](#heroku)
