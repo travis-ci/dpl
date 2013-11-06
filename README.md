@@ -16,6 +16,7 @@ Dpl supports the following providers:
 * [PyPi](#pypi)
 * [RubyGems](#rubygems)
 * [S3](#s3)
+* [Divshot.io](#divshot-io)
 
 ## Installation:
 
