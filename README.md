@@ -6,7 +6,7 @@ Dpl supports the following providers:
 
 * [AppFog](#appfog)
 * [Cloud Foundry](#cloud-foundry)
-* [cloudControl](#cloudcontrol)
+* [cloudControl](#cloudcontroll)
 * [dotCloud (experimental)](#dotcloud)
 * [Engine Yard](#engine-yard)
 * [Heroku](#heroku)
@@ -16,10 +16,11 @@ Dpl supports the following providers:
 * [PyPi](#pypi)
 * [RubyGems](#rubygems)
 * [S3](#s3)
+* [Divshot.io](#divshot-io)
 
 ## Installation:
 
-Dpl is published to rubygems. 
+Dpl is published to rubygems.
 
 * Dpl requires ruby with a version greater than 1.8.7
 * To install: `gem install dpl`
@@ -52,16 +53,16 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 As a rule of thumb, you should switch to the Git strategy if you run into issues with Anvil or if you're using the [user-env-compile](https://devcenter.heroku.com/articles/labs-user-env-compile) plugin.
 
 #### Examples:
-	
+
     dpl --provider=heroku --api-key=`heroku auth:token`
     dpl --provider=heroku --strategy=git --username=<username> --password=<password>  --app=<application>
 
 
-    
+
 
 ### Nodejitsu:
 
-#### Options: 
+#### Options:
 
 * **username**: Nodejitsu Username
 * **api-key**: Nodejitsu API Key
@@ -171,3 +172,9 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
     dpl --provider=appfog --email=<email> --password=<password>
     dpl --provider=appfog --email=<email> --password=<password> --app=<app>
 
+### Divshot.io:
+
+#### Options:
+
+* **api-key**: Divshot.io API key
+* **environment**: Which environment (development, staging, production) to deploy to
