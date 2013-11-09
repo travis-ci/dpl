@@ -1,4 +1,7 @@
 require 'simplecov'
+require 'coveralls'
+
+Coveralls.wear!
 
 SimpleCov.start do
   coverage_dir '.coverage'
