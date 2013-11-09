@@ -4,6 +4,11 @@ rvm:
 - 2.0.0
 - jruby-19mode
 - rbx-19mode
+
+matrix:
+  allow_failures:
+    - rvm: jruby-19mode
+
 deploy:
   provider: rubygems
   api_key:
