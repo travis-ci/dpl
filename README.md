@@ -17,6 +17,7 @@ Dpl supports the following providers:
 * [RubyGems](#rubygems)
 * [S3](#s3)
 * [Divshot.io](#divshot-io)
+* [Rackspace Cloud Files](#rackspace-cloud-files)
 
 ## Installation:
 
@@ -178,3 +179,16 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 * **api-key**: Divshot.io API key
 * **environment**: Which environment (development, staging, production) to deploy to
+
+### Rackspace Cloud Files:
+
+#### Options:
+
+* **username**: Rackspace Username.
+* **api-key**: Rackspace API Key.
+* **region**: Cloud Files Region. The region in which your Cloud Files container exists.
+* **container**: Container Name. The container where you would like your files to be uploaded.
+
+#### Examples:
+
+    dpl --provider=cloudfiles --username=<username> --api-key=<api-key> --region=<region> --container=<container>

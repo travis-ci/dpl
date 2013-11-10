@@ -26,3 +26,7 @@ end
 group :sss do
   gem 'aws-sdk'
 end
+
+group :cloud_files do
+  gem 'fog'
+end

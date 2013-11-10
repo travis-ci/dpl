@@ -18,6 +18,7 @@ module DPL
     autoload :CloudFoundry, 'dpl/provider/cloud_foundry'
     autoload :PyPI,         'dpl/provider/pypi'
     autoload :Divshot,      'dpl/provider/divshot'
+    autoload :CloudFiles,   'dpl/provider/cloud_files'
 
     def self.new(context, options)
       return super if self < Provider
