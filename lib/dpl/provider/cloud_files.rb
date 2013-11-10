@@ -23,8 +23,8 @@ module DPL
 
         raise Error, 'The specified container does not exist.' if container.nil?
 
-        Dir.glob('**/*.*').each do |name|
-          container.files.create(:key => name, :body => File.open(name))
+        Dir.glob('**/*').each do |name|
+          container.files.create(:key => name, :body => File.open(name)) unless File.directory?(name)
         end
       end
     end

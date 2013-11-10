@@ -55,7 +55,7 @@ describe DPL::Provider::CloudFiles do
       files.should_receive(:create).with(:key => 'b', :body => 'b body')
       files.should_receive(:create).with(:key => 'c', :body => 'c body')
 
-      Dir.should_receive(:glob).with('**/*.*').and_return(['a', 'b', 'c'])
+      Dir.should_receive(:glob).with('**/*').and_return(['a', 'b', 'c'])
       File.stub(:open) { |name| "#{name} body" }
 
       provider.push_app
