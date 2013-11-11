@@ -156,11 +156,12 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **bucket**: S3 Bucket.
 * **upload-dir**: S3 directory to upload to. Defaults to root directory.
+* **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
 
 #### Examples:
 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
-    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --upload-dir=BUILDS
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir= BUILD --upload-dir=BUILDS
 
 ### Appfog:
 

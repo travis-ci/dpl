@@ -49,7 +49,15 @@ describe :needs_key? do
   end
 
   describe :push_app do
-    example do
+    example "Without local_dir" do
+      Dir.should_receive(:chdir).with(Dir.pwd)
+      provider.push_app
+    end
+
+    example "With local_dir" do
+      provider.options.update(:local_dir => 'BUILD')
+      
+      Dir.should_receive(:chdir).with('BUILD')
       provider.push_app
     end
   end
