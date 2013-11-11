@@ -196,3 +196,16 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 #### Examples:
 
     dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --target=<target> --space=<space>
+
+### dotCloud:
+
+#### Options:
+
+* **api_key**: dotCloud api key.
+* **app**: dotcloud app.
+* **service**: dotcloud service to run commands on. Defaults to 'www'.
+
+#### Examples:
+
+    dpl --provider=dotcloud --api_key=<api_key> --app=<app>
+    dpl --provider=dotcloud --api_key=<api_key> --app=<app> --service=<service>
