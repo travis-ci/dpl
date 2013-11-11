@@ -50,7 +50,6 @@ module DPL
     end
 
     def self.shell(command, options = {})
-      command = "travis_retry #{command}" if options[:retry] and ENV['TRAVIS'] == 'true'
       system(command)
     end
 

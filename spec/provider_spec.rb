@@ -120,34 +120,9 @@ describe DPL::Provider do
   end
 
   describe :shell do
-    describe 'on Travis' do
-      before(:each) do
-        stub_const("ENV", {'TRAVIS' => 'true'})
-      end
-
-      example "without any options" do
-        example_provider.should_receive(:system).with("command")
-        example_provider.shell("command")
-      end
-      example "with retry: true" do
-        example_provider.should_receive(:system).with("travis_retry command")
-        example_provider.shell("command", retry: true)
-      end
-    end
-
-    describe 'not on Travis' do
-      before(:each) do
-        stub_const("ENV", {'TRAVIS' => nil})
-      end
-
-      example "without any options" do
-        example_provider.should_receive(:system).with("command")
-        example_provider.shell("command")
-      end
-      example "with retry: true" do
-        example_provider.should_receive(:system).with("command")
-        example_provider.shell("command", retry: true)
-      end
+    example do
+      example_provider.should_receive(:system).with("command")
+      example_provider.shell("command")
     end
   end
 
