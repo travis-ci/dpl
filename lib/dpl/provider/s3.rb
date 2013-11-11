@@ -29,8 +29,10 @@ module DPL
       end
 
       def push_app
-        Dir.glob("**/*") do |filename|
-          api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename)) unless File.directory?(filename)
+        Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
+          Dir.glob("**/*") do |filename|
+            api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename)) unless File.directory?(filename)
+          end
         end
       end
 
