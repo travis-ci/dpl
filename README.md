@@ -6,7 +6,7 @@ Dpl supports the following providers:
 
 * [AppFog](#appfog)
 * [Cloud Foundry](#cloud-foundry)
-* [cloudControl](#cloudcontroll)
+* [cloudControl](#cloudcontrol)
 * [dotCloud (experimental)](#dotcloud)
 * [Engine Yard](#engine-yard)
 * [Heroku](#heroku)
@@ -105,13 +105,13 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 #### Options:
 
-* **email**: cloudControll email.
-* **password**: cloudControll password.
-* **deployment**: cloudControll Deployment. Follows the format "APP_NAME/DEP_NAME".
+* **email**: cloudControl email.
+* **password**: cloudControl password.
+* **deployment**: cloudControl Deployment. Follows the format "APP_NAME/DEP_NAME".
 
 #### Examples:
 
-    dpl --provider=cloudcontroll --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
+    dpl --provider=cloudcontrol --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
 
 ### RubyGems:
 
