@@ -179,6 +179,10 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **api-key**: Divshot.io API key
 * **environment**: Which environment (development, staging, production) to deploy to
 
+#### Examples:
+
+    dpl --provider=divshot --api-key=<api-key> --environment=<environment>
+
 ### Cloud Foundry:
 
 #### Options:
