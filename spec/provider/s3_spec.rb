@@ -20,6 +20,21 @@ describe DPL::Provider::S3 do
     end
   end
 
+  describe :upload_path do
+    example "Without :upload_dir"do
+      filename = "testfile.file"
+
+      provider.upload_path(filename).should == "testfile.file"
+    end
+
+    example "With :upload_dir" do
+      provider.options.update(:upload_dir => 'BUILD3')
+      filename = "testfile.file"
+
+      provider.upload_path(filename).should == "BUILD3/testfile.file"
+    end
+  end
+
   describe :setup_auth do
     example do
       AWS.should_receive(:config).with(:access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz').once.and_call_original

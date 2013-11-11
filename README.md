@@ -155,10 +155,12 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **bucket**: S3 Bucket.
+* **upload-dir**: S3 directory to upload to. Defaults to root directory.
 
 #### Examples:
 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --upload-dir=BUILDS
 
 ### Appfog:
 
