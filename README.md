@@ -170,12 +170,12 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 * **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
-* **stack-id**: The stack ID.
 * **app-id**: The app ID.
+* **migrate**: Migrate the database. (Default: false)
 
 #### Examples:
 
-    dpl --provider=opsworks --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --stack-id=<stack-id> --app-id=<app-id>
+    dpl --provider=opsworks --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --app-id=<app-id> --migrate
 
 
 ### Appfog:
