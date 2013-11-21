@@ -132,11 +132,12 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **user**: PyPI Username.
 * **password**: PyPI Password.
 * **server**: Optional. Only required if you want to release to a different index. Follows the form of "https://mypackageindex.com/index".
+* **distributions**: An space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
 
 #### Examples:
 
     dpl --provider=pypi --user=<username> --password=<password>
-    dpl --provider=pypi --user=<username> --password=<password> --server=`https://mypackageindex.com/index`
+    dpl --provider=pypi --user=<username> --password=<password> --server=`https://mypackageindex.com/index` --distributions='sdist bdist'
 
 ### NPM:
 
