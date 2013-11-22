@@ -33,7 +33,7 @@ module DPL
         end
 
         def push_app
-          context.shell "git push #{option(:git)} HEAD:master -f"
+          context.shell "git push #{option(:git)} HEAD:refs/heads/master -f"
         end
 
         def run(command)
