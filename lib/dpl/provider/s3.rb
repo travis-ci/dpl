@@ -24,9 +24,15 @@ module DPL
         log "Logging in with Access Key: #{option(:access_key_id)[-4..-1].rjust(20, '*')}"
       end
 
+      def upload_path(filename)
+        [options[:upload_dir], filename].compact.join("/")
+      end
+
       def push_app
-        Dir.glob("**/*") do |fileName|
-          api.buckets[option(:bucket)].objects.create(fileName, File.read(fileName)) unless File.directory?(fileName)
+        Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
+          Dir.glob("**/*") do |filename|
+            api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename)) unless File.directory?(filename)
+          end
         end
       end
 

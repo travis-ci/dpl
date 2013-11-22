@@ -18,6 +18,7 @@ Dpl supports the following providers:
 * [S3](#s3)
 * [Divshot.io](#divshotio)
 * [Rackspace Cloud Files](#rackspace-cloud-files)
+* [AWS OpsWorks](#opsworks)
 
 ## Installation:
 
@@ -131,11 +132,12 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **user**: PyPI Username.
 * **password**: PyPI Password.
 * **server**: Optional. Only required if you want to release to a different index. Follows the form of "https://mypackageindex.com/index".
+* **distributions**: An space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
 
 #### Examples:
 
     dpl --provider=pypi --user=<username> --password=<password>
-    dpl --provider=pypi --user=<username> --password=<password> --server=`https://mypackageindex.com/index`
+    dpl --provider=pypi --user=<username> --password=<password> --server=`https://mypackageindex.com/index` --distributions='sdist bdist'
 
 ### NPM:
 
@@ -155,10 +157,27 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **bucket**: S3 Bucket.
+* **upload-dir**: S3 directory to upload to. Defaults to root directory.
+* **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
 
 #### Examples:
 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir= BUILD --upload-dir=BUILDS
+
+### OpsWorks:
+
+#### Options:
+
+* **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+* **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+* **app-id**: The app ID.
+* **migrate**: Migrate the database. (Default: false)
+
+#### Examples:
+
+    dpl --provider=opsworks --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --app-id=<app-id> --migrate
+
 
 ### Appfog:
 
