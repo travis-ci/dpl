@@ -9,6 +9,11 @@ module DPL
         shell 'rm -f setuptools-*.tar.gz'
       end
 
+      def initialize(*args)
+        super(*args)
+        self.class.pip 'wheel' if options[:distributions].to_s.include? 'bdist_wheel'
+      end
+
       install_setuptools
 
       def config
