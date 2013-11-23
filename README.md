@@ -133,6 +133,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **password**: PyPI Password.
 * **server**: Optional. Only required if you want to release to a different index. Follows the form of "https://mypackageindex.com/index".
 * **distributions**: A space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
+* **docs_dir**: A path to the directory to upload documentation from. Defaults to 'build/docs'
 
 #### Examples:
 
