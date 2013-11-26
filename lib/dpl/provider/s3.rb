@@ -25,7 +25,7 @@ module DPL
       end
 
       def upload_path(filename)
-        [options[:upload_dir], filename].compact.join("/")
+        [options[:upload_dir], filename].compact.join("/") + iterative_path
       end
 
       def push_app
