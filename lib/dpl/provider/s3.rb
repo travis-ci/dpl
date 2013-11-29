@@ -2,6 +2,7 @@ module DPL
   class Provider
     class S3 < Provider
       requires 'aws-sdk'
+      requires 'mime-types'
 
       def api
         @api ||= AWS::S3.new
@@ -31,7 +32,8 @@ module DPL
       def push_app
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           Dir.glob("**/*") do |filename|
-            api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename)) unless File.directory?(filename)
+            content_type = MIME::Types.type_for(filename).first.to_s
+            api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename), :content-type => content_type) unless File.directory?(filename)
           end
         end
       end
