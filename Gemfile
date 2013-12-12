@@ -15,9 +15,9 @@ group :openshift do
   gem 'rhc'
 end
 
-group :appfog do
-  gem 'af'
-end
+#group :appfog do
+#  gem 'af'
+#end
 
 group :rubygems do
   gem 'gems', '>= 0.8.3'
