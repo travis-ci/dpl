@@ -1,3 +1,5 @@
+require 'json'
+
 module DPL
   class Provider
     class S3 < Provider
