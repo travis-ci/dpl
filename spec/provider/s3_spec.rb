@@ -60,6 +60,12 @@ describe :needs_key? do
       Dir.should_receive(:chdir).with('BUILD')
       provider.push_app
     end
+
+    example "Sends MIME type" do
+      Dir.should_receive(:glob).and_yield(__FILE__)
+      AWS::S3::ObjectCollection.any_instance.should_receive(:create).with(anything(), anything(), hash_including(:content_type => 'application/x-ruby'))
+      provider.push_app
+    end
   end
 
   describe :api do   
