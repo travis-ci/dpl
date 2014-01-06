@@ -25,6 +25,7 @@ end
 
 group :sss do
   gem 'aws-sdk'
+  gem 'mime-types'
 end
 
 group :cloud_files do
