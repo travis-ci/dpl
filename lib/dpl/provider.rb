@@ -20,6 +20,7 @@ module DPL
     autoload :Divshot,      'dpl/provider/divshot'
     autoload :CloudFiles,   'dpl/provider/cloud_files'
     autoload :OpsWorks,     'dpl/provider/ops_works'
+    autoload :Modulus,      'dpl/provider/modulus'
 
     def self.new(context, options)
       return super if self < Provider
