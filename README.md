@@ -19,6 +19,7 @@ Dpl supports the following providers:
 * [Divshot.io](#divshotio)
 * [Rackspace Cloud Files](#rackspace-cloud-files)
 * [AWS OpsWorks](#opsworks)
+* [Modulus](#modulus)
 
 ## Installation:
 
@@ -71,6 +72,18 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 #### Examples:
     dpl --provider=nodejitsu --username=<username> --api-key=<api-key>
+
+
+### Modulus
+
+#### Options:
+
+* **api-key** Modulus Authentication Token
+* **project-name** Modulus Project to Deploy
+
+#### Example:
+    dpl --provider=modulus --api-key=<api-key> --project-name=<project-name>
+
 
 ### Engine Yard:
 
