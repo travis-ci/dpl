@@ -19,7 +19,7 @@ module DPL
       end
 
       def setup_auth
-        AWS.config(:access_key_id => option(:access_key_id), :secret_access_key => option(:secret_access_key))
+        AWS.config(:access_key_id => option(:access_key_id), :secret_access_key => option(:secret_access_key), :region => options[:region]||'us-east-1')
       end
 
       def check_auth

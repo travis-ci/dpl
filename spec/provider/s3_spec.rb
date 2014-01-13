@@ -36,8 +36,14 @@ describe DPL::Provider::S3 do
   end
 
   describe :setup_auth do
-    example do
-      AWS.should_receive(:config).with(:access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz').once.and_call_original
+    example "Without :region" do
+      AWS.should_receive(:config).with(:access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :region => 'us-east-1').once.and_call_original
+      provider.setup_auth
+    end
+    example "With :region" do
+      provider.options.update(:region => 'us-west-2')
+
+      AWS.should_receive(:config).with(:access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :region => 'us-west-2').once
       provider.setup_auth
     end
   end
