@@ -187,10 +187,10 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **app-id**: The app ID.
 * **migrate**: Migrate the database. (Default: false)
-
+* **wait-until-deployed**: Wait until the app is deployed and return the deployment status. (Default: false)
 #### Examples:
 
-    dpl --provider=opsworks --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --app-id=<app-id> --migrate
+    dpl --provider=opsworks --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --app-id=<app-id> --migrate --wait-until-deployed
 
 
 ### Appfog:
