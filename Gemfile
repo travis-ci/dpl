@@ -2,13 +2,13 @@ source 'https://rubygems.org'
 gemspec
 
 group :cloudfoundry do
-  gem 'cf'
+  gem 'cf', '~> 5.4.5'
 end
 
 group :heroku do
-  gem 'rendezvous'
-  gem 'heroku-api'
-  gem 'anvil-cli'
+  gem 'rendezvous', '~> 0.0.2'
+  gem 'heroku-api', '~> 0.3.16'
+  gem 'anvil-cli', '~> 0.16.1'
 end
 
 group :openshift do
@@ -20,7 +20,7 @@ group :appfog do
 end
 
 group :rubygems do
-  gem 'gems', '>= 0.8.3'
+  gem 'gems'
 end
 
 group :sss do
