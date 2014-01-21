@@ -71,7 +71,7 @@ describe DPL::Provider::Heroku do
       example "with buildpack name expansion" do
         DPL::Provider::Heroku::Anvil::HEROKU_BUILDPACKS.each do |b|
           provider.options.update(:buildpack => b)
-          ::Anvil::Engine.should_receive(:build).with(".", :buildpack=>described_class::Anvil::HEROKU_BUILDPACK_PREFIX + b)
+          ::Anvil::Engine.should_receive(:build).with(".", :buildpack=>described_class::Anvil::HEROKU_BUILDPACK_PREFIX + b + ".git")
           provider.slug_url
         end
       end

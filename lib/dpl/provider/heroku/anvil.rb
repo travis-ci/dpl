@@ -43,7 +43,7 @@ module DPL
             ::Anvil.headers["X-Heroku-User"] = user
             ::Anvil.headers["X-Heroku-App"]  = option(:app)
             if HEROKU_BUILDPACKS.include? options[:buildpack]
-              options[:buildpack] = HEROKU_BUILDPACK_PREFIX + options[:buildpack]
+              options[:buildpack] = HEROKU_BUILDPACK_PREFIX + options[:buildpack] + ".git"
             end
             ::Anvil::Engine.build ".", :buildpack => options[:buildpack]
           rescue ::Anvil::Builder::BuildError => e
