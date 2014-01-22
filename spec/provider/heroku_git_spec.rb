@@ -45,7 +45,7 @@ describe DPL::Provider::Heroku do
 
     describe :check_app do
       example do
-        provider.should_receive(:log).with("found app example")
+        provider.should_receive(:log).at_least(1).times.with(/example/)
         provider.check_app
         provider.options[:git].should be == "GIT URL"
       end
