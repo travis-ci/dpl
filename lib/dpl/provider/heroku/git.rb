@@ -19,14 +19,12 @@ module DPL
         end
 
         def check_app
-          begin
-            log "checking for app '#{option(:app)}'"
-            info = api.get_app(option(:app)).body
-            options[:git] ||= info['git_url']
-            log "found app '#{info['name']}'"
-          rescue ::Heroku::API::Errors::Forbidden => error
-            raise Error, "#{error.message} (does the app '#{option(:app)}' exist and does #{user} have access to it?)", error.backtrace
-          end
+          log "checking for app '#{option(:app)}'"
+          info = api.get_app(option(:app)).body
+          options[:git] ||= info['git_url']
+          log "found app '#{info['name']}'"
+        rescue ::Heroku::API::Errors::Forbidden => error
+          raise Error, "#{error.message} (does the app '#{option(:app)}' exist and does #{user} have access to it?)", error.backtrace
         end
 
         def setup_key(file)
