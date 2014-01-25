@@ -24,7 +24,7 @@ module DPL
           options[:git] ||= info['git_url']
           log "found app '#{info['name']}'"
         rescue ::Heroku::API::Errors::Forbidden => error
-          raise Error, "#{error.message} (does the app '#{option(:app)}' exist and does #{user} have access to it?)", error.backtrace
+          raise Error, "#{error.message} (does the app '#{option(:app)}' exist and does your account have access to it?)", error.backtrace
         end
 
         def setup_key(file)
