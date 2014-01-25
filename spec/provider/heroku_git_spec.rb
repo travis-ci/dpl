@@ -91,10 +91,6 @@ describe DPL::Provider::Heroku do
     end
 
     describe :deploy do
-      before do
-        provider.instance_variable_set(:@user, "user@example.com")
-      end
-
       example "not found error" do
         provider.should_receive(:api) { raise ::Heroku::API::Errors::NotFound.new("the message", nil) }.at_least(:once)
         expect { provider.deploy }.to raise_error(DPL::Error, 'the message (wrong app "example"?)')
