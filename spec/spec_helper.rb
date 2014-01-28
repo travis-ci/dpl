@@ -1,4 +1,6 @@
 require 'simplecov'
+require 'dpl/error'
+require 'dpl/provider'
 
 SimpleCov.start do
   coverage_dir '.coverage'
