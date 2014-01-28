@@ -1,7 +1,5 @@
 require 'spec_helper'
 require 'heroku-api'
-require 'dpl/error'
-require 'dpl/provider'
 require 'dpl/provider/heroku'
 
 describe DPL::Provider::Heroku do
