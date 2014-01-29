@@ -7,7 +7,7 @@ end
 
 group :heroku do
   gem 'rendezvous', '~> 0.0.2'
-  gem 'heroku-api', '~> 0.3.16'
+  gem 'heroku-api', '= 0.3.16'
   gem 'anvil-cli', '~> 0.16.1'
 end
 
