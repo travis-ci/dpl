@@ -7,7 +7,7 @@ module DPL
       requires 'mime-types'
 
       def api
-        @api ||= AWS::S3.new
+        @api ||= AWS::S3.new(endpoint: options[:endpoint] || 's3.amazonaws.com')
       end
 
       def needs_key?

@@ -75,8 +75,13 @@ describe :needs_key? do
   end
 
   describe :api do   
-    example do
-      AWS::S3.should_receive(:new)
+    example "Without Endpoint" do
+      AWS::S3.should_receive(:new).with(:endpoint => 's3.amazonaws.com')
+      provider.api
+    end
+    example "With Endpoint" do
+      provider.options.update(:endpoint => 's3test.com.s3-website-us-west-2.amazonaws.com')
+      AWS::S3.should_receive(:new).with(:endpoint => 's3test.com.s3-website-us-west-2.amazonaws.com')
       provider.api
     end
   end
