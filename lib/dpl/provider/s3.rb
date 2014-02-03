@@ -35,7 +35,7 @@ module DPL
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           Dir.glob("**/*") do |filename|
             content_type = MIME::Types.type_for(filename).first.to_s
-            api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename), :content_type => content_type) unless File.directory?(filename)
+            api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename), option(:s3_options, {:acl => :private}).merge(:content_type => content_type)) unless File.directory?(filename)
           end
         end
       end

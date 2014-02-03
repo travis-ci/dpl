@@ -9,7 +9,7 @@ describe DPL::Provider::S3 do
   end
   
   subject :provider do
-    described_class.new(DummyContext.new, :access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :bucket => 'my-bucket')
+    described_class.new(DummyContext.new, :access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :bucket => 'my-bucket', :s3_options => {:acl => :private})
   end
 
   describe :check_auth do
@@ -71,6 +71,32 @@ describe :needs_key? do
       Dir.should_receive(:glob).and_yield(__FILE__)
       AWS::S3::ObjectCollection.any_instance.should_receive(:create).with(anything(), anything(), hash_including(:content_type => 'application/x-ruby'))
       provider.push_app
+    end
+
+    context "When s3_options are given" do
+      let :object_collection do
+        double('object collection')
+      end
+
+      before do
+        provider.options.update(
+          :s3_options => {:acl => :public_read},
+          :bucket => "foo"
+        )
+        File.stub(:read).with("testfile.file").and_return("testfile content")
+        Dir.stub(:glob).and_yield("testfile.file")
+        File.stub(:directory?).with("testfile.file").and_return(false)
+        provider.api.stub_chain(:buckets, :[], :objects)
+                .and_return(object_collection)
+      end
+
+      example "With s3_options acl public_read" do
+        object_collection.should_receive(:create).with(
+          provider.upload_path("testfile.file"), "testfile content",
+          hash_including(:acl => :public_read)
+        )
+        provider.push_app
+      end
     end
   end
 
