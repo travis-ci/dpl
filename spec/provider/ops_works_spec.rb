@@ -40,7 +40,7 @@ describe DPL::Provider::OpsWorks do
     before do
       provider.should_receive(:current_sha).and_return('sha')
       provider.api.should_receive(:client).and_return(client)
-      ENV.should_receive(:[]).with('TRAVIS_COMMIT').and_return('123')
+      ENV.should_receive(:[]).with('TRAVIS_BUILD_NUMBER').and_return('123')
     end
 
     let(:custom_json) { "{\"deploy\":{\"app\":{\"migrate\":false,\"scm\":{\"revision\":\"sha\"}}}}" }
@@ -49,7 +49,7 @@ describe DPL::Provider::OpsWorks do
       client.should_receive(:describe_apps).with(app_ids: ['app-id']).and_return({apps: [ops_works_app]}
       )
       client.should_receive(:create_deployment).with(
-        stack_id: 'stack-id', app_id: 'app-id', command: {name: 'deploy'}, comment: 'Deploy 123 via Travis CI', custom_json: custom_json
+        stack_id: 'stack-id', app_id: 'app-id', command: {name: 'deploy'}, comment: 'Deploy build 123 via Travis CI', custom_json: custom_json
       ).and_return({})
       provider.push_app
     end
@@ -59,8 +59,16 @@ describe DPL::Provider::OpsWorks do
       provider.options.update(app_id: 'app-id', migrate: true)
       client.should_receive(:describe_apps).with(app_ids: ['app-id']).and_return({apps: [ops_works_app]})
       client.should_receive(:create_deployment).with(
-        stack_id: 'stack-id', app_id: 'app-id', command: {name: 'deploy'}, comment: 'Deploy 123 via Travis CI', custom_json: custom_json_with_migrate
+        stack_id: 'stack-id', app_id: 'app-id', command: {name: 'deploy'}, comment: 'Deploy build 123 via Travis CI', custom_json: custom_json_with_migrate
       ).and_return({})
+      provider.push_app
+    end
+
+    example 'with :wait_until_deployed' do
+      provider.options.update(app_id: 'app-id', wait_until_deployed: true)
+      client.should_receive(:describe_apps).with(app_ids: ['app-id']).and_return({apps: [ops_works_app]})
+      client.should_receive(:create_deployment).and_return({deployment_id: 'deployment_id'})
+      client.should_receive(:describe_deployments).with({deployment_ids: ['deployment_id']}).and_return({deployments: [status: 'running']}, {deployments: [status: 'successful']})
       provider.push_app
     end
   end

@@ -1,3 +1,5 @@
+require 'timeout'
+
 module DPL
   class Provider
     class OpsWorks < Provider
@@ -59,6 +61,14 @@ module DPL
       end
 
       def push_app
+        Timeout::timeout(600) do
+          create_deployment
+        end
+      rescue Timeout::Error
+        error 'Timeout: Could not finish deployment in 10 minutes.'
+      end
+
+      def create_deployment
         data = client.create_deployment(
           stack_id: ops_works_app[:stack_id],
           app_id: option(:app_id),
@@ -67,10 +77,31 @@ module DPL
           custom_json: custom_json.to_json
         )
         log "Deployment created: #{data[:deployment_id]}"
+        return unless options[:wait_until_deployed]
+        print "Deploying "
+        deployment = wait_until_deployed(data[:deployment_id])
+        print "\n"
+        if deployment[:status] == 'successful'
+          log "Deployment successful."
+        else
+          error "Deployment failed."
+        end
+      end
+
+      def wait_until_deployed(deployment_id)
+        deployment = nil
+        loop do
+          result = client.describe_deployments(deployment_ids: [deployment_id])
+          deployment = result[:deployments].first
+          break unless deployment[:status] == "running"
+          print "."
+          sleep 5
+        end
+        deployment
       end
 
       def travis_deploy_comment
-        "Deploy #{ENV['TRAVIS_COMMIT'] || current_sha} via Travis CI"
+        "Deploy build #{ENV['TRAVIS_BUILD_NUMBER'] || current_sha} via Travis CI"
       end
 
       def deploy
