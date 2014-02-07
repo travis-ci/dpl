@@ -9,6 +9,7 @@ describe DPL::CLI do
     example { described_class.new("--app")                  .options[:app].should be == true                   }
     example { described_class.new("--app=foo", "--app=bar") .options[:app].should be == ['foo', 'bar']         }
     example { described_class.new('--app={"a":true,"b":{"c":1}}').options[:app].should be == {:a => true, :b => {:c => 1}} }
+    example { described_class.new('--app=%7B%22a%22:true,%22b%22:%7B%22c%22:1%7D%7D').options[:app].should be == {:a => true, :b => {:c => 1}} }
 
     example "error handling" do
       $stderr.should_receive(:puts).with('invalid option "app"')
