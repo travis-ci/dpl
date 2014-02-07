@@ -8,10 +8,16 @@ describe DPL::CLI do
     example { described_class.new("--app=foo")              .options[:app].should be == 'foo'                  }
     example { described_class.new("--app")                  .options[:app].should be == true                   }
     example { described_class.new("--app=foo", "--app=bar") .options[:app].should be == ['foo', 'bar']         }
+    example { described_class.new('--app={"a":true,"b":{"c":1}}').options[:app].should be == {:a => true, :b => {:c => 1}} }
 
     example "error handling" do
       $stderr.should_receive(:puts).with('invalid option "app"')
       expect { described_class.new("app") }.to raise_error(SystemExit)
+    end
+
+    example "malformed JSON handling" do
+      $stderr.should_receive(:puts).with('Failed to load JSON-y value "{zzz}"')
+      described_class.new('--a={zzz}').options[:a].should be == '{zzz}'
     end
   end
 

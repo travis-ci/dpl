@@ -1,3 +1,4 @@
+require 'json'
 require 'dpl/error'
 require 'dpl/provider'
 
@@ -20,6 +21,14 @@ module DPL
           options[key] = Array(options[key]) << match[2]
         else
           options[key] = match[2] || true
+        end
+
+        if "#{options[key]}" =~ /^{.*}$/
+          begin
+            options[key] = JSON.parse(options[key], symbolize_names: true)
+          rescue
+            $stderr.puts "Failed to load JSON-y value #{options[key].inspect}"
+          end
         end
       end
 
