@@ -16,7 +16,7 @@ describe DPL::Provider::NPM do
 
   describe :push_app do
     example do
-      provider.context.should_receive(:shell).with("npm publish --force")
+      provider.context.should_receive(:shell).with("npm publish")
       provider.push_app
     end
   end

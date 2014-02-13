@@ -23,7 +23,7 @@ module DPL
       end
 
       def push_app
-        context.shell "npm publish --force"
+        context.shell "npm publish"
       end
     end
   end
