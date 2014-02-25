@@ -20,6 +20,7 @@ Dpl supports the following providers:
 * [Rackspace Cloud Files](#rackspace-cloud-files)
 * [AWS OpsWorks](#opsworks)
 * [Modulus](#modulus)
+* [Github Releases](#github-releases)
 
 ## Installation:
 
@@ -258,3 +259,21 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 #### Examples:
 
     dpl --provider=cloudfiles --username=<username> --api-key=<api-key> --region=<region> --container=<container>
+
+### GitHub Releases:
+
+#### Options:
+
+* **api-key**: GitHub oauth token with `public_repo` or`repo` permission.
+* **user**: GitHub username. Not necessary if `api-key` is used.
+* **password**: GitHub Password. Not necessary if `api-key` is used.
+* **repo**: GitHub Repo. Defaults to git repo's name.
+* **file**: File to upload to GitHub Release.
+
+#### GitHub Two Factor Authentication
+
+For accounts using two factor authentication, you have to use an oauth token as a username and password will not work.
+
+#### Examples:
+
+    dpl --provider=releases --api-key=<api-key> --file=build.tar.gz
