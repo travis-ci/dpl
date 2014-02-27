@@ -31,3 +31,7 @@ end
 group :cloud_files do
   gem 'fog'
 end
+
+group :ninefold do
+  gem 'ninefold'
+end

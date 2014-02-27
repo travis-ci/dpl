@@ -21,6 +21,7 @@ module DPL
     autoload :CloudFiles,   'dpl/provider/cloud_files'
     autoload :OpsWorks,     'dpl/provider/ops_works'
     autoload :Modulus,      'dpl/provider/modulus'
+    autoload :Ninefold,     'dpl/provider/ninefold'
 
     def self.new(context, options)
       return super if self < Provider
