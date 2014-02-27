@@ -20,6 +20,7 @@ Dpl supports the following providers:
 * [Rackspace Cloud Files](#rackspace-cloud-files)
 * [AWS OpsWorks](#opsworks)
 * [Modulus](#modulus)
+* [Ninefold](#ninefold)
 
 ## Installation:
 
@@ -258,3 +259,14 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 #### Examples:
 
     dpl --provider=cloudfiles --username=<username> --api-key=<api-key> --region=<region> --container=<container>
+
+### Ninefold
+
+#### Options:
+
+* **auth_token**: Ninefold deploy auth token
+* **app_id**: Ninefold deploy app ID
+
+#### Examples:
+
+    dpl --provider=ninefold --auth_token=<auth_token> --app_id=<app_id>
