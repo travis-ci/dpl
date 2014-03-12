@@ -3,11 +3,12 @@ require 'aws-sdk'
 require 'dpl/provider/s3'
 
 describe DPL::Provider::S3 do
-  
+
   before (:each) do
     AWS.stub!
+    allow_any_instance_of(DPL::Provider).to receive(:log)
   end
-  
+
   subject :provider do
     described_class.new(DummyContext.new, :access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :bucket => 'my-bucket')
   end
@@ -47,7 +48,7 @@ describe DPL::Provider::S3 do
       provider.setup_auth
     end
   end
-  
+
 describe :needs_key? do
     example do
       provider.needs_key?.should == false
@@ -62,7 +63,7 @@ describe :needs_key? do
 
     example "With local_dir" do
       provider.options.update(:local_dir => 'BUILD')
-      
+
       Dir.should_receive(:chdir).with('BUILD')
       provider.push_app
     end
@@ -74,7 +75,7 @@ describe :needs_key? do
     end
   end
 
-  describe :api do   
+  describe :api do
     example "Without Endpoint" do
       AWS::S3.should_receive(:new).with(:endpoint => 's3.amazonaws.com')
       provider.api

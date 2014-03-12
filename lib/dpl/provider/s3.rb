@@ -32,8 +32,10 @@ module DPL
       end
 
       def push_app
+        log "Uploading to #{option(:bucket)}"
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           Dir.glob("**/*") do |filename|
+            log "\t#{upload_path(filename)}"
             content_type = MIME::Types.type_for(filename).first.to_s
             api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename), :content_type => content_type) unless File.directory?(filename)
           end
