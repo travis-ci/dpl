@@ -31,3 +31,7 @@ end
 group :cloud_files do
   gem 'fog'
 end
+
+group :releases do
+  gem 'octokit'
+end
