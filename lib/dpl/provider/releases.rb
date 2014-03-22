@@ -46,22 +46,20 @@ module DPL
 
       def push_app
         tag_matched = false
+        release_url = nil
 
         releases.each do |release|
           if release.tag_name == get_tag
-            api.upload_asset(release.rels[:self].href, option(:file), {:content_type => MIME::Types.type_for(option(:file)).first.to_s})
+            release_url = release.rels[:self].href
             tag_matched = true
           end
         end
-        unless tag_matched
-          log <<-EOS
-                 This isn't a GitHub release, so nothing has been deployed. If you haven't already, please add the following to the 'deploy' section of your .travis.yml:
 
-                 on:
-                   tags: true
-                   all_branches: true
-                EOS
+        #If for some reason GitHub hasn't already created a release for the tag, create one
+        if tag_matched == false
+          release_url = api.create_release(slug, get_tag).rels[:self].href
         end
+        api.upload_asset(release_url, option(:file), {:content_type => MIME::Types.type_for(option(:file)).first.to_s})
       end
     end
   end
