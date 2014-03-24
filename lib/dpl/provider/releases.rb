@@ -33,6 +33,8 @@ module DPL
       end
 
       def check_app
+        log "Deploying to repo: #{slug}"
+        log "Current tag is: #{get_tag}"
       end
 
       def setup_auth
