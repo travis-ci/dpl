@@ -22,6 +22,7 @@ module DPL
     autoload :OpsWorks,     'dpl/provider/ops_works'
     autoload :Modulus,      'dpl/provider/modulus'
     autoload :Releases,     'dpl/provider/releases'   
+    autoload :Hackage,      'dpl/provider/hackage'
 
     def self.new(context, options)
       return super if self < Provider
