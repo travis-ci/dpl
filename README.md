@@ -21,6 +21,7 @@ Dpl supports the following providers:
 * [AWS OpsWorks](#opsworks)
 * [Modulus](#modulus)
 * [Github Releases](#github-releases)
+* [Hackage](#hackage)
 
 ## Installation:
 
@@ -277,3 +278,14 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=releases --api-key=<api-key> --file=build.tar.gz
+
+### Hackage:
+
+#### Options:
+
+* **username**: Hackage username.
+* **password**: Hackage password.
+
+#### Examples:
+
+    dpl --provider=hackage --username=<username> --password=<password>
