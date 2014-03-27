@@ -1,6 +1,7 @@
 module DPL
   class Provider
     class Hackage < Provider
+      apt_get 'cabal', 'cabal-install'
 
       def check_auth
         unless option(:username) and option(:password)

@@ -57,6 +57,10 @@ module DPL
       system(command)
     end
 
+    def self.apt_get(name, command = name)
+      context.shell("sudo apt-get -qq install #{name}", retry: true) if `which #{command}`.chop.empty?
+    end
+
     def self.pip(name, command = name)
       context.shell("sudo pip install #{name}", retry: true) if `which #{command}`.chop.empty?
     end
