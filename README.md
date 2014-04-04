@@ -5,6 +5,7 @@
 Dpl supports the following providers:
 
 * [AppFog](#appfog)
+* [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [cloudControl](#cloudcontrol)
 * [dotCloud (experimental)](#dotcloud)
@@ -21,7 +22,6 @@ Dpl supports the following providers:
 * [AWS OpsWorks](#opsworks)
 * [Modulus](#modulus)
 * [Github Releases](#github-releases)
-* [Cloud 66](#cloud66)
 
 ## Installation:
 
