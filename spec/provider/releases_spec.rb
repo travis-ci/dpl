@@ -58,7 +58,7 @@ describe DPL::Provider::Releases do
   end
 
   describe :push_app do
-    example do
+    example "When Release Exists" do
       allow_message_expectations_on_nil
       provider.stub(:releases).and_return([""])
       provider.releases.map do |release| 
@@ -68,6 +68,21 @@ describe DPL::Provider::Releases do
       end
       provider.stub(:get_tag).and_return("v0.0.0")
       provider.api.should_receive(:upload_asset)
+      provider.push_app
+    end
+
+    example "When Release Doesn't Exist" do
+      allow_message_expectations_on_nil
+      provider.stub(:releases).and_return([""])
+      provider.releases.map do |release| 
+        release.stub(:tag_name).and_return("foo")
+        release.stub(:rels).and_return({:self => nil})
+        release.rels[:self].stub(:href)
+      end
+      provider.api.stub(:create_release)
+      provider.api.should_receive(:upload_asset)
+      provider.api.create_release.stub(:rels).and_return({:self => nil})
+      provider.api.create_release.rels[:slef].stub(:href)
       provider.push_app
     end
   end
