@@ -5,6 +5,7 @@
 Dpl supports the following providers:
 
 * [AppFog](#appfog)
+* [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [cloudControl](#cloudcontrol)
 * [dotCloud (experimental)](#dotcloud)
@@ -180,7 +181,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 #### Examples:
 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
-    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region:us-west-2 --local-dir= BUILD --upload-dir=BUILDS 
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region:us-west-2 --local-dir= BUILD --upload-dir=BUILDS
 
 ### OpsWorks:
 
@@ -277,3 +278,13 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=releases --api-key=<api-key> --file=build.tar.gz
+
+### Cloud 66
+
+#### Options:
+
+* **redeployment_hook**: The redeployment hook URL. Available from the Information menu within the Cloud 66 portal.
+
+#### Examples:
+
+    dpl --provider=cloud66 --redeployment_hook=<url>
