@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class PyPI < Provider
-      DEFAULT_SERVER = 'http://www.python.org/pypi'
+      DEFAULT_SERVER = 'http://pypi.python.org/pypi'
       PYPIRC_FILE = '~/.pypirc'
 
       def self.install_setuptools

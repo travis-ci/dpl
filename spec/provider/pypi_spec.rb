@@ -65,7 +65,7 @@ describe DPL::Provider::PyPI do
       f = double(:f)
       f.should_receive(:puts).with("    pypi")
       f.should_receive(:puts).with("[pypi]")
-      f.should_receive(:puts).with(["repository: http://www.python.org/pypi",
+      f.should_receive(:puts).with(["repository: http://pypi.python.org/pypi",
                                     "username: foo",
                                     "password: bar"
                                    ])
