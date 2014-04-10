@@ -1,11 +1,16 @@
 module DPL
   class Provider
     class CloudFoundry < Provider
-      requires 'cf'
+
+      def initial_go_tools_install
+        context.shell 'wget http://go-cli.s3-website-us-east-1.amazonaws.com/releases/latest/cf-cli_amd64.deb -qO temp.deb && sudo dpkg -i temp.deb'
+        context.shell 'rm temp.deb'
+      end
 
       def check_auth
-        context.shell "cf target #{option(:target)}"
-        context.shell "cf login --username #{option(:username)} --password #{option(:password)} --organization #{option(:organization)} --space #{option(:space)}"
+        initial_go_tools_install
+        context.shell "cf api #{option(:api)}"
+        context.shell "cf login --u #{option(:username)} --p #{option(:password)} --o #{option(:organization)} --s #{option(:space)}"
       end
 
       def check_app

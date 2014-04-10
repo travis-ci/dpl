@@ -1,10 +1,6 @@
 source 'https://rubygems.org'
 gemspec
 
-group :cloudfoundry do
-  gem 'cf', '~> 5.4.5'
-end
-
 group :heroku do
   gem 'rendezvous', '~> 0.0.2'
   gem 'heroku-api', '= 0.3.16'

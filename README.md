@@ -228,12 +228,12 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **username**: Cloud Foundry username.
 * **password**: Cloud Foundry password.
 * **organization**: Cloud Foundry target organization.
-* **target**: Cloud Foundry target cloud/URL
+* **api**: Cloud Foundry api URL
 * **space**: Cloud Foundry target space
 
 #### Examples:
 
-    dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --target=<target> --space=<space>
+    dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space>
 
 ### dotCloud:
 
