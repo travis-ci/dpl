@@ -24,6 +24,7 @@ Dpl supports the following providers:
 * [Github Releases](#github-releases)
 * [Ninefold](#ninefold)
 * [Hackage](#hackage)
+* [Deis](#deis)
 
 ## Installation:
 
@@ -314,3 +315,15 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
     dpl --provider=hackage --username=<username> --password=<password>
 
+### Deis:
+
+#### Options:
+
+* **controller**: Deis controller e.g. deis.deisapps.com
+* **username**: Deis username
+* **password**: Deis password
+* **app**: Deis app
+
+#### Examples:
+
+    dpl --provider=deis --controller=deis.deisapps.com --username=travis --password=secret --app=example
