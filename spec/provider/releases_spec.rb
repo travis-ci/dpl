@@ -60,29 +60,44 @@ describe DPL::Provider::Releases do
   describe :push_app do
     example "When Release Exists" do
       allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["test/foo.bar", "bar.foo"])
+
       provider.stub(:releases).and_return([""])
+      provider.stub(:get_tag).and_return("v0.0.0")
+
       provider.releases.map do |release| 
       	release.stub(:tag_name).and_return("v0.0.0")
       	release.stub(:rels).and_return({:self => nil})
       	release.rels[:self].stub(:href)
       end
-      provider.stub(:get_tag).and_return("v0.0.0")
-      provider.api.should_receive(:upload_asset)
+
+      provider.api.should_receive(:upload_asset).with(anything, "foo.bar", anything)
+      provider.api.should_receive(:upload_asset).with(anything, "bar.foo", anything)
+
       provider.push_app
     end
 
     example "When Release Doesn't Exist" do
       allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["test/foo.bar", "bar.foo"])
+
       provider.stub(:releases).and_return([""])
+      
       provider.releases.map do |release| 
         release.stub(:tag_name).and_return("foo")
         release.stub(:rels).and_return({:self => nil})
         release.rels[:self].stub(:href)
       end
+
       provider.api.stub(:create_release)
-      provider.api.should_receive(:upload_asset)
       provider.api.create_release.stub(:rels).and_return({:self => nil})
       provider.api.create_release.rels[:slef].stub(:href)
+
+      provider.api.should_receive(:upload_asset).with(anything, "foo.bar", anything)
+      provider.api.should_receive(:upload_asset).with(anything, "bar.foo", anything)
+
       provider.push_app
     end
   end

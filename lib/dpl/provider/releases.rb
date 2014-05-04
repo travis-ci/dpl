@@ -1,6 +1,8 @@
 module DPL
   class Provider
     class Releases < Provider
+      require 'pathname'
+
       requires 'octokit'
       requires 'mime-types'
 
@@ -61,7 +63,10 @@ module DPL
         if tag_matched == false
           release_url = api.create_release(slug, get_tag).rels[:self].href
         end
-        api.upload_asset(release_url, option(:file), {:content_type => MIME::Types.type_for(option(:file)).first.to_s})
+
+        Array(options[:file]).each do |file|
+          api.upload_asset(release_url, Pathname.new(file).basename.to_s, {:content_type => MIME::Types.type_for(file).first.to_s})
+        end
       end
     end
   end
