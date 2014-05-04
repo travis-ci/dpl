@@ -31,3 +31,7 @@ end
 group :releases do
   gem 'octokit'
 end
+
+group :ninefold do
+  gem 'ninefold'
+end

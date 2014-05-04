@@ -23,6 +23,7 @@ module DPL
     autoload :Modulus,      'dpl/provider/modulus'
     autoload :Releases,     'dpl/provider/releases'
     autoload :Cloud66,      'dpl/provider/cloud66'
+    autoload :Ninefold,     'dpl/provider/ninefold'
 
     def self.new(context, options)
       return super if self < Provider
