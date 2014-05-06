@@ -45,6 +45,11 @@ module DPL
 
       def check_auth
         setup_auth
+
+        unless api.scopes.include? 'public_repo' or api.scopes.include? 'repo'
+          raise Error, "Dpl does not have permission to upload assets. Make sure your token contains the repo or public_repo scope."
+        end
+        
         log "Logged in as #{user.name}"
       end
 
@@ -65,7 +70,18 @@ module DPL
         end
 
         Array(options[:file]).each do |file|
-          api.upload_asset(release_url, Pathname.new(file).basename.to_s, {:content_type => MIME::Types.type_for(file).first.to_s})
+          already_exists = false
+          filename = Pathname.new(file).basename.to_s
+          api.release(release_url).rels[:assets].get.data.each do |existing_file|
+            if existing_file.name == filename
+              already_exists = true
+            end
+          end
+          if already_exists
+            log "#{filename} already exists, skipping."
+          else
+            api.upload_asset(release_url, filename, {:content_type => MIME::Types.type_for(file).first.to_s})
+          end
         end
       end
     end

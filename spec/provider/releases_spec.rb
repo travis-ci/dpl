@@ -47,18 +47,27 @@ describe DPL::Provider::Releases do
   end
 
   describe :check_auth do
-    example do
+    example "With proper permissions" do
       allow_message_expectations_on_nil
       provider.stub(:user)
       provider.stub(:setup_auth)
+      provider.api.should_receive(:scopes).and_return(["public_repo"])
       provider.user.should_receive(:name).and_return("foo")
       provider.should_receive(:log).with("Logged in as foo")
       provider.check_auth
     end
+
+    example "With improper permissions" do
+      allow_message_expectations_on_nil
+      provider.stub(:user)
+      provider.stub(:setup_auth)
+      provider.api.should_receive(:scopes).exactly(2).times.and_return([])
+      expect { provider.check_auth }.to raise_error(DPL::Error)
+    end
   end
 
   describe :push_app do
-    example "When Release Exists" do
+    example "When Release Exists but has no Files" do
       allow_message_expectations_on_nil
 
       provider.options.update(:file => ["test/foo.bar", "bar.foo"])
@@ -67,13 +76,43 @@ describe DPL::Provider::Releases do
       provider.stub(:get_tag).and_return("v0.0.0")
 
       provider.releases.map do |release| 
-      	release.stub(:tag_name).and_return("v0.0.0")
-      	release.stub(:rels).and_return({:self => nil})
-      	release.rels[:self].stub(:href)
+        release.stub(:tag_name).and_return("v0.0.0")
+        release.stub(:rels).and_return({:self => nil})
+        release.rels[:self].stub(:href)
       end
+
+      provider.api.stub(:release)
+      provider.api.release.stub(:rels).and_return({:assets => nil})
+      provider.api.release.rels[:assets].stub(:get).and_return({:data => [""]})
+      provider.api.release.rels[:assets].get.stub(:data).and_return([])
 
       provider.api.should_receive(:upload_asset).with(anything, "foo.bar", anything)
       provider.api.should_receive(:upload_asset).with(anything, "bar.foo", anything)
+
+      provider.push_app
+    end
+
+    example "When Release Exists and has Files" do
+      allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["test/foo.bar", "bar.foo"])
+
+      provider.stub(:releases).and_return([""])
+      provider.stub(:get_tag).and_return("v0.0.0")
+
+      provider.releases.map do |release| 
+        release.stub(:tag_name).and_return("v0.0.0")
+        release.stub(:rels).and_return({:self => nil})
+        release.rels[:self].stub(:href)
+      end
+
+      provider.api.stub(:release)
+      provider.api.release.stub(:rels).and_return({:assets => nil})
+      provider.api.release.rels[:assets].stub(:get).and_return({:data => [""]})
+      provider.api.release.rels[:assets].get.stub(:data).and_return([double(:name => "foo.bar"), double(:name => "foo.foo")])
+
+      provider.api.should_receive(:upload_asset).with(anything, "bar.foo", anything)
+      provider.should_receive(:log).with("foo.bar already exists, skipping.")
 
       provider.push_app
     end
@@ -94,6 +133,11 @@ describe DPL::Provider::Releases do
       provider.api.stub(:create_release)
       provider.api.create_release.stub(:rels).and_return({:self => nil})
       provider.api.create_release.rels[:slef].stub(:href)
+
+      provider.api.stub(:release)
+      provider.api.release.stub(:rels).and_return({:assets => nil})
+      provider.api.release.rels[:assets].stub(:get).and_return({:data => nil})
+      provider.api.release.rels[:assets].get.stub(:data).and_return([])
 
       provider.api.should_receive(:upload_asset).with(anything, "foo.bar", anything)
       provider.api.should_receive(:upload_asset).with(anything, "bar.foo", anything)
