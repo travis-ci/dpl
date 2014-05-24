@@ -80,7 +80,7 @@ module DPL
           if already_exists
             log "#{filename} already exists, skipping."
           else
-            api.upload_asset(release_url, filename, {:content_type => MIME::Types.type_for(file).first.to_s})
+            api.upload_asset(release_url, file, {:name => filename, :content_type => MIME::Types.type_for(file).first.to_s})
           end
         end
       end
