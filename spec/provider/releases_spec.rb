@@ -86,8 +86,8 @@ describe DPL::Provider::Releases do
       provider.api.release.rels[:assets].stub(:get).and_return({:data => [""]})
       provider.api.release.rels[:assets].get.stub(:data).and_return([])
 
-      provider.api.should_receive(:upload_asset).with(anything, "foo.bar", anything)
-      provider.api.should_receive(:upload_asset).with(anything, "bar.foo", anything)
+      provider.api.should_receive(:upload_asset).with(anything, "test/foo.bar", {:name=>"foo.bar", :content_type=>""})
+      provider.api.should_receive(:upload_asset).with(anything, "bar.foo", {:name=>"bar.foo", :content_type=>""})
 
       provider.push_app
     end
@@ -111,7 +111,7 @@ describe DPL::Provider::Releases do
       provider.api.release.rels[:assets].stub(:get).and_return({:data => [""]})
       provider.api.release.rels[:assets].get.stub(:data).and_return([double(:name => "foo.bar"), double(:name => "foo.foo")])
 
-      provider.api.should_receive(:upload_asset).with(anything, "bar.foo", anything)
+      provider.api.should_receive(:upload_asset).with(anything, "bar.foo", {:name=>"bar.foo", :content_type=>""})
       provider.should_receive(:log).with("foo.bar already exists, skipping.")
 
       provider.push_app
@@ -139,8 +139,8 @@ describe DPL::Provider::Releases do
       provider.api.release.rels[:assets].stub(:get).and_return({:data => nil})
       provider.api.release.rels[:assets].get.stub(:data).and_return([])
 
-      provider.api.should_receive(:upload_asset).with(anything, "foo.bar", anything)
-      provider.api.should_receive(:upload_asset).with(anything, "bar.foo", anything)
+      provider.api.should_receive(:upload_asset).with(anything, "test/foo.bar", {:name=>"foo.bar", :content_type=>""})
+      provider.api.should_receive(:upload_asset).with(anything, "bar.foo", {:name=>"bar.foo", :content_type=>""})
 
       provider.push_app
     end
