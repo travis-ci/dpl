@@ -56,11 +56,16 @@ module DPL
       def push_app
         tag_matched = false
         release_url = nil
-
-        releases.each do |release|
-          if release.tag_name == get_tag
-            release_url = release.rels[:self].href
-            tag_matched = true
+        
+        if options[:release_number]
+          tag_matched = true
+          release_url = "https://api.github.com/repos/" + slug + "/releases/" + options[:release_number]
+        else 
+          releases.each do |release|
+            if release.tag_name == get_tag
+              release_url = release.rels[:self].href
+              tag_matched = true
+            end
           end
         end
 
