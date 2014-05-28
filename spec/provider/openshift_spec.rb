@@ -65,8 +65,18 @@ describe DPL::Provider::Openshift do
     end
 
     describe :push_app do
-      example do
+      example "when app.deployment_branch is not set" do
         provider.context.should_receive(:shell).with("git push git://something -f")
+        provider.push_app
+      end
+
+      example "when app.deployment_branch is set" do
+        provider.options.update(:deployment_branch => 'test-branch')
+	provider.stub(:app.deployment_branch).and_return("test-branch")
+	provider.stub(:app.name).and_return("configure")
+
+        provider.context.should_receive(:shell).with("rhc app configure example --deployment-branch test-branch")
+        provider.context.should_receive(:shell).with("git push git://something -f test-branch")
         provider.push_app
       end
     end
