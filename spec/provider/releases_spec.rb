@@ -144,5 +144,23 @@ describe DPL::Provider::Releases do
 
       provider.push_app
     end
+
+    example "With Release Number" do
+      allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["bar.foo"])
+      provider.options.update(:release_number => "1234")
+
+      provider.stub(:slug).and_return("foo/bar")
+
+      provider.api.stub(:release)
+      provider.api.release.stub(:rels).and_return({:assets => nil})
+      provider.api.release.rels[:assets].stub(:get).and_return({:data => nil})
+      provider.api.release.rels[:assets].get.stub(:data).and_return([])
+
+      provider.api.should_receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.foo", {:name=>"bar.foo", :content_type=>""})
+
+      provider.push_app
+    end
   end
 end
