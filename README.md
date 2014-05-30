@@ -23,6 +23,7 @@ Dpl supports the following providers:
 * [Modulus](#modulus)
 * [Github Releases](#github-releases)
 * [Ninefold](#ninefold)
+* [Hackage](#hackage)
 
 ## Installation:
 
@@ -301,3 +302,15 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=ninefold --auth_token=<auth_token> --app_id=<app_id>
+
+### Hackage:
+
+#### Options:
+
+* **username**: Hackage username.
+* **password**: Hackage password.
+
+#### Examples:
+
+    dpl --provider=hackage --username=<username> --password=<password>
+

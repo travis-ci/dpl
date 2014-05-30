@@ -31,6 +31,20 @@ describe DPL::Provider do
     end
   end
 
+  describe :apt_get do
+    example "installed" do
+      example_provider.should_receive(:`).with("which foo").and_return("/bin/foo\n")
+      example_provider.should_not_receive(:system)
+      example_provider.apt_get("foo")
+    end
+
+    example "missing" do
+      example_provider.should_receive(:`).with("which foo").and_return("")
+      example_provider.context.should_receive(:shell).with("sudo apt-get -qq install foo", retry: true)
+      example_provider.apt_get("foo")
+    end
+  end
+
   describe :pip do
     example "installed" do
       example_provider.should_receive(:`).with("which foo").and_return("/bin/foo\n")

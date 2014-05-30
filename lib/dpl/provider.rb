@@ -24,6 +24,7 @@ module DPL
     autoload :Releases,     'dpl/provider/releases'
     autoload :Cloud66,      'dpl/provider/cloud66'
     autoload :Ninefold,     'dpl/provider/ninefold'
+    autoload :Hackage,      'dpl/provider/hackage'
 
     def self.new(context, options)
       return super if self < Provider
@@ -56,6 +57,10 @@ module DPL
 
     def self.shell(command, options = {})
       system(command)
+    end
+
+    def self.apt_get(name, command = name)
+      context.shell("sudo apt-get -qq install #{name}", retry: true) if `which #{command}`.chop.empty?
     end
 
     def self.pip(name, command = name)
