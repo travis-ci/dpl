@@ -164,6 +164,20 @@ module DPL
       error "running commands not supported"
     end
 
+    def iterative_path
+      if options[:iterative] == "sha"
+        sha + (ENV['TRAVIS_JOB_NUMBER'] || "").slice(/((?=\.).+)/).to_s + "/"
+      elsif options[:iterative] == "build"
+          "travis" + ENV['TRAVIS_JOB_NUMBER'].to_s + "/"
+      else
+        if not options[:iterative].nil? || ENV[options[:iterative]].nil?
+          ENV[options[:iterative]] + "/"
+        else
+          ""
+        end
+      end
+    end
+
     def error(message)
       raise Error, message
     end

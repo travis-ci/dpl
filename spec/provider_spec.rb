@@ -133,6 +133,51 @@ describe DPL::Provider do
     end
   end
 
+  describe :iterative_path do
+    example "Not Defined" do
+      provider.iterative_path.should == ""
+    end
+    example "With sha but not Travis" do
+      provider.options.update(:iterative => 'sha')
+      provider.stub(:sha).and_return("qwertyuiop123")
+      ENV.stub(:[]).with("TRAVIS_JOB_NUMBER").and_return(nil)
+
+      provider.iterative_path.should == "qwertyuiop123/"
+    end
+    example "With sha and Travis" do
+      provider.options.update(:iterative => 'sha')
+      provider.stub(:sha).and_return("qwertyuiop123")
+      ENV.stub(:[]).with("TRAVIS_JOB_NUMBER").and_return("1.1")
+
+      provider.iterative_path.should == "qwertyuiop123.1/"
+    end
+    example "With build and no travis" do
+        provider.options.update(:iterative => 'build')
+        ENV.stub(:[]).with("TRAVIS_JOB_NUMBER").and_return(nil)
+
+        provider.iterative_path.should == "travis/"
+    end
+    example "With build and travis" do
+        provider.options.update(:iterative => 'build')
+        ENV.stub(:[]).with("TRAVIS_JOB_NUMBER").and_return("1.1")
+
+        provider.iterative_path.should == "travis1.1/"
+    end
+    example "With custom enviormental varible nil" do
+      provider.options.update(:iterative => 'FOO')
+        ENV.stub(:[]).with("FOO").and_return(nil)
+
+        provider.iterative_path.should == ""
+    end
+    
+    example "With custom enviormental varible" do
+        provider.options.update(:iterative => 'FOO')
+        ENV.stub(:[]).with("FOO").and_return("FOOBAR-15")
+
+        provider.iterative_path.should == "FOOBAR-15/"
+    end
+  end
+
   describe :run do
     example do
       provider.should_receive(:error).with("running commands not supported")
