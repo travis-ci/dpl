@@ -33,7 +33,12 @@ module DPL
       end
 
       def push_app
-        context.shell "git push #{app.git_url} -f"
+        if defined? app.deployment_branch
+          context.shell "rhc app configure #{app.name} --deployment-branch #{app.deployment_branch}"
+          context.shell "git push #{app.git_url} -f #{app.deployment_branch}"
+        else
+          context.shell "git push #{app.git_url} -f"
+        end		
       end
 
       def restart
