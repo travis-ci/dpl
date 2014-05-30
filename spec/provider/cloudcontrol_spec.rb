@@ -85,7 +85,7 @@ describe DPL::Provider::CloudControl do
   it '#push_app shuld deploy the app' do
     provider.instance_variable_set(:@repository, 'foo_repo.git')
     context = double(:shell)
-    context.should receive(:shell).with("git push foo_repo.git HEAD:master;")
+    context.should receive(:shell).with("git push foo_repo.git HEAD:master -f")
     provider.should receive(:context).and_return context
     provider.should receive(:deploy_app)
 

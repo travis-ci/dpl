@@ -42,7 +42,7 @@ module DPL
 
       def push_app
         branch = (dep_name == 'default') ? 'master' : dep_name
-        context.shell "git push #{ @repository } HEAD:#{ branch };"
+        context.shell "git push #{ @repository } HEAD:#{ branch } -f"
         deploy_app
       end
 
