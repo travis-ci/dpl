@@ -6,7 +6,7 @@ module DPL
       requires 'octokit'
       requires 'mime-types'
 
-      def get_tag 
+      def get_tag
         `git describe --tags --exact-match 2>/dev/null`.chomp
       end
 
@@ -27,7 +27,7 @@ module DPL
       end
 
       def user
-        user ||= api.user
+        @user ||= api.user
       end
 
       def needs_key?
@@ -49,18 +49,18 @@ module DPL
         unless api.scopes.include? 'public_repo' or api.scopes.include? 'repo'
           raise Error, "Dpl does not have permission to upload assets. Make sure your token contains the repo or public_repo scope."
         end
-        
+
         log "Logged in as #{user.name}"
       end
 
       def push_app
         tag_matched = false
         release_url = nil
-        
+
         if options[:release_number]
           tag_matched = true
           release_url = "https://api.github.com/repos/" + slug + "/releases/" + options[:release_number]
-        else 
+        else
           releases.each do |release|
             if release.tag_name == get_tag
               release_url = release.rels[:self].href
