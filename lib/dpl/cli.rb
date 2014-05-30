@@ -21,6 +21,16 @@ module DPL
         else
           options[key] = match[2] || true
         end
+
+        if "#{options[key]}" =~ /^({|%7B).*(}|%7D)$/
+          begin
+            require 'json'
+            require 'uri'
+            options[key] = JSON.parse(URI.unescape(options[key]), symbolize_names: true)
+          rescue
+            $stderr.puts "Failed to load JSON-y value #{options[key].inspect}"
+          end
+        end
       end
 
       self.fold_count = 0
