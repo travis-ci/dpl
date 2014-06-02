@@ -67,7 +67,7 @@ describe DPL::Provider::Openshift do
     describe "#push_app" do
       example "when app.deployment_branch is not set" do
         expect(provider.app).to receive :deployment_branch
-        expect(provider.context).to receive(:shell).with("git push git://something -f")
+        expect(provider.context).to receive(:shell).with("git push --verbose git://something -f")
         provider.push_app
       end
 
@@ -75,7 +75,7 @@ describe DPL::Provider::Openshift do
         allow(provider.app).to receive(:deployment_branch) { "test-branch" }
 
         expect(provider.context).to receive(:shell).with("rhc app configure example --deployment-branch test-branch")
-        expect(provider.context).to receive(:shell).with("git push git://something -f test-branch")
+        expect(provider.context).to receive(:shell).with("git push --verbose git://something -f test-branch")
         provider.push_app
       end
     end
