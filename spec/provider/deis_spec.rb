@@ -10,13 +10,13 @@ describe DPL::Provider::Deis do
                                           :password => 'secret')
   end
 
-  describe :needs_key? do
+  describe "#needs_key?" do
     example do
       expect(provider.needs_key?).to eq(true)
     end
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     example do
       expect(provider.context).to receive(:shell).with(
         'deis login http://deis.deisapps.com --username=travis --password=secret'
@@ -25,7 +25,7 @@ describe DPL::Provider::Deis do
     end
   end
 
-  describe :check_app do
+  describe "#check_app" do
     example do
       expect(provider.context).to receive(:shell).with(
         'deis apps:info --app=example'
@@ -34,7 +34,7 @@ describe DPL::Provider::Deis do
     end
   end
 
-  describe :setup_key do
+  describe "#setup_key" do
     let(:ssh_config_handle) { double 'ssh_config_handle' }
     let(:ssh_config) { File.join(Dir.home, '.ssh', 'config') }
     let(:identity_file) { File.join(Dir.pwd, 'key_file') }
@@ -46,7 +46,7 @@ describe DPL::Provider::Deis do
     end
   end
 
-  describe :setup_git_ssh do
+  describe "#setup_git_ssh" do
     let(:ssh_config_handle) { double 'ssh_config_handle' }
     let(:ssh_config) { File.join(Dir.home, '.ssh', 'config') }
     let(:identity_file) { File.join(Dir.pwd, 'key_file') }
@@ -69,7 +69,7 @@ describe DPL::Provider::Deis do
     end
   end
 
-  describe :remove_key do
+  describe "#remove_key" do
     example do
       expect(provider.context).to receive(:shell).with(
         'deis keys:remove key'
@@ -78,7 +78,7 @@ describe DPL::Provider::Deis do
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     example do
       expect(provider.context).to receive(:shell).with(
         'git push deis-repo:example.git HEAD:refs/heads/master -f'
@@ -87,7 +87,7 @@ describe DPL::Provider::Deis do
     end
   end
 
-  describe :run do
+  describe "#run" do
     example do
       expect(provider.context).to receive(:shell).with(
         'deis apps:run shell command'

@@ -6,7 +6,7 @@ describe DPL::Provider::Hackage do
     described_class.new(DummyContext.new, :username => 'FooUser', :password => 'bar')
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     it 'should require username' do
       provider.options.update(:username => nil)
       expect {
@@ -22,7 +22,7 @@ describe DPL::Provider::Hackage do
     end
   end
 
-  describe :check_app do
+  describe "#check_app" do
     it 'calls cabal' do
       provider.context.should_receive(:shell).with("cabal check").and_return(true)
       provider.check_app
@@ -36,7 +36,7 @@ describe DPL::Provider::Hackage do
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     example do
       provider.context.should_receive(:shell).with("cabal sdist").and_return(true)
       Dir.should_receive(:glob).and_yield('dist/package-0.1.2.3.tar.gz')

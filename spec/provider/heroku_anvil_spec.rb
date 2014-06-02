@@ -9,7 +9,7 @@ describe DPL::Provider::Heroku do
     described_class.new(DummyContext.new, :app => 'example', :api_key => 'foo', :strategy => 'anvil', :buildpack => 'git://some-buildpack.git')
   end
 
-  describe :api do
+  describe "#api" do
     it 'accepts an api key' do
       api = double(:api)
       lambda { provider.api }.should_not raise_error
@@ -33,7 +33,7 @@ describe DPL::Provider::Heroku do
       provider.api
     end
 
-    describe :push_app do
+    describe "#push_app" do
       example do
         response = double :response
         response.stub(:status => 202)
@@ -54,7 +54,7 @@ describe DPL::Provider::Heroku do
       end
     end
 
-    describe :slug_url do
+    describe "#slug_url" do
 
       before(:each) do
         headers = double(:headers)

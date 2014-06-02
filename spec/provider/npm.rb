@@ -6,7 +6,7 @@ describe DPL::Provider::NPM do
     described_class.new(DummyContext.new, :email => 'foo@blah.com', :api_key => 'test')
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     example do
       provider.should_receive(:setup_auth)
       provider.should_receive(:log).with("Authenticated with email foo@blah.com")
@@ -14,14 +14,14 @@ describe DPL::Provider::NPM do
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     example do
       provider.context.should_receive(:shell).with("npm publish")
       provider.push_app
     end
   end
 
-  describe :setup_auth do
+  describe "#setup_auth" do
     example do
       f = double(:npmrc)
       File.should_receive(:open).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE)).and_return(f)

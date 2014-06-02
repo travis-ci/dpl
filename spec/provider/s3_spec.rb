@@ -3,16 +3,16 @@ require 'aws-sdk'
 require 'dpl/provider/s3'
 
 describe DPL::Provider::S3 do
-  
+
   before (:each) do
     AWS.stub!
   end
-  
+
   subject :provider do
     described_class.new(DummyContext.new, :access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :bucket => 'my-bucket')
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     example do
       provider.should_receive(:setup_auth)
       provider.should_receive(:log).with("Logging in with Access Key: ****************jklz")
@@ -20,7 +20,7 @@ describe DPL::Provider::S3 do
     end
   end
 
-  describe :upload_path do
+  describe "#upload_path" do
     example "Without :upload_dir"do
       filename = "testfile.file"
 
@@ -35,7 +35,7 @@ describe DPL::Provider::S3 do
     end
   end
 
-  describe :setup_auth do
+  describe "#setup_auth" do
     example "Without :region" do
       AWS.should_receive(:config).with(:access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :region => 'us-east-1').once.and_call_original
       provider.setup_auth
@@ -47,14 +47,14 @@ describe DPL::Provider::S3 do
       provider.setup_auth
     end
   end
-  
-describe :needs_key? do
+
+describe "#needs_key?" do
     example do
       provider.needs_key?.should == false
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     example "Without local_dir" do
       Dir.should_receive(:chdir).with(Dir.pwd)
       provider.push_app
@@ -62,7 +62,7 @@ describe :needs_key? do
 
     example "With local_dir" do
       provider.options.update(:local_dir => 'BUILD')
-      
+
       Dir.should_receive(:chdir).with('BUILD')
       provider.push_app
     end
@@ -74,7 +74,7 @@ describe :needs_key? do
     end
   end
 
-  describe :api do   
+  describe "#api" do
     example "Without Endpoint" do
       AWS::S3.should_receive(:new).with(:endpoint => 's3.amazonaws.com')
       provider.api

@@ -11,13 +11,13 @@ describe DPL::Provider::CloudFiles do
     described_class.new(DummyContext.new, :username => 'username', :api_key => 'api key', :container => 'travis', :region => 'dfw')
   end
 
-  describe :needs_key? do
+  describe "#needs_key?" do
     example do
       provider.needs_key?.should == false
     end
   end
 
-  describe :api do
+  describe "#api" do
     example do
       Fog::Storage.should_receive(:new).with(:provider => 'Rackspace', :rackspace_username => 'username', :rackspace_api_key => 'api key', :rackspace_region => 'dfw')
 
@@ -25,7 +25,7 @@ describe DPL::Provider::CloudFiles do
     end
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     example do
       provider.should_receive(:log).with('Authenticated as username')
 
@@ -33,7 +33,7 @@ describe DPL::Provider::CloudFiles do
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     let :files do
       files = double
 
@@ -62,7 +62,7 @@ describe DPL::Provider::CloudFiles do
     end
   end
 
-  describe :deploy do
+  describe "#deploy" do
     example 'Not Found' do
       directories = double
       directories.stub(:get) { nil }

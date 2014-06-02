@@ -7,7 +7,7 @@ describe DPL::Provider::Openshift do
     described_class.new(DummyContext.new, :user => 'foo', :password => 'foo', :domain => 'foo', :app => 'example', :key_name => 'key')
   end
 
-  describe :api do
+  describe "#api" do
     it 'accepts a user and a password' do
       api = double(:api)
       provider.options.update(:user => "foo", :password => "bar")
@@ -35,21 +35,21 @@ describe DPL::Provider::Openshift do
 
     its(:api) {should be == api}
 
-    describe :check_auth do
+    describe "#check_auth" do
       example do
         provider.should_receive(:log).with("authenticated as foo@bar.com")
         provider.check_auth
       end
     end
 
-    describe :check_app do
+    describe "#check_app" do
       example do
         provider.should_receive(:log).with("found app example")
         provider.check_app
       end
     end
 
-    describe :setup_key do
+    describe "#setup_key" do
       example do
         File.should_receive(:read).with("the file").and_return("ssh-rsa\nfoo")
         api.should_receive(:add_key).with("key", "foo", "ssh-rsa")
@@ -57,14 +57,14 @@ describe DPL::Provider::Openshift do
       end
     end
 
-    describe :remove_key do
+    describe "#remove_key" do
       example do
         api.should_receive(:delete_key).with("key")
         provider.remove_key
       end
     end
 
-    describe :push_app do
+    describe "#push_app" do
       example "when app.deployment_branch is not set" do
         provider.app.should_receive :deployment_branch
         provider.context.should_receive(:shell).with("git push git://something -f")
@@ -80,7 +80,7 @@ describe DPL::Provider::Openshift do
       end
     end
 
-    describe :restart do
+    describe "#restart" do
       example do
         provider.app.should_receive(:restart)
         provider.restart

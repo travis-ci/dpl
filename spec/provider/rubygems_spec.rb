@@ -8,7 +8,7 @@ describe DPL::Provider::RubyGems do
     described_class.new(DummyContext.new, :app => 'example', :api_key => 'foo')
   end
 
-  describe :api do
+  describe "#api" do
     example "with an api key" do
       ::Gems.should_receive(:key=).with('foo')
       provider.setup_auth
@@ -23,7 +23,7 @@ describe DPL::Provider::RubyGems do
     end
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     example do
       provider.options.update(:user => 'test', :password => 'blah')
       provider.options.delete(:api_key)
@@ -32,7 +32,7 @@ describe DPL::Provider::RubyGems do
     end
   end
 
-  describe :check_app do
+  describe "#check_app" do
     example do
       ::Gems.should_receive(:info).with('example').and_return({'name' => 'example'})
       provider.should_receive(:log).with("Found gem example")
@@ -40,7 +40,7 @@ describe DPL::Provider::RubyGems do
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     after(:each) do
       File.should_receive(:new).with('File').and_return('Test file')
       provider.should_receive(:log).with('Yes!')
@@ -76,7 +76,7 @@ describe DPL::Provider::RubyGems do
     end
   end
 
-  describe :setup_gem do
+  describe "#setup_gem" do
     example "with options[:gem] and options[:app] set" do
       provider.options.update(:gem => 'test', :app => 'blah')
       provider.setup_gem
@@ -96,7 +96,7 @@ describe DPL::Provider::RubyGems do
     end
   end
 
-  describe :gemspec do
+  describe "#gemspec" do
     example do
       provider.options.update(:gemspec => 'test.gemspec')
       provider.gemspec.should be == 'test'

@@ -9,7 +9,7 @@ describe DPL::Provider::CloudFoundry do
                         space: 'outer')
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     example do
       expect(provider.context).to receive(:shell).with('wget http://go-cli.s3-website-us-east-1.amazonaws.com/releases/latest/cf-cli_amd64.deb -qO temp.deb && sudo dpkg -i temp.deb')
       expect(provider.context).to receive(:shell).with('rm temp.deb')
@@ -19,19 +19,19 @@ describe DPL::Provider::CloudFoundry do
     end
   end
 
-  describe :check_app do
+  describe "#check_app" do
     example do
       expect{provider.check_app}.to raise_error('Application must have a manifest.yml for unattended deployment')
     end
   end
 
-  describe :needs_key? do
+  describe "#needs_key?" do
     example do
       expect(provider.needs_key?).to eq(false)
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     example do
       expect(provider.context).to receive(:shell).with('cf push')
       expect(provider.context).to receive(:shell).with('cf logout')

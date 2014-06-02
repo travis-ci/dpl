@@ -7,7 +7,7 @@ describe DPL::Provider::Releases do
     described_class.new(DummyContext.new, :api_key => '0123445789qwertyuiop0123445789qwertyuiop', :file => 'blah.txt')
   end
 
-  describe :api do
+  describe "#api" do
     example "With API key" do
       api = double(:api)
       ::Octokit::Client.should_receive(:new).with(:access_token => '0123445789qwertyuiop0123445789qwertyuiop').and_return(api)
@@ -24,7 +24,7 @@ describe DPL::Provider::Releases do
     end
   end
 
-  describe :releases do
+  describe "#releases" do
     example "With ENV Slug" do
       provider.stub(:slug).and_return("foo/bar")
 
@@ -40,13 +40,13 @@ describe DPL::Provider::Releases do
     end
   end
 
-  describe :needs_key? do
+  describe "#needs_key?" do
     example do
       provider.needs_key?.should == false
     end
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     example "With proper permissions" do
       allow_message_expectations_on_nil
       provider.stub(:user)
@@ -66,7 +66,7 @@ describe DPL::Provider::Releases do
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     example "When Release Exists but has no Files" do
       allow_message_expectations_on_nil
 
@@ -75,7 +75,7 @@ describe DPL::Provider::Releases do
       provider.stub(:releases).and_return([""])
       provider.stub(:get_tag).and_return("v0.0.0")
 
-      provider.releases.map do |release| 
+      provider.releases.map do |release|
         release.stub(:tag_name).and_return("v0.0.0")
         release.stub(:rels).and_return({:self => nil})
         release.rels[:self].stub(:href)
@@ -100,7 +100,7 @@ describe DPL::Provider::Releases do
       provider.stub(:releases).and_return([""])
       provider.stub(:get_tag).and_return("v0.0.0")
 
-      provider.releases.map do |release| 
+      provider.releases.map do |release|
         release.stub(:tag_name).and_return("v0.0.0")
         release.stub(:rels).and_return({:self => nil})
         release.rels[:self].stub(:href)
@@ -123,8 +123,8 @@ describe DPL::Provider::Releases do
       provider.options.update(:file => ["test/foo.bar", "bar.foo"])
 
       provider.stub(:releases).and_return([""])
-      
-      provider.releases.map do |release| 
+
+      provider.releases.map do |release|
         release.stub(:tag_name).and_return("foo")
         release.stub(:rels).and_return({:self => nil})
         release.rels[:self].stub(:href)

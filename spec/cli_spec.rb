@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'dpl/cli'
 
 describe DPL::CLI do
-  describe :options do
+  describe "#options" do
     example { described_class.new.options[:app]                           .should be == File.basename(Dir.pwd) }
     example { described_class.new(:app => 'foo')            .options[:app].should be == 'foo'                  }
     example { described_class.new("--app=foo")              .options[:app].should be == 'foo'                  }
@@ -15,7 +15,7 @@ describe DPL::CLI do
     end
   end
 
-  describe :run do
+  describe "#run" do
     example "triggers deploy" do
       provider = double('provider')
       DPL::Provider.should_receive(:new).and_return(provider)

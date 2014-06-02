@@ -10,7 +10,7 @@ describe DPL::Provider::Cloud66 do
   let(:not_found_response){ double(code: '404') }
   let(:options){ {} }
 
-  describe :push_app do
+  describe "#push_app" do
     context 'with a successful response' do
       let(:options){ {:redeployment_hook => 'https://hooks.cloud66.com/stacks/redeploy/0101010101010101'} }
 
@@ -36,7 +36,7 @@ describe DPL::Provider::Cloud66 do
     end
   end
 
-  describe :needs_key? do
+  describe "#needs_key?" do
     example do
       provider.needs_key?.should == false
     end

@@ -7,14 +7,14 @@ describe DPL::Provider do
 
   before { stub_const "DPL::Provider::Example", example_provider }
 
-  describe :new do
+  describe "#new" do
     example { described_class.new(DummyContext.new, :provider => "example") .should be_an(example_provider) }
     example { described_class.new(DummyContext.new, :provider => "Example") .should be_an(example_provider) }
     example { described_class.new(DummyContext.new, :provider => "exa_mple").should be_an(example_provider) }
     example { described_class.new(DummyContext.new, :provider => "exa-mple").should be_an(example_provider) }
   end
 
-  describe :requires do
+  describe "#requires" do
     before do
       example_provider.should_receive(:require).with("foo")
     end
@@ -31,7 +31,7 @@ describe DPL::Provider do
     end
   end
 
-  describe :apt_get do
+  describe "#apt_get" do
     example "installed" do
       example_provider.should_receive(:`).with("which foo").and_return("/bin/foo\n")
       example_provider.should_not_receive(:system)
@@ -45,7 +45,7 @@ describe DPL::Provider do
     end
   end
 
-  describe :pip do
+  describe "#pip" do
     example "installed" do
       example_provider.should_receive(:`).with("which foo").and_return("/bin/foo\n")
       example_provider.should_not_receive(:system)
@@ -59,7 +59,7 @@ describe DPL::Provider do
     end
   end
 
-  describe :deploy do
+  describe "#deploy" do
     before do
       provider.should_receive(:check_auth)
       provider.should_receive(:check_app)
@@ -82,7 +82,7 @@ describe DPL::Provider do
     end
   end
 
-  describe :cleanup do
+  describe "#cleanup" do
     example do
       provider.context.should_receive(:shell).with('mv .dpl ~/dpl')
       provider.context.should_receive(:shell).with('git stash --all')
@@ -97,7 +97,7 @@ describe DPL::Provider do
     end
   end
 
-  describe :uncleanup do
+  describe "#uncleanup" do
     example do
       provider.context.should_receive(:shell).with('git stash pop')
       provider.uncleanup
@@ -110,14 +110,14 @@ describe DPL::Provider do
     end
   end
 
-  describe :create_key do
+  describe "#create_key" do
     example do
       provider.context.should_receive(:shell).with('ssh-keygen -t rsa -N "" -C foo -f thekey')
       provider.create_key('thekey')
     end
   end
 
-  describe :setup_git_ssh do
+  describe "#setup_git_ssh" do
     after { FileUtils.rm ENV.delete('GIT_SSH') }
 
     example do
@@ -126,35 +126,35 @@ describe DPL::Provider do
     end
   end
 
-  describe :log do
+  describe "#log" do
     example do
       $stderr.should_receive(:puts).with("foo")
       provider.log("foo")
     end
   end
 
-  describe :shell do
+  describe "#shell" do
     example do
       example_provider.should_receive(:system).with("command")
       example_provider.shell("command")
     end
   end
 
-  describe :npm_g do
+  describe "#npm_g" do
     example do
       example_provider.context.should_receive(:shell).with("npm install -g foo", retry: true)
       example_provider.npm_g("foo")
     end
   end
 
-  describe :run do
+  describe "#run" do
     example do
       provider.should_receive(:error).with("running commands not supported")
       provider.run "blah"
     end
   end
 
-  describe :error do
+  describe "#error" do
     example do
       expect { provider.error("Foo") }.to raise_error("Foo")
     end

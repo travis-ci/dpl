@@ -6,28 +6,28 @@ describe DPL::Provider::PyPI do
     described_class.new(DummyContext.new, :user => 'foo', :password => 'bar')
   end
 
-  describe :config do
+  describe "#config" do
     it 'accepts a user and a password' do
       provider.config[:servers]['pypi'].should include 'username: foo'
       provider.config[:servers]['pypi'].should include 'password: bar'
     end
   end
 
-  describe :initialize do
+  describe "#initialize" do
     example "with :distributions option containing 'bdist_wheel'" do
       described_class.should_receive(:pip).with("wheel")
       described_class.new(DummyContext.new, :user => 'foo', :password => 'bar', :distributions => 'bdist_wheel sdist')
     end
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     example do
       provider.should_receive(:log).with("Authenticated as foo")
       provider.check_auth
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     example do
       provider.context.should_receive(:shell).with("python setup.py register -r pypi")
       provider.context.should_receive(:shell).with("python setup.py sdist upload -r pypi")
@@ -60,7 +60,7 @@ describe DPL::Provider::PyPI do
     end
   end
 
-  describe :write_servers do
+  describe "#write_servers" do
     example do
       f = double(:f)
       f.should_receive(:puts).with("    pypi")

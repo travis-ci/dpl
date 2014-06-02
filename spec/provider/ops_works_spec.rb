@@ -13,7 +13,7 @@ describe DPL::Provider::OpsWorks do
     described_class.new(DummyContext.new, :access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :bucket => 'my-bucket')
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     example do
       provider.should_receive(:setup_auth)
       provider.should_receive(:log).with('Logging in with Access Key: ****************jklz')
@@ -21,20 +21,20 @@ describe DPL::Provider::OpsWorks do
     end
   end
 
-  describe :setup_auth do
+  describe "#setup_auth" do
     example do
       AWS.should_receive(:config).with(:access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz').once.and_call_original
       provider.setup_auth
     end
   end
 
-  describe :needs_key? do
+  describe "#needs_key?" do
     example do
       provider.needs_key?.should == false
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     let(:client) { double(:ops_works_client) }
     let(:ops_works_app) { {shortname: 'app', stack_id: 'stack-id'} }
     before do
@@ -73,7 +73,7 @@ describe DPL::Provider::OpsWorks do
     end
   end
 
-  describe :api do
+  describe "#api" do
     example do
       AWS::OpsWorks.should_receive(:new)
       provider.api
