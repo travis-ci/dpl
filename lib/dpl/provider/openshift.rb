@@ -33,7 +33,7 @@ module DPL
       end
 
       def push_app
-        if app.deployment_branch
+        if app.deployment_branch && app.deployment_branch != 'master'
           log "deployment_branch detected: #{app.deployment_branch}"
           context.shell "rhc app configure #{app.name} --deployment-branch #{app.deployment_branch}"
           context.shell "git push --verbose #{app.git_url} -f #{app.deployment_branch}"
