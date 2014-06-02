@@ -15,7 +15,7 @@ describe DPL::Provider::Cloud66 do
       let(:options){ {:redeployment_hook => 'https://hooks.cloud66.com/stacks/redeploy/0101010101010101'} }
 
       example do
-        provider.should_receive(:webhook_call).with('https', 'hooks.cloud66.com', 443, '/stacks/redeploy/0101010101010101').and_return(successful_response)
+        expect(provider).to receive(:webhook_call).with('https', 'hooks.cloud66.com', 443, '/stacks/redeploy/0101010101010101').and_return(successful_response)
         provider.push_app
       end
     end
@@ -24,21 +24,21 @@ describe DPL::Provider::Cloud66 do
       let(:options){ {:redeployment_hook => 'https://hooks.cloud66.com/stacks/redeploy/0101010101010101'} }
 
       it 'should raise an error' do
-        provider.should_receive(:webhook_call).with('https', 'hooks.cloud66.com', 443, '/stacks/redeploy/0101010101010101').and_return(not_found_response)
-        lambda { provider.push_app }.should raise_error(DPL::Error, "Redeployment failed [404]")
+        expect(provider).to receive(:webhook_call).with('https', 'hooks.cloud66.com', 443, '/stacks/redeploy/0101010101010101').and_return(not_found_response)
+        expect { provider.push_app }.to raise_error(DPL::Error, "Redeployment failed [404]")
       end
     end
 
     context 'with missing redeployment_hook option' do
       it 'should raise an error' do
-        lambda { provider.push_app }.should raise_error(DPL::Error, "missing redeployment_hook")
+        expect { provider.push_app }.to raise_error(DPL::Error, "missing redeployment_hook")
       end
     end
   end
 
   describe "#needs_key?" do
     example do
-      provider.needs_key?.should == false
+      expect(provider.needs_key?).to eq(false)
     end
   end
 end

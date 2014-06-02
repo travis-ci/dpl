@@ -14,8 +14,8 @@ describe DPL::Provider::S3 do
 
   describe "#check_auth" do
     example do
-      provider.should_receive(:setup_auth)
-      provider.should_receive(:log).with("Logging in with Access Key: ****************jklz")
+      expect(provider).to receive(:setup_auth)
+      expect(provider).to receive(:log).with("Logging in with Access Key: ****************jklz")
       provider.check_auth
     end
   end
@@ -24,64 +24,64 @@ describe DPL::Provider::S3 do
     example "Without :upload_dir"do
       filename = "testfile.file"
 
-      provider.upload_path(filename).should == "testfile.file"
+      expect(provider.upload_path(filename)).to eq("testfile.file")
     end
 
     example "With :upload_dir" do
       provider.options.update(:upload_dir => 'BUILD3')
       filename = "testfile.file"
 
-      provider.upload_path(filename).should == "BUILD3/testfile.file"
+      expect(provider.upload_path(filename)).to eq("BUILD3/testfile.file")
     end
   end
 
   describe "#setup_auth" do
     example "Without :region" do
-      AWS.should_receive(:config).with(:access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :region => 'us-east-1').once.and_call_original
+      expect(AWS).to receive(:config).with(:access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :region => 'us-east-1').once.and_call_original
       provider.setup_auth
     end
     example "With :region" do
       provider.options.update(:region => 'us-west-2')
 
-      AWS.should_receive(:config).with(:access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :region => 'us-west-2').once
+      expect(AWS).to receive(:config).with(:access_key_id => 'qwertyuiopasdfghjklz', :secret_access_key => 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz', :region => 'us-west-2').once
       provider.setup_auth
     end
   end
 
 describe "#needs_key?" do
     example do
-      provider.needs_key?.should == false
+      expect(provider.needs_key?).to eq(false)
     end
   end
 
   describe "#push_app" do
     example "Without local_dir" do
-      Dir.should_receive(:chdir).with(Dir.pwd)
+      expect(Dir).to receive(:chdir).with(Dir.pwd)
       provider.push_app
     end
 
     example "With local_dir" do
       provider.options.update(:local_dir => 'BUILD')
 
-      Dir.should_receive(:chdir).with('BUILD')
+      expect(Dir).to receive(:chdir).with('BUILD')
       provider.push_app
     end
 
     example "Sends MIME type" do
-      Dir.should_receive(:glob).and_yield(__FILE__)
-      AWS::S3::ObjectCollection.any_instance.should_receive(:create).with(anything(), anything(), hash_including(:content_type => 'application/x-ruby'))
+      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect_any_instance_of(AWS::S3::ObjectCollection).to receive(:create).with(anything(), anything(), hash_including(:content_type => 'application/x-ruby'))
       provider.push_app
     end
   end
 
   describe "#api" do
     example "Without Endpoint" do
-      AWS::S3.should_receive(:new).with(:endpoint => 's3.amazonaws.com')
+      expect(AWS::S3).to receive(:new).with(:endpoint => 's3.amazonaws.com')
       provider.api
     end
     example "With Endpoint" do
       provider.options.update(:endpoint => 's3test.com.s3-website-us-west-2.amazonaws.com')
-      AWS::S3.should_receive(:new).with(:endpoint => 's3test.com.s3-website-us-west-2.amazonaws.com')
+      expect(AWS::S3).to receive(:new).with(:endpoint => 's3test.com.s3-website-us-west-2.amazonaws.com')
       provider.api
     end
   end

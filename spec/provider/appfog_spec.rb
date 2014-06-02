@@ -8,27 +8,27 @@ describe DPL::Provider::Appfog do
 
   describe "#check_auth" do
     example do
-      provider.context.should_receive(:shell).with("af login --email=blah@foo.com --password=bar")
+      expect(provider.context).to receive(:shell).with("af login --email=blah@foo.com --password=bar")
       provider.check_auth
     end
   end
 
   describe "#needs_key?" do
     example do
-      provider.needs_key?.should == false
+      expect(provider.needs_key?).to eq(false)
     end
   end
 
   describe "#push_app" do
     example "Without :app" do
-      provider.context.should_receive(:shell).with("af update dpl")
-      provider.context.should_receive(:shell).with("af logout")
+      expect(provider.context).to receive(:shell).with("af update dpl")
+      expect(provider.context).to receive(:shell).with("af logout")
       provider.push_app
     end
     example "With :app" do
       provider.options.update(:app => 'test')
-      provider.context.should_receive(:shell).with("af update test")
-      provider.context.should_receive(:shell).with("af logout")
+      expect(provider.context).to receive(:shell).with("af update test")
+      expect(provider.context).to receive(:shell).with("af logout")
       provider.push_app
     end
   end

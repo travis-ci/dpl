@@ -9,7 +9,7 @@ describe DPL::Provider::Heroku do
 
   describe "#ssh" do
     it "doesn't require an ssh key" do
-      provider.needs_key?.should == false
+      expect(provider.needs_key?).to eq(false)
     end
   end
 end
