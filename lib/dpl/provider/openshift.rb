@@ -3,6 +3,10 @@ module DPL
     class Openshift < Provider
       requires 'rhc'
 
+      def initialize(context, options)
+        super
+        @deployment_branch = option(:deployment_branch)
+      end
       def api
         @api ||= ::RHC::Rest::Client.new(:user => option(:user), :password => option(:password), :server => 'openshift.redhat.com')
       end
@@ -33,12 +37,12 @@ module DPL
       end
 
       def push_app
-        if app.deployment_branch && app.deployment_branch != 'master'
-          log "deployment_branch detected: #{app.deployment_branch}"
-          context.shell "rhc app configure #{app.name} --deployment-branch #{app.deployment_branch}"
-          context.shell "git push --verbose #{app.git_url} -f #{app.deployment_branch}"
+        if @deployment_branch
+          log "deployment_branch detected: #{@deployment_branch}"
+          app.deployment_branch = @deployment_branch
+          context.shell "git push #{app.git_url} -f #{app.deployment_branch}"
         else
-          context.shell "git push --verbose #{app.git_url} -f"
+          context.shell "git push #{app.git_url} -f"
         end
       end
 

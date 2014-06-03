@@ -4,7 +4,7 @@ require 'dpl/provider/openshift'
 
 describe DPL::Provider::Openshift do
   subject :provider do
-    described_class.new(DummyContext.new, :user => 'foo', :password => 'foo', :domain => 'foo', :app => 'example', :key_name => 'key')
+    described_class.new(DummyContext.new, :user => 'foo', :password => 'foo', :domain => 'foo', :app => 'example', :key_name => 'key', :deployment_branch => nil)
   end
 
   describe "#api" do
@@ -66,17 +66,18 @@ describe DPL::Provider::Openshift do
 
     describe "#push_app" do
       example "when app.deployment_branch is not set" do
-        expect(provider.app).to receive :deployment_branch
-        expect(provider.context).to receive(:shell).with("git push --verbose git://something -f")
+        expect(provider.context).to receive(:shell).with("git push git://something -f")
         provider.push_app
       end
+    end
 
-      example "when app.deployment_branch is set" do
-        allow(provider.app).to receive(:deployment_branch) { "test-branch" }
+    context "when app.deployment_branch is set" do
+      subject :provider do
+        described_class.new(DummyContext.new, :user => 'foo', :password => 'foo', :domain => 'foo', :app => 'example', :key_name => 'key', :deployment_branch => 'test-branch')
 
-        expect(provider.context).to receive(:shell).with("rhc app configure example --deployment-branch test-branch")
-        expect(provider.context).to receive(:shell).with("git push --verbose git://something -f test-branch")
-        provider.push_app
+      expect(provider.app).to receive(:deployment_branch=).with("test-branch")
+      expect(provider.context).to receive(:shell).with("git push git://something -f test-branch")
+      provider.push_app
       end
     end
 
