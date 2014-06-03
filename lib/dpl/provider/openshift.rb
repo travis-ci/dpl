@@ -5,8 +5,9 @@ module DPL
 
       def initialize(context, options)
         super
-        @deployment_branch = option(:deployment_branch)
+        @deployment_branch = options[:deployment_branch]
       end
+
       def api
         @api ||= ::RHC::Rest::Client.new(:user => option(:user), :password => option(:password), :server => 'openshift.redhat.com')
       end

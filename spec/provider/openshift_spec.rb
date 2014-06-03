@@ -4,7 +4,7 @@ require 'dpl/provider/openshift'
 
 describe DPL::Provider::Openshift do
   subject :provider do
-    described_class.new(DummyContext.new, :user => 'foo', :password => 'foo', :domain => 'foo', :app => 'example', :key_name => 'key', :deployment_branch => nil)
+    described_class.new(DummyContext.new, :user => 'foo', :password => 'foo', :domain => 'foo', :app => 'example', :key_name => 'key')
   end
 
   describe "#api" do
