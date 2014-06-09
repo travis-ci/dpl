@@ -9,6 +9,7 @@ end
 
 group :openshift do
   gem 'rhc'
+  gem 'httpclient', '< 2.4'
 end
 
 group :appfog do
