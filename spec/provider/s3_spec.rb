@@ -48,7 +48,7 @@ describe DPL::Provider::S3 do
     end
   end
 
-describe "#needs_key?" do
+  describe "#needs_key?" do
     example do
       expect(provider.needs_key?).to eq(false)
     end
@@ -70,6 +70,16 @@ describe "#needs_key?" do
     example "Sends MIME type" do
       expect(Dir).to receive(:glob).and_yield(__FILE__)
       expect_any_instance_of(AWS::S3::ObjectCollection).to receive(:create).with(anything(), anything(), hash_including(:content_type => 'application/x-ruby'))
+      provider.push_app
+    end
+
+    example "when detect_encoding is set" do
+      path = 'foo.js'
+      provider.options.update(:detect_encoding => true)
+      expect(Dir).to receive(:glob).and_yield(path)
+      expect(provider).to receive(:`).at_least(1).times.with("file #{path}").and_return('gzip compressed')
+      expect(File).to receive(:read).with(path).and_return("")
+      expect_any_instance_of(AWS::S3::ObjectCollection).to receive(:create).with(anything(), anything(), hash_including(:content_encoding => 'gzip'))
       provider.push_app
     end
   end
