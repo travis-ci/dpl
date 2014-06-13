@@ -180,10 +180,12 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **endpoint**: S3 Endpoint. Defaults to s3.amazonaws.com.
 * **upload-dir**: S3 directory to upload to. Defaults to root directory.
 * **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
+* **detect-encoding**: Set HTTP header `Content-Encoding` for files compressed with `gzip` and `compress` utilities.
 
 #### Examples:
 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region:us-west-2 --local-dir= BUILD --upload-dir=BUILDS
 
 ### OpsWorks:
