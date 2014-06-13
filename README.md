@@ -25,6 +25,7 @@ Dpl supports the following providers:
 * [Ninefold](#ninefold)
 * [Hackage](#hackage)
 * [Deis](#deis)
+* [Google Cloud Storage](#google-cloud-storage)
 
 ## Installation:
 
@@ -329,3 +330,17 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=deis --controller=deis.deisapps.com --username=travis --password=secret --app=example
+
+### Google Cloud Storage:
+
+#### Options:
+
+* **access-key-id**: GCS Interoperable Access Key ID. Info about Interoperable Access Key from [here](https://developers.google.com/storage/docs/migrating).
+* **secret-access-key**: GCS Interoperable Access Secret.
+* **bucket**: GCS Bucket.
+* **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
+
+#### Examples:
+
+    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
+    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir= BUILD

@@ -36,3 +36,7 @@ end
 group :ninefold do
   gem 'ninefold'
 end
+
+group :gcs do
+  gem 'gstore'
+end
