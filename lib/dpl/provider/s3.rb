@@ -37,7 +37,8 @@ module DPL
             content_type = MIME::Types.type_for(filename).first.to_s
             opts         = { :content_type => content_type }.merge(encoding_option_for(filename))
             opts[:cache_control] = options[:cache_control] if options[:cache_control]
-            opts[:expires] = options[:expires] if options[:expires]
+            opts[:acl]           = options[:acl] if options[:acl] 
+            opts[:expires]       = options[:expires] if options[:expires]
             unless File.directory?(filename)
               api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename), opts)
             end

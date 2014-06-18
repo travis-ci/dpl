@@ -80,6 +80,13 @@ describe DPL::Provider::S3 do
       provider.push_app
     end
 
+    example "Sets Cache and Expiration" do
+      provider.options.update(:acl => "public_read")
+      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect_any_instance_of(AWS::S3::ObjectCollection).to receive(:create).with(anything(), anything(), hash_including(:acl => "public_read"))
+      provider.push_app
+    end
+
     example "when detect_encoding is set" do
       path = 'foo.js'
       provider.options.update(:detect_encoding => true)
