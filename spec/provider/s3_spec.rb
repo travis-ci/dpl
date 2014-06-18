@@ -73,6 +73,13 @@ describe DPL::Provider::S3 do
       provider.push_app
     end
 
+    example "Sets Cache and Expiration" do
+      provider.options.update(:cache_control => "max-age=99999999", :expires => "2012-12-21 00:00:00 -0000")
+      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect_any_instance_of(AWS::S3::ObjectCollection).to receive(:create).with(anything(), anything(), hash_including(:cache_control => 'max-age=99999999', :expires => '2012-12-21 00:00:00 -0000'))
+      provider.push_app
+    end
+
     example "when detect_encoding is set" do
       path = 'foo.js'
       provider.options.update(:detect_encoding => true)
