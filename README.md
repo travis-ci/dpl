@@ -157,7 +157,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 #### Examples:
 
     dpl --provider=pypi --user=<username> --password=<password>
-    dpl --provider=pypi --user=<username> --password=<password> --server=`https://mypackageindex.com/index` --distributions='sdist bdist_wheel'
+    dpl --provider=pypi --user=<username> --password=<password> --server='https://mypackageindex.com/index' --distributions='sdist bdist_wheel'
 
 ### NPM:
 
