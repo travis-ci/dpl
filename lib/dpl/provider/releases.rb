@@ -85,7 +85,12 @@ module DPL
           if already_exists
             log "#{filename} already exists, skipping."
           else
-            api.upload_asset(release_url, file, {:name => filename, :content_type => MIME::Types.type_for(file).first.to_s})
+            content_type = MIME::Types.type_for(file).first.to_s
+            if content_type.empty?
+              # Specify the default content type, as it is required by GitHub
+              content_type = "application/octet-stream"
+            end
+            api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
           end
         end
       end

@@ -70,7 +70,7 @@ describe DPL::Provider::Releases do
     example "When Release Exists but has no Files" do
       allow_message_expectations_on_nil
 
-      provider.options.update(:file => ["test/foo.bar", "bar.foo"])
+      provider.options.update(:file => ["test/foo.bar", "bar.txt"])
 
       allow(provider).to receive(:releases).and_return([""])
       allow(provider).to receive(:get_tag).and_return("v0.0.0")
@@ -86,8 +86,8 @@ describe DPL::Provider::Releases do
       allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => [""]})
       allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
 
-      expect(provider.api).to receive(:upload_asset).with(anything, "test/foo.bar", {:name=>"foo.bar", :content_type=>""})
-      expect(provider.api).to receive(:upload_asset).with(anything, "bar.foo", {:name=>"bar.foo", :content_type=>""})
+      expect(provider.api).to receive(:upload_asset).with(anything, "test/foo.bar", {:name=>"foo.bar", :content_type=>"application/octet-stream"})
+      expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
 
       provider.push_app
     end
@@ -95,7 +95,7 @@ describe DPL::Provider::Releases do
     example "When Release Exists and has Files" do
       allow_message_expectations_on_nil
 
-      provider.options.update(:file => ["test/foo.bar", "bar.foo"])
+      provider.options.update(:file => ["test/foo.bar", "bar.txt"])
 
       allow(provider).to receive(:releases).and_return([""])
       allow(provider).to receive(:get_tag).and_return("v0.0.0")
@@ -111,7 +111,7 @@ describe DPL::Provider::Releases do
       allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => [""]})
       allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([double(:name => "foo.bar"), double(:name => "foo.foo")])
 
-      expect(provider.api).to receive(:upload_asset).with(anything, "bar.foo", {:name=>"bar.foo", :content_type=>""})
+      expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
       expect(provider).to receive(:log).with("foo.bar already exists, skipping.")
 
       provider.push_app
@@ -120,7 +120,7 @@ describe DPL::Provider::Releases do
     example "When Release Doesn't Exist" do
       allow_message_expectations_on_nil
 
-      provider.options.update(:file => ["test/foo.bar", "bar.foo"])
+      provider.options.update(:file => ["test/foo.bar", "bar.txt"])
 
       allow(provider).to receive(:releases).and_return([""])
 
@@ -139,8 +139,8 @@ describe DPL::Provider::Releases do
       allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => nil})
       allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
 
-      expect(provider.api).to receive(:upload_asset).with(anything, "test/foo.bar", {:name=>"foo.bar", :content_type=>""})
-      expect(provider.api).to receive(:upload_asset).with(anything, "bar.foo", {:name=>"bar.foo", :content_type=>""})
+      expect(provider.api).to receive(:upload_asset).with(anything, "test/foo.bar", {:name=>"foo.bar", :content_type=>"application/octet-stream"})
+      expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
 
       provider.push_app
     end
@@ -148,7 +148,7 @@ describe DPL::Provider::Releases do
     example "With Release Number" do
       allow_message_expectations_on_nil
 
-      provider.options.update(:file => ["bar.foo"])
+      provider.options.update(:file => ["bar.txt"])
       provider.options.update(:release_number => "1234")
 
       allow(provider).to receive(:slug).and_return("foo/bar")
@@ -158,7 +158,7 @@ describe DPL::Provider::Releases do
       allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => nil})
       allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
 
-      expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.foo", {:name=>"bar.foo", :content_type=>""})
+      expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
 
       provider.push_app
     end
