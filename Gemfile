@@ -39,4 +39,5 @@ end
 
 group :gcs do
   gem 'gstore'
+  gem 'mime-types'
 end
