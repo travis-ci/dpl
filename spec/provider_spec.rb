@@ -126,6 +126,21 @@ describe DPL::Provider do
     end
   end
 
+  describe "#detect_encoding?" do
+    example do
+      provider.options.update(:detect_encoding => true)
+      expect(provider.detect_encoding?).to eq(true)
+    end
+  end
+
+  describe "#encoding_for" do
+    example do
+      path = 'foo.js'
+      expect(provider).to receive(:`).at_least(1).times.with("file #{path}").and_return('gzip compressed')
+      expect(provider.encoding_for(path)).to eq('gzip')
+    end
+  end
+
   describe "#log" do
     example do
       expect($stderr).to receive(:puts).with("foo")

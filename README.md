@@ -349,6 +349,8 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
 #### Examples:
 
+    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
+    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir= BUILD
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public-read
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir=BUILD --upload-dir=BUILDS
