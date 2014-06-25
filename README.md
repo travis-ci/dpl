@@ -185,6 +185,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **cache_control**: Set HTTP header `Cache-Control` to suggest that the browser cache the file. Defaults to `no-cache`. Valid options are `no-cache`, `no-store`, `max-age=<seconds>`,`s-maxage=<seconds>` `no-transform`, `public`, `private`.
 * **expires**: This sets the date and time that the cached object is no longer cacheable. Defaults to not set. The date must be in the format `YYYY-MM-DD HH:MM:SS -ZONE`.
 * **acl**: Sets the access control for the uploaded objects. Defaults to `private`. Valid options are `private`, `public_read`, `public_read_write`, `authenticated_read`, `bucket_owner_read`, `bucket_owner_full_controll`.
+* **dot_match**: When set to `true`, upload files starting a `.`.
 
 #### Examples:
 
@@ -265,6 +266,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **api-key**: Rackspace API Key.
 * **region**: Cloud Files Region. The region in which your Cloud Files container exists.
 * **container**: Container Name. The container where you would like your files to be uploaded.
+* **dot_match**: When set to `true`, upload files starting a `.`.
 
 #### Examples:
 
@@ -342,6 +344,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
 * **secret-access-key**: GCS Interoperable Access Secret.
 * **bucket**: GCS Bucket.
 * **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
+* **dot_match**: When set to `true`, upload files starting a `.`.
 
 #### Examples:
 
