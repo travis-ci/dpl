@@ -96,6 +96,12 @@ describe DPL::Provider::S3 do
       expect_any_instance_of(AWS::S3::ObjectCollection).to receive(:create).with(anything(), anything(), hash_including(:content_encoding => 'gzip'))
       provider.push_app
     end
+
+    example "when dot_match is set" do
+      provider.options.update(:dot_match => true)
+      expect(Dir).to receive(:glob).with("**/*", File::FNM_DOTMATCH)
+      provider.push_app
+    end
   end
 
   describe "#api" do

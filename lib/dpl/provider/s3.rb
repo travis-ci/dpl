@@ -32,12 +32,14 @@ module DPL
       end
 
       def push_app
+        glob_args = ["**/*"]
+        glob_args << File::FNM_DOTMATCH if options[:dot_match]
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
-          Dir.glob("**/*") do |filename|
+          Dir.glob(*glob_args) do |filename|
             content_type = MIME::Types.type_for(filename).first.to_s
             opts         = { :content_type => content_type }.merge(encoding_option_for(filename))
             opts[:cache_control] = options[:cache_control] if options[:cache_control]
-            opts[:acl]           = options[:acl] if options[:acl] 
+            opts[:acl]           = options[:acl] if options[:acl]
             opts[:expires]       = options[:expires] if options[:expires]
             unless File.directory?(filename)
               api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename), opts)
