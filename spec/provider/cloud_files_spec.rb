@@ -60,6 +60,17 @@ describe DPL::Provider::CloudFiles do
 
       provider.push_app
     end
+
+    example "with dot_match option" do
+      provider.options.update(:dot_match => true)
+      expect(files).to receive(:create).with(:key => '.a', :body => '.a body')
+      expect(files).to receive(:create).with(:key => 'a', :body => 'a body')
+
+      expect(Dir).to receive(:glob).with('**/*', File::FNM_DOTMATCH).and_return(['.a', 'a'])
+      allow(File).to receive(:open) { |name| "#{name} body" }
+
+      provider.push_app
+    end
   end
 
   describe "#deploy" do
