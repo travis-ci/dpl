@@ -32,6 +32,13 @@ describe DPL::Provider::GCS do
       expect(Dir).to receive(:chdir).with('BUILD')
       provider.push_app
     end
+
+    example "With dot_match" do
+      provider.options.update(:dot_match => true)
+
+      expect(Dir).to receive(:glob).with('**/*', File::FNM_DOTMATCH)
+      provider.push_app
+    end
   end
 
   describe '#client' do

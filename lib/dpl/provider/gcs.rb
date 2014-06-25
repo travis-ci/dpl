@@ -22,8 +22,10 @@ module DPL
       end
 
       def push_app
+        glob_args = ["**/*"]
+        glob_args << File::FNM_DOTMATCH if options[:dot_match]
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
-          Dir.glob("**/*") do |filename|
+          Dir.glob(*glob_args) do |filename|
             next if File.directory?(filename)
 
             log "Push: #{filename}"
