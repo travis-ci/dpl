@@ -116,6 +116,7 @@ module DPL
       if needs_key?
         remove_key rescue nil
       end
+      uncleanup
     end
 
     def sha
