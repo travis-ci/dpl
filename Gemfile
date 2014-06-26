@@ -40,3 +40,7 @@ end
 group :gcs do
   gem 'gstore'
 end
+
+group :gae do
+  gem 'rubyzip'
+end
