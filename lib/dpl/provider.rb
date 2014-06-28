@@ -27,6 +27,7 @@ module DPL
     autoload :Hackage,      'dpl/provider/hackage'
     autoload :Deis,         'dpl/provider/deis'
     autoload :GCS,          'dpl/provider/gcs'
+    autoload :GAE,          'dpl/provider/gae'
 
     def self.new(context, options)
       return super if self < Provider
