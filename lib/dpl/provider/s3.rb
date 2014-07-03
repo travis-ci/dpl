@@ -46,6 +46,12 @@ module DPL
             end
           end
         end
+
+        unless options[:index_document_suffix].nil?
+            api.buckets[option(:bucket)].configure_website do |cfg|
+                cfg.index_document_suffix = options[:index_document_suffix]
+            end
+        end
       end
 
       def deploy

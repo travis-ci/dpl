@@ -80,10 +80,17 @@ describe DPL::Provider::S3 do
       provider.push_app
     end
 
-    example "Sets Cache and Expiration" do
+    example "Sets ACL" do
       provider.options.update(:acl => "public_read")
       expect(Dir).to receive(:glob).and_yield(__FILE__)
       expect_any_instance_of(AWS::S3::ObjectCollection).to receive(:create).with(anything(), anything(), hash_including(:acl => "public_read"))
+      provider.push_app
+    end
+
+    example "Sets Website Index Document" do
+      provider.options.update(:index_document_suffix => "test/index.html")
+      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect_any_instance_of(AWS::S3::WebsiteConfiguration).to receive(:initialize).with(anything)
       provider.push_app
     end
 
