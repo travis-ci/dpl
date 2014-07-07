@@ -21,7 +21,7 @@ describe DPL::Provider::Appfog do
 
   describe "#push_app" do
     example "Without :app" do
-      expect(provider.context).to receive(:shell).with("af update dpl")
+      expect(provider.context).to receive(:shell).with("af update #{File.basename(Dir.getwd)}")
       expect(provider.context).to receive(:shell).with("af logout")
       provider.push_app
     end
