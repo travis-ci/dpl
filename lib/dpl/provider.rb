@@ -165,6 +165,20 @@ module DPL
       ENV['GIT_SSH'] = path
     end
 
+    def detect_encoding?
+      options[:detect_encoding]
+    end
+
+    def encoding_for(path)
+      file_cmd_output = `file #{path}`
+      case file_cmd_output
+      when /gzip compressed/
+        'gzip'
+      when /compress'd/
+        'compress'
+      end
+    end
+
     def log(message)
       $stderr.puts(message)
     end

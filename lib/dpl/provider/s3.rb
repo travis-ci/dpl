@@ -59,20 +59,6 @@ module DPL
       end
 
       private
-      def detect_encoding?
-        options[:detect_encoding]
-      end
-
-      def encoding_for(path)
-        file_cmd_output = `file #{path}`
-        case file_cmd_output
-        when /gzip compressed/
-          'gzip'
-        when /compress'd/
-          'compress'
-        end
-      end
-
       def encoding_option_for(path)
         if detect_encoding? && encoding_for(path)
           {:content_encoding => encoding_for(path)}

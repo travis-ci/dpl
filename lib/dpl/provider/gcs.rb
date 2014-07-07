@@ -4,7 +4,7 @@ module DPL
   class Provider
     class GCS < Provider
       requires 'gstore'
-      experimental 'Google Cloud Storage'
+      requires 'mime-types'
 
       def needs_key?
         false
@@ -21,21 +21,36 @@ module DPL
         log "Logging in with Access Key: #{option(:access_key_id)[-4..-1].rjust(20, '*')}"
       end
 
+      def upload_path(filename)
+        [options[:upload_dir], filename].compact.join("/")
+      end
+
       def push_app
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           Dir.glob(*glob_args) do |filename|
             next if File.directory?(filename)
-
-            log "Push: #{filename}"
+            content_type = MIME::Types.type_for(filename).first.to_s
+            opts                  = { :"Content-Type" => content_type }.merge(encoding_option_for(filename))
+            opts["Cache-Control"] = options[:cache_control] if options[:cache_control]
+            opts["x-goog-acl"]    = options[:acl] if options[:acl]
 
             client.put_object(
               option(:bucket),
-              filename,
-              :data => File.read(filename)
+              upload_path(filename),
+              { :data => File.read(filename), :headers => opts }
             )
           end
+        end
+      end
+
+      private
+      def encoding_option_for(path)
+        if detect_encoding? && encoding_for(path)
+          {"Content-Encoding" => encoding_for(path)}
+        else
+          {}
         end
       end
 
