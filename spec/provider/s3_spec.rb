@@ -73,6 +73,12 @@ describe :needs_key? do
       AWS::S3::ObjectCollection.any_instance.should_receive(:create).with(anything(), anything(), hash_including(:content_type => 'application/x-ruby'))
       provider.push_app
     end
+
+    example "With quiet" do
+      provider.options.update(:quiet => true)
+      provider.should_not_receive(:log)
+      provider.push_app
+    end
   end
 
   describe :api do
