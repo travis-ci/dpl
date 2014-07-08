@@ -22,7 +22,7 @@ module DPL
       def push_app
         create_bucket unless bucket_exists?
         zip_file = create_zip
-        # upload zip
+        s3_object = upload(archive_name, zip_file)
         # add app version
         # update app with new version
       end
@@ -37,8 +37,16 @@ module DPL
         option(:env)
       end
 
+      def archive_name
+        "travis-#{sha}-#{Time.now.to_i}.zip"
+      end
+
       def s3
         @s3 ||= AWS::S3.new
+      end
+
+      def eb
+        @eb ||= AWS::ElasticBeanstalk.new.client
       end
 
       def bucket_exists?
@@ -51,16 +59,21 @@ module DPL
 
       def create_zip
         directory = Dir.pwd
-        zipfile_name = "#{directory}/archive.zip"
-
-        p directory
+        zipfile_name = File.join(directory, archive_name)
 
         Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
           Dir[File.join(directory, '**', '**')].each do |file|
-            zipfile.add(file.sub(directory, ''), file)
+            relative_archive_path = File.join(directory, '/')
+            zipfile.add(file.sub(relative_archive_path, ''), file)
           end
         end
         zipfile_name
+      end
+
+      def upload(key, file)
+        obj = s3.buckets[S3_BUCKET].objects[key]
+        obj.write(Pathname.new(file))
+        obj
       end
 
     end
