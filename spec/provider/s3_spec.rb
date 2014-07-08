@@ -90,7 +90,6 @@ describe DPL::Provider::S3 do
     example "Sets Website Index Document" do
       provider.options.update(:index_document_suffix => "test/index.html")
       expect(Dir).to receive(:glob).and_yield(__FILE__)
-      expect_any_instance_of(AWS::S3::WebsiteConfiguration).to receive(:initialize).with(anything)
       provider.push_app
     end
 
