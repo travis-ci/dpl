@@ -2,3 +2,5 @@ Gemfile.lock
 .coverage
 .dpl
 setuptools*.zip
+google_appengine_*.zip
+google_appengine/*
