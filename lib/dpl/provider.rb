@@ -28,6 +28,7 @@ module DPL
     autoload :Deis,         'dpl/provider/deis'
     autoload :GCS,          'dpl/provider/gcs'
     autoload :GAE,          'dpl/provider/gae'
+    autoload :ElasticBeanstalk, 'dpl/provider/elastic_beanstalk'
 
     def self.new(context, options)
       return super if self < Provider
