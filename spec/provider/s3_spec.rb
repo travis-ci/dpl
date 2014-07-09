@@ -112,7 +112,14 @@ describe DPL::Provider::S3 do
 
     example "With verbose" do
       provider.options.update(:verbose => true)
-      expect(provider).to receive(:log)
+      expect(provider).to receive(:log).exactly(1).times.with("Uploading to #{provider.options[:bucket]}...")
+      expect(provider).to receive(:log).at_least(1).times.with(/\A\t.+\Z/)
+      provider.push_app
+    end
+
+    example "Without verbose" do
+      provider.options.update(:verbose => false)
+      expect(provider).to_not receive(:log)
       provider.push_app
     end
   end

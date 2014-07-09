@@ -32,7 +32,7 @@ module DPL
       end
 
       def push_app
-        log "Uploading to #{option(:bucket)}"
+        log "Uploading to #{option(:bucket)}..." if options[:verbose]
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
@@ -43,7 +43,7 @@ module DPL
             opts[:acl]           = options[:acl] if options[:acl]
             opts[:expires]       = options[:expires] if options[:expires]
             unless File.directory?(filename)
-              log "\t#{upload_path(filename)}"
+              log "\t#{upload_path(filename)}" if options[:verbose]
               api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename), opts)
             end
           end
