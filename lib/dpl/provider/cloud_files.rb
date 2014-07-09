@@ -23,7 +23,10 @@ module DPL
 
         raise Error, 'The specified container does not exist.' if container.nil?
 
-        Dir.glob('**/*').each do |name|
+        glob_args = ['**/*']
+        glob_args << File::FNM_DOTMATCH if options[:dot_match]
+
+        Dir.glob(*glob_args).each do |name|
           container.files.create(:key => name, :body => File.open(name)) unless File.directory?(name)
         end
       end

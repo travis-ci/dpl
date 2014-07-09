@@ -6,22 +6,22 @@ describe DPL::Provider::Divshot do
     described_class.new DummyContext.new, :api_key => 'abc123'
   end
 
-  describe :check_auth do
+  describe "#check_auth" do
     it 'should require an api key' do
       provider.options.update(:api_key => nil)
       expect{ provider.check_auth }.to raise_error("must supply an api key")
     end
   end
 
-  describe :push_app do
+  describe "#push_app" do
     it 'should include the environment specified' do
       provider.options.update(:environment => 'development')
-      provider.context.should_receive(:shell).with("divshot push development --token abc123")
+      expect(provider.context).to receive(:shell).with("divshot push development --token abc123")
       provider.push_app
     end
 
     it 'should default to production' do
-      provider.context.should_receive(:shell).with("divshot push production --token abc123")
+      expect(provider.context).to receive(:shell).with("divshot push production --token abc123")
       provider.push_app
     end
   end

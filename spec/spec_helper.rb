@@ -1,6 +1,7 @@
 require 'simplecov'
 require 'dpl/error'
 require 'dpl/provider'
+require 'rspec/its'
 
 SimpleCov.start do
   coverage_dir '.coverage'

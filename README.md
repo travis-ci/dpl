@@ -1,10 +1,11 @@
-# Dpl [![Build Status](https://travis-ci.org/travis-ci/dpl.png?branch=master)](https://travis-ci.org/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Gem Version](https://badge.fury.io/rb/dpl.png)](http://badge.fury.io/rb/dpl)
+# Dpl [![Build Status](https://travis-ci.org/travis-ci/dpl.svg?branch=master)](https://travis-ci.org/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Gem Version](https://badge.fury.io/rb/dpl.png)](http://badge.fury.io/rb/dpl)
  Dpl (dee-pee-ell) is a deploy tool made for continuous deployment.  Developed and used by Travis CI.
 
 ## Supported Providers:
 Dpl supports the following providers:
 
 * [AppFog](#appfog)
+* [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [cloudControl](#cloudcontrol)
 * [dotCloud (experimental)](#dotcloud)
@@ -20,6 +21,11 @@ Dpl supports the following providers:
 * [Rackspace Cloud Files](#rackspace-cloud-files)
 * [AWS OpsWorks](#opsworks)
 * [Modulus](#modulus)
+* [Github Releases](#github-releases)
+* [Ninefold](#ninefold)
+* [Hackage](#hackage)
+* [Deis](#deis)
+* [Google Cloud Storage](#google-cloud-storage)
 
 ## Installation:
 
@@ -151,7 +157,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 #### Examples:
 
     dpl --provider=pypi --user=<username> --password=<password>
-    dpl --provider=pypi --user=<username> --password=<password> --server=`https://mypackageindex.com/index` --distributions='sdist bdist'
+    dpl --provider=pypi --user=<username> --password=<password> --server='https://mypackageindex.com/index' --distributions='sdist bdist_wheel'
 
 ### NPM:
 
@@ -175,11 +181,18 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **endpoint**: S3 Endpoint. Defaults to s3.amazonaws.com.
 * **upload-dir**: S3 directory to upload to. Defaults to root directory.
 * **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
+* **detect-encoding**: Set HTTP header `Content-Encoding` for files compressed with `gzip` and `compress` utilities. Defaults to not set.
+* **cache_control**: Set HTTP header `Cache-Control` to suggest that the browser cache the file. Defaults to `no-cache`. Valid options are `no-cache`, `no-store`, `max-age=<seconds>`,`s-maxage=<seconds>` `no-transform`, `public`, `private`.
+* **expires**: This sets the date and time that the cached object is no longer cacheable. Defaults to not set. The date must be in the format `YYYY-MM-DD HH:MM:SS -ZONE`.
+* **acl**: Sets the access control for the uploaded objects. Defaults to `private`. Valid options are `private`, `public_read`, `public_read_write`, `authenticated_read`, `bucket_owner_read`, `bucket_owner_full_control`.
+* **dot_match**: When set to `true`, upload files starting a `.`.
+* **index_document_suffix**: Set the index document of a S3 website.
 
 #### Examples:
 
-    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
-    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region:us-west-2 --local-dir= BUILD --upload-dir=BUILDS 
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public_read
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999 --expires="2012-12-21 00:00:00 -0000"
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region:us-west-2 --local-dir= BUILD --upload-dir=BUILDS
 
 ### OpsWorks:
 
@@ -226,12 +239,12 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **username**: Cloud Foundry username.
 * **password**: Cloud Foundry password.
 * **organization**: Cloud Foundry target organization.
-* **target**: Cloud Foundry target cloud/URL
+* **api**: Cloud Foundry api URL
 * **space**: Cloud Foundry target space
 
 #### Examples:
 
-    dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --target=<target> --space=<space>
+    dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space>
 
 ### dotCloud:
 
@@ -254,7 +267,94 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **api-key**: Rackspace API Key.
 * **region**: Cloud Files Region. The region in which your Cloud Files container exists.
 * **container**: Container Name. The container where you would like your files to be uploaded.
+* **dot_match**: When set to `true`, upload files starting a `.`.
 
 #### Examples:
 
     dpl --provider=cloudfiles --username=<username> --api-key=<api-key> --region=<region> --container=<container>
+
+### GitHub Releases:
+
+#### Options:
+
+* **api-key**: GitHub oauth token with `public_repo` or`repo` permission.
+* **user**: GitHub username. Not necessary if `api-key` is used.
+* **password**: GitHub Password. Not necessary if `api-key` is used.
+* **repo**: GitHub Repo. Defaults to git repo's name.
+* **file**: File to upload to GitHub Release.
+* **release-number**: Overide automatic release detection, set a release manually.
+
+#### GitHub Two Factor Authentication
+
+For accounts using two factor authentication, you have to use an oauth token as a username and password will not work.
+
+#### Examples:
+
+    dpl --provider=releases --api-key=<api-key> --file=build.tar.gz
+
+### Cloud 66
+
+#### Options:
+
+* **redeployment_hook**: The redeployment hook URL. Available from the Information menu within the Cloud 66 portal.
+
+#### Examples:
+
+    dpl --provider=cloud66 --redeployment_hook=<url>
+
+### Ninefold
+
+#### Options:
+
+* **auth_token**: Ninefold deploy auth token
+* **app_id**: Ninefold deploy app ID
+
+#### Examples:
+
+    dpl --provider=ninefold --auth_token=<auth_token> --app_id=<app_id>
+
+### Hackage:
+
+#### Options:
+
+* **username**: Hackage username.
+* **password**: Hackage password.
+
+#### Examples:
+
+    dpl --provider=hackage --username=<username> --password=<password>
+
+### Deis:
+
+#### Options:
+
+* **controller**: Deis controller e.g. deis.deisapps.com
+* **username**: Deis username
+* **password**: Deis password
+* **app**: Deis app
+
+#### Examples:
+
+    dpl --provider=deis --controller=deis.deisapps.com --username=travis --password=secret --app=example
+
+### Google Cloud Storage:
+
+#### Options:
+
+* **access-key-id**: GCS Interoperable Access Key ID. Info about Interoperable Access Key from [here](https://developers.google.com/storage/docs/migrating).
+* **secret-access-key**: GCS Interoperable Access Secret.
+* **bucket**: GCS Bucket.
+* **upload-dir**: GCS directory to upload to. Defaults to root directory.
+* **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
+* **dot_match**: When set to `true`, upload files starting a `.`.
+* **detect-encoding**: Set HTTP header `Content-Encoding` for files compressed with `gzip` and `compress` utilities. Defaults to not set.
+* **cache_control**: Set HTTP header `Cache-Control` to suggest that the browser cache the file. Defaults to not set. Info is [here](https://developers.google.com/storage/docs/reference-headers#cachecontrol)
+* **acl**: Sets the access control for the uploaded objects. Defaults to not set. Info is [here](https://developers.google.com/storage/docs/reference-headers#xgoogacl)
+
+#### Examples:
+
+    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
+    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir= BUILD
+    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public-read
+    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999
+    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir=BUILD --upload-dir=BUILDS

@@ -14,13 +14,18 @@ Gem::Specification.new do |s|
   s.test_files            = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables           = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_path          = 'lib'
-  s.required_ruby_version = '>= 1.8.7'
+  s.required_ruby_version = '>= 1.9.3'
 
-  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rspec', '~> 3.0.0'
+  s.add_development_dependency 'rspec-its'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'json'
 
   # prereleases from Travis CI
-  s.version = s.version.to_s.succ + ".travis.#{ENV['TRAVIS_JOB_NUMBER']}" if ENV['CI']
+  if ENV['CI']
+    digits = s.version.to_s.split '.'
+    digits[-1] = digits[-1].to_s.succ
+    s.version = digits.join('.') + ".travis.#{ENV['TRAVIS_JOB_NUMBER']}"
+  end
 end

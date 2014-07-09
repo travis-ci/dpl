@@ -1,10 +1,6 @@
 source 'https://rubygems.org'
 gemspec
 
-group :cloudfoundry do
-  gem 'cf', '~> 5.4.5'
-end
-
 group :heroku do
   gem 'rendezvous', '~> 0.0.2'
   gem 'heroku-api', '= 0.3.16'
@@ -13,6 +9,7 @@ end
 
 group :openshift do
   gem 'rhc'
+  gem 'httpclient'
 end
 
 group :appfog do
@@ -30,4 +27,21 @@ end
 
 group :cloud_files do
   gem 'fog'
+end
+
+group :releases do
+  gem 'octokit'
+end
+
+group :ninefold do
+  gem 'ninefold'
+end
+
+group :gcs do
+  gem 'gstore'
+  gem 'mime-types'
+end
+
+group :gae do
+  gem 'rubyzip'
 end

@@ -21,6 +21,13 @@ module DPL
     autoload :CloudFiles,   'dpl/provider/cloud_files'
     autoload :OpsWorks,     'dpl/provider/ops_works'
     autoload :Modulus,      'dpl/provider/modulus'
+    autoload :Releases,     'dpl/provider/releases'
+    autoload :Cloud66,      'dpl/provider/cloud66'
+    autoload :Ninefold,     'dpl/provider/ninefold'
+    autoload :Hackage,      'dpl/provider/hackage'
+    autoload :Deis,         'dpl/provider/deis'
+    autoload :GCS,          'dpl/provider/gcs'
+    autoload :GAE,          'dpl/provider/gae'
 
     def self.new(context, options)
       return super if self < Provider
@@ -53,6 +60,10 @@ module DPL
 
     def self.shell(command, options = {})
       system(command)
+    end
+
+    def self.apt_get(name, command = name)
+      context.shell("sudo apt-get -qq install #{name}", retry: true) if `which #{command}`.chop.empty?
     end
 
     def self.pip(name, command = name)
@@ -106,6 +117,7 @@ module DPL
       if needs_key?
         remove_key rescue nil
       end
+      uncleanup
     end
 
     def sha
@@ -151,6 +163,20 @@ module DPL
 
       chmod(0740, path)
       ENV['GIT_SSH'] = path
+    end
+
+    def detect_encoding?
+      options[:detect_encoding]
+    end
+
+    def encoding_for(path)
+      file_cmd_output = `file #{path}`
+      case file_cmd_output
+      when /gzip compressed/
+        'gzip'
+      when /compress'd/
+        'compress'
+      end
     end
 
     def log(message)
