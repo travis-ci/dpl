@@ -110,9 +110,9 @@ describe DPL::Provider::S3 do
       provider.push_app
     end
 
-    example "With quiet" do
-      provider.options.update(:quiet => true)
-      provider.should_not_receive(:log)
+    example "With verbose" do
+      provider.options.update(:verbose => true)
+      expect(provider).to receive(:log)
       provider.push_app
     end
   end
