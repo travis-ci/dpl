@@ -365,7 +365,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
  * **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
  * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
- * **region**: AWS Region the Elastic Beanstalk app is running in.
+ * **region**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
  * **app**: Elastic Beanstalk application name.
  * **env**: Elastic Beanstalk environment name which will be updated.
 

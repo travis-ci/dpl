@@ -6,6 +6,8 @@ module DPL
     class ElasticBeanstalk < Provider
       experimental 'AWS Elastic Beanstalk'
 
+      DEFAULT_REGION = 'us-east-1'
+
       def needs_key?
         false
       end
@@ -45,7 +47,7 @@ module DPL
       end
 
       def region
-        option(:region)
+        option(:region) || DEFAULT_REGION
       end
 
       def bucket_name
