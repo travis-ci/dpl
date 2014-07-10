@@ -6,7 +6,7 @@ module DPL
     class ElasticBeanstalk < Provider
       experimental 'AWS Elastic Beanstalk'
 
-      S3_BUCKET = 'travis_elasticbeanstalk_builds'
+      S3_BUCKET = 'travis-elasticbeanstalk-builds'
 
       def needs_key?
         false
