@@ -125,6 +125,10 @@ module DPL
       @sha ||= ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
     end
 
+    def commit_msg
+      @commit_msg ||= %x{git log #{sha} -n 1 --pretty=%B}.strip
+    end
+
     def cleanup
       return if options[:skip_cleanup]
       context.shell "mv .dpl ~/dpl"
