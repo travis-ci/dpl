@@ -26,6 +26,7 @@ Dpl supports the following providers:
 * [Hackage](#hackage)
 * [Deis](#deis)
 * [Google Cloud Storage](#google-cloud-storage)
+* [Elastic Beanstalk](#elastic-beanstalk)
 
 ## Installation:
 
@@ -358,3 +359,17 @@ For accounts using two factor authentication, you have to use an oauth token as 
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public-read
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir=BUILD --upload-dir=BUILDS
+
+### Elastic Beanstalk:
+
+#### Options:
+
+ * **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **region**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
+ * **app**: Elastic Beanstalk application name.
+ * **env**: Elastic Beanstalk environment name which will be updated.
+
+#### Examples:
+
+    dpl --provider=elasticbeanstalk --access-key-id=<access-key-id> --secret-access-key="<secret-access-key>" --app="example-app-name" --env="example-app-environment" --region="us-west-2"
