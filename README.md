@@ -26,6 +26,7 @@ Dpl supports the following providers:
 * [Hackage](#hackage)
 * [Deis](#deis)
 * [Google Cloud Storage](#google-cloud-storage)
+* [Elastic Beanstalk](#elastic-beanstalk)
 
 ## Installation:
 
