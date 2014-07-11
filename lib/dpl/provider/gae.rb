@@ -57,7 +57,7 @@ module DPL
       end
 
       def push_app
-        context.shell "#{APPCFG_BIN} --oauth2_refresh_token=#{options[:oauth_refresh_token]} #{app_dir}"
+        context.shell "#{APPCFG_BIN} --oauth2_refresh_token=#{options[:oauth_refresh_token]} update #{app_dir}"
       end
     end
   end

@@ -12,14 +12,14 @@ describe DPL::Provider::GAE do
     example 'with default app_dir' do
       ENV['TRAVIS_BUILD_DIR'] = Dir.pwd
       provider.options.update(:oauth_refresh_token => token)
-      expect(provider.context).to receive(:shell).with("#{DPL::Provider::GAE::APPCFG_BIN} --oauth2_refresh_token=#{token} #{Dir.pwd}").and_return(true)
+      expect(provider.context).to receive(:shell).with("#{DPL::Provider::GAE::APPCFG_BIN} --oauth2_refresh_token=#{token} update #{Dir.pwd}").and_return(true)
       provider.push_app
     end
 
     example 'with custom app_dir' do
       app_dir='foo'
       provider.options.update(:oauth_refresh_token => token, :app_dir => app_dir)
-      expect(provider.context).to receive(:shell).with("#{DPL::Provider::GAE::APPCFG_BIN} --oauth2_refresh_token=#{token} #{app_dir}").and_return(true)
+      expect(provider.context).to receive(:shell).with("#{DPL::Provider::GAE::APPCFG_BIN} --oauth2_refresh_token=#{token} update #{app_dir}").and_return(true)
       provider.push_app
     end
   end
