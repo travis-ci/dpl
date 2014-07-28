@@ -70,12 +70,16 @@ module DPL
         s3.buckets.create(bucket_name)
       end
 
+      def files_to_pack
+        `git ls-files -z`.split("\x0")
+      end
+
       def create_zip
         directory = Dir.pwd
         zipfile_name = File.join(directory, archive_name)
 
         Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
-          Dir[File.join(directory, '**', '**')].each do |file|
+          files_to_pack.each do |file|
             relative_archive_path = File.join(directory, '/')
             zipfile.add(file.sub(relative_archive_path, ''), file)
           end
