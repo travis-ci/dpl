@@ -5,6 +5,7 @@
 Dpl supports the following providers:
 
 * [AppFog](#appfog)
+* [BitBalloon](#bitballoon)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [cloudControl](#cloudcontrol)
@@ -373,3 +374,19 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=elasticbeanstalk --access-key-id=<access-key-id> --secret-access-key="<secret-access-key>" --app="example-app-name" --env="example-app-environment" --region="us-west-2"
+
+### BitBalloon:
+
+#### Options:
+
+ * **client_id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **client_secret**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **access_token**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
+ * **site_id**: Elastic Beanstalk application name.
+ * **local_dir**: Elastic Beanstalk environment name which will be updated.
+
+#### Examples:
+
+    dpl --provider=bitballoon --client-id=<client-id> --client-secret="<client-secret>" --access-token="<access-token>" --site="site-id" --local-dir="build"
+
+

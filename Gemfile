@@ -50,3 +50,7 @@ group :elastic_beanstalk do
   gem 'rubyzip'
   gem 'aws-sdk'
 end
+
+group :bitballoon do
+  gem 'bitballoon'
+end
