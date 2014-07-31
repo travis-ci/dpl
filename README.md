@@ -379,14 +379,12 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
 #### Options:
 
- * **client_id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
- * **client_secret**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
- * **access_token**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
- * **site_id**: Elastic Beanstalk application name.
- * **local_dir**: Elastic Beanstalk environment name which will be updated.
+ * **access_token**: The access_token which can be found in the .bitballoon file after a deployment using the bitballoon CLI.
+ * **site_id**: The site_id which can be found in the .bitballoon file after a deployment using the bitballoon CLI.
+ * **local_dir**: Optional. The sub-directory of the built assets for deployment. Default to current path.
 
 #### Examples:
 
-    dpl --provider=bitballoon --client-id=<client-id> --client-secret="<client-secret>" --access-token="<access-token>" --site="site-id" --local-dir="build"
-
-
+    dpl --access-token=<access-token> --site=3f932c1e-708b-4573-938a-a07d9728c22e
+    dpl --access-token=<access-token> --site=3f932c1e-708b-4573-938a-a07d9728c22e --local-dir=build
+    
