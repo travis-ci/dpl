@@ -46,6 +46,46 @@ describe DPL::Provider::Releases do
     end
   end
 
+  describe "#check_app" do
+    example "Without $TRAVIS_TAG" do
+      ENV['TRAVIS_TAG'] = nil
+      allow(provider).to receive(:slug).and_return("foo/bar")
+      allow(provider).to receive(:get_tag).and_return("foo")
+
+      expect(provider.context).to receive(:shell).with("git fetch --tags")
+      expect(provider).to receive(:log).with("Deploying to repo: foo/bar")
+      expect(provider).to receive(:log).with("Current tag is: foo")
+
+      provider.check_app
+    end
+
+    example "With $TRAVIS_TAG" do
+      ENV['TRAVIS_TAG'] = "bar"
+      allow(provider).to receive(:slug).and_return("foo/bar")
+
+      expect(provider.context).not_to receive(:shell).with("git fetch --tags")
+      expect(provider).to receive(:log).with("Deploying to repo: foo/bar")
+      expect(provider).to receive(:log).with("Current tag is: bar")
+      
+      provider.check_app
+    end
+  end
+
+  describe "#get_tag" do
+    example "Without $TRAVIS_TAG" do
+      ENV['TRAVIS_TAG'] = nil
+      allow(provider).to receive(:`).and_return("bar")
+
+      expect(provider.get_tag).to eq("bar")
+    end
+
+    example "With $TRAVIS_TAG" do
+      ENV['TRAVIS_TAG'] = "foo"
+
+      expect(provider.get_tag).to eq("foo")
+    end
+  end
+
   describe "#check_auth" do
     example "With proper permissions" do
       allow_message_expectations_on_nil

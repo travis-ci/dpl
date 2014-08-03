@@ -7,7 +7,11 @@ module DPL
       requires 'mime-types'
 
       def get_tag
-        `git describe --tags --exact-match 2>/dev/null`.chomp
+        unless ENV['TRAVIS_TAG'].nil?
+          @tag ||= ENV['TRAVIS_TAG']
+        else
+          @tag ||= `git describe --tags --exact-match 2>/dev/null`.chomp
+        end
       end
 
       def api
@@ -36,6 +40,8 @@ module DPL
 
       def check_app
         log "Deploying to repo: #{slug}"
+
+        context.shell 'git fetch --tags' if ENV['TRAVIS_TAG'].nil?
         log "Current tag is: #{get_tag}"
       end
 
