@@ -6,11 +6,20 @@ module DPL
       requires 'octokit'
       requires 'mime-types'
 
-      def get_tag
-        unless ENV['TRAVIS_TAG'].nil?
-          @tag ||= ENV['TRAVIS_TAG']
+      def travis_tag
+        # Check if $TRAVIS_TAG is unset or set but empty
+        if ENV.fetch('TRAVIS_TAG','') == ''
+          nil
         else
-          @tag ||= `git describe --tags --exact-match 2>/dev/null`.chomp
+          ENV['TRAVIS_TAG']
+        end
+      end
+
+      def get_tag
+        if travis_tag.nil?
+          @tag ||= `git describe --tags --exact-match 2>/dev/null`.chomp     
+        else
+          @tag ||= travis_tag
         end
       end
 
@@ -41,7 +50,7 @@ module DPL
       def check_app
         log "Deploying to repo: #{slug}"
 
-        context.shell 'git fetch --tags' if ENV['TRAVIS_TAG'].nil?
+        context.shell 'git fetch --tags' if travis_tag.nil?
         log "Current tag is: #{get_tag}"
       end
 
