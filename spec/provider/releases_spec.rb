@@ -7,6 +7,26 @@ describe DPL::Provider::Releases do
     described_class.new(DummyContext.new, :api_key => '0123445789qwertyuiop0123445789qwertyuiop', :file => 'blah.txt')
   end
 
+  describe "#travis_tag" do
+    example "When $TRAVIS_TAG is nil" do
+      ENV['TRAVIS_TAG'] = nil
+
+      expect(provider.travis_tag).to eq(nil)
+    end
+
+    example "When $TRAVIS_TAG if set but empty" do
+      ENV['TRAVIS_TAG'] = nil
+
+      expect(provider.travis_tag).to eq(nil)
+    end
+
+    example "When $TRAVIS_TAG if set" do
+      ENV['TRAVIS_TAG'] = "foo"
+
+      expect(provider.travis_tag).to eq("foo")
+    end
+  end
+
   describe "#api" do
     example "With API key" do
       api = double(:api)
@@ -43,6 +63,46 @@ describe DPL::Provider::Releases do
   describe "#needs_key?" do
     example do
       expect(provider.needs_key?).to eq(false)
+    end
+  end
+
+  describe "#check_app" do
+    example "Without $TRAVIS_TAG" do
+      allow(provider).to receive(:travis_tag).and_return(nil)
+      allow(provider).to receive(:slug).and_return("foo/bar")
+      allow(provider).to receive(:get_tag).and_return("foo")
+
+      expect(provider.context).to receive(:shell).with("git fetch --tags")
+      expect(provider).to receive(:log).with("Deploying to repo: foo/bar")
+      expect(provider).to receive(:log).with("Current tag is: foo")
+
+      provider.check_app
+    end
+
+    example "With $TRAVIS_TAG" do
+      allow(provider).to receive(:travis_tag).and_return("bar")
+      allow(provider).to receive(:slug).and_return("foo/bar")
+
+      expect(provider.context).not_to receive(:shell).with("git fetch --tags")
+      expect(provider).to receive(:log).with("Deploying to repo: foo/bar")
+      expect(provider).to receive(:log).with("Current tag is: bar")
+      
+      provider.check_app
+    end
+  end
+
+  describe "#get_tag" do
+    example "Without $TRAVIS_TAG" do
+      allow(provider).to receive(:travis_tag).and_return(nil)
+      allow(provider).to receive(:`).and_return("bar")
+
+      expect(provider.get_tag).to eq("bar")
+    end
+
+    example "With $TRAVIS_TAG" do
+      allow(provider).to receive(:travis_tag).and_return("foo")
+
+      expect(provider.get_tag).to eq("foo")
     end
   end
 
