@@ -13,8 +13,8 @@ module DPL
       def push_app
         command = 'bitballoon deploy'
         command << " ./#{option(:local_dir)}" if options.fetch(:local_dir,false)
-        command << " --site-id=#{option(:site_id)}"
-        command << " --access-token=#{option(:access_token)}"
+        command << " --site-id=#{option(:site_id)}" if options[:site_id]
+        command << " --access-token=#{option(:access_token)}" if options[:access_token]
         context.shell command
       end
     end
