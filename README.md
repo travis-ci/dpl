@@ -379,8 +379,8 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
 #### Options:
 
- * **access_token**: Optinoal. The access_token which can be found in the .bitballoon file after a deployment using the bitballoon CLI. Only required if no .bitballoon file is present.
- * **site_id**: Optional. The site_id which can be found in the .bitballoon file after a deployment using the bitballoon CLI. Only required if no .bitballoon file is present.
+ * **access_token**: Optinoal. The access_token which can be found in the `.bitballoon` file after a deployment using the bitballoon CLI. Only required if no `.bitballoon` file is present.
+ * **site_id**: Optional. The site_id which can be found in the .bitballoon file after a deployment using the bitballoon CLI. Only required if no `.bitballoon` file is present.
  * **local_dir**: Optional. The sub-directory of the built assets for deployment. Default to current path.
 
 #### Examples:
