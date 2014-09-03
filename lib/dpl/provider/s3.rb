@@ -78,14 +78,14 @@ module DPL
         preferred_value = nil
         hashes = option_values.select {|value| value.kind_of?(Hash) }
         hashes.each do |hash|
-            hash.each do |value, patterns|
-                patterns.each do |pattern|
-                    if File.fnmatch?(pattern, filename)
-                        preferred_value = value
-                        break
-                    end
-                end
+          hash.each do |value, patterns|
+            patterns.each do |pattern|
+              if File.fnmatch?(pattern, filename)
+                preferred_value = value
+                break
+              end
             end
+          end
         end
         preferred_value = option_values.select {|value| value.kind_of?(String) }.last if preferred_value.nil?
         return preferred_value
