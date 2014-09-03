@@ -89,6 +89,7 @@ module DPL
         end
         preferred_value = option_values.select {|value| value.kind_of?(String) }.last if preferred_value.nil?
         return preferred_value
+      end
     end
   end
 end
