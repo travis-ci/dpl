@@ -6,6 +6,7 @@ describe DPL::Provider::S3 do
 
   before (:each) do
     AWS.stub!
+    allow_any_instance_of(DPL::Provider).to receive(:log)
   end
 
   subject :provider do
@@ -106,6 +107,21 @@ describe DPL::Provider::S3 do
     example "when dot_match is set" do
       provider.options.update(:dot_match => true)
       expect(Dir).to receive(:glob).with("**/*", File::FNM_DOTMATCH)
+      provider.push_app
+    end
+
+    example "With verbose" do
+      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      provider.options.update(:verbose => true)
+      expect(provider).to receive(:log).exactly(1).times.with("Uploading to #{provider.options[:bucket]}...")
+      expect(provider).to receive(:log).exactly(1).times.with(/\A\t#{__FILE__}\Z/)
+      provider.push_app
+    end
+
+    example "Without verbose" do
+      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      provider.options.update(:verbose => false)
+      expect(provider).to_not receive(:log)
       provider.push_app
     end
   end
