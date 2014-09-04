@@ -79,6 +79,9 @@ module DPL
         hashes = option_values.select {|value| value.kind_of?(Hash) }
         hashes.each do |hash|
           hash.each do |value, patterns|
+            unless patterns.kind_of?(Array)
+              patterns = [patterns]
+            end
             patterns.each do |pattern|
               if File.fnmatch?(pattern, filename)
                 preferred_value = value
