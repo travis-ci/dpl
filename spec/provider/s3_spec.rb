@@ -80,6 +80,15 @@ describe DPL::Provider::S3 do
       provider.push_app
     end
 
+    example "Sets different Cache and Expiration" do
+      path = "index.html"
+      provider.options.update(:cache_control => ["max-age=99999999", "no-cache" => ["index.html"]], :expires => ["2012-12-21 00:00:00 -0000", "1970-01-01 00:00:00 -0000" => ["*.html"]])
+      expect(Dir).to receive(:glob).and_yield(path)
+      expect(File).to receive(:read).with(path).and_return("")
+      expect_any_instance_of(AWS::S3::ObjectCollection).to receive(:create).with(anything(), anything(), hash_including(:cache_control => "no-cache", :expires => "1970-01-01 00:00:00 -0000"))
+      provider.push_app
+    end
+
     example "Sets ACL" do
       provider.options.update(:acl => "public_read")
       expect(Dir).to receive(:glob).and_yield(__FILE__)
