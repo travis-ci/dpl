@@ -85,7 +85,6 @@ module DPL
             patterns.each do |pattern|
               if File.fnmatch?(pattern, filename)
                 preferred_value = value
-                break
               end
             end
           end
