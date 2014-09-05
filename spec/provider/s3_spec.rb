@@ -82,7 +82,7 @@ describe DPL::Provider::S3 do
 
     example "Sets different Cache and Expiration" do
       option_list = []
-      provider.options.update(:cache_control => ["max-age=99999999", "no-cache" => ["foo.html", "bar.txt"], "max-cache=9999" => "*.txt"], :expires => ["2012-12-21 00:00:00 -0000", "1970-01-01 00:00:00 -0000" => "*.html"])
+      provider.options.update(:cache_control => ["max-age=99999999", "no-cache" => ["foo.html", "bar.txt"], "max-age=9999" => "*.txt"], :expires => ["2012-12-21 00:00:00 -0000", "1970-01-01 00:00:00 -0000" => "*.html"])
       expect(Dir).to receive(:glob).and_yield("foo.html").and_yield("bar.txt").and_yield("baz.js")
       expect(File).to receive(:read).exactly(3).times.and_return("")
       allow_any_instance_of(AWS::S3::ObjectCollection).to receive(:create) do |_instance, key, _data, options|
@@ -91,7 +91,7 @@ describe DPL::Provider::S3 do
       provider.push_app
       expect(option_list).to match_array([
         { key: "foo.html", options: hash_including(:cache_control => "no-cache", :expires => "1970-01-01 00:00:00 -0000") },
-        { key: "bar.txt", options: hash_including(:cache_control => "max-cache=9999", :expires => "2012-12-21 00:00:00 -0000") },
+        { key: "bar.txt", options: hash_including(:cache_control => "max-age=9999", :expires => "2012-12-21 00:00:00 -0000") },
         { key: "baz.js", options: hash_including(:cache_control => "max-age=99999999", :expires => "2012-12-21 00:00:00 -0000") },
       ])
     end
