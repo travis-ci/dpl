@@ -14,6 +14,7 @@ module DPL
     autoload :RubyGems,     'dpl/provider/rubygems'
     autoload :NPM,          'dpl/provider/npm'
     autoload :S3,           'dpl/provider/s3'
+    autoload :SDS,          'dpl/provider/sds'
     autoload :CloudControl, 'dpl/provider/cloudcontrol'
     autoload :CloudFoundry, 'dpl/provider/cloud_foundry'
     autoload :PyPI,         'dpl/provider/pypi'
