@@ -26,12 +26,15 @@ module DPL
       end
 
       def push_app
-        sds.create_deployment({
+        deployment = sds.create_deployment({
           s3_location: { bucket: option(:bucket), bundle_type: bundle_type, key: s3_key },
           application_name:       options[:application]      || option(:application_name),
           deployment_group_name:  options[:deployment_group] || option(:deployment_group_name),
           reason:                 options[:reason]           || default_reason
         })
+        log "Triggered deployment #{deployment.deployment_id.inspect}."
+      rescue Aws::SDS::Errors::DeploymentLimitExceededException => exception
+        error(exception.message)
       end
 
       def bundle_type
