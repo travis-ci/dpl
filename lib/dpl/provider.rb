@@ -51,7 +51,7 @@ module DPL
       load    = options[:load]    || name
       gem(name, version)
     rescue LoadError
-      context.shell("gem install %s -v %p --no-ri --no-rdoc" % [name, version], retry: true)
+      context.shell("gem install %s -v %p --no-ri --no-rdoc #{'--pre' if options[:pre]}" % [name, version], retry: true)
       Gem.clear_paths
     ensure
       require load
