@@ -2,23 +2,23 @@ require 'json'
 
 module DPL
   class Provider
-    class SDS < Provider
+    class CodeDeploy < Provider
       requires 'aws-sdk-core', pre: true
 
-      def sds
-        @sds ||= begin
-          Aws.add_service('SDS', api: File.expand_path("../SDS.api.json", __FILE__)) unless defined? Aws::SDS
-          Aws::SDS::Client.new(sds_options)
+      def code_deploy
+        @code_deploy ||= begin
+          Aws.add_service('CodeDeploy', api: File.expand_path("../CodeDeploy.api.json", __FILE__)) unless defined? Aws::CodeDeploy
+          Aws::CodeDeploy::Client.new(code_deploy_options)
         end
       end
 
-      def sds_options
-        sds_options = {
+      def code_deploy_options
+        code_deploy_options = {
           region:      options[:region] || 'us-east-1',
           credentials: Aws::Credentials.new(option(:access_key_id), option(:secret_access_key))
         }
-        sds_options[:endpoint] = options[:endpoint] if options[:endpoint]
-        sds_options
+        code_deploy_options[:endpoint] = options[:endpoint] if options[:endpoint]
+        code_deploy_options
       end
 
       def needs_key?
@@ -26,14 +26,14 @@ module DPL
       end
 
       def push_app
-        deployment = sds.create_deployment({
+        deployment = code_deploy.create_deployment({
           s3_location: { bucket: option(:bucket), bundle_type: bundle_type, key: s3_key },
           application_name:       options[:application]      || option(:application_name),
           deployment_group_name:  options[:deployment_group] || option(:deployment_group_name),
           reason:                 options[:reason]           || default_reason
         })
         log "Triggered deployment #{deployment.deployment_id.inspect}."
-      rescue Aws::SDS::Errors::DeploymentLimitExceededException => exception
+      rescue Aws::CodeDeploy::Errors::DeploymentLimitExceededException => exception
         error(exception.message)
       end
 
