@@ -60,6 +60,32 @@ describe DPL::Provider::Releases do
     end
   end
 
+  describe "#files" do
+    example "without file globbing and a single file" do
+      expect(provider.files).to eq(['blah.txt'])
+    end
+
+    example "without file globbing and multiple files" do
+      provider.options.update(:file => ['foo.txt', 'bar.txt'])
+      expect(provider.files).to eq(['foo.txt', 'bar.txt'])
+    end
+
+    example "with file globbing and a single glob" do
+      provider.options.update(:file_glob => true)
+      provider.options.update(:file => 'bl*.txt')
+      expect(::Dir).to receive(:glob).with('bl*.txt').and_return(['blah.txt'])
+      expect(provider.files).to eq(['blah.txt'])
+    end
+
+    example "with file globbing and multiple globs" do
+      provider.options.update(:file_glob => true)
+      provider.options.update(:file => ['f*.txt', 'b*.txt'])
+      expect(::Dir).to receive(:glob).with('f*.txt').and_return(['foo.txt'])
+      expect(::Dir).to receive(:glob).with('b*.txt').and_return(['bar.txt'])
+      expect(provider.files).to eq(['foo.txt', 'bar.txt'])
+    end
+  end
+
   describe "#needs_key?" do
     example do
       expect(provider.needs_key?).to eq(false)

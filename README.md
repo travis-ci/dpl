@@ -284,6 +284,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **password**: GitHub Password. Not necessary if `api-key` is used.
 * **repo**: GitHub Repo. Defaults to git repo's name.
 * **file**: File to upload to GitHub Release.
+* **file_glob**: If files should be interpreted as globs (\* and \*\* wildcards). Defaults to false.
 * **release-number**: Overide automatic release detection, set a release manually.
 
 #### GitHub Two Factor Authentication
