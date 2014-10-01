@@ -43,6 +43,16 @@ module DPL
         @user ||= api.user
       end
 
+      def files
+        if options[:file_glob]
+          Array(options[:file]).map do |glob|
+            Dir.glob(glob)
+          end.flatten
+        else
+          Array(options[:file])
+        end
+      end
+
       def needs_key?
         false
       end
@@ -89,7 +99,7 @@ module DPL
           release_url = api.create_release(slug, get_tag).rels[:self].href
         end
 
-        Array(options[:file]).each do |file|
+        files.each do |file|
           already_exists = false
           filename = Pathname.new(file).basename.to_s
           api.release(release_url).rels[:assets].get.data.each do |existing_file|
