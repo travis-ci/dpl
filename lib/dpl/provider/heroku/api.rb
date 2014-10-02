@@ -56,7 +56,7 @@ module DPL
           @version ||= begin
             sha = ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
             if ENV['TRAVIS_JOB_NUMBER']
-              "Travis Build ##{ENV['TRAVIS_JOB_NUMBER']} (#{sha})"
+              "travis-#{ENV['TRAVIS_JOB_NUMBER']}-#{sha}"
             else
               sha
             end
