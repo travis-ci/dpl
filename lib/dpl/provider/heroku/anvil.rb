@@ -17,6 +17,22 @@ module DPL
           false
         end
 
+        def deploy
+          warn ''
+          if options[:strategy]
+            warn 'You have explicitely set your deploy strategy to %p.' % options[:strategy]
+            warn 'Anvil support will be dropped in the near future.'
+            warn 'Please consider changing it to "api" or "git".'
+          else
+            warn 'The default strategy for Heroku deployments is currently "anvil".'
+            warn 'This will be changed to "api" in the near future.'
+            warn 'Consider setting it explicitey to "api" or "git".'
+          end
+          warn ''
+
+          super
+        end
+
         def push_app
           sha = ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
           response = Excon.post release_url,
