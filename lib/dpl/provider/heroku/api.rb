@@ -53,14 +53,7 @@ module DPL
         end
 
         def version
-          @version ||= begin
-            sha = ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
-            if ENV['TRAVIS_JOB_NUMBER']
-              "travis-#{ENV['TRAVIS_JOB_NUMBER']}-#{sha}"
-            else
-              sha
-            end
-          end
+          @version ||= options[:version] || ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
         end
 
         def post(subpath, body = nil, options = {})
