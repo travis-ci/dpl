@@ -1,9 +1,10 @@
 module DPL
   class Provider
     module Heroku
-      autoload :Anvil, 'dpl/provider/heroku/anvil'
-      autoload :Git,   'dpl/provider/heroku/git'
-      autoload :GitDeployKey,   'dpl/provider/heroku/git_deploy_key'
+      autoload :Anvil,        'dpl/provider/heroku/anvil'
+      autoload :API,          'dpl/provider/heroku/api'
+      autoload :Git,          'dpl/provider/heroku/git'
+      autoload :GitDeployKey, 'dpl/provider/heroku/git_deploy_key'
 
       extend self
 
