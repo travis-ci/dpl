@@ -14,9 +14,13 @@ describe DPL::Provider::ElasticBeanstalk do
   let(:region) { 'us-west-2' }
   let(:app) { 'example-app' }
   let(:env) { 'live' }
+  let(:bucket_name) { "travis-elasticbeanstalk-builds-#{region}" }
 
   subject :provider do
-    described_class.new(DummyContext.new, :access_key_id => access_key_id, :secret_access_key => secret_access_key, :region => region, :app => app, :env => env)
+    described_class.new(
+      DummyContext.new, :access_key_id => access_key_id, :secret_access_key => secret_access_key,
+      :region => region, :app => app, :env => env, :bucket_name => bucket_name
+    )
   end
 
   describe "#check_auth" do
