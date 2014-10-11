@@ -371,6 +371,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **region**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
  * **app**: Elastic Beanstalk application name.
  * **env**: Elastic Beanstalk environment name which will be updated.
+ * **bucket_name**: Bucket name to upload app to. Optional, and defaults to `travis-elasticbeanstalk-builds-REGION` (where `REGION` is the `region` value set above).
 
 #### Examples:
 
@@ -388,4 +389,4 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
     dpl --access-token=<access-token> --site-id=3f932c1e-708b-4573-938a-a07d9728c22e
     dpl --access-token=<access-token> --site-id=3f932c1e-708b-4573-938a-a07d9728c22e --local-dir=build
-    
+
