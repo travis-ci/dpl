@@ -189,6 +189,10 @@ module DPL
       $stderr.puts(message)
     end
 
+    def warn(message)
+      log "\e[31;1m#{message}\e[0m"
+    end
+
     def run(command)
       error "running commands not supported"
     end
