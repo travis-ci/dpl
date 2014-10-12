@@ -16,12 +16,12 @@ describe DPL::Provider::Divshot do
   describe "#push_app" do
     it 'should include the environment specified' do
       provider.options.update(:environment => 'development')
-      expect(provider.context).to receive(:shell).with("divshot push development --token abc123")
+      expect(provider.context).to receive(:shell).with("divshot push development --token=abc123")
       provider.push_app
     end
 
     it 'should default to production' do
-      expect(provider.context).to receive(:shell).with("divshot push production --token abc123")
+      expect(provider.context).to receive(:shell).with("divshot push production --token=abc123")
       provider.push_app
     end
   end
