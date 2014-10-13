@@ -67,4 +67,12 @@ describe DPL::Provider::ElasticBeanstalk do
       provider.push_app
     end
   end
+
+  context 'when bucket name is not provided' do
+    before { allow(provider).to receive(:options).and_return({region: 'us-bork-2'}) }
+
+    it 'uses the default bucket name' do
+      expect(provider.send(:bucket_name)).to eq('travis-elasticbeanstalk-builds-us-bork-2')
+    end
+  end
 end

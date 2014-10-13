@@ -51,7 +51,7 @@ module DPL
       end
 
       def bucket_name
-        option(:bucket_name) || "travis-elasticbeanstalk-builds-#{region}"
+        options[:bucket_name] || "travis-elasticbeanstalk-builds-#{region}"
       end
 
       def s3
