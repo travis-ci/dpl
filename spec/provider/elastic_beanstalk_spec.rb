@@ -14,7 +14,7 @@ describe DPL::Provider::ElasticBeanstalk do
   let(:region) { 'us-west-2' }
   let(:app) { 'example-app' }
   let(:env) { 'live' }
-  let(:bucket_name) { "travis-elasticbeanstalk-builds-#{region}" }
+  let(:bucket_name) { "travis-elasticbeanstalk-test-builds-#{region}" }
 
   subject :provider do
     described_class.new(
@@ -32,7 +32,7 @@ describe DPL::Provider::ElasticBeanstalk do
 
   describe "#push_app" do
 
-    let(:bucket_name) { "travis-elasticbeanstalk-builds-#{region}" }
+    let(:bucket_name) { "travis-elasticbeanstalk-test-builds-#{region}" }
     let(:s3_object) { Object.new }
     let(:app_version) { Object.new }
 
