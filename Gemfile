@@ -54,3 +54,8 @@ end
 group :bitballoon do
   gem 'bitballoon'
 end
+
+group :puppet_forge do
+  gem 'puppet'
+  gem 'puppet-blacksmith'
+end

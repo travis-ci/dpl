@@ -28,6 +28,7 @@ Dpl supports the following providers:
 * [Deis](#deis)
 * [Google Cloud Storage](#google-cloud-storage)
 * [Elastic Beanstalk](#elastic-beanstalk)
+* [Puppet Forge](#puppet-forge)
 
 ## Installation:
 
@@ -390,3 +391,14 @@ For accounts using two factor authentication, you have to use an oauth token as 
     dpl --access-token=<access-token> --site-id=3f932c1e-708b-4573-938a-a07d9728c22e
     dpl --access-token=<access-token> --site-id=3f932c1e-708b-4573-938a-a07d9728c22e --local-dir=build
 
+### Puppet Forge:
+
+#### Options:
+
+ * **user**: Required. The user name at Puppet forge.
+ * **password**: Required. The Puppet forge password.
+ * **url**: Optional. The forge URL to deploy to. Defaults to https://forgeapi.puppetlabs.com/
+
+#### Examples:
+
+    dpl --provider=puppetforge --user=puppetlabs --password=s3cr3t
