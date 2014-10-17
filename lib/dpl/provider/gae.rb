@@ -58,6 +58,10 @@ module DPL
 
       def push_app
         puts "About to call push_app in with #{self.class} provider"
+        puts "APPCFG_BIN: #{APPCFG_BIN}"
+        unless File.exist?(APPCFG_BIN)
+          puts "APPCFG_BIN does not exist"
+        end
         context.shell "#{APPCFG_BIN} --oauth2_refresh_token=#{options[:oauth_refresh_token]} update #{app_dir}"
       end
     end
