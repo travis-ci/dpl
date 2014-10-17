@@ -17,7 +17,7 @@ module DPL
 
       def get_tag
         if travis_tag.nil?
-          @tag ||= `git describe --tags --exact-match 2>/dev/null`.chomp     
+          @tag ||= `git describe --tags --exact-match 2>/dev/null`.chomp
         else
           @tag ||= travis_tag
         end
@@ -96,7 +96,7 @@ module DPL
 
         #If for some reason GitHub hasn't already created a release for the tag, create one
         if tag_matched == false
-          release_url = api.create_release(slug, get_tag).rels[:self].href
+          release_url = api.create_release(slug, get_tag, options[:release_body], options[:release_draft], options[:release_prerelease]).rels[:self].href
         end
 
         files.each do |file|
