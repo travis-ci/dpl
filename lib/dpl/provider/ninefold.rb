@@ -16,7 +16,7 @@ module DPL
       end
 
       def push_app
-        context.shell "AUTH_TOKEN=#{option(:auth_token)} APP_ID=#{option(:app_id)} ninefold app redeploy --sure"
+        context.shell "AUTH_TOKEN=#{option(:auth_token)} APP_ID=#{option(:app_id)} ninefold app redeploy --robot --sure"
       end
     end
   end
