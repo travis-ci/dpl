@@ -28,7 +28,7 @@ describe DPL::Provider::Ninefold do
 
   describe "#push_app" do
     it 'includes the auth token and app ID specified' do
-      expect(provider.context).to receive(:shell).with("AUTH_TOKEN=123456789 APP_ID=1234 ninefold app redeploy --sure")
+      expect(provider.context).to receive(:shell).with("AUTH_TOKEN=123456789 APP_ID=1234 ninefold app redeploy --robot --sure")
       provider.push_app
     end
   end
