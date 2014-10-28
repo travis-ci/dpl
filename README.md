@@ -14,7 +14,7 @@ Dpl supports the following providers:
 * [Heroku](#heroku)
 * [Nodejitsu](#nodejitsu)
 * [NPM](#npm)
-* [Openshift](#openshift)
+* [OpenShift](#openshift)
 * [PyPi](#pypi)
 * [RubyGems](#rubygems)
 * [S3](#s3)
@@ -111,19 +111,19 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
     dpl --provider=engineyard --username=<username> --password=<password> --environment=staging
     dpl --provider=engineyard --api-key=<api-key> --app=<application> --migrate=`rake db:migrate`
 
-### Openshift:
+### OpenShift:
 
 #### Options:
 
-* **username**: Openshift Username.
+* **user**: Openshift Username.
 * **password**: Openshift Password.
 * **domain**: Openshift Application Domain.
 * **app**: Openshift Application. Defaults to git repo's name.
 
 ####Examples:
 
-    dpl --provider=openshift --username=<username> --password=<password> --domain=<domain>
-    dpl --provider=openshift --username=<username> --password=<password> --domain=<domain> --app=<app>
+    dpl --provider=openshift --user=<username> --password=<password> --domain=<domain>
+    dpl --provider=openshift --user=<username> --password=<password> --domain=<domain> --app=<app>
 
 ### cloudControl:
 
