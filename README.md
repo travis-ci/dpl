@@ -5,6 +5,7 @@
 Dpl supports the following providers:
 
 * [AppFog](#appfog)
+* [Biicode](#biicode)
 * [BitBalloon](#bitballoon)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
@@ -172,6 +173,18 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 #### Examples:
 
     dpl --provider=npm --email=<email> --api-key=<api-key>
+
+### biicode:
+
+#### Options:
+
+* **user**: biicode username.
+* **password**: biicode password.
+
+#### Examples:
+
+    dpl --provider=biicode --user=<user> --password=<password>
+
 
 ### S3:
 
