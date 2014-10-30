@@ -4,11 +4,12 @@ module DPL
   class Provider
     class Biicode < Provider
 
+      experimental 'Biicode'
+
       def self.install_biicode
         unless find_executable 'bii'
-		context.shell "wget http://apt.biicode.com/install.sh -O install_biicode.sh && chmod +x install_biicode.sh && ./install_biicode.sh"
-      
-	end
+      		context.shell "wget http://apt.biicode.com/install.sh -O install_biicode.sh && chmod +x install_biicode.sh && ./install_biicode.sh"
+      	end
       end
 
       install_biicode
