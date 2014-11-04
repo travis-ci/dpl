@@ -7,7 +7,6 @@ module DPL
         end
 
         def check_auth
-          super
           setup_git_ssh
         end
 
