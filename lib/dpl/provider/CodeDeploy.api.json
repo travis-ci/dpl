@@ -1,47 +1,16 @@
 {
   "metadata": {
-    "apiVersion": "2013-09-01",
-    "endpointPrefix": "simpledeploy",
+    "apiVersion": "2014-10-06",
+    "endpointPrefix": "codedeploy",
     "jsonVersion": "1.1",
-    "serviceAbbreviation": "SDS",
-    "serviceFullName": "Amazon Simple Deploy Service",
+    "serviceAbbreviation": "codedeploy",
+    "serviceFullName": "AWS CodeDeploy",
     "signatureVersion": "v4",
-    "targetPrefix": "RazorbillFrontEndService_20130901",
+    "targetPrefix": "CodeDeploy_20141006",
     "timestampFormat": "unixTimestamp",
     "protocol": "json"
   },
   "operations": {
-    "AbortDeployment": {
-      "name": "AbortDeployment",
-      "http": {
-        "method": "POST",
-        "requestUri": "/"
-      },
-      "input": {
-        "shape": "AbortDeploymentInput"
-      },
-      "output": {
-        "shape": "AbortDeploymentOutput"
-      },
-      "errors": [
-        {
-          "shape": "DeploymentIdRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "DeploymentDoesNotExistException",
-          "exception": true
-        },
-        {
-          "shape": "DeploymentAlreadyCompletedException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidDeploymentIdException",
-          "exception": true
-        }
-      ]
-    },
     "BatchGetApplications": {
       "name": "BatchGetApplications",
       "http": {
@@ -158,18 +127,6 @@
         },
         {
           "shape": "DeploymentGroupDoesNotExistException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupNameRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidInstanceGroupNameException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupDoesNotExistException",
           "exception": true
         },
         {
@@ -300,73 +257,6 @@
         }
       ]
     },
-    "CreateInstanceGroup": {
-      "name": "CreateInstanceGroup",
-      "http": {
-        "method": "POST",
-        "requestUri": "/"
-      },
-      "input": {
-        "shape": "CreateInstanceGroupInput"
-      },
-      "output": {
-        "shape": "CreateInstanceGroupOutput"
-      },
-      "errors": [
-        {
-          "shape": "ApplicationNameRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidApplicationNameException",
-          "exception": true
-        },
-        {
-          "shape": "ApplicationDoesNotExistException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupNameRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidInstanceGroupNameException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupAlreadyExistsException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidEC2TagException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidAutoScalingGroupException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidDeploymentConfigNameException",
-          "exception": true
-        },
-        {
-          "shape": "DeploymentConfigDoesNotExistException",
-          "exception": true
-        },
-        {
-          "shape": "RoleRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidRoleException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupLimitExceededException",
-          "exception": true
-        }
-      ]
-    },
     "DeleteApplication": {
       "name": "DeleteApplication",
       "http": {
@@ -442,41 +332,6 @@
         },
         {
           "shape": "InvalidDeploymentGroupNameException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidRoleException",
-          "exception": true
-        }
-      ]
-    },
-    "DeleteInstanceGroup": {
-      "name": "DeleteInstanceGroup",
-      "http": {
-        "method": "POST",
-        "requestUri": "/"
-      },
-      "input": {
-        "shape": "DeleteInstanceGroupInput"
-      },
-      "output": {
-        "shape": "DeleteInstanceGroupOutput"
-      },
-      "errors": [
-        {
-          "shape": "ApplicationNameRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidApplicationNameException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupNameRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidInstanceGroupNameException",
           "exception": true
         },
         {
@@ -679,45 +534,6 @@
         }
       ]
     },
-    "GetInstanceGroup": {
-      "name": "GetInstanceGroup",
-      "http": {
-        "method": "POST",
-        "requestUri": "/"
-      },
-      "input": {
-        "shape": "GetInstanceGroupInput"
-      },
-      "output": {
-        "shape": "GetInstanceGroupOutput"
-      },
-      "errors": [
-        {
-          "shape": "ApplicationNameRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidApplicationNameException",
-          "exception": true
-        },
-        {
-          "shape": "ApplicationDoesNotExistException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupNameRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidInstanceGroupNameException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupDoesNotExistException",
-          "exception": true
-        }
-      ]
-    },
     "ListApplicationRevisions": {
       "name": "ListApplicationRevisions",
       "http": {
@@ -770,10 +586,6 @@
         {
           "shape": "InvalidNextTokenException",
           "exception": true
-        },
-        {
-          "shape": "InvalidStartTokenException",
-          "exception": true
         }
       ]
     },
@@ -793,10 +605,6 @@
         {
           "shape": "InvalidNextTokenException",
           "exception": true
-        },
-        {
-          "shape": "InvalidStartTokenException",
-          "exception": true
         }
       ]
     },
@@ -815,10 +623,6 @@
       "errors": [
         {
           "shape": "InvalidNextTokenException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidStartTokenException",
           "exception": true
         }
       ]
@@ -851,10 +655,6 @@
         {
           "shape": "InvalidNextTokenException",
           "exception": true
-        },
-        {
-          "shape": "InvalidStartTokenException",
-          "exception": true
         }
       ]
     },
@@ -885,10 +685,6 @@
         },
         {
           "shape": "InvalidNextTokenException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidStartTokenException",
           "exception": true
         },
         {
@@ -939,18 +735,6 @@
           "exception": true
         },
         {
-          "shape": "InvalidInstanceGroupNameException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupDoesNotExistException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupNameRequiredException",
-          "exception": true
-        },
-        {
           "shape": "InvalidTimeRangeException",
           "exception": true
         },
@@ -960,45 +744,6 @@
         },
         {
           "shape": "InvalidNextTokenException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidStartTokenException",
-          "exception": true
-        }
-      ]
-    },
-    "ListInstanceGroups": {
-      "name": "ListInstanceGroups",
-      "http": {
-        "method": "POST",
-        "requestUri": "/"
-      },
-      "input": {
-        "shape": "ListInstanceGroupsInput"
-      },
-      "output": {
-        "shape": "ListInstanceGroupsOutput"
-      },
-      "errors": [
-        {
-          "shape": "ApplicationNameRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidApplicationNameException",
-          "exception": true
-        },
-        {
-          "shape": "ApplicationDoesNotExistException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidNextTokenException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidStartTokenException",
           "exception": true
         }
       ]
@@ -1156,97 +901,9 @@
           "exception": true
         }
       ]
-    },
-    "UpdateInstanceGroup": {
-      "name": "UpdateInstanceGroup",
-      "http": {
-        "method": "POST",
-        "requestUri": "/"
-      },
-      "input": {
-        "shape": "UpdateInstanceGroupInput"
-      },
-      "output": {
-        "shape": "UpdateInstanceGroupOutput"
-      },
-      "errors": [
-        {
-          "shape": "ApplicationNameRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidApplicationNameException",
-          "exception": true
-        },
-        {
-          "shape": "ApplicationDoesNotExistException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidInstanceGroupNameException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupAlreadyExistsException",
-          "exception": true
-        },
-        {
-          "shape": "InstanceGroupNameRequiredException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidEC2TagException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidAutoScalingGroupException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidDeploymentConfigNameException",
-          "exception": true
-        },
-        {
-          "shape": "DeploymentConfigDoesNotExistException",
-          "exception": true
-        },
-        {
-          "shape": "InvalidRoleException",
-          "exception": true
-        }
-      ]
     }
   },
   "shapes": {
-    "AbortDeploymentInput": {
-      "type": "structure",
-      "required": [
-        "deploymentId"
-      ],
-      "members": {
-        "deploymentId": {
-          "shape": "DeploymentId"
-        }
-      }
-    },
-    "AbortDeploymentOutput": {
-      "type": "structure",
-      "members": {
-        "status": {
-          "shape": "AbortStatus"
-        },
-        "statusMessage": {
-          "shape": "Message"
-        }
-      }
-    },
-    "AbortStatus": {
-      "type": "string",
-      "enum": [
-        "Pending",
-        "Succeeded"
-      ]
-    },
     "ApplicationAlreadyExistsException": {
       "type": "structure",
       "members": {
@@ -1273,6 +930,9 @@
         },
         "createTime": {
           "shape": "Timestamp"
+        },
+        "linkedToGitHub": {
+          "shape": "Boolean"
         }
       }
     },
@@ -1374,6 +1034,9 @@
         }
       }
     },
+    "Boolean": {
+      "type": "boolean"
+    },
     "BucketNameFilterRequiredException": {
       "type": "structure",
       "members": {
@@ -1387,6 +1050,9 @@
         "tgz",
         "zip"
       ]
+    },
+    "CommitId": {
+      "type": "string"
     },
     "CreateApplicationInput": {
       "type": "structure",
@@ -1476,23 +1142,17 @@
         "deploymentGroupName": {
           "shape": "DeploymentGroupName"
         },
-        "instanceGroupName": {
-          "shape": "InstanceGroupName"
-        },
-        "s3Location": {
-          "shape": "S3Location"
-        },
         "revision": {
-          "shape": "S3Location"
+          "shape": "RevisionLocation"
         },
         "deploymentConfigName": {
           "shape": "DeploymentConfigName"
         },
-        "reason": {
-          "shape": "Description"
-        },
         "description": {
           "shape": "Description"
+        },
+        "ignoreApplicationStopFailures": {
+          "shape": "Boolean"
         }
       }
     },
@@ -1501,41 +1161,6 @@
       "members": {
         "deploymentId": {
           "shape": "DeploymentId"
-        }
-      }
-    },
-    "CreateInstanceGroupInput": {
-      "type": "structure",
-      "required": [
-        "applicationName",
-        "instanceGroupName"
-      ],
-      "members": {
-        "applicationName": {
-          "shape": "ApplicationName"
-        },
-        "instanceGroupName": {
-          "shape": "InstanceGroupName"
-        },
-        "deploymentConfigName": {
-          "shape": "DeploymentConfigName"
-        },
-        "ec2TagFilters": {
-          "shape": "EC2TagFilterList"
-        },
-        "autoScalingGroups": {
-          "shape": "AutoScalingGroupNameList"
-        },
-        "serviceRoleArn": {
-          "shape": "Role"
-        }
-      }
-    },
-    "CreateInstanceGroupOutput": {
-      "type": "structure",
-      "members": {
-        "instanceGroupId": {
-          "shape": "InstanceGroupId"
         }
       }
     },
@@ -1577,29 +1202,6 @@
       }
     },
     "DeleteDeploymentGroupOutput": {
-      "type": "structure",
-      "members": {
-        "hooksNotCleanedUp": {
-          "shape": "AutoScalingGroupList"
-        }
-      }
-    },
-    "DeleteInstanceGroupInput": {
-      "type": "structure",
-      "required": [
-        "applicationName",
-        "instanceGroupName"
-      ],
-      "members": {
-        "applicationName": {
-          "shape": "ApplicationName"
-        },
-        "instanceGroupName": {
-          "shape": "InstanceGroupName"
-        }
-      }
-    },
-    "DeleteInstanceGroupOutput": {
       "type": "structure",
       "members": {
         "hooksNotCleanedUp": {
@@ -1727,7 +1329,7 @@
           "shape": "Role"
         },
         "targetRevision": {
-          "shape": "S3Location"
+          "shape": "RevisionLocation"
         }
       }
     },
@@ -1772,17 +1374,14 @@
         "deploymentGroupName": {
           "shape": "DeploymentGroupName"
         },
-        "instanceGroupName": {
-          "shape": "InstanceGroupName"
-        },
         "deploymentConfigName": {
           "shape": "DeploymentConfigName"
         },
         "deploymentId": {
           "shape": "DeploymentId"
         },
-        "s3Location": {
-          "shape": "S3Location"
+        "revision": {
+          "shape": "RevisionLocation"
         },
         "status": {
           "shape": "DeploymentStatus"
@@ -1802,14 +1401,14 @@
         "deploymentOverview": {
           "shape": "DeploymentOverview"
         },
-        "reason": {
-          "shape": "Description"
-        },
         "description": {
           "shape": "Description"
         },
         "creator": {
           "shape": "DeploymentCreator"
+        },
+        "ignoreApplicationStopFailures": {
+          "shape": "Boolean"
         }
       }
     },
@@ -1853,7 +1452,6 @@
         "InProgress",
         "Succeeded",
         "Failed",
-        "Aborted",
         "Stopped"
       ]
     },
@@ -1936,7 +1534,6 @@
       "type": "string",
       "enum": [
         "DEPLOYMENT_GROUP_MISSING",
-        "INSTANCE_GROUP_MISSING",
         "APPLICATION_MISSING",
         "REVISION_MISSING",
         "IAM_ROLE_MISSING",
@@ -1962,6 +1559,26 @@
     },
     "ErrorMessage": {
       "type": "string"
+    },
+    "GenericRevisionInfo": {
+      "type": "structure",
+      "members": {
+        "description": {
+          "shape": "Description"
+        },
+        "deploymentGroups": {
+          "shape": "DeploymentGroupsList"
+        },
+        "firstUsedTime": {
+          "shape": "Timestamp"
+        },
+        "lastUsedTime": {
+          "shape": "Timestamp"
+        },
+        "registerTime": {
+          "shape": "Timestamp"
+        }
+      }
     },
     "GetApplicationInput": {
       "type": "structure",
@@ -1993,7 +1610,7 @@
           "shape": "ApplicationName"
         },
         "revision": {
-          "shape": "S3Location"
+          "shape": "RevisionLocation"
         }
       }
     },
@@ -2004,10 +1621,10 @@
           "shape": "ApplicationName"
         },
         "revision": {
-          "shape": "S3Location"
+          "shape": "RevisionLocation"
         },
         "revisionInfo": {
-          "shape": "S3RevisionInfo"
+          "shape": "GenericRevisionInfo"
         }
       }
     },
@@ -2095,26 +1712,14 @@
         }
       }
     },
-    "GetInstanceGroupInput": {
+    "GitHubLocation": {
       "type": "structure",
-      "required": [
-        "applicationName",
-        "instanceGroupName"
-      ],
       "members": {
-        "applicationName": {
-          "shape": "ApplicationName"
+        "repository": {
+          "shape": "Repository"
         },
-        "instanceGroupName": {
-          "shape": "InstanceGroupName"
-        }
-      }
-    },
-    "GetInstanceGroupOutput": {
-      "type": "structure",
-      "members": {
-        "instanceGroupInfo": {
-          "shape": "InstanceGroupInfo"
+        "commitId": {
+          "shape": "CommitId"
         }
       }
     },
@@ -2126,73 +1731,6 @@
       "members": {
       },
       "exception": true
-    },
-    "InstanceGroupAlreadyExistsException": {
-      "type": "structure",
-      "members": {
-      },
-      "exception": true
-    },
-    "InstanceGroupDoesNotExistException": {
-      "type": "structure",
-      "members": {
-      },
-      "exception": true
-    },
-    "InstanceGroupId": {
-      "type": "string"
-    },
-    "InstanceGroupInfo": {
-      "type": "structure",
-      "members": {
-        "applicationName": {
-          "shape": "ApplicationName"
-        },
-        "instanceGroupId": {
-          "shape": "InstanceGroupId"
-        },
-        "instanceGroupName": {
-          "shape": "InstanceGroupName"
-        },
-        "deploymentConfigName": {
-          "shape": "DeploymentConfigName"
-        },
-        "ec2TagFilters": {
-          "shape": "EC2TagFilterList"
-        },
-        "autoScalingGroups": {
-          "shape": "AutoScalingGroupList"
-        },
-        "serviceRoleArn": {
-          "shape": "Role"
-        },
-        "targetRevision": {
-          "shape": "S3Location"
-        }
-      }
-    },
-    "InstanceGroupLimitExceededException": {
-      "type": "structure",
-      "members": {
-      },
-      "exception": true
-    },
-    "InstanceGroupName": {
-      "type": "string",
-      "min": 1,
-      "max": 100
-    },
-    "InstanceGroupNameRequiredException": {
-      "type": "structure",
-      "members": {
-      },
-      "exception": true
-    },
-    "InstanceGroupsList": {
-      "type": "list",
-      "member": {
-        "shape": "InstanceGroupName"
-      }
     },
     "InstanceId": {
       "type": "string"
@@ -2300,12 +1838,6 @@
       },
       "exception": true
     },
-    "InvalidInstanceGroupNameException": {
-      "type": "structure",
-      "members": {
-      },
-      "exception": true
-    },
     "InvalidInstanceStatusException": {
       "type": "structure",
       "members": {
@@ -2355,12 +1887,6 @@
       "exception": true
     },
     "InvalidSortOrderException": {
-      "type": "structure",
-      "members": {
-      },
-      "exception": true
-    },
-    "InvalidStartTokenException": {
       "type": "structure",
       "members": {
       },
@@ -2444,17 +1970,14 @@
         "sortOrder": {
           "shape": "SortOrder"
         },
-        "bucket": {
+        "s3Bucket": {
           "shape": "S3Bucket"
         },
-        "keyPrefix": {
+        "s3KeyPrefix": {
           "shape": "S3Key"
         },
         "deployed": {
           "shape": "ListStateFilterAction"
-        },
-        "startToken": {
-          "shape": "NextToken"
         },
         "nextToken": {
           "shape": "NextToken"
@@ -2465,7 +1988,7 @@
       "type": "structure",
       "members": {
         "revisions": {
-          "shape": "S3LocationList"
+          "shape": "RevisionLocationList"
         },
         "nextToken": {
           "shape": "NextToken"
@@ -2476,9 +1999,6 @@
       "type": "structure",
       "members": {
         "nextToken": {
-          "shape": "NextToken"
-        },
-        "startToken": {
           "shape": "NextToken"
         }
       }
@@ -2498,9 +2018,6 @@
       "type": "structure",
       "members": {
         "nextToken": {
-          "shape": "NextToken"
-        },
-        "startToken": {
           "shape": "NextToken"
         }
       }
@@ -2526,9 +2043,6 @@
           "shape": "ApplicationName"
         },
         "nextToken": {
-          "shape": "NextToken"
-        },
-        "startToken": {
           "shape": "NextToken"
         }
       }
@@ -2559,9 +2073,6 @@
         "nextToken": {
           "shape": "NextToken"
         },
-        "startToken": {
-          "shape": "NextToken"
-        },
         "instanceStatusFilter": {
           "shape": "InstanceStatusList"
         }
@@ -2587,9 +2098,6 @@
         "deploymentGroupName": {
           "shape": "DeploymentGroupName"
         },
-        "instanceGroupName": {
-          "shape": "InstanceGroupName"
-        },
         "includeOnlyStatuses": {
           "shape": "DeploymentStatusList"
         },
@@ -2597,9 +2105,6 @@
           "shape": "TimeRange"
         },
         "nextToken": {
-          "shape": "NextToken"
-        },
-        "startToken": {
           "shape": "NextToken"
         }
       }
@@ -2609,37 +2114,6 @@
       "members": {
         "deployments": {
           "shape": "DeploymentsList"
-        },
-        "nextToken": {
-          "shape": "NextToken"
-        }
-      }
-    },
-    "ListInstanceGroupsInput": {
-      "type": "structure",
-      "required": [
-        "applicationName"
-      ],
-      "members": {
-        "applicationName": {
-          "shape": "ApplicationName"
-        },
-        "nextToken": {
-          "shape": "NextToken"
-        },
-        "startToken": {
-          "shape": "NextToken"
-        }
-      }
-    },
-    "ListInstanceGroupsOutput": {
-      "type": "structure",
-      "members": {
-        "applicationName": {
-          "shape": "ApplicationName"
-        },
-        "instanceGroups": {
-          "shape": "InstanceGroupsList"
         },
         "nextToken": {
           "shape": "NextToken"
@@ -2698,15 +2172,45 @@
           "shape": "Description"
         },
         "revision": {
-          "shape": "S3Location"
+          "shape": "RevisionLocation"
         }
       }
+    },
+    "Repository": {
+      "type": "string"
     },
     "RevisionDoesNotExistException": {
       "type": "structure",
       "members": {
       },
       "exception": true
+    },
+    "RevisionLocation": {
+      "type": "structure",
+      "members": {
+        "revisionType": {
+          "shape": "RevisionLocationType"
+        },
+        "s3Location": {
+          "shape": "S3Location"
+        },
+        "gitHubLocation": {
+          "shape": "GitHubLocation"
+        }
+      }
+    },
+    "RevisionLocationList": {
+      "type": "list",
+      "member": {
+        "shape": "RevisionLocation"
+      }
+    },
+    "RevisionLocationType": {
+      "type": "string",
+      "enum": [
+        "S3",
+        "GitHub"
+      ]
     },
     "RevisionRequiredException": {
       "type": "structure",
@@ -2749,35 +2253,6 @@
         }
       }
     },
-    "S3LocationList": {
-      "type": "list",
-      "member": {
-        "shape": "S3Location"
-      }
-    },
-    "S3RevisionInfo": {
-      "type": "structure",
-      "members": {
-        "description": {
-          "shape": "Description"
-        },
-        "deploymentGroups": {
-          "shape": "DeploymentGroupsList"
-        },
-        "instanceGroups": {
-          "shape": "InstanceGroupsList"
-        },
-        "firstUsedTime": {
-          "shape": "Timestamp"
-        },
-        "lastUsedTime": {
-          "shape": "Timestamp"
-        },
-        "registerTime": {
-          "shape": "Timestamp"
-        }
-      }
-    },
     "ScriptName": {
       "type": "string"
     },
@@ -2790,6 +2265,9 @@
     },
     "StopDeploymentInput": {
       "type": "structure",
+      "required": [
+        "deploymentId"
+      ],
       "members": {
         "deploymentId": {
           "shape": "DeploymentId"
@@ -2870,44 +2348,6 @@
       }
     },
     "UpdateDeploymentGroupOutput": {
-      "type": "structure",
-      "members": {
-        "hooksNotCleanedUp": {
-          "shape": "AutoScalingGroupList"
-        }
-      }
-    },
-    "UpdateInstanceGroupInput": {
-      "type": "structure",
-      "required": [
-        "applicationName",
-        "currentInstanceGroupName"
-      ],
-      "members": {
-        "applicationName": {
-          "shape": "ApplicationName"
-        },
-        "currentInstanceGroupName": {
-          "shape": "InstanceGroupName"
-        },
-        "newInstanceGroupName": {
-          "shape": "InstanceGroupName"
-        },
-        "deploymentConfigName": {
-          "shape": "DeploymentConfigName"
-        },
-        "ec2TagFilters": {
-          "shape": "EC2TagFilterList"
-        },
-        "autoScalingGroups": {
-          "shape": "AutoScalingGroupNameList"
-        },
-        "serviceRoleArn": {
-          "shape": "Role"
-        }
-      }
-    },
-    "UpdateInstanceGroupOutput": {
       "type": "structure",
       "members": {
         "hooksNotCleanedUp": {
