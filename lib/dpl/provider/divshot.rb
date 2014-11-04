@@ -16,7 +16,7 @@ module DPL
       end
 
       def push_app
-        context.shell "divshot push #{options[:environment] || "production"} --token #{option(:api_key)}"
+        context.shell "divshot push #{options[:environment] || "production"} --token=#{option(:api_key)}"
       end
     end
   end

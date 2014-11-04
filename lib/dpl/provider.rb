@@ -30,7 +30,10 @@ module DPL
     autoload :GCS,          'dpl/provider/gcs'
     autoload :GAE,          'dpl/provider/gae'
     autoload :BitBalloon,   'dpl/provider/bitballoon'
+    autoload :Biicode,      'dpl/provider/biicode'
     autoload :ElasticBeanstalk, 'dpl/provider/elastic_beanstalk'
+    autoload :PuppetForge,  'dpl/provider/puppet_forge'
+
 
     def self.new(context, options)
       return super if self < Provider
@@ -188,6 +191,10 @@ module DPL
 
     def log(message)
       $stderr.puts(message)
+    end
+
+    def warn(message)
+      log "\e[31;1m#{message}\e[0m"
     end
 
     def run(command)

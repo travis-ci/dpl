@@ -5,6 +5,7 @@
 Dpl supports the following providers:
 
 * [AppFog](#appfog)
+* [Biicode](#biicode)
 * [BitBalloon](#bitballoon)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
@@ -28,6 +29,7 @@ Dpl supports the following providers:
 * [Deis](#deis)
 * [Google Cloud Storage](#google-cloud-storage)
 * [Elastic Beanstalk](#elastic-beanstalk)
+* [Puppet Forge](#puppet-forge)
 
 ## Installation:
 
@@ -172,6 +174,18 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
     dpl --provider=npm --email=<email> --api-key=<api-key>
 
+### biicode:
+
+#### Options:
+
+* **user**: biicode username.
+* **password**: biicode password.
+
+#### Examples:
+
+    dpl --provider=biicode --user=<user> --password=<password>
+
+
 ### S3:
 
 #### Options:
@@ -284,6 +298,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **password**: GitHub Password. Not necessary if `api-key` is used.
 * **repo**: GitHub Repo. Defaults to git repo's name.
 * **file**: File to upload to GitHub Release.
+* **file_glob**: If files should be interpreted as globs (\* and \*\* wildcards). Defaults to false.
 * **release-number**: Overide automatic release detection, set a release manually.
 
 #### GitHub Two Factor Authentication
@@ -370,6 +385,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **region**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
  * **app**: Elastic Beanstalk application name.
  * **env**: Elastic Beanstalk environment name which will be updated.
+ * **bucket_name**: Bucket name to upload app to.
 
 #### Examples:
 
@@ -387,4 +403,15 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
     dpl --access-token=<access-token> --site-id=3f932c1e-708b-4573-938a-a07d9728c22e
     dpl --access-token=<access-token> --site-id=3f932c1e-708b-4573-938a-a07d9728c22e --local-dir=build
-    
+
+### Puppet Forge:
+
+#### Options:
+
+ * **user**: Required. The user name at Puppet forge.
+ * **password**: Required. The Puppet forge password.
+ * **url**: Optional. The forge URL to deploy to. Defaults to https://forgeapi.puppetlabs.com/
+
+#### Examples:
+
+    dpl --provider=puppetforge --user=puppetlabs --password=s3cr3t

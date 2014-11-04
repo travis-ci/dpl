@@ -42,6 +42,7 @@ module DPL
             opts[:acl]           = options[:acl] if options[:acl]
             opts[:expires]       = options[:expires] if options[:expires]
             unless File.directory?(filename)
+              log "uploading %p" % filename
               api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename), opts)
             end
           end
