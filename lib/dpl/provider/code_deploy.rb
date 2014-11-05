@@ -25,12 +25,42 @@ module DPL
         false
       end
 
+      def revision
+        case options[:revision_type].to_s.downcase
+        when "s3"     then s3_revision
+        when "github" then github_revision
+        when ""       then options[:bucket] ? s3_revision : github_revision
+        else error("unknown revision type %p" % options[:revision_type])
+        end
+      end
+
+      def s3_revision
+        {
+          revision_type: 'S3',
+          s3_location: {
+            bucket:      option(:bucket),
+            bundle_type: bundle_type,
+            key:         s3_key
+          }
+        }
+      end
+
+      def github_revision
+        {
+          revision_type: 'GitHub',
+          git_hub_location: {
+            commit_id:  options[:commit_id]  || ENV['TRAVIS_COMMIT']    || `git rev-parse HEAD`.strip,
+            repository: options[:repository] || ENV['TRAVIS_REPO_SLUG'] || option(:repository)
+          }
+        }
+      end
+
       def push_app
         deployment = code_deploy.create_deployment({
-          s3_location: { bucket: option(:bucket), bundle_type: bundle_type, key: s3_key },
+          revision:               revision,
           application_name:       options[:application]      || option(:application_name),
           deployment_group_name:  options[:deployment_group] || option(:deployment_group_name),
-          reason:                 options[:reason]           || default_reason
+          description:            options[:description]      || default_description
         })
         log "Triggered deployment #{deployment.deployment_id.inspect}."
       rescue Aws::CodeDeploy::Errors::DeploymentLimitExceededException => exception
@@ -49,7 +79,7 @@ module DPL
         options[:key] || option(:s3_key)
       end
 
-      def default_reason
+      def default_description
         "Deploy build #{ENV['TRAVIS_BUILD_NUMBER']} via Travis CI"
       end
 
