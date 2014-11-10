@@ -4,7 +4,7 @@ require 'dpl/provider/heroku'
 
 describe DPL::Provider::Heroku do
   subject :provider do
-    described_class.new(DummyContext.new, :app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "git")
+    described_class.new(DummyContext.new, :app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "git-ssh")
   end
 
   describe "#api" do

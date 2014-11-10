@@ -13,10 +13,6 @@ module DPL
           super
         end
 
-        def needs_key?
-          false
-        end
-
         def deploy
           warn ''
           if options[:strategy]

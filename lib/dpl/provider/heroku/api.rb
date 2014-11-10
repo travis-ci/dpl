@@ -4,15 +4,7 @@ require 'shellwords'
 module DPL
   class Provider
     module Heroku
-      class API < Git
-        def needs_key?
-          false
-        end
-
-        def user
-          @user ||= api.get_user.body["email"]
-        end
-
+      class API < Generic
         def push_app
           pack_archive
           upload_archive
