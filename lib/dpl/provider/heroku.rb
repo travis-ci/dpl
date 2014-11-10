@@ -5,7 +5,7 @@ module DPL
       autoload :API,          'dpl/provider/heroku/api'
       autoload :Generic,      'dpl/provider/heroku/generic'
       autoload :Git,          'dpl/provider/heroku/git'
-      autoload :GitSSH,       'dpl/provider/heroku/git'
+      autoload :GitSSH,       'dpl/provider/heroku/git_ssh'
       autoload :GitDeployKey, 'dpl/provider/heroku/git_deploy_key'
 
       extend self
