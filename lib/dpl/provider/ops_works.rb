@@ -101,7 +101,7 @@ module DPL
       end
 
       def travis_deploy_comment
-        "Deploy build #{ENV['TRAVIS_BUILD_NUMBER'] || current_sha} via Travis CI"
+        "Deploy build #{context.env['TRAVIS_BUILD_NUMBER'] || current_sha} via Travis CI"
       end
 
       def deploy

@@ -53,7 +53,7 @@ module DPL
       end
 
       def app_dir
-        options[:app_dir] || ENV['TRAVIS_BUILD_DIR'] || Dir.pwd
+        options[:app_dir] || context.env['TRAVIS_BUILD_DIR'] || Dir.pwd
       end
 
       def push_app

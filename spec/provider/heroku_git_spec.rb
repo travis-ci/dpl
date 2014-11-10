@@ -7,17 +7,21 @@ describe DPL::Provider::Heroku do
     described_class.new(DummyContext.new, :app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "git-ssh")
   end
 
+  let(:expected_headers) do
+    { "User-Agent" => "dpl/#{DPL::VERSION} heroku-rb/#{Heroku::API::VERSION}" }
+  end
+
   describe "#api" do
     it 'accepts an api key' do
       api = double(:api)
-      expect(::Heroku::API).to receive(:new).with(:api_key => "foo").and_return(api)
+      expect(::Heroku::API).to receive(:new).with(:api_key => "foo", :headers => expected_headers).and_return(api)
       expect(provider.api).to eq(api)
     end
 
     it 'accepts a user and a password' do
       api = double(:api)
       provider.options.update(:user => "foo", :password => "bar")
-      expect(::Heroku::API).to receive(:new).with(:user => "foo", :password => "bar").and_return(api)
+      expect(::Heroku::API).to receive(:new).with(:user => "foo", :password => "bar", :headers => expected_headers).and_return(api)
       expect(provider.api).to eq(api)
     end
   end
@@ -70,7 +74,7 @@ describe DPL::Provider::Heroku do
         provider.options[:git] = "git://something"
         expect(provider.context).to receive(:shell).with("git push git://something HEAD:refs/heads/master -f")
         provider.push_app
-        expect(ENV['GIT_HTTP_USER_AGENT']).to include("dpl/#{DPL::VERSION}")
+        expect(provider.context.env['GIT_HTTP_USER_AGENT']).to include("dpl/#{DPL::VERSION}")
       end
     end
 

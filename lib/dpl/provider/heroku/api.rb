@@ -12,7 +12,7 @@ module DPL
         end
 
         def archive_file
-          Shellwords.escape("#{ENV['HOME']}/.dpl.#{option(:app)}.tgz")
+          Shellwords.escape("#{context.env['HOME']}/.dpl.#{option(:app)}.tgz")
         end
 
         def pack_archive
@@ -45,7 +45,7 @@ module DPL
         end
 
         def version
-          @version ||= options[:version] || ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
+          @version ||= options[:version] || context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
         end
 
         def post(subpath, body = nil, options = {})

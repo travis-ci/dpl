@@ -9,19 +9,19 @@ describe DPL::Provider::Releases do
 
   describe "#travis_tag" do
     example "When $TRAVIS_TAG is nil" do
-      ENV['TRAVIS_TAG'] = nil
+      provider.context.env['TRAVIS_TAG'] = nil
 
       expect(provider.travis_tag).to eq(nil)
     end
 
     example "When $TRAVIS_TAG if set but empty" do
-      ENV['TRAVIS_TAG'] = nil
+      provider.context.env['TRAVIS_TAG'] = nil
 
       expect(provider.travis_tag).to eq(nil)
     end
 
     example "When $TRAVIS_TAG if set" do
-      ENV['TRAVIS_TAG'] = "foo"
+      provider.context.env['TRAVIS_TAG'] = "foo"
 
       expect(provider.travis_tag).to eq("foo")
     end

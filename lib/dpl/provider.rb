@@ -1,4 +1,5 @@
 require 'dpl/error'
+require 'dpl/version'
 require 'fileutils'
 
 module DPL
@@ -84,14 +85,14 @@ module DPL
 
     def initialize(context, options)
       @context, @options = context, options
-      ENV['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
+      context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
     end
 
     def user_agent(*strings)
       strings.unshift "dpl/#{DPL::VERSION}"
-      strings.unshift "travis/0.1.0" if ENV['TRAVIS']
+      strings.unshift "travis/0.1.0" if context.env['TRAVIS']
       strings = strings.flat_map { |e| Hash === e ? e.map { |k,v| "#{k}/#{v}" } : e }
-      strings.join(" ").gsub(/\s+/, " ")
+      strings.join(" ").gsub(/\s+/, " ").strip
     end
 
     def option(name, *alternatives)
@@ -135,7 +136,7 @@ module DPL
     end
 
     def sha
-      @sha ||= ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
+      @sha ||= context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
     end
 
     def commit_msg
@@ -180,7 +181,7 @@ module DPL
       end
 
       chmod(0740, path)
-      ENV['GIT_SSH'] = path
+      context.env['GIT_SSH'] = path
     end
 
     def detect_encoding?

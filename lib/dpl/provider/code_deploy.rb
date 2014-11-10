@@ -49,8 +49,8 @@ module DPL
         {
           revision_type: 'GitHub',
           git_hub_location: {
-            commit_id:  options[:commit_id]  || ENV['TRAVIS_COMMIT']    || `git rev-parse HEAD`.strip,
-            repository: options[:repository] || ENV['TRAVIS_REPO_SLUG'] || option(:repository)
+            commit_id:  options[:commit_id]  || context.env['TRAVIS_COMMIT']    || `git rev-parse HEAD`.strip,
+            repository: options[:repository] || context.env['TRAVIS_REPO_SLUG'] || option(:repository)
           }
         }
       end
@@ -80,7 +80,7 @@ module DPL
       end
 
       def default_description
-        "Deploy build #{ENV['TRAVIS_BUILD_NUMBER']} via Travis CI"
+        "Deploy build #{context.env['TRAVIS_BUILD_NUMBER']} via Travis CI"
       end
 
       def check_auth

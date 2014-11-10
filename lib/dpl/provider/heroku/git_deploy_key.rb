@@ -20,7 +20,7 @@ module DPL
           end
 
           chmod(0740, path)
-          ENV['GIT_SSH'] = path
+          context.env['GIT_SSH'] = path
         end
       end
     end

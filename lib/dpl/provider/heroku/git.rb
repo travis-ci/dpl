@@ -1,5 +1,3 @@
-require 'dpl/version'
-
 module DPL
   class Provider
     module Heroku
