@@ -67,11 +67,10 @@ describe DPL::Provider::Heroku do
 
     describe "#push_app" do
       example do
-        ENV['TRAVIS'] = 'true'
         provider.options[:git] = "git://something"
         expect(provider.context).to receive(:shell).with("git push git://something HEAD:refs/heads/master -f")
         provider.push_app
-        expect(ENV['GIT_HTTP_USER_AGENT']).to be == "travis/0.1.0 dpl/#{DPL::VERSION} git/2.1.0"
+        expect(ENV['GIT_HTTP_USER_AGENT']).to include("dpl/#{DPL::VERSION}")
       end
     end
 
