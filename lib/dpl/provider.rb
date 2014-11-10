@@ -84,6 +84,14 @@ module DPL
 
     def initialize(context, options)
       @context, @options = context, options
+      ENV['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
+    end
+
+    def user_agent(*strings)
+      strings.unshift "dpl/#{DPL::VERSION}"
+      strings.unshift "travis/0.1.0" if ENV['TRAVIS']
+      strings = strings.flat_map { |e| Hash === e ? e.map { |k,v| "#{k}/#{v}" } : e }
+      strings.join(" ").gsub(/\s+/, " ")
     end
 
     def option(name, *alternatives)
