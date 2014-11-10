@@ -11,7 +11,7 @@ module DPL
       extend self
 
       def new(context, options)
-        strategy = options[:strategy] || 'anvil'
+        strategy = options[:strategy] || 'api'
         constant = constants.detect { |c| c.to_s.downcase == strategy.downcase.gsub(/\W/, '') }
         raise Error, 'unknown strategy %p' % strategy unless constant and constant != Generic
         const_get(constant).new(context, options)
