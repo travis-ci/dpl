@@ -2,7 +2,7 @@ module DPL
   class Provider
     module Heroku
       class Git < Generic
-        require 'netrc'
+        requires 'netrc'
 
         def git_url
           "https://git.heroku.com/#{option(:app)}.git"
