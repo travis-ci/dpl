@@ -19,7 +19,7 @@ module DPL
       def config
         {
           :header => '[distutils]',
-          :servers_line => 'index-servers =',
+          :servers_line => 'index-servers = pypi',
           :servers => {
             'pypi' => [
                          "repository: #{options[:server] || DEFAULT_SERVER}",
