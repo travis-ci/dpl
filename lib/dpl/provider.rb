@@ -16,6 +16,7 @@ module DPL
     autoload :S3,           'dpl/provider/s3'
     autoload :CloudControl, 'dpl/provider/cloudcontrol'
     autoload :CloudFoundry, 'dpl/provider/cloud_foundry'
+    autoload :CodeDeploy,   'dpl/provider/code_deploy'
     autoload :PyPI,         'dpl/provider/pypi'
     autoload :Divshot,      'dpl/provider/divshot'
     autoload :CloudFiles,   'dpl/provider/cloud_files'
@@ -53,7 +54,7 @@ module DPL
       load    = options[:load]    || name
       gem(name, version)
     rescue LoadError
-      context.shell("gem install %s -v %p --no-ri --no-rdoc" % [name, version], retry: true)
+      context.shell("gem install %s -v %p --no-ri --no-rdoc #{'--pre' if options[:pre]}" % [name, version], retry: true)
       Gem.clear_paths
     ensure
       require load
