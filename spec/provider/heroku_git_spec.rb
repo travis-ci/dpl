@@ -47,7 +47,6 @@ describe DPL::Provider::Heroku do
       example do
         expect(provider).to receive(:log).at_least(1).times.with(/example/)
         provider.check_app
-        expect(provider.options[:git]).to eq("GIT URL")
       end
     end
 
