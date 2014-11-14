@@ -7,7 +7,7 @@ module DPL
         end
 
         def push_app
-          git_remote = option[:git] || git_url
+          git_remote = options[:git] || git_url
           context.shell "git push #{git_remote} HEAD:refs/heads/master -f"
         end
       end
