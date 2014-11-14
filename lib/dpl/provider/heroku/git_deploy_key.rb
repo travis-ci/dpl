@@ -1,9 +1,9 @@
 module DPL
   class Provider
     module Heroku
-      class GitDeployKey < Git
-        def git_url
-          info['git_url']
+      class GitDeployKey < GitSSH
+        def needs_key?
+          false
         end
 
         def check_auth
