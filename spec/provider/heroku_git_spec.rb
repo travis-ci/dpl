@@ -70,6 +70,7 @@ describe DPL::Provider::Heroku do
         provider.options[:git] = "git://something"
         expect(provider.context).to receive(:shell).with("git push git://something HEAD:refs/heads/master -f")
         provider.push_app
+        expect(ENV['GIT_HTTP_USER_AGENT']).to be == "dpl/#{DPL::VERSION} git/2.1.0"
       end
     end
 

@@ -6,7 +6,7 @@ module DPL
           info['git_url']
         end
 
-         def needs_key?
+        def needs_key?
           true
         end
 
