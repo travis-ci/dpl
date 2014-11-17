@@ -17,4 +17,8 @@ class DummyContext
   def fold(message)
     yield
   end
+
+  def env
+    @env ||= {}
+  end
 end

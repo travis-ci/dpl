@@ -8,10 +8,10 @@ module DPL
 
       def travis_tag
         # Check if $TRAVIS_TAG is unset or set but empty
-        if ENV.fetch('TRAVIS_TAG','') == ''
+        if context.env.fetch('TRAVIS_TAG','') == ''
           nil
         else
-          ENV['TRAVIS_TAG']
+          context.env['TRAVIS_TAG']
         end
       end
 
@@ -32,7 +32,7 @@ module DPL
       end
 
       def slug
-        options.fetch(:repo) { ENV['TRAVIS_REPO_SLUG'] }
+        options.fetch(:repo) { context.env['TRAVIS_REPO_SLUG'] }
       end
 
       def releases

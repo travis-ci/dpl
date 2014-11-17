@@ -58,5 +58,9 @@ module DPL
       $stderr.puts(message)
       exit 1
     end
+
+    def env
+      ENV
+    end
   end
 end

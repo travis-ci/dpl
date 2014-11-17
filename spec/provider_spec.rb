@@ -118,11 +118,11 @@ describe DPL::Provider do
   end
 
   describe "#setup_git_ssh" do
-    after { FileUtils.rm ENV.delete('GIT_SSH') }
+    after { FileUtils.rm provider.context.env.delete('GIT_SSH') }
 
     example do
       provider.setup_git_ssh('foo', 'bar')
-      expect(ENV['GIT_SSH']).to eq(File.expand_path('foo'))
+      expect(provider.context.env['GIT_SSH']).to eq(File.expand_path('foo'))
     end
   end
 

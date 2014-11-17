@@ -51,7 +51,7 @@ describe DPL::Provider::Deis do
     let(:ssh_config) { File.join(Dir.home, '.ssh', 'config') }
     let(:identity_file) { File.join(Dir.pwd, 'key_file') }
     let(:git_ssh) { File.join(Dir.pwd, 'foo') }
-    after { FileUtils.rm ENV.delete('GIT_SSH') }
+    after { FileUtils.rm provider.context.env.delete('GIT_SSH') }
 
     example do
       expect(File).to receive(:open).with(git_ssh, 'w').and_call_original

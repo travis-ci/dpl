@@ -1,7 +1,7 @@
 module DPL
   class Provider
     module Heroku
-      class GitDeployKey < Git
+      class GitDeployKey < GitSSH
         def needs_key?
           false
         end
@@ -20,7 +20,7 @@ module DPL
           end
 
           chmod(0740, path)
-          ENV['GIT_SSH'] = path
+          context.env['GIT_SSH'] = path
         end
       end
     end

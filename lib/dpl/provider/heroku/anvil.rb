@@ -13,10 +13,6 @@ module DPL
           super
         end
 
-        def needs_key?
-          false
-        end
-
         def deploy
           warn ''
           if options[:strategy]
@@ -34,7 +30,7 @@ module DPL
         end
 
         def push_app
-          sha = ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
+          sha = context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
           response = Excon.post release_url,
             :body    => { "slug_url" => slug_url, "description" => "Deploy #{sha} via Travis CI" }.to_json,
             :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
