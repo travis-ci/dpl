@@ -32,9 +32,12 @@ module DPL
           log "authenticated as %s" % user
         end
 
+        def info
+          @info ||= api.get_app(option(:app)).body
+        end
+
         def check_app
           log "checking for app '#{option(:app)}'"
-          info = api.get_app(option(:app)).body
           log "found app '#{info['name']}'"
         rescue ::Heroku::API::Errors::Forbidden => error
           raise Error, "#{error.message} (does the app '#{option(:app)}' exist and does your account have access to it?)", error.backtrace
