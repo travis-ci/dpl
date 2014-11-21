@@ -21,8 +21,12 @@ group :rubygems do
 end
 
 group :sss do
-  gem 'aws-sdk'
+  gem 'aws-sdk-v1'
   gem 'mime-types'
+end
+
+group :code_deploy do
+  gem 'aws-sdk', '2.0.6.pre'
 end
 
 group :cloud_files do
@@ -48,7 +52,7 @@ end
 
 group :elastic_beanstalk do
   gem 'rubyzip'
-  gem 'aws-sdk'
+  gem 'aws-sdk-v1'
 end
 
 group :bitballoon do
