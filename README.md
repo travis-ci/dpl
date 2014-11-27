@@ -30,6 +30,7 @@ Dpl supports the following providers:
 * [Google Cloud Storage](#google-cloud-storage)
 * [Elastic Beanstalk](#elastic-beanstalk)
 * [Puppet Forge](#puppet-forge)
+* [Chef Supermarket](#chef-supermarket)
 
 ## Installation:
 
@@ -415,3 +416,15 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=puppetforge --user=puppetlabs --password=s3cr3t
+
+### Chef Supermarket:
+
+#### Options:
+
+ * **user_id**: Required. The user name at Chef Supermarket.
+ * **client_key**: Required. The client API key file name.
+ * **cookbook_category**: Required. The cookbook category in Supermarket (see: https://docs.getchef.com/knife_cookbook_site.html#id12 )
+
+#### Examples:
+
+    dpl --provider=chef-supermarket --user-id=chef --client-key=.travis/client.pem --cookbook-category=Others

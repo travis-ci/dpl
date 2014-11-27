@@ -34,6 +34,7 @@ module DPL
     autoload :Biicode,      'dpl/provider/biicode'
     autoload :ElasticBeanstalk, 'dpl/provider/elastic_beanstalk'
     autoload :PuppetForge,  'dpl/provider/puppet_forge'
+    autoload :ChefSupermarket,  'dpl/provider/chef_supermarket'
 
 
     def self.new(context, options)

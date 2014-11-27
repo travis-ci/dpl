@@ -59,3 +59,7 @@ group :puppet_forge do
   gem 'puppet'
   gem 'puppet-blacksmith'
 end
+
+group :chef_supermarket do
+  gem 'chef'
+end
