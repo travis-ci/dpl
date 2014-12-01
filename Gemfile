@@ -34,6 +34,11 @@ group :code_deploy do
   gem 'aws-sdk', '2.0.13.pre'
 end
 
+group :lambda do
+  gem 'aws-sdk', '2.0.10.pre'
+  gem 'rubyzip'
+end
+
 group :cloud_files do
   gem 'fog'
 end

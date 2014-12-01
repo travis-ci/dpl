@@ -32,6 +32,7 @@ Dpl supports the following providers:
 * [Puppet Forge](#puppet-forge)
 * [packagecloud](#packagecloud)
 * [Chef Supermarket](#chef-supermarket)
+* [Lambda](#lambda)
 
 ## Installation:
 
@@ -456,3 +457,38 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
     dpl --provider=chef-supermarket --user-id=chef --client-key=.travis/client.pem --cookbook-category=Others
 
+### Lambda:
+
+#### Options: 
+
+ * **function_name**: Required. The name of the Lambda being created / updated.
+ * **role**: Required. The ARN of the IAM role to assign to this Lambda function.
+ * **handler_name**: Required. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module.
+ * **module_name**: Optional. The name of the module that exports the handler. Defaults to `index`.
+ * **zip**: Optional. Either a path to an existing packaged (zipped) Lambda, a directory to package, or a single file to package. Defaults to `Dir.pwd`.
+ * **description**: Optional. The description of the Lambda being created / updated. Defaults to "Deploy build #{context.env['TRAVIS_BUILD_NUMBER']} to AWS Lambda via Travis CI"
+ * **timeout**: Optional. The function execution time at which Lambda should terminate the function. Defaults to 3 (seconds).
+ * **memory_size**: Optional. The amount of memory in MB to allocate to this Lambda. Defaults to 128.
+
+#### Examples:
+
+Deploy contents of current working directory using default module:
+```
+    dpl --provider="lambda" \
+        --access_key_id="${AWS_ACCESS_KEY}" \
+        --secret_access_key="${AWS_SECRET_KEY}" \
+        --function_name="test-lambda" \
+        --role="${AWS_LAMBDA_ROLE}" \
+        --handler_name="handler";
+```
+Deploy contents of a specific directory using specific module name:
+```
+    dpl --provider="lambda" \
+        --access_key_id="${AWS_ACCESS_KEY}" \
+        --secret_access_key="${AWS_SECRET_KEY}" \
+        --function_name="test-lambda" \
+        --role="${AWS_LAMBDA_ROLE}" \
+        --zip="${TRAVIS_BUILD_DIR}/dist"  \
+        --module_name="copy" \
+        --handler_name="handler";
+```
