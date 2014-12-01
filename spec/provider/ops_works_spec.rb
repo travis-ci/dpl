@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 require 'dpl/provider'
 require 'dpl/provider/ops_works'
 
