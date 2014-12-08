@@ -34,6 +34,7 @@ module DPL
     autoload :Biicode,      'dpl/provider/biicode'
     autoload :ElasticBeanstalk, 'dpl/provider/elastic_beanstalk'
     autoload :PuppetForge,  'dpl/provider/puppet_forge'
+    autoload :Packagecloud, 'dpl/provider/packagecloud'
 
 
     def self.new(context, options)

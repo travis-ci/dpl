@@ -63,3 +63,8 @@ group :puppet_forge do
   gem 'puppet'
   gem 'puppet-blacksmith'
 end
+
+group :packagecloud do
+  gem 'mime'
+  gem 'packagecloud-ruby'
+end
