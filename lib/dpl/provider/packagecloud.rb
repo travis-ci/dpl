@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class Packagecloud < Provider
-      requires 'packagecloud-ruby', :version => "0.2.16", :load => 'packagecloud'
+      requires 'packagecloud-ruby', :version => '~> 0.2', :load => 'packagecloud'
 
       def check_auth
         setup_auth
