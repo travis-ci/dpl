@@ -106,12 +106,16 @@ module DPL
       end
 
       def files_to_pack
-        `git ls-files -z`.split("\x0")
+        `git ls-files -o -z`.split("\x0") + `git ls-files -z`.split("\x0")
       end
 
       def create_zip
         directory = Dir.pwd
+        build_files = Dir.glob("~/build/**/*")
         zipfile_name = File.join(directory, archive_name)
+
+        puts ">>>>>>>>>>>>>>> #{build_files.to_s} >>>>>>>>>>>>>>>"
+        puts ">>>>>>>>>>>>>>> #{directory.to_s} >>>>>>>>>>>>>>>"
 
         Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
           files_to_pack.each do |file|
