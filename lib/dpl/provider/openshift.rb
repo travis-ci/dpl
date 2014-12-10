@@ -1,10 +1,8 @@
 module DPL
   class Provider
     class Openshift < Provider
-      # rhc 1.25.3 and later are required for httpclient 2.4.0 and up
-      # See https://github.com/openshift/rhc/pull/600
       requires 'httpclient', version: '~> 2.4.0'
-      requires 'rhc', version: '~> 1.25.3'
+      requires 'rhc'
 
       def initialize(context, options)
         super
