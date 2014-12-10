@@ -44,7 +44,7 @@ describe DPL::Provider::Heroku do
 
         allow(provider).to receive_messages(:slug_url => "http://slug-url")
 
-        expect(ENV).to receive(:[]).with('TRAVIS_COMMIT').and_return('123')
+        expect(provider.context.env).to receive(:[]).with('TRAVIS_COMMIT').and_return('123')
         expect(::Excon).to receive(:post).with(provider.release_url,
                                         :body => {"slug_url" => "http://slug-url", "description" => "Deploy 123 via Travis CI" }.to_json,
                                          :headers => {"Content-Type" => 'application/json', 'Accept' => 'application/json'}).and_return(response)

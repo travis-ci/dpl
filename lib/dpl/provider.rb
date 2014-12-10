@@ -1,4 +1,5 @@
 require 'dpl/error'
+require 'dpl/version'
 require 'fileutils'
 
 module DPL
@@ -16,6 +17,7 @@ module DPL
     autoload :S3,           'dpl/provider/s3'
     autoload :CloudControl, 'dpl/provider/cloudcontrol'
     autoload :CloudFoundry, 'dpl/provider/cloud_foundry'
+    autoload :CodeDeploy,   'dpl/provider/code_deploy'
     autoload :PyPI,         'dpl/provider/pypi'
     autoload :Divshot,      'dpl/provider/divshot'
     autoload :CloudFiles,   'dpl/provider/cloud_files'
@@ -53,7 +55,7 @@ module DPL
       load    = options[:load]    || name
       gem(name, version)
     rescue LoadError
-      context.shell("gem install %s -v %p --no-ri --no-rdoc" % [name, version], retry: true)
+      context.shell("gem install %s -v %p --no-ri --no-rdoc #{'--pre' if options[:pre]}" % [name, version], retry: true)
       Gem.clear_paths
     ensure
       require load
@@ -83,6 +85,14 @@ module DPL
 
     def initialize(context, options)
       @context, @options = context, options
+      context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
+    end
+
+    def user_agent(*strings)
+      strings.unshift "dpl/#{DPL::VERSION}"
+      strings.unshift "travis/0.1.0" if context.env['TRAVIS']
+      strings = strings.flat_map { |e| Hash === e ? e.map { |k,v| "#{k}/#{v}" } : e }
+      strings.join(" ").gsub(/\s+/, " ").strip
     end
 
     def option(name, *alternatives)
@@ -126,7 +136,7 @@ module DPL
     end
 
     def sha
-      @sha ||= ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
+      @sha ||= context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
     end
 
     def commit_msg
@@ -171,7 +181,7 @@ module DPL
       end
 
       chmod(0740, path)
-      ENV['GIT_SSH'] = path
+      context.env['GIT_SSH'] = path
     end
 
     def detect_encoding?

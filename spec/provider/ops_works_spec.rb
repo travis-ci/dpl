@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 require 'dpl/provider'
 require 'dpl/provider/ops_works'
 
@@ -40,7 +40,7 @@ describe DPL::Provider::OpsWorks do
     before do
       expect(provider).to receive(:current_sha).and_return('sha')
       expect(provider.api).to receive(:client).and_return(client)
-      expect(ENV).to receive(:[]).with('TRAVIS_BUILD_NUMBER').and_return('123')
+      expect(provider.context.env).to receive(:[]).with('TRAVIS_BUILD_NUMBER').and_return('123')
     end
 
     let(:custom_json) { "{\"deploy\":{\"app\":{\"migrate\":false,\"scm\":{\"revision\":\"sha\"}}}}" }

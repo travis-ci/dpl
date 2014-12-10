@@ -10,7 +10,7 @@
 #
 #   describe '#push_app' do
 #     example 'with default app_dir' do
-#       ENV['TRAVIS_BUILD_DIR'] = Dir.pwd
+#       provider.context.env['TRAVIS_BUILD_DIR'] = Dir.pwd
 #       provider.options.update(:oauth_refresh_token => token)
 #       expect(provider.context).to receive(:shell).with("#{DPL::Provider::GAE::APPCFG_BIN} --oauth2_refresh_token=#{token} update #{Dir.pwd}").and_return(true)
 #       provider.push_app
