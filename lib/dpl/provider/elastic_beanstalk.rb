@@ -106,7 +106,7 @@ module DPL
       end
 
       def files_to_pack
-        `git ls-files -o -z`.split("\x0") + `git ls-files -z`.split("\x0")
+        `git ls-files -o -z`.split("\x0") + `git ls-files -z`.split("\x0") - ["package.json", "bower.json"]
       end
 
       def create_zip
