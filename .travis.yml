@@ -4,6 +4,10 @@ rvm:
 - 2.0.0
 - 2.1.0
 
+sudo: false
+
+cache: bundler
+
 deploy:
   provider: rubygems
   api_key:
