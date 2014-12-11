@@ -3,7 +3,7 @@ require 'json'
 module DPL
   class Provider
     class CodeDeploy < Provider
-      requires 'aws-sdk'
+      requires 'aws-sdk-v1'
 
       def code_deploy
         @code_deploy ||= begin
