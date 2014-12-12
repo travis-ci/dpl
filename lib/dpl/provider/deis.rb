@@ -2,7 +2,10 @@ module DPL
   class Provider
     class Deis < Provider
       experimental 'Deis'
-      pip 'deis', 'deis'
+
+      def install_deploy_dependencies
+        self.class.pip 'deis', 'deis', options[:cli_version]
+      end
 
       def needs_key?
         true

@@ -2,12 +2,31 @@ require 'spec_helper'
 require 'dpl/provider/deis'
 
 describe DPL::Provider::Deis do
+  let(:options) do
+    {
+      :app => 'example',
+      :key_name => 'key',
+      :controller => 'deis.deisapps.com',
+      :username => 'travis',
+      :password => 'secret'
+    }
+  end
+
   subject :provider do
-    described_class.new(DummyContext.new, :app => 'example',
-                                          :key_name => 'key',
-                                          :controller => 'deis.deisapps.com',
-                                          :username => 'travis',
-                                          :password => 'secret')
+    described_class.new(DummyContext.new, options)
+  end
+
+  describe "#install_deploy_dependencies" do
+    example 'without version specified' do
+      expect(provider.class).to receive(:pip).with('deis', 'deis', nil)
+      provider.install_deploy_dependencies
+    end
+
+    example 'with version specified' do
+      options[:cli_version] = '1.0'
+      expect(provider.class).to receive(:pip).with('deis', 'deis', '1.0')
+      provider.install_deploy_dependencies
+    end
   end
 
   describe "#needs_key?" do

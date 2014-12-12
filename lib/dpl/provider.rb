@@ -42,7 +42,9 @@ module DPL
       context.fold("Installing deploy dependencies") do
         name = super.option(:provider).to_s.downcase.gsub(/[^a-z0-9]/, '')
         raise Error, 'could not find provider %p' % options[:provider] unless name = constants.detect { |c| c.to_s.downcase == name }
-        const_get(name).new(context, options)
+        provider = const_get(name).new(context, options)
+        provider.install_deploy_dependencies if provider.respond_to?(:install_deploy_dependencies)
+        provider
       end
     end
 
@@ -73,8 +75,15 @@ module DPL
       context.shell("sudo apt-get -qq install #{name}", retry: true) if `which #{command}`.chop.empty?
     end
 
-    def self.pip(name, command = name)
-      context.shell("sudo pip install #{name}", retry: true) if `which #{command}`.chop.empty?
+    def self.pip(name, command = name, version = nil)
+      if version
+        puts "sudo pip install #{name}==#{version}"
+        context.shell("sudo pip uninstall -y #{name}") unless `which #{command}`.chop.empty?
+        context.shell("sudo pip install #{name}==#{version}", retry: true)
+      else
+        puts "sudo pip install #{name}"
+        context.shell("sudo pip install #{name}", retry: true) if `which #{command}`.chop.empty?
+      end
     end
 
     def self.npm_g(name, command = name)
