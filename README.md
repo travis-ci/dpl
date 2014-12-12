@@ -349,6 +349,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
 * **username**: Deis username
 * **password**: Deis password
 * **app**: Deis app
+* **cli_version**: Install a specific deis cli version
 
 #### Examples:
 

@@ -12,6 +12,11 @@ describe DPL::Provider do
     example { expect(described_class.new(DummyContext.new, :provider => "Example")) .to be_an(example_provider) }
     example { expect(described_class.new(DummyContext.new, :provider => "exa_mple")).to be_an(example_provider) }
     example { expect(described_class.new(DummyContext.new, :provider => "exa-mple")).to be_an(example_provider) }
+    example "install deployment dependencies" do
+      expect_any_instance_of(described_class).to receive(:respond_to?).with(:install_deploy_dependencies).and_return(true)
+      expect_any_instance_of(described_class).to receive(:install_deploy_dependencies)
+      described_class.new(DummyContext.new, :provider => "example")
+    end
   end
 
   describe "#requires" do
@@ -56,6 +61,12 @@ describe DPL::Provider do
       expect(example_provider).to receive(:`).with("which foo").and_return("")
       expect(example_provider.context).to receive(:shell).with("sudo pip install foo", retry: true)
       example_provider.pip("foo")
+    end
+
+    example "specific version" do
+      expect(example_provider).to receive(:`).with("which foo").and_return("")
+      expect(example_provider.context).to receive(:shell).with("sudo pip install foo==1.0", retry: true)
+      example_provider.pip("foo", "foo", "1.0")
     end
   end
 
