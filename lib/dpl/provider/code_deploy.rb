@@ -7,15 +7,15 @@ module DPL
 
       def code_deploy
         @code_deploy ||= begin
-          ::Aws.add_service('CodeDeploy', api: File.expand_path("../CodeDeploy.api.json", __FILE__)) unless defined? ::Aws::CodeDeploy
-          ::Aws::CodeDeploy::Client.new(code_deploy_options)
+          Aws.add_service('CodeDeploy', api: File.expand_path("../CodeDeploy.api.json", __FILE__)) unless defined? Aws::CodeDeploy
+          Aws::CodeDeploy::Client.new(code_deploy_options)
         end
       end
 
       def code_deploy_options
         code_deploy_options = {
           region:      options[:region] || 'us-east-1',
-          credentials: ::Aws::Credentials.new(option(:access_key_id), option(:secret_access_key))
+          credentials: Aws::Credentials.new(option(:access_key_id), option(:secret_access_key))
         }
         code_deploy_options[:endpoint] = options[:endpoint] if options[:endpoint]
         code_deploy_options
@@ -63,7 +63,7 @@ module DPL
           description:            options[:description]      || default_description
         })
         log "Triggered deployment #{deployment.deployment_id.inspect}."
-      rescue ::Aws::CodeDeploy::Errors::DeploymentLimitExceededException => exception
+      rescue Aws::CodeDeploy::Errors::DeploymentLimitExceededException => exception
         error(exception.message)
       end
 
