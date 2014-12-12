@@ -55,7 +55,7 @@ describe DPL::Provider::CodeDeploy do
   client_options = {
     :stub_responses => true,
     :region => 'us-east-1',
-    :credentials => Aws::Credentials.new(access_key_id, secret_access_key),
+    :credentials => ::Aws::Credentials.new(access_key_id, secret_access_key),
     :endpoint => 'https://codedeploy.us-east-1.amazonaws.com'
   }
 
@@ -72,7 +72,7 @@ describe DPL::Provider::CodeDeploy do
 
   describe '#code_deploy' do
     example do
-      expect(Aws::CodeDeploy::Client).to receive(:new).with(client_options).once
+      expect(::Aws::CodeDeploy::Client).to receive(:new).with(client_options).once
       provider.code_deploy
     end
   end
@@ -285,7 +285,7 @@ describe DPL::Provider::CodeDeploy do
 
     context 'without s3_key' do
       bundle_type = 'tar'
-      
+
       before do
         expect(provider).to receive(:s3_key).and_return('')
         expect(provider).to receive(:option).with(:bundle_type).and_return(bundle_type)
