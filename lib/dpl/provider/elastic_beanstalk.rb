@@ -94,10 +94,12 @@ module DPL
       end
 
       def create_app_version(s3_object)
+        # Elastic Beanstalk doesn't support descriptions longer than 200 characters
+        description = commit_msg[0, 200]
         options = {
           :application_name  => app_name,
           :version_label     => version_label,
-          :description       => commit_msg,
+          :description       => description,
           :source_bundle     => {
             :s3_bucket => bucket_name,
             :s3_key    => s3_object.key
