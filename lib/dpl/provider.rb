@@ -154,6 +154,7 @@ module DPL
 
     def cleanup
       return if options[:skip_cleanup]
+      puts "Performing #{__method__}"
       context.shell "mv .dpl ~/dpl"
       context.shell "git stash --all"
       context.shell "mv ~/dpl .dpl"
@@ -161,6 +162,7 @@ module DPL
 
     def uncleanup
       return if options[:skip_cleanup]
+      puts "Performing #{__method__}"
       context.shell "git stash pop"
     end
 
