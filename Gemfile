@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 gemspec
 
+gem 'slop', '~> 3.6.0'
+
 group :heroku do
   gem 'rendezvous', '~> 0.0.2'
   gem 'heroku-api', '= 0.3.16'
