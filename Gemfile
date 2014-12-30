@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 gemspec
 
-gem 'slop', '~> 3.6.0'
+gem 'slop', '~> 3.6.0' # can drop this once Ruby 1.9.x is dropped
 
 group :heroku do
   gem 'rendezvous', '~> 0.0.2'
