@@ -204,6 +204,15 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **dot_match**: When set to `true`, upload files starting a `.`.
 * **index_document_suffix**: Set the index document of a S3 website.
 
+#### File-specific `Cache-Control` and `Expires` headers
+
+It is possible to set file-specific `Cache-Control` and `Expires` headers using `value: file[, file]` format.
+
+##### Example:
+
+    --cache_control="no-cache: index.html"
+    --expires="\"2012-12-21 00:00:00 -0000\": *.css, *.js"
+
 #### Examples:
 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public_read
