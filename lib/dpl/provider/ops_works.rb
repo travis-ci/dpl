@@ -69,13 +69,17 @@ module DPL
       end
 
       def create_deployment
-        data = client.create_deployment(
+        deployment_config = {
           stack_id: ops_works_app[:stack_id],
           app_id: option(:app_id),
           command: {name: 'deploy'},
           comment: travis_deploy_comment,
           custom_json: custom_json.to_json
-        )
+        }
+        if !options[:instance_ids].nil?
+          deployment_config[:instance_ids] = option(:instance_ids)
+        end
+        data = client.create_deployment(deployment_config)
         log "Deployment created: #{data[:deployment_id]}"
         return unless options[:wait_until_deployed]
         print "Deploying "

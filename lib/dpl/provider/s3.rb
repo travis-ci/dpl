@@ -38,9 +38,9 @@ module DPL
           Dir.glob(*glob_args) do |filename|
             content_type = MIME::Types.type_for(filename).first.to_s
             opts         = { :content_type => content_type }.merge(encoding_option_for(filename))
-            opts[:cache_control] = options[:cache_control] if options[:cache_control]
+            opts[:cache_control] = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]
             opts[:acl]           = options[:acl] if options[:acl]
-            opts[:expires]       = options[:expires] if options[:expires]
+            opts[:expires]       = get_option_value_by_filename(options[:expires], filename) if options[:expires]
             unless File.directory?(filename)
               log "uploading %p" % filename
               api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename), opts)
@@ -72,6 +72,26 @@ module DPL
         else
           {}
         end
+      end
+
+      def get_option_value_by_filename(option_values, filename)
+        return option_values if !option_values.kind_of?(Array)
+        preferred_value = nil
+        hashes = option_values.select {|value| value.kind_of?(Hash) }
+        hashes.each do |hash|
+          hash.each do |value, patterns|
+            unless patterns.kind_of?(Array)
+              patterns = [patterns]
+            end
+            patterns.each do |pattern|
+              if File.fnmatch?(pattern, filename)
+                preferred_value = value
+              end
+            end
+          end
+        end
+        preferred_value = option_values.select {|value| value.kind_of?(String) }.last if preferred_value.nil?
+        return preferred_value
       end
     end
   end
