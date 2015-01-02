@@ -30,6 +30,7 @@ Dpl supports the following providers:
 * [Google Cloud Storage](#google-cloud-storage)
 * [Elastic Beanstalk](#elastic-beanstalk)
 * [Puppet Forge](#puppet-forge)
+* [packagecloud](#packagecloud)
 
 ## Installation:
 
@@ -415,3 +416,19 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=puppetforge --user=puppetlabs --password=s3cr3t
+
+### packagecloud:
+
+#### Options:
+
+ * **username**: Required. The packagecloud.io username.
+ * **token**: Required. The [packagecloud.io api token](https://packagecloud.io/docs/api#api_tokens).
+ * **repository**: Required. The repository to push to.
+ * **local_dir**: Optional. The sub-directory of the built assets for deployment. Default to current path.
+ * **dist**: Required for deb and rpm. The complete list of supported strings can be found on the [packagecloud.io docs](https://packagecloud.io/docs#os_distro_version)
+
+#### Examples:
+
+    dpl --provider=packagecloud --username=packageuser --token=t0k3n --repository=myrepo
+    dpl --provider=packagecloud --username=packageuser --token=t0k3n --repository=myrepo --dist=ubuntu/precise
+    dpl --provider=packagecloud --username=packageuser --token=t0k3n --repository=myrepo --local-dir="${TRAVIS_BUILD_DIR}/pkgs" --dist=ubuntu/precise

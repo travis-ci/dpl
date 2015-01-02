@@ -65,5 +65,5 @@ group :puppet_forge do
 end
 
 group :packagecloud do
-  gem 'packagecloud-ruby'
+  gem 'packagecloud-ruby', '= 0.2.17'
 end
