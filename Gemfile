@@ -65,6 +65,5 @@ group :puppet_forge do
 end
 
 group :packagecloud do
-  gem 'mime'
   gem 'packagecloud-ruby'
 end
