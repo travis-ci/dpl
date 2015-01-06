@@ -35,7 +35,7 @@ group :code_deploy do
 end
 
 group :lambda do
-  gem 'aws-sdk', '2.0.10.pre'
+  gem 'aws-sdk', '2.0.13.pre'
   gem 'rubyzip'
 end
 
