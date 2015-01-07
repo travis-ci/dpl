@@ -22,7 +22,7 @@ module DPL
         @repo = option(:repository)
         @dist = option(:dist) if options[:dist]
         @creds = ::Packagecloud::Credentials.new(@username, @token)
-        log "Logging into https://packagecloud.io with #{@username}:#{@token}"
+        log "Logging into https://packagecloud.io with #{@username}:#{@token[-4..-1].rjust(20, '*')}"
       end
 
       def get_distro(query)
@@ -116,6 +116,9 @@ module DPL
           else
             error "Error #{result.response}"
           end
+        end
+        if packages.empty?
+          error "Error: No supported packages found! Perhaps try skip_cleanup: true"
         end
       end
 
