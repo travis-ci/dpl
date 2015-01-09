@@ -11,7 +11,7 @@ describe DPL::Provider::Packagecloud do
 
   describe "#setup_auth" do
     it 'should get username and token' do
-      expect(provider).to receive(:log).with("Logging into https://packagecloud.io with joedamato:test_token")
+      expect(provider).to receive(:log).with("Logging into https://packagecloud.io with joedamato:****************oken")
       provider.setup_auth
     end
 
