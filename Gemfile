@@ -1,7 +1,10 @@
 source 'https://rubygems.org'
 gemspec
 
-gem 'slop', '~> 3.6.0' # can drop this once Ruby 1.9.x is dropped
+platforms :mri_19 do
+  gem 'slop', '~> 3.6.0'
+  gem 'ohai', '~> 7.4.0'
+end
 
 group :heroku do
   gem 'rendezvous', '~> 0.0.2'
