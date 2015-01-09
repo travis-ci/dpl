@@ -35,6 +35,7 @@ module DPL
     autoload :ElasticBeanstalk, 'dpl/provider/elastic_beanstalk'
     autoload :PuppetForge,  'dpl/provider/puppet_forge'
     autoload :Packagecloud, 'dpl/provider/packagecloud'
+    autoload :ChefSupermarket,  'dpl/provider/chef_supermarket'
 
 
     def self.new(context, options)

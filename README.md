@@ -31,6 +31,7 @@ Dpl supports the following providers:
 * [Elastic Beanstalk](#elastic-beanstalk)
 * [Puppet Forge](#puppet-forge)
 * [packagecloud](#packagecloud)
+* [Chef Supermarket](#chef-supermarket)
 
 ## Installation:
 
@@ -442,3 +443,16 @@ For accounts using two factor authentication, you have to use an oauth token as 
     dpl --provider=packagecloud --username=packageuser --token=t0k3n --repository=myrepo
     dpl --provider=packagecloud --username=packageuser --token=t0k3n --repository=myrepo --dist=ubuntu/precise
     dpl --provider=packagecloud --username=packageuser --token=t0k3n --repository=myrepo --local-dir="${TRAVIS_BUILD_DIR}/pkgs" --dist=ubuntu/precise
+
+### Chef Supermarket:
+
+#### Options:
+
+ * **user_id**: Required. The user name at Chef Supermarket.
+ * **client_key**: Required. The client API key file name.
+ * **cookbook_category**: Required. The cookbook category in Supermarket (see: https://docs.getchef.com/knife_cookbook_site.html#id12 )
+
+#### Examples:
+
+    dpl --provider=chef-supermarket --user-id=chef --client-key=.travis/client.pem --cookbook-category=Others
+
