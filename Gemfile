@@ -68,6 +68,7 @@ end
 
 group :packagecloud do
   gem 'packagecloud-ruby', '= 0.2.17'
+end
 
 group :chef_supermarket do
   gem 'chef'
