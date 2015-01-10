@@ -5,8 +5,8 @@ require 'fileutils'
 module DPL
   class Provider
     class Lambda < Provider
-      requires 'aws-sdk', version: '~> 2.0.10.pre'
-      requires 'rubyzip', :load => 'zip'
+      requires 'aws-sdk', pre: true
+      requires 'rubyzip', load: 'zip'
 
       def lambda
         @lambda ||= ::Aws::Lambda::Client.new(lambda_options)
