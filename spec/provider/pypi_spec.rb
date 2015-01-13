@@ -31,7 +31,7 @@ describe DPL::Provider::PyPI do
     example do
       expect(provider.context).to receive(:shell).with("python setup.py register -r pypi")
       expect(provider.context).to receive(:shell).with("python setup.py sdist upload -r pypi")
-      expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir build/docs")
+      expect(provider.context).to receive(:shell).with("python setup.py upload_docs ")
       provider.push_app
     end
 
@@ -39,7 +39,7 @@ describe DPL::Provider::PyPI do
       provider.options.update(:distributions => 'sdist bdist')
       expect(provider.context).to receive(:shell).with("python setup.py register -r pypi")
       expect(provider.context).to receive(:shell).with("python setup.py sdist bdist upload -r pypi")
-      expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir build/docs")
+      expect(provider.context).to receive(:shell).with("python setup.py upload_docs ")
       provider.push_app
     end
 
@@ -47,7 +47,7 @@ describe DPL::Provider::PyPI do
       provider.options.update(:server => 'http://blah.com')
       expect(provider.context).to receive(:shell).with("python setup.py register -r http://blah.com")
       expect(provider.context).to receive(:shell).with("python setup.py sdist upload -r http://blah.com")
-      expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir build/docs")
+      expect(provider.context).to receive(:shell).with("python setup.py upload_docs ")
       provider.push_app
     end
 
