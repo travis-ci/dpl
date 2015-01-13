@@ -31,4 +31,26 @@ describe DPL::Provider::Heroku do
       expect(provider.api).to eq(api)
     end
   end
+
+  describe "#trigger_build" do
+    let(:response_body) { {
+      "created_at" => "2012-01-01T12:00:00Z",
+      "id" => "abc",
+      "status" => "pending",
+      "stream_url" => "http://example.com/stream",
+      "updated_at" => "2012-01-01T12:00:00Z",
+      "user" => { "id" => "01234567-89ab-cdef-0123-456789abcdef", "email" => "username@example.com" }
+    } }
+    example do
+      expect(provider).to receive(:get_url).and_return 'http://example.com/source.tgz'
+      expect(provider).to receive(:version).and_return 'sha'
+      expect(provider).to receive(:post).with(
+        :builds, source_blob: {url: 'http://example.com/source.tgz', version: 'sha'}
+      ).and_return(response_body)
+      expect(provider.context).to receive(:shell).with('curl http://example.com/stream')
+      provider.trigger_build
+      expect(provider.build_id).to eq('abc')
+    end
+  end
+
 end

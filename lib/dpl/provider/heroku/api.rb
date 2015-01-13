@@ -5,6 +5,8 @@ module DPL
   class Provider
     module Heroku
       class API < Generic
+        attr_reader :build_id
+
         def push_app
           pack_archive
           upload_archive
