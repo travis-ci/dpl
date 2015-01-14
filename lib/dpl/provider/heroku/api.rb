@@ -37,7 +37,7 @@ module DPL
         end
 
         def verify_build
-          response = get("builds/#{@build_id}/result")
+          response = get("builds/#{build_id}/result")
           exit_code = response.fetch('exit_code')
           unless exit_code == 0
             error "deploy failed, build exited with code #{exit_code}"

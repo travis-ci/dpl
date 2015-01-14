@@ -42,6 +42,7 @@ describe DPL::Provider::Heroku do
       "user" => { "id" => "01234567-89ab-cdef-0123-456789abcdef", "email" => "username@example.com" }
     } }
     example do
+      expect(provider).to receive(:log).with('triggering new deployment')
       expect(provider).to receive(:get_url).and_return 'http://example.com/source.tgz'
       expect(provider).to receive(:version).and_return 'sha'
       expect(provider).to receive(:post).with(
@@ -51,6 +52,38 @@ describe DPL::Provider::Heroku do
       provider.trigger_build
       expect(provider.build_id).to eq('abc')
     end
+  end
+
+  describe "#verify_build" do
+    let(:response_body) { {
+      "build" => {
+        "id" => "01234567-89ab-cdef-0123-456789abcdef",
+        "status" => "succeeded"
+      },
+      "exit_code" => exit_code
+    } }
+
+    before do
+      expect(provider).to receive(:build_id).and_return('abc')
+      expect(provider).to receive(:get).with('builds/abc/result').and_return(response_body)
+    end
+
+    context 'when build exits with zero' do
+      let(:exit_code) { 0 }
+
+      example do
+        expect{ provider.verify_build }.not_to raise_error
+      end
+    end
+
+    context 'when build exists with non-zero' do
+      let(:exit_code) { 1 }
+
+      example do
+        expect{ provider.verify_build }.to raise_error("deploy failed, build exited with code 1")
+      end
+    end
+
   end
 
 end
