@@ -21,7 +21,7 @@ module DPL
             end
           end
 
-          context.shell "unzip -q google-cloud-sdk.zip"
+          context.shell "unzip -o -q google-cloud-sdk.zip"
           #unless File.directory? "google-cloud-sdk"
           #  $stderr.puts "Extracting Google Cloud SDK"
           #  Zip::File.open(GCLOUD_ZIP_FILE) do |file|
@@ -38,8 +38,14 @@ module DPL
 
       install_sdk
 
+      def check_auth
+        setup_auth
+      end
+
       def setup_auth
-        context.shell "gcloud auth activate-refresh-token option(:account) option(:oauth_token)"
+        @account = option(:account)
+        @oauth_token = option(:oauth_token)
+        context.shell "gcloud auth activate-refresh-token #{account} #{oauth_token}"
       end
 
       def needs_key?

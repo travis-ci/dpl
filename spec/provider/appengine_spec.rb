@@ -3,14 +3,12 @@ require 'dpl/provider/appengine'
 
 describe DPL::Provider::AppEngine do
   subject :provider do
-    described_class.new(DummyContext.new, :user => "foo", :password => "bar")
+    described_class.new(DummyContext.new, :account => "user@gmail.com", :oauth_token => "TOKEN")
   end
-
-  let(:oauth_token) { "TOKEN" }
 
   describe "#setup_auth" do
     example do
-      expect(provider.context).to receive(:shell).with("gcloud auth activate-refresh-token TOKEN")
+      expect(provider.context).to receive(:shell).with("gcloud auth activate-refresh-token user@gmail.com TOKEN")
       provider.setup_auth
     end
   end
