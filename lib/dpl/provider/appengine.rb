@@ -43,8 +43,8 @@ module DPL
       end
 
       def setup_auth
-        @account = option(:account)
-        @oauth_token = option(:oauth_token)
+        account = option(:account)
+        oauth_token = option(:oauth_token)
         context.shell "gcloud auth activate-refresh-token #{account} #{oauth_token}"
       end
 
