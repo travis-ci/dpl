@@ -4,6 +4,7 @@
 ## Supported Providers:
 Dpl supports the following providers:
 
+* [AppEngine](#appengine)
 * [AppFog](#appfog)
 * [Biicode](#biicode)
 * [BitBalloon](#bitballoon)
@@ -365,6 +366,16 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=deis --controller=deis.deisapps.com --username=travis --password=secret --app=example
+
+### Google App Engine:
+
+#### Options:
+
+* **oauth_token**: Google OAuth token with the `https://www.googleapis.com/auth/appengine.admin` scope.
+
+#### Examples:
+
+    dpl --provider=appengine --oauth_token=<oauth-token>
 
 ### Google Cloud Storage:
 

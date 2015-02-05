@@ -18,7 +18,7 @@ module DPL
 
       def push_app
         # app.yaml must be at the root of the tree.
-        context.shell "gcloud preview app deploy app.yaml"
+        context.shell "gcloud preview app deploy ."
       end
     end
   end
