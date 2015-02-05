@@ -10,6 +10,7 @@ module DPL
       GCLOUD_ZIP_FILE="google-cloud-sdk.zip"
 
       def self.install_sdk
+        requires 'rubyzip', :load => 'zip'
         Dir.chdir(BASE_DIR) do
             unless File.exists? GCLOUD_ZIP_FILE
             $stderr.puts "Downloading Google Cloud SDK"
