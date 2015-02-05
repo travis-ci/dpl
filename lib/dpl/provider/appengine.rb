@@ -32,7 +32,7 @@ module DPL
           #end
 
           $stderr.puts "Installing Google Cloud SDK"
-          context.shell "google-cloud-sdk/install.sh --disable-installation-options --usage-reporting false --path-update false"
+          context.shell "google-cloud-sdk/install.sh --disable-installation-options --usage-reporting false --path-update false --rc-path=~/.bashrc"
         end
       end
 
