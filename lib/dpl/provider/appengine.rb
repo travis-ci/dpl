@@ -32,14 +32,14 @@ module DPL
           #end
 
           $stderr.puts "Installing Google Cloud SDK"
-          context.shell "google-cloud-sdk/install.sh --disable-installation-options --usage-reporting false --path-update false --rc-path=~/.bashrc"
+          context.shell "google-cloud-sdk/install.sh --usage-reporting false --path-update false --rc-path=~/.bashrc --bash-completion false --override-components=app"
         end
       end
 
       install_sdk
 
       def setup_auth
-        context.shell "gcloud auth activate-refresh-token option(:oauth_token)"
+        context.shell "gcloud auth activate-refresh-token option(:account) option(:oauth_token)"
       end
 
       def needs_key?
