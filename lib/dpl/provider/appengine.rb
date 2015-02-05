@@ -12,7 +12,7 @@ module DPL
       def self.install_sdk
         requires 'rubyzip', :load => 'zip'
         Dir.chdir(BASE_DIR) do
-            unless File.exists? GCLOUD_ZIP_FILE
+          unless File.exists? GCLOUD_ZIP_FILE
             $stderr.puts "Downloading Google Cloud SDK"
             File.open(GCLOUD_ZIP_FILE, "wb") do |dest|
               open(GCLOUD_ZIP_URL, "rb") do |src|
@@ -21,14 +21,15 @@ module DPL
             end
           end
 
-          unless File.directory? "google-cloud-sdk"
-            $stderr.puts "Extracting Google Cloud SDK"
-            Zip::File.open(GCLOUD_ZIP_FILE) do |file|
-              file.each do |entry|
-                entry.extract entry.name
-              end
-            end
-          end
+          context.shell "unzip google-cloud-sdk.zip"
+          #unless File.directory? "google-cloud-sdk"
+          #  $stderr.puts "Extracting Google Cloud SDK"
+          #  Zip::File.open(GCLOUD_ZIP_FILE) do |file|
+          #    file.each do |entry|
+          #      entry.extract entry.name
+          #    end
+          #  end
+          #end
 
           $stderr.puts "Installing Google Cloud SDK"
           context.shell "google-cloud-sdk/install.sh --disable-installation-options"
