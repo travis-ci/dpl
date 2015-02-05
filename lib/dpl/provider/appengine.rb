@@ -21,7 +21,7 @@ module DPL
             end
           end
 
-          context.shell "unzip google-cloud-sdk.zip"
+          context.shell "unzip -q google-cloud-sdk.zip"
           #unless File.directory? "google-cloud-sdk"
           #  $stderr.puts "Extracting Google Cloud SDK"
           #  Zip::File.open(GCLOUD_ZIP_FILE) do |file|
@@ -32,7 +32,7 @@ module DPL
           #end
 
           $stderr.puts "Installing Google Cloud SDK"
-          context.shell "google-cloud-sdk/install.sh --disable-installation-options --usage-reporting false"
+          context.shell "google-cloud-sdk/install.sh --disable-installation-options --usage-reporting false --path-update false"
         end
       end
 
