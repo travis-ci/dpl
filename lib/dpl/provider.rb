@@ -79,13 +79,14 @@ module DPL
 
     def self.pip(name, command = name, version = nil)
       if version
-        puts "sudo pip install #{name}==#{version}"
-        context.shell("sudo pip uninstall -y #{name}") unless `which #{command}`.chop.empty?
-        context.shell("sudo pip install #{name}==#{version}", retry: true)
+        puts "pip install --user #{name}==#{version}"
+        context.shell("pip uninstall --user -y #{name}") unless `which #{command}`.chop.empty?
+        context.shell("pip install --user #{name}==#{version}", retry: true)
       else
-        puts "sudo pip install #{name}"
-        context.shell("sudo pip install #{name}", retry: true) if `which #{command}`.chop.empty?
+        puts "pip install --user #{name}"
+        context.shell("pip install --user #{name}", retry: true) if `which #{command}`.chop.empty?
       end
+      context.shell("export PATH=$PATH:$HOME/.local/bin")
     end
 
     def self.npm_g(name, command = name)
