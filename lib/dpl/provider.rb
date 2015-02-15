@@ -36,6 +36,7 @@ module DPL
     autoload :PuppetForge,  'dpl/provider/puppet_forge'
     autoload :Packagecloud, 'dpl/provider/packagecloud'
     autoload :ChefSupermarket,  'dpl/provider/chef_supermarket'
+    autoload :TestFairy,  'dpl/provider/testfairy'
 
 
     def self.new(context, options)
