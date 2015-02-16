@@ -151,7 +151,7 @@ module DPL
 
                                 travisCommitRange = context.env.fetch('TRAVIS_COMMIT_RANGE',nil)
                                 if !travisCommitRange.nil?
-                                        changelog = %[git log  --pretty=oneline --abbrev-commit #{travisCommitRange}]
+                                        changelog = %x[git log  --pretty=oneline --abbrev-commit #{travisCommitRange}]
                                         params = add_param params, 'changelog', changelog
                                 end
                                 return params
