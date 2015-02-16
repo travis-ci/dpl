@@ -58,10 +58,10 @@ Your Android(apk)/iOS(ipa) file will be uploaded to TestFairy,
 and your tasters can start test your app.
 
 #### Options:
-* **api-key**: TestFairy API Key (https://app.testfairy.com/settings/) run "travis encrypt --add deploy.api-key" on your.
+* **api-key**: TestFairy API Key (https://app.testfairy.com/settings/) run "travis encrypt --add deploy.api-key" on your repo.
 * **app-file**: Path to the app file that will be generated after the build (APK/IPA).
 * **symbols-file**: Path to the symbols file.
-* **keystore-file**: Path to your keystore-file (must but only for android).
+* **keystore-file**: Path to your keystore-file (must but only for android). http://docs.travis-ci.com/user/encryption-keys/#Fetching-the-public-key-for-your-repository
 * **storepass**: storepass (must but only for android).
 * **alias**: alias (must but only for android).
 * **testers-groups**: You can set a tester group to be notified of this on this build (group1,group1).
@@ -78,7 +78,7 @@ and your tasters can start test your app.
 * **metrics**: Comma-separated list of metrics to record. View list below.
 
 ##### Available Metrics:
-Below is a list of available metrics for recording in a session. For use with metrics parameter (optional.)
+Below is a list of available metrics for recording in a session. For use with metrics parameter (optional).
 * **cpu** - user/kernel usage statistics.
 * **memory** - process private/shared memory statistics.
 * **network** - process network utilization.
