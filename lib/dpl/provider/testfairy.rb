@@ -150,7 +150,7 @@ module DPL
                                 params = add_boolean_param params, 'icon-watermark', options[:icon_watermark]
 
                                 travisCommitRange = context.env.fetch('TRAVIS_COMMIT_RANGE',nil)
-                                if travisCommitRange.nil?
+                                if !travisCommitRange.nil?
                                         changelog = %[git log  --pretty=oneline --abbrev-commit #{travisCommitRange}]
                                         params = add_param params, 'changelog', changelog
                                 end
