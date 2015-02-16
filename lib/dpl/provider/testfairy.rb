@@ -3,10 +3,10 @@ module DPL
                 class TestFairy < Provider
 
                         require "net/http"
-                        require "uri"
+                        # require "uri"
                         require 'net/http/post/multipart'
                         require 'json'
-                        require 'open-uri'
+                        # require 'open-uri'
                         require 'tempfile'
 
 
@@ -24,11 +24,9 @@ module DPL
                         def check_auth
                                 if android?
                                         set_environment
+                                        puts "keystore-file = #{option(:keystore_file)} storepass = #{option(:storepass)} alias = #{option(:alias)}"
                                 end
-
                                 puts "api-key = #{option(:api_key)} symbols-file = #{options[:symbols_file]}"
-                                puts "keystore-file = #{options[:keystore_file]} storepass = #{options[:storepass]} alias = #{options[:alias]}"
-
                         end
 
                         def android?
@@ -148,12 +146,12 @@ module DPL
                                 params = add_param params, 'max-duration', options[:max_duration]
                                 params = add_param params, 'testers-groups', options[:testers_groups]
                                 params = add_param params, 'advanced-options', options[:advanced_options]
+                                params = add_param params, 'metrics', options[:metrics]
                                 params = add_boolean_param params, 'data-only-wifi', options[:data_only_wifi]
                                 params = add_boolean_param params, 'record-on-background', options[:record_on_background]
                                 params = add_boolean_param params, 'video', options[:video]
                                 params = add_boolean_param params, 'notify', options[:notify]
                                 params = add_boolean_param params, 'icon-watermark', options[:icon_watermark]
-                                params = add_boolean_param params, 'metrics', options[:metrics]
 
                                 travisCommitRange = context.env.fetch('TRAVIS_COMMIT_RANGE',nil)
                                 if !travisCommitRange.nil?
