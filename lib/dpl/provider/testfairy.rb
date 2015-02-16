@@ -17,7 +17,7 @@ module DPL
                         @@UPLOAD_URL_PATH = "/api/upload";
                         @@UPLOAD_SIGNED_URL_PATH = "/api/upload-signed";
 
-                        @@zipPath = "zip"
+                        @@zipPath = "/usr/bin/zip"
                         @@jarsignerPath = nil #"/usr/bin/jarsigner"
                         @@zipAlignPath = nil #"/Users/gilt/apps/testfairy_git/server/deployment/bin/darwin/platform-tools/zipalign"
 
