@@ -61,8 +61,8 @@ module DPL
                         end
 
                         def push_app
-
                                 puts "push_app #{@@tag}"
+                                response = upload_app
                                 if "#{option(:platform)}" == "android"
                                         puts response['instrumented_url']
                                         instrumentedFile = download_from_url response['instrumented_url']
