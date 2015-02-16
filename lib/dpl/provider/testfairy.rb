@@ -17,13 +17,13 @@ module DPL
                         @@UPLOAD_URL_PATH = "/api/upload";
                         @@UPLOAD_SIGNED_URL_PATH = "/api/upload-signed";
 
-                        @@zipPath = "/usr/bin/zip"
+                        @@zipPath = "zip"
                         @@jarsignerPath = nil #"/usr/bin/jarsigner"
                         @@zipAlignPath = nil #"/Users/gilt/apps/testfairy_git/server/deployment/bin/darwin/platform-tools/zipalign"
 
                         def check_auth
 
-                                puts "TRAVIS_COMMIT_RANGE = #{context.env.fetch('TRAVIS_COMMIT_RANGE','TRAVIS_COMMIT_RANGE not set')}"
+
                                 set_environment
                                 
                                 puts "api-key = #{option(:api_key)} proguard-file = #{options[:proguard_file]}"
@@ -113,9 +113,9 @@ module DPL
                                 params = {"api_key" => "#{option(:api_key)}"}
                                 params = add_file_param params , 'apk_file', apkPath
                                 params = add_file_param params, 'proguard_file', options[:proguard_file]
-                                params = add_param params, 'testers-groups', options[:testers_groups], ''
-                                params = add_boolean_param params, 'notify', options[:notify], false
-                                params = add_boolean_param params, 'auto-update', options[:auto_update], false
+                                params = add_param params, 'testers-groups', options[:testers_groups]
+                                params = add_boolean_param params, 'notify', options[:notify]
+                                params = add_boolean_param params, 'auto-update', options[:auto_update]
 
                                 post uploadSignedUrl, params
                         end
@@ -138,17 +138,22 @@ module DPL
                         def get_params
                                 params = {'api_key' => "#{option(:api_key)}"}
                                 params = add_file_param params, 'apk_file', option(:app_file)
-                                # params = add_param params, 'changelog', options[:changelog], ''
-                                params = add_param params, 'video-quality', options[:video_quality], 'low'
-                                params = add_param params, 'screenshot-interval', options[:screenshot_interval], '5'
-                                params = add_param params, 'max-duration', options[:max_duration], '60m'
-                                params = add_param params, 'testers-groups', options[:testers_groups], ''
-                                params = add_param params, 'advanced-options', options[:advanced_options], ''
-                                params = add_boolean_param params, 'data-only-wifi', options[:data_only_wifi], true
-                                params = add_boolean_param params, 'record-on-background', options[:record_on_background], true
-                                params = add_boolean_param params, 'video', options[:video], true
-                                params = add_boolean_param params, 'notify', options[:notify], false
-                                params = add_boolean_param params, 'icon-watermark', options[:icon_watermark], false
+                                params = add_param params, 'video-quality', options[:video_quality]
+                                params = add_param params, 'screenshot-interval', options[:screenshot_interval]
+                                params = add_param params, 'max-duration', options[:max_duration]
+                                params = add_param params, 'testers-groups', options[:testers_groups]
+                                params = add_param params, 'advanced-options', options[:advanced_options]
+                                params = add_boolean_param params, 'data-only-wifi', options[:data_only_wifi]
+                                params = add_boolean_param params, 'record-on-background', options[:record_on_background]
+                                params = add_boolean_param params, 'video', options[:video]
+                                params = add_boolean_param params, 'notify', options[:notify]
+                                params = add_boolean_param params, 'icon-watermark', options[:icon_watermark]
+
+                                travisCommitRange = context.env.fetch('TRAVIS_COMMIT_RANGE',nil)
+                                if travisCommitRange.nil?
+                                        changelog = %[git log  --pretty=oneline --abbrev-commit #{travisCommitRange}]
+                                        params = add_param params, 'changelog', changelog
+                                end
                                 return params
                         end
 
@@ -161,42 +166,37 @@ module DPL
                                 return params
                         end
 
-                        def add_param params, paramName, param, default
-                                if (param.nil? || param.empty?)
-                                        param = default
+                        # def add_param_whit_default params, paramName, param, default
+                        #         if (param.nil? || param.empty?)
+                        #                 param = default
+                        #         end
+                        #         params[paramName] = param
+                        #         return params
+                        # end
+
+                        def add_param params, paramName, param
+                                if (!param.nil? && !param.empty?)
+                                        params[paramName] = param
                                 end
-                                params[paramName] = param
                                 return params
                         end
 
-                        def add_boolean_param params, paramName, param, default
-                                if (param.nil? || param.empty?)
-                                        param = default
+                        # def add_boolean_param_whit_default params, paramName, param, default
+                        #         if (param.nil? || param.empty?)
+                        #                 param = default
+                        #         end
+                        #         params[paramName] = (param == true) ? "on" : "off"
+                        #         return params
+                        # end
+
+                        def add_boolean_param params, paramName, param
+                                if (!param.nil? && !param.empty?)
+                                        params[paramName] = (param == true) ? "on" : "off"
                                 end
-                                params[paramName] = (param == true) ? "on" : "off"
                                 return params
                         end
                 end
         end
 end
-
-# api-key=123456789 --proguard-file-name="proguard file name"--keystore-file="keystore file" --storepass="storepass string" --alias="alias string"
-
-# ---initialize ---- provider
-# ---user_agent ---- provider
-# ---option ---- provider
-# ---initialize ---- provider
-# ---user_agent ---- provider
-# ---deploy ---- provider
-# ---setup_git_credentials ---- provider
-# Preparing deploy
-# check_auth -Testfairy-
-# ---check_app ---- provider
-# ---cleanup ---- provider
-# Saved working directory and index state WIP on testfairy: f8fa256 Merge branch 'master' of github.com:travis-ci/dpl
-# HEAD is now at f8fa256 Merge branch 'master' of github.com:travis-ci/dpl
-# Deploying application
-# ---uncleanup ---- provider
-
 
 
