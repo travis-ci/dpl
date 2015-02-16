@@ -153,6 +153,7 @@ module DPL
                                 params = add_boolean_param params, 'video', options[:video]
                                 params = add_boolean_param params, 'notify', options[:notify]
                                 params = add_boolean_param params, 'icon-watermark', options[:icon_watermark]
+                                params = add_boolean_param params, 'metrics', options[:metrics]
 
                                 travisCommitRange = context.env.fetch('TRAVIS_COMMIT_RANGE',nil)
                                 if !travisCommitRange.nil?
