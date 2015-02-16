@@ -22,13 +22,17 @@ module DPL
                         @@zipAlignPath = nil #"/Users/gilt/apps/testfairy_git/server/deployment/bin/darwin/platform-tools/zipalign"
 
                         def check_auth
+                                if android?
+                                        set_environment
+                                end
 
-
-                                set_environment
-                                
-                                puts "api-key = #{option(:api_key)} proguard-file = #{options[:proguard_file]}"
+                                puts "api-key = #{option(:api_key)} symbols-file = #{options[:symbols_file]}"
                                 puts "keystore-file = #{options[:keystore_file]} storepass = #{options[:storepass]} alias = #{options[:alias]}"
 
+                        end
+
+                        def android?
+                                option(:app_file).include? "apk"
                         end
 
                         def set_environment
@@ -63,7 +67,7 @@ module DPL
                         def push_app
                                 puts "push_app #{@@tag}"
                                 response = upload_app
-                                if "#{option(:platform)}" == "android"
+                                if android?
                                         puts response['instrumented_url']
                                         instrumentedFile = download_from_url response['instrumented_url']
                                         signedApk = signing_apk instrumentedFile
@@ -112,7 +116,7 @@ module DPL
 
                                 params = {"api_key" => "#{option(:api_key)}"}
                                 params = add_file_param params , 'apk_file', apkPath
-                                params = add_file_param params, 'proguard_file', options[:proguard_file]
+                                params = add_file_param params, 'symbols_file', options[:symbols_file]
                                 params = add_param params, 'testers-groups', options[:testers_groups]
                                 params = add_boolean_param params, 'notify', options[:notify]
                                 params = add_boolean_param params, 'auto-update', options[:auto_update]
@@ -138,6 +142,7 @@ module DPL
                         def get_params
                                 params = {'api_key' => "#{option(:api_key)}"}
                                 params = add_file_param params, 'apk_file', option(:app_file)
+                                params = add_file_param params, 'symbols_file', options[:symbols_file]
                                 params = add_param params, 'video-quality', options[:video_quality]
                                 params = add_param params, 'screenshot-interval', options[:screenshot_interval]
                                 params = add_param params, 'max-duration', options[:max_duration]
