@@ -23,23 +23,29 @@ module DPL
 
                         def check_auth
 
+                                puts "TRAVIS_COMMIT_RANGE = #{context.env.fetch('TRAVIS_COMMIT_RANGE','TRAVIS_COMMIT_RANGE not set')}"
                                 set_environment
-
-                                puts "check_auth #{@@tag}"
+                                
                                 puts "api-key = #{option(:api_key)} proguard-file = #{options[:proguard_file]}"
-                                puts "keystore-file = #{options[:keystore_file]} storepass = #{option(:storepass)} alias = #{option(:alias)}"
+                                puts "keystore-file = #{options[:keystore_file]} storepass = #{options[:storepass]} alias = #{options[:alias]}"
 
                         end
 
                         def set_environment
                                 puts "which zip = #{%x[which 'zip']}"
                                 puts "zip was found in :#{@@zipPath}"
-                                android_home_path = context.env.fetch('ANDROID_HOME','/')
+                                android_home_path = context.env.fetch('ANDROID_HOME',nil)
+                                if android_home_path.nil?
+                                        raise Error, "Can't find ANDROID_HOME"
+                                end
                                 zipalign_list = %x[find #{android_home_path} -name 'zipalign']
                                 @@zipAlignPath = zipalign_list.split("\n").first
                                 puts "zipalign was found in :#{@@zipAlignPath}"
 
                                 java_home_path = context.env.fetch('JAVA_HOME','/')
+                                if java_home_path.nil?
+                                        raise Error, "Can't find JAVA_HOME"
+                                end
                                 jarsigner_list = %x[find #{java_home_path} -name 'jarsigner']
                                 @@jarsignerPath = jarsigner_list.split("\n").first
                                 puts "jarsigner was found in :#{@@jarsignerPath}"
@@ -57,14 +63,13 @@ module DPL
                         def push_app
 
                                 puts "push_app #{@@tag}"
-                                response = upload_app
-                                puts response['instrumented_url']
-                                instrumentedFile = download_from_url response['instrumented_url']
                                 if "#{option(:platform)}" == "android"
+                                        puts response['instrumented_url']
+                                        instrumentedFile = download_from_url response['instrumented_url']
                                         signedApk = signing_apk instrumentedFile
-                                        upload_signed_apk signedApk
+                                        response = upload_signed_apk signedApk
                                 end
-                                puts "Upload access!, check your build on #{response['build_url']}"
+                                puts "Upload success!, check your build on #{response['build_url']}"
                         end
 
                         def signing_apk(instrumentedFile)
@@ -132,9 +137,9 @@ module DPL
 
                         def get_params
                                 params = {'api_key' => "#{option(:api_key)}"}
-                                params = add_file_param params, 'apk_file', option(:apk)
-                                params = add_param params, 'changelog', options[:changelog], ''
-                                params = add_param params, 'video-quality', options[:video_qualit], 'low'
+                                params = add_file_param params, 'apk_file', option(:app_file)
+                                # params = add_param params, 'changelog', options[:changelog], ''
+                                params = add_param params, 'video-quality', options[:video_quality], 'low'
                                 params = add_param params, 'screenshot-interval', options[:screenshot_interval], '5'
                                 params = add_param params, 'max-duration', options[:max_duration], '60m'
                                 params = add_param params, 'testers-groups', options[:testers_groups], ''

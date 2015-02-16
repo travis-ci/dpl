@@ -51,6 +51,15 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 *  Dpl will deploy by default from the latest commit. Use the `--skip_cleanup`  flag to deploy from the current file state. Note that many providers deploy by git and could ignore this option.
 
 
+### TestFairy:
+
+#### Options:
+* **platform**: Indicate you project type (Android/iOS)
+* **api-key**: TestFairy API Key (https://app.testfairy.com/settings/)
+* **app-file**: Path to the app file that will be generated after the build (APK/IPA)
+
+
+
 ### Heroku:
 
 #### Options:
