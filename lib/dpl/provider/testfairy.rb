@@ -15,7 +15,7 @@ module DPL
                         @@UPLOAD_URL_PATH = "/api/upload";
                         @@UPLOAD_SIGNED_URL_PATH = "/api/upload-signed";
 
-                        @@zipPath = "/usr/bin/zip"
+                        @@zipPath = nil #"/usr/bin/zip"
                         @@jarsignerPath = nil
                         @@zipAlignPath = nil
 
@@ -57,8 +57,8 @@ module DPL
                                 if @@zipPath.nil? || @@zipPath.empty?
                                         raise Error, "Can't find zip, this file is required"
                                 end
-                                puts "zip was found in :#{@@zipPath}:"
-                                android_home_path = context.env.fetch('ANDROID_HOME',nil)
+                                puts "zip was found in :#{@@zipPath}"
+                                android_home_path = context.env.fetch('ANDROID_HOME', nil)
                                 if android_home_path.nil?
                                         raise Error, "Can't find ANDROID_HOME"
                                 end
@@ -66,7 +66,7 @@ module DPL
                                 @@zipAlignPath = zipalign_list.split("\n").first
                                 puts "zipalign was found in :#{@@zipAlignPath}"
 
-                                java_home_path = context.env.fetch('JAVA_HOME','/')
+                                java_home_path = context.env.fetch('JAVA_HOME', nil)
                                 if java_home_path.nil?
                                         raise Error, "Can't find JAVA_HOME"
                                 end
