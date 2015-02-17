@@ -55,7 +55,7 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 ### TestFairy:
 
 Your Android(apk)/iOS(ipa) file will be uploaded to TestFairy,
-and your tasters can start test your app.
+and your testers can start testing your app.
 
 #### Options:
 * **api-key**: TestFairy API Key (https://app.testfairy.com/settings/) run "travis encrypt --add deploy.api-key" on your repo.
@@ -75,19 +75,11 @@ and your tasters can start test your app.
 * **record-on-background**: If true, data will be collected while the app on background.
 * **video**: If true, Video recording settings "true", "false". Default is "true".
 * **icon-watermark**: Add a small watermark to app icon. Default is "false".
-* **metrics**: Comma-separated list of metrics to record. View list below.
+* **metrics**: Comma-separated list of metrics to record. View list on http://docs.testfairy.com/Upload_API.html.
 
-##### Available Metrics:
-Below is a list of available metrics for recording in a session. For use with metrics parameter (optional).
-* **cpu** - user/kernel usage statistics.
-* **memory** - process private/shared memory statistics.
-* **network** - process network utilization.
-* **phone-signal** - phone signal strength.
-* **logcat** - process logs from logcat (Adds android.permission.READ_LOGS permission.)
-* **gps** - raw GPS location data, if used by app.
-* **battery** - battery status and drainage (Adds android.permission.BATTERY_STATS permission.)
-* **mic** - keep microphone audio data, if used by app.
-* **wifi** - track WIFI signal strength and connectivity.
+#### Examples:
+
+    dpl --provider=testfairy --api-key=<api-key> --app-file="out/Sample.apk" --keystore-file="out/keystore" --storepass=<storepass> --alias=<alias>
 
 
 ### Heroku:
