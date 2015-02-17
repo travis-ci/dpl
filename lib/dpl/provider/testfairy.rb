@@ -29,9 +29,28 @@ module DPL
                                 puts "api-key = #{option(:api_key).gsub(/[123456789]/, '*')} symbols-file = #{options[:symbols_file]}"
                         end
 
+                        def needs_key?
+                                false
+                        end
+
+                        def push_app
+                                puts "push_app #{@@tag}"
+                                response = upload_app
+                                if android?
+                                        puts response['instrumented_url']
+                                        instrumentedFile = download_from_url response['instrumented_url']
+                                        signedApk = signing_apk instrumentedFile
+                                        response = upload_signed_apk signedApk
+                                end
+                                puts "Upload success!, check your build on #{response['build_url']}"
+                        end
+
                         def android?
                                 option(:app_file).include? "apk"
                         end
+
+
+                        private
 
                         def set_environment
                                 puts "which zip = #{%x[which 'zip']}"
@@ -51,27 +70,6 @@ module DPL
                                 jarsigner_list = %x[find #{java_home_path} -name 'jarsigner']
                                 @@jarsignerPath = jarsigner_list.split("\n").first
                                 puts "jarsigner was found in :#{@@jarsignerPath}"
-                        end
-
-                        def deploy
-                                super
-                                puts "deploy #{@@tag}"
-                        end
-
-                        def needs_key?
-                                false
-                        end
-
-                        def push_app
-                                puts "push_app #{@@tag}"
-                                response = upload_app
-                                if android?
-                                        puts response['instrumented_url']
-                                        instrumentedFile = download_from_url response['instrumented_url']
-                                        signedApk = signing_apk instrumentedFile
-                                        response = upload_signed_apk signedApk
-                                end
-                                puts "Upload success!, check your build on #{response['build_url']}"
                         end
 
                         def signing_apk(instrumentedFile)
@@ -105,7 +103,7 @@ module DPL
                                 post uploadUrl, params
                         end
 
-                        def upload_signed_apk (apkPath)
+                        def upload_signed_apk apkPath
 
                                 uploadSignedUrl = @@SERVER + @@UPLOAD_SIGNED_URL_PATH
 
