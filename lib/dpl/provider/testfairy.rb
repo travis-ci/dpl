@@ -53,8 +53,11 @@ module DPL
                         private
 
                         def set_environment
-                                puts "which zip = #{%x[which 'zip']}"
-                                puts "zip was found in :#{@@zipPath}"
+                                @@zipPath = %x[which 'zip'].split("\n").first
+                                if @@zipPath.nil? || @@zipPath.empty?
+                                        raise Error, "Can't find zip, this file is required"
+                                end
+                                puts "zip was found in :#{@@zipPath}:"
                                 android_home_path = context.env.fetch('ANDROID_HOME',nil)
                                 if android_home_path.nil?
                                         raise Error, "Can't find ANDROID_HOME"
