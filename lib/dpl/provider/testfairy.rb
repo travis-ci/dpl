@@ -121,7 +121,7 @@ module DPL
 
                         def post url, params
 
-                                # puts "Upload parameters = #{get_printable_params params} \nto #{url}"
+                                puts "Upload parameters = #{get_printable_params params} \nto #{url}"
                                 uri = URI.parse(url)
                                 request = Net::HTTP::Post::Multipart.new(uri.path, params, 'User-Agent' => "Travis plugin version=#{@@VERSION}")
                                 res = Net::HTTP.start(uri.host, uri.port) do |http|
@@ -162,7 +162,7 @@ module DPL
                                 travisCommitRange = context.env.fetch('TRAVIS_COMMIT_RANGE',nil)
                                 if !travisCommitRange.nil?
                                         changelog = %x[git log  --pretty=oneline --abbrev-commit #{travisCommitRange}]
-                                        params = add_param params, 'changelog', changelog
+                                        add_param params, 'changelog', changelog
                                 end
                                 params
                         end
