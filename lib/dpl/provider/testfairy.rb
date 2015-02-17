@@ -78,10 +78,23 @@ module DPL
                         def signing_apk(instrumentedFile)
 
                                 signed = Tempfile.new(['instrumented-signed', '.apk'])
-                                context.shell "#{@@zipPath} -qd #{instrumentedFile} META-INF/*"
-                                context.shell "#{@@jarsignerPath} -keystore #{option(:keystore_file)} -storepass #{option(:storepass)} -digestalg SHA1 -sigalg MD5withRSA #{instrumentedFile} #{option(:alias)}"
-                                context.shell "#{@@jarsignerPath} -verify  #{instrumentedFile}"
-                                context.shell "#{@@zipAlignPath} -f 4 #{instrumentedFile} #{signed.path}"
+                                zipOutput = %x[#{@@zipPath} -qd #{instrumentedFile} META-INF/*]
+                                if zipOutput.include? 'error'
+                                        raise Error, zipOutput
+                                end
+
+                                jarSignerOutput = %x[#{@@jarsignerPath} -keystore #{option(:keystore_file)} -storepass #{option(:storepass)} -digestalg SHA1 -sigalg MD5withRSA #{instrumentedFile} #{option(:alias)}]
+                                if jarSignerOutput.include? 'error'
+                                        raise Error, jarSignerOutput
+                                end
+
+                                verifyOutput = %x[#{@@jarsignerPath} -verify  #{instrumentedFile}]
+                                if !verifyOutput.include? 'jar verified'
+                                        raise Error, verifyOutput
+                                end
+
+                                zipAlignOutput = %x[#{@@zipAlignPath} -f 4 #{instrumentedFile} #{signed.path}]
+
                                 puts "signing Apk finished: #{signed.path()}  (file size:#{File.size(signed.path())} )"
                                 signed.path()
                         end
