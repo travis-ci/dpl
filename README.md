@@ -32,6 +32,7 @@ Dpl supports the following providers:
 * [Puppet Forge](#puppet-forge)
 * [packagecloud](#packagecloud)
 * [Chef Supermarket](#chef-supermarket)
+* [TestFairy](#testfairy)
 
 ## Installation:
 
@@ -49,6 +50,36 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 ###Global Flags
 * `--provider=<provider>` sets the provider you want to deploy to. Every provider has slightly different flags, which are documented in the section about your provider following.
 *  Dpl will deploy by default from the latest commit. Use the `--skip_cleanup`  flag to deploy from the current file state. Note that many providers deploy by git and could ignore this option.
+
+
+### TestFairy:
+
+Your Android(apk)/iOS(ipa) file will be uploaded to TestFairy,
+and your testers can start testing your app.
+
+#### Options:
+* **api-key**: TestFairy API Key (https://app.testfairy.com/settings/) run "travis encrypt --add deploy.api-key" on your repo.
+* **app-file**: Path to the app file that will be generated after the build (APK/IPA).
+* **symbols-file**: Path to the symbols file.
+* **keystore-file**: Path to your keystore-file (must, only for android). http://docs.travis-ci.com/user/encrypting-files/
+* **storepass**: storepass (must, only for android).
+* **alias**: alias (must, only for android).
+* **testers-groups**: You can set a tester group to be notified of this on this build (group1,group1).
+* **notify**: If true, an email you a changelog will be sent to your users.
+* **auto-update**: If true, all the previous installations of this app will be automatically all upgraded to this version.
+* **video-quality**: Video quality settings, "high", "medium" or "low". Default is "high".
+* **screenshot-interval**: You can choose "1"\"2"\"10" sec.
+* **max-duration**: Maximum session recording length, eg "20m" or "1h". Default is "10m". Maximum "24h".
+* **advanced-options**: For example (option1,option2)
+* **data-only-wifi**: If true, video and recorded metrics will be sent only when connected to a wifi network.
+* **record-on-background**: If true, data will be collected while the app on background.
+* **video**: If true, Video recording settings "true", "false". Default is "true".
+* **icon-watermark**: Add a small watermark to app icon. Default is "false".
+* **metrics**: Comma-separated list of metrics to record. View list on http://docs.testfairy.com/Upload_API.html.
+
+#### Examples:
+
+    dpl --provider=testfairy --api-key=<api-key> --app-file="out/Sample.apk" --keystore-file="out/keystore" --storepass=<storepass> --alias=<alias>
 
 
 ### Heroku:
