@@ -11,7 +11,7 @@ module DPL
 
 
                         @@VERSION = "0.1"
-                        @@tag = "-Testfairy-"
+                        @@tag = "-TestFairy-"
                         @@SERVER = "http://api.testfairy.com"
                         # @@SERVER = "http://giltsl.gs.dev.testfairy.net"
                         @@UPLOAD_URL_PATH = "/api/upload";
@@ -77,12 +77,9 @@ module DPL
                         def signing_apk(instrumentedFile)
 
                                 signed = Tempfile.new(['instrumented-signed', '.apk'])
-
-                                context.shell "ls #{instrumentedFile}"
                                 context.shell "#{@@zipPath} -qd #{instrumentedFile} META-INF/*"
                                 context.shell "#{@@jarsignerPath} -keystore #{option(:keystore_file)} -storepass #{option(:storepass)} -digestalg SHA1 -sigalg MD5withRSA #{instrumentedFile} #{option(:alias)}"
                                 context.shell "#{@@jarsignerPath} -verify  #{instrumentedFile}"
-
                                 context.shell "#{@@zipAlignPath} -f 4 #{instrumentedFile} #{signed.path}"
                                 puts "signing Apk finished: #{signed.path()}  (file size:#{File.size(signed.path())} )"
                                 signed.path()
@@ -170,28 +167,12 @@ module DPL
                                 return params
                         end
 
-                        # def add_param_whit_default params, paramName, param, default
-                        #         if (param.nil? || param.empty?)
-                        #                 param = default
-                        #         end
-                        #         params[paramName] = param
-                        #         return params
-                        # end
-
                         def add_param params, paramName, param
                                 if (!param.nil? && !param.empty?)
                                         params[paramName] = param
                                 end
                                 return params
                         end
-
-                        # def add_boolean_param_whit_default params, paramName, param, default
-                        #         if (param.nil? || param.empty?)
-                        #                 param = default
-                        #         end
-                        #         params[paramName] = (param == true) ? "on" : "off"
-                        #         return params
-                        # end
 
                         def add_boolean_param params, paramName, param
                                 if (!param.nil? && !param.empty?)
