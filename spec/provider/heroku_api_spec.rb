@@ -55,32 +55,40 @@ describe DPL::Provider::Heroku do
   end
 
   describe "#verify_build" do
-    let(:response_body) { {
-      "build" => {
-        "id" => "01234567-89ab-cdef-0123-456789abcdef",
-        "status" => "succeeded"
-      },
-      "exit_code" => exit_code
-    } }
-
-    before do
-      expect(provider).to receive(:build_id).and_return('abc')
-      expect(provider).to receive(:get).with('builds/abc/result').and_return(response_body)
+    def response_body(status, exit_code)
+      {
+        "build" => {
+          "id" => "01234567-89ab-cdef-0123-456789abcdef",
+          "status" => status
+        },
+        "exit_code" => exit_code
+      }
     end
 
-    context 'when build exits with zero' do
-      let(:exit_code) { 0 }
+    before do
+      allow(provider).to receive(:build_id).and_return('abc')
+    end
 
+    context 'when build succeeds' do
       example do
+        expect(provider).to receive(:get).with('builds/abc/result').and_return(response_body('succeeded', 0))
         expect{ provider.verify_build }.not_to raise_error
       end
     end
 
-    context 'when build exists with non-zero' do
-      let(:exit_code) { 1 }
-
+    context 'when build fails' do
       example do
+        expect(provider).to receive(:get).with('builds/abc/result').and_return(response_body('failed', 1))
         expect{ provider.verify_build }.to raise_error("deploy failed, build exited with code 1")
+      end
+    end
+
+    context 'when build is pending, then succeeds' do
+      example do
+        expect(provider).to receive(:get).with('builds/abc/result').and_return(response_body('pending', nil), response_body('succeeded', 0))
+        expect(provider).to receive(:log).with('heroku build still pending')
+        expect(provider).to receive(:sleep).with(5) # stub sleep
+        expect{ provider.verify_build }.not_to raise_error
       end
     end
 

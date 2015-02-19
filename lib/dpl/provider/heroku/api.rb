@@ -37,10 +37,18 @@ module DPL
         end
 
         def verify_build
-          response = get("builds/#{build_id}/result")
-          exit_code = response.fetch('exit_code')
-          unless exit_code == 0
-            error "deploy failed, build exited with code #{exit_code}"
+          loop do
+            response = get("builds/#{build_id}/result")
+            exit_code = response.fetch('exit_code')
+            if exit_code.nil?
+              log "heroku build still pending"
+              sleep 5
+              next
+            elsif exit_code == 0
+              break
+            else
+              error "deploy failed, build exited with code #{exit_code}"
+            end
           end
         end
 
