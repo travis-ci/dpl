@@ -31,4 +31,67 @@ describe DPL::Provider::Heroku do
       expect(provider.api).to eq(api)
     end
   end
+
+  describe "#trigger_build" do
+    let(:response_body) { {
+      "created_at" => "2012-01-01T12:00:00Z",
+      "id" => "abc",
+      "status" => "pending",
+      "stream_url" => "http://example.com/stream",
+      "updated_at" => "2012-01-01T12:00:00Z",
+      "user" => { "id" => "01234567-89ab-cdef-0123-456789abcdef", "email" => "username@example.com" }
+    } }
+    example do
+      expect(provider).to receive(:log).with('triggering new deployment')
+      expect(provider).to receive(:get_url).and_return 'http://example.com/source.tgz'
+      expect(provider).to receive(:version).and_return 'sha'
+      expect(provider).to receive(:post).with(
+        :builds, source_blob: {url: 'http://example.com/source.tgz', version: 'sha'}
+      ).and_return(response_body)
+      expect(provider.context).to receive(:shell).with('curl http://example.com/stream')
+      provider.trigger_build
+      expect(provider.build_id).to eq('abc')
+    end
+  end
+
+  describe "#verify_build" do
+    def response_body(status, exit_code)
+      {
+        "build" => {
+          "id" => "01234567-89ab-cdef-0123-456789abcdef",
+          "status" => status
+        },
+        "exit_code" => exit_code
+      }
+    end
+
+    before do
+      allow(provider).to receive(:build_id).and_return('abc')
+    end
+
+    context 'when build succeeds' do
+      example do
+        expect(provider).to receive(:get).with('builds/abc/result').and_return(response_body('succeeded', 0))
+        expect{ provider.verify_build }.not_to raise_error
+      end
+    end
+
+    context 'when build fails' do
+      example do
+        expect(provider).to receive(:get).with('builds/abc/result').and_return(response_body('failed', 1))
+        expect{ provider.verify_build }.to raise_error("deploy failed, build exited with code 1")
+      end
+    end
+
+    context 'when build is pending, then succeeds' do
+      example do
+        expect(provider).to receive(:get).with('builds/abc/result').and_return(response_body('pending', nil), response_body('succeeded', 0))
+        expect(provider).to receive(:log).with('heroku build still pending')
+        expect(provider).to receive(:sleep).with(5) # stub sleep
+        expect{ provider.verify_build }.not_to raise_error
+      end
+    end
+
+  end
+
 end

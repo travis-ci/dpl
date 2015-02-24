@@ -5,10 +5,13 @@ module DPL
   class Provider
     module Heroku
       class API < Generic
+        attr_reader :build_id
+
         def push_app
           pack_archive
           upload_archive
           trigger_build
+          verify_build
         end
 
         def archive_file
@@ -28,8 +31,25 @@ module DPL
         def trigger_build
           log "triggering new deployment"
           response   = post(:builds, source_blob: { url: get_url, version: version })
+          @build_id  = response.fetch('id')
           stream_url = response.fetch('stream_url')
           context.shell "curl #{Shellwords.escape(stream_url)}"
+        end
+
+        def verify_build
+          loop do
+            response = get("builds/#{build_id}/result")
+            exit_code = response.fetch('exit_code')
+            if exit_code.nil?
+              log "heroku build still pending"
+              sleep 5
+              next
+            elsif exit_code == 0
+              break
+            else
+              error "deploy failed, build exited with code #{exit_code}"
+            end
+          end
         end
 
         def get_url
@@ -46,6 +66,17 @@ module DPL
 
         def version
           @version ||= options[:version] || context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
+        end
+
+        def get(subpath, options = {})
+          options = {
+            method: :get,
+            path: "/apps/#{option(:app)}/#{subpath}",
+            headers: { "Accept" => "application/vnd.heroku+json; version=edge" },
+            expects: [200]
+          }.merge(options)
+
+          api.request(options).body
         end
 
         def post(subpath, body = nil, options = {})
