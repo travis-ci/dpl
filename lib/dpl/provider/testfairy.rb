@@ -15,7 +15,6 @@ module DPL
       UPLOAD_SIGNED_URL_PATH = "/api/upload-signed";
 
       @@jarsignerPath = nil
-      @@zipAlignPath = nil
 
       def check_auth
         if android?
@@ -51,14 +50,6 @@ module DPL
       private
 
       def set_environment
-        android_home_path = context.env.fetch('ANDROID_HOME', nil)
-        if android_home_path.nil?
-          raise Error, "Can't find ANDROID_HOME"
-        end
-        zipalign_list = %x[find #{android_home_path} -name 'zipalign']
-        @@zipAlignPath = zipalign_list.split("\n").first
-        puts "zipalign was found in :#{@@zipAlignPath}"
-
         java_home_path = context.env.fetch('JAVA_HOME', nil)
         if java_home_path.nil?
           raise Error, "Can't find JAVA_HOME"
@@ -85,7 +76,7 @@ module DPL
           raise Error, verifyOutput
         end
 
-        zipAlignOutput = %x[#{@@zipAlignPath} -f 4 #{instrumentedFile} #{signed.path}]
+        zipAlignOutput = %x[#{zipalign_path} -f 4 #{instrumentedFile} #{signed.path}]
 
         puts "signing Apk finished: #{signed.path()}  (file size:#{File.size(signed.path())} )"
         signed.path()
@@ -189,7 +180,12 @@ module DPL
       end
 
       def zip_path
-        @zip_path ||= %x[which zip].split("\n").first.to_s
+        @zip_path ||= %x[which zip].split("\n").first
+      end
+
+      def zipalign_path
+        android_home_path = context.env.fetch('ANDROID_HOME', nil)
+        @zipalign_path ||= %x[find #{android_home_path} -name 'zipalign'].split("\n").first
       end
     end
   end
