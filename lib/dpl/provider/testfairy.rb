@@ -14,8 +14,6 @@ module DPL
       UPLOAD_URL_PATH = "/api/upload";
       UPLOAD_SIGNED_URL_PATH = "/api/upload-signed";
 
-      @@jarsignerPath = nil
-
       def check_auth
         if android?
           set_environment
@@ -50,13 +48,6 @@ module DPL
       private
 
       def set_environment
-        java_home_path = context.env.fetch('JAVA_HOME', nil)
-        if java_home_path.nil?
-          raise Error, "Can't find JAVA_HOME"
-        end
-        jarsigner_list = %x[find #{java_home_path} -name 'jarsigner']
-        @@jarsignerPath = jarsigner_list.split("\n").first
-        puts "jarsigner was found in :#{@@jarsignerPath}"
       end
 
       def signing_apk(instrumentedFile)
@@ -66,12 +57,12 @@ module DPL
           raise Error, zipOutput
         end
 
-        jarSignerOutput = %x[#{@@jarsignerPath} -keystore #{option(:keystore_file)} -storepass #{option(:storepass)} -digestalg SHA1 -sigalg MD5withRSA #{instrumentedFile} #{option(:alias)}]
+        jarSignerOutput = %x[#{jarsigner_path} -keystore #{option(:keystore_file)} -storepass #{option(:storepass)} -digestalg SHA1 -sigalg MD5withRSA #{instrumentedFile} #{option(:alias)}]
         if jarSignerOutput.include? 'error'
           raise Error, jarSignerOutput
         end
 
-        verifyOutput = %x[#{@@jarsignerPath} -verify  #{instrumentedFile}]
+        verifyOutput = %x[#{jarsigner_path} -verify  #{instrumentedFile}]
         if !verifyOutput.include? 'jar verified'
           raise Error, verifyOutput
         end
@@ -186,6 +177,11 @@ module DPL
       def zipalign_path
         android_home_path = context.env.fetch('ANDROID_HOME', nil)
         @zipalign_path ||= %x[find #{android_home_path} -name 'zipalign'].split("\n").first
+      end
+
+      def jarsigner_path
+        java_home_path = context.env.fetch('JAVA_HOME', nil)
+        @jarsigner_path ||= %x[find #{java_home_path} -name 'jarsigner'].split("\n").first
       end
     end
   end
