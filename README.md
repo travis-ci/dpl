@@ -64,7 +64,7 @@ and your testers can start testing your app.
 * **keystore-file**: Path to your keystore-file (must, only for android). http://docs.travis-ci.com/user/encrypting-files/
 * **storepass**: storepass (must, only for android).
 * **alias**: alias (must, only for android).
-* **testers-groups**: You can set a tester group to be notified of this on this build (group1,group1).
+* **testers-groups**: You can set a tester group to be notified about this build (group1,group1).
 * **notify**: If true, an email you a changelog will be sent to your users.
 * **auto-update**: If true, all the previous installations of this app will be automatically all upgraded to this version.
 * **video-quality**: Video quality settings, "high", "medium" or "low". Default is "high".
