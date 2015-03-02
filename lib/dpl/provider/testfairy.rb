@@ -16,7 +16,6 @@ module DPL
 
       def check_auth
         if android?
-          set_environment
           storepassToPrint = option(:storepass).clone
           aliasToPrint = option(:alias).clone
           puts "keystore-file = #{option(:keystore_file)} storepass = #{storepassToPrint.sub! storepassToPrint[1..-2], '****'} alias = #{aliasToPrint.sub! aliasToPrint[1..-2], '****'}"
@@ -46,9 +45,6 @@ module DPL
 
 
       private
-
-      def set_environment
-      end
 
       def signing_apk(instrumentedFile)
         signed = Tempfile.new(['instrumented-signed', '.apk'])
