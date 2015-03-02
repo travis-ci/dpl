@@ -9,7 +9,7 @@ module DPL
 
 
       VERSION = "0.1"
-      @@tag = "-TestFairy-"
+      TAG = "-TestFairy-"
       SERVER = "http://api.testfairy.com"
       UPLOAD_URL_PATH = "/api/upload";
       UPLOAD_SIGNED_URL_PATH = "/api/upload-signed";
@@ -28,7 +28,7 @@ module DPL
       end
 
       def push_app
-        puts "push_app #{@@tag}"
+        puts "push_app #{TAG}"
         response = upload_app
         if android?
           puts response['instrumented_url']
