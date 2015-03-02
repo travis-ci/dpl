@@ -8,12 +8,11 @@ module DPL
       require 'tempfile'
 
 
-      @@VERSION = "0.1"
+      VERSION = "0.1"
       @@tag = "-TestFairy-"
-      @@SERVER = "http://api.testfairy.com"
-      # @@SERVER = "http://giltsl.gs.dev.testfairy.net"
-      @@UPLOAD_URL_PATH = "/api/upload";
-      @@UPLOAD_SIGNED_URL_PATH = "/api/upload-signed";
+      SERVER = "http://api.testfairy.com"
+      UPLOAD_URL_PATH = "/api/upload";
+      UPLOAD_SIGNED_URL_PATH = "/api/upload-signed";
 
       @@zipPath = nil #"/usr/bin/zip"
       @@jarsignerPath = nil
@@ -113,13 +112,13 @@ module DPL
       end
 
       def upload_app
-        uploadUrl = @@SERVER + @@UPLOAD_URL_PATH
+        uploadUrl = SERVER + UPLOAD_URL_PATH
         params = get_params
         post uploadUrl, params
       end
 
       def upload_signed_apk apkPath
-        uploadSignedUrl = @@SERVER + @@UPLOAD_SIGNED_URL_PATH
+        uploadSignedUrl = SERVER + UPLOAD_SIGNED_URL_PATH
 
         params = {"api_key" => "#{option(:api_key)}"}
         add_file_param params , 'apk_file', apkPath
@@ -134,7 +133,7 @@ module DPL
       def post url, params
         puts "Upload parameters = #{get_printable_params params} \nto #{url}"
         uri = URI.parse(url)
-        request = Net::HTTP::Post::Multipart.new(uri.path, params, 'User-Agent' => "Travis plugin version=#{@@VERSION}")
+        request = Net::HTTP::Post::Multipart.new(uri.path, params, 'User-Agent' => "Travis plugin version=#{VERSION}")
         res = Net::HTTP.start(uri.host, uri.port) do |http|
           http.request(request)
         end
