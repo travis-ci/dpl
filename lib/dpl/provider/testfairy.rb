@@ -14,7 +14,6 @@ module DPL
       UPLOAD_URL_PATH = "/api/upload";
       UPLOAD_SIGNED_URL_PATH = "/api/upload-signed";
 
-      @@zipPath = nil #"/usr/bin/zip"
       @@jarsignerPath = nil
       @@zipAlignPath = nil
 
@@ -52,11 +51,6 @@ module DPL
       private
 
       def set_environment
-        @@zipPath = %x[which 'zip'].split("\n").first
-        if @@zipPath.nil? || @@zipPath.empty?
-          raise Error, "Can't find zip, this file is required"
-        end
-        puts "zip was found in :#{@@zipPath}"
         android_home_path = context.env.fetch('ANDROID_HOME', nil)
         if android_home_path.nil?
           raise Error, "Can't find ANDROID_HOME"
@@ -76,7 +70,7 @@ module DPL
 
       def signing_apk(instrumentedFile)
         signed = Tempfile.new(['instrumented-signed', '.apk'])
-        zipOutput = %x[#{@@zipPath} -qd #{instrumentedFile} META-INF/*]
+        zipOutput = %x[#{zip_path} -qd #{instrumentedFile} META-INF/*]
         if zipOutput.include? 'error'
           raise Error, zipOutput
         end
@@ -192,6 +186,10 @@ module DPL
         if (!param.nil? && !param.empty?)
           params[paramName] = (param == true) ? "on" : "off"
         end
+      end
+
+      def zip_path
+        @zip_path ||= %x[which zip].split("\n").first.to_s
       end
     end
   end
