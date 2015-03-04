@@ -1,35 +1,19 @@
-require 'open-uri'
-
 module DPL
   class Provider
     class AppEngine < Provider
       experimental "Google App Engine"
 
       BASE_DIR=Dir.pwd
-      GCLOUD_ZIP_URL="https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.zip"
-      GCLOUD_ZIP_FILE="google-cloud-sdk.zip"
 
       def self.install_sdk
         requires 'rubyzip', :load => 'zip'
         Dir.chdir(BASE_DIR) do
-          unless File.exists? GCLOUD_ZIP_FILE
+          unless File.exists? "google-cloud-sdk.zip"
             $stderr.puts "Downloading Google Cloud SDK"
-            File.open(GCLOUD_ZIP_FILE, "wb") do |dest|
-              open(GCLOUD_ZIP_URL, "rb") do |src|
-                dest.write(src.read)
-              end
-            end
+	    context.shell "wget https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.zip"
           end
 
           context.shell "unzip -o -q google-cloud-sdk.zip"
-          #unless File.directory? "google-cloud-sdk"
-          #  $stderr.puts "Extracting Google Cloud SDK"
-          #  Zip::File.open(GCLOUD_ZIP_FILE) do |file|
-          #    file.each do |entry|
-          #      entry.extract entry.name
-          #    end
-          #  end
-          #end
 
           $stderr.puts "Installing Google Cloud SDK"
           context.shell "google-cloud-sdk/install.sh --usage-reporting false --path-update false --rc-path=~/.bashrc --bash-completion false --override-components=app"
