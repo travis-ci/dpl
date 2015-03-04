@@ -6,15 +6,6 @@ describe DPL::Provider::AppEngine do
     described_class.new(DummyContext.new, :account => "user@gmail.com", :oauth_token => "TOKEN")
   end
 
-  describe "#install_sdk" do
-    example do
-      expect(provider.context).to receive(:shell).with("wget https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.zip")
-      expect(provider.context).to receive(:shell).with("unzip -o -q google-cloud-sdk.zip")
-      expect(provider.context).to receive(:shell).with("google-cloud-sdk/install.sh --usage-reporting false --path-update false --rc-path~/.bashrc --bash-completion false --override-components=app")
-      provider.install_sdk
-    end
-  end
-
   describe "#setup_auth" do
     example do
       expect(provider.context).to receive(:shell).with("gcloud auth activate-refresh-token user@gmail.com TOKEN")
