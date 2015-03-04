@@ -53,20 +53,21 @@ module DPL
                         private
 
                         def set_environment
-                                @@zipPath = %x[which 'zip'].split("\n").first
+				@@zipPath = %x[which 'zip'].split("\n").first.to_s
                                 if @@zipPath.nil? || @@zipPath.empty?
                                         raise Error, "Can't find zip, this file is required"
                                 end
                                 puts "zip was found in :#{@@zipPath}"
-                                android_home_path = context.env.fetch('ANDROID_HOME', nil)
+				
+				android_home_path = %x[echo $ANDROID_HOME].split("\n").first.to_s
                                 if android_home_path.nil?
                                         raise Error, "Can't find ANDROID_HOME"
                                 end
                                 zipalign_list = %x[find #{android_home_path} -name 'zipalign']
                                 @@zipAlignPath = zipalign_list.split("\n").first
                                 puts "zipalign was found in :#{@@zipAlignPath}"
-
-                                java_home_path = context.env.fetch('JAVA_HOME', nil)
+				
+				java_home_path = %x[echo $JAVA_HOME].split("\n").first.to_s
                                 if java_home_path.nil?
                                         raise Error, "Can't find JAVA_HOME"
                                 end
@@ -195,7 +196,7 @@ module DPL
 
                         def add_boolean_param params, paramName, param
                                 if (!param.nil? && !param.empty?)
-                                        params[paramName] = (param == true) ? "on" : "off"
+                                        params[paramName] = (param == true || param == "true") ? "on" : "off"
                                 end
                         end
                 end
