@@ -176,7 +176,7 @@ module DPL
       end
 
       def jarsigner_path
-        java_home_path = context.env.fetch('JAVA_HOME', nil)
+        java_home_path = context.env.fetch('JAVA_HOME', '/')
         @jarsigner_path ||= %x[find #{java_home_path} -name 'jarsigner'].split("\n").first
       end
     end
