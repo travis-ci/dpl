@@ -172,12 +172,12 @@ module DPL
 
       def zipalign_path
         android_home_path = context.env.fetch('ANDROID_HOME', nil)
-        @zipalign_path ||= %x[find #{android_home_path} -name 'zipalign'].split("\n").first
+        @zipalign_path ||= %x[find #{android_home_path} -name 'zipalign' 2>/dev/null].split("\n").first
       end
 
       def jarsigner_path
         java_home_path = context.env.fetch('JAVA_HOME', '/')
-        @jarsigner_path ||= %x[find #{java_home_path} -name 'jarsigner'].split("\n").first
+        @jarsigner_path ||= %x[find #{java_home_path} -name 'jarsigner' 2>/dev/null].split("\n").first
       end
     end
   end
