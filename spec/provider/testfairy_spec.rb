@@ -11,21 +11,18 @@ describe DPL::Provider::TestFairy do
     %x[chmod +x /tmp/android/zipalign]
     
     @kyestore = '/tmp/debug.keystore'
-    puts %x[curl -Lo #{@kyestore} http://www.testfairy.com/support-files/travis/dpl/debug.keystore]
-    puts %x[ls -lt #{@kyestore}]
-    
+    %x[curl -Lso #{@kyestore} http://www.testfairy.com/support-files/travis/dpl/debug.keystore]
+        
     @local_android_app = '/tmp/android.apk'
-    puts %x[curl -Lo #{@local_android_app} http://www.testfairy.com/support-files/travis/dpl/android.apk]
-    puts %x[ls -lt #{@local_android_app}]
+    %x[curl -Lso #{@local_android_app} http://www.testfairy.com/support-files/travis/dpl/android.apk]
     
     @local_ios_app = '/tmp/ios.ipa'
-    puts %x[curl -Lo #{@local_ios_app} http://www.testfairy.com/support-files/travis/dpl/Empty.ipa]
-    puts %x[ls -lt #{@local_ios_app }]
+    %x[curl -Lso #{@local_ios_app} http://www.testfairy.com/support-files/travis/dpl/Empty.ipa]
     
   end
   
   subject :provider do
-    # the accoun is travis-test@testfairy.com
+    # the account is travis-test@testfairy.com
     described_class.new(DummyContext.new, :api_key => '4b85a2c03ba6026f4e22640a0432638180e1d1ea', :storepass => "android", :alias => "androiddebugkey", :keystore_file => @kyestore, :video => "true", :video_quality => 'low')  
   end
 
