@@ -7,17 +7,17 @@ describe DPL::Provider::TestFairy do
     @tempdir = Dir.mktmpdir
 
     %x[mkdir @tempdir/android/]
-    ENV['ANDROID_HOME'] = '@tempdir/android'
-    %x[echo 'cp $3 $4' > @tempdir/android/zipalign]
-    %x[chmod +x @tempdir/android/zipalign]
+    ENV['ANDROID_HOME'] = File.join(@tempdir, 'android')
+    %x[echo 'cp $3 $4' > #{@tempdir}/android/zipalign]
+    %x[chmod +x #{@tempdir}/android/zipalign]
 
-    @kyestore = '@tempdir/debug.keystore'
+    @kyestore = File.join(@tempdir,'debug.keystore')
     %x[curl -Lso #{@kyestore} http://www.testfairy.com/support-files/travis/dpl/debug.keystore]
 
-    @local_android_app = '@tempdir/android.apk'
+    @local_android_app = File.join(@tempdir, 'android.apk')
     %x[curl -Lso #{@local_android_app} http://www.testfairy.com/support-files/travis/dpl/android.apk]
 
-    @local_ios_app = '@tempdir/ios.ipa'
+    @local_ios_app = File.join(@tempdir, 'ios.ipa')
     %x[curl -Lso #{@local_ios_app} http://www.testfairy.com/support-files/travis/dpl/Empty.ipa]
 
   end
