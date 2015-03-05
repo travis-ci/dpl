@@ -5,6 +5,11 @@ describe DPL::Provider::TestFairy do
 
   before (:all) do
  
+    %x[mkdir /tmp/android/]
+    ENV['ANDROID_HOME'] = '/tmp/android'
+    %x[echo 'cp $3 $4' > /tmp/android/zipalign]
+    %x[chmod +x /tmp/android/zipalign]
+    
     @kyestore = '/tmp/debug.keystore'
     puts %x[curl -Lo #{@kyestore} http://www.testfairy.com/support-files/travis/dpl/debug.keystore]
     puts %x[ls -lt #{@kyestore}]
@@ -17,16 +22,12 @@ describe DPL::Provider::TestFairy do
     puts %x[curl -Lo #{@local_ios_app} http://www.testfairy.com/support-files/travis/dpl/Empty.ipa]
     puts %x[ls -lt #{@local_ios_app }]
     
-    %x[mkdir /tmp/android]
-    %x[export ANDROID_HOME=/tmp/android]
-    %x[cp /bin/cp /tmp/android/zipalign]
   end
   
   subject :provider do
     # the accoun is travis-test@testfairy.com
     described_class.new(DummyContext.new, :api_key => '4b85a2c03ba6026f4e22640a0432638180e1d1ea', :storepass => "android", :alias => "androiddebugkey", :keystore_file => @kyestore, :video => "true", :video_quality => 'low')  
   end
-
 
   describe "#check_auth" do
     example "check_auth without app_file" do
@@ -44,7 +45,6 @@ describe DPL::Provider::TestFairy do
       expect(provider.needs_key?).to eq(false)
     end
   end
-  
   
   describe "#push_app" do
     example "push_app without app_file" do
