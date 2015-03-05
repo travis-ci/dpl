@@ -6,15 +6,15 @@ describe DPL::Provider::TestFairy do
   before (:all) do
  
     @kyestore = '/tmp/debug.keystore'
-    puts %x[curl -Lo #{@kyestore} https://github.com/giltsl/Ham/blob/master/out/debug.keystore?raw=true]
+    puts %x[curl -Lo #{@kyestore} http://www.testfairy.com/support-files/travis/dpl/debug.keystore]
     puts %x[ls -lt #{@kyestore}]
     
     @local_android_app = '/tmp/android.apk'
-    puts %x[curl -Lo #{@local_android_app} https://github.com/giltsl/Ham/blob/master/out/ham.apk?raw=true]
+    puts %x[curl -Lo #{@local_android_app} http://www.testfairy.com/support-files/travis/dpl/android.apk]
     puts %x[ls -lt #{@local_android_app}]
     
     @local_ios_app = '/tmp/ios.ipa'
-    puts %x[curl -Lo #{@local_ios_app} https://github.com/giltsl/Ham/blob/master/out/Empty.ipa?raw=true]
+    puts %x[curl -Lo #{@local_ios_app} http://www.testfairy.com/support-files/travis/dpl/Empty.ipa]
     puts %x[ls -lt #{@local_ios_app }]
     
   end
