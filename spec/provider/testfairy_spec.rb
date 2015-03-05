@@ -17,6 +17,9 @@ describe DPL::Provider::TestFairy do
     puts %x[curl -Lo #{@local_ios_app} http://www.testfairy.com/support-files/travis/dpl/Empty.ipa]
     puts %x[ls -lt #{@local_ios_app }]
     
+    %x[mkdir /tmp/android]
+    %x[export ANDROID_HOME=/tmp/android]
+    %x[cp /bin/cp /tmp/android/zipalign]
   end
   
   subject :provider do
