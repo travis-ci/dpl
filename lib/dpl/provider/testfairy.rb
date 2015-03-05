@@ -60,7 +60,7 @@ module DPL
                                 puts "zip was found in :#{@@zipPath}"
 				
 				android_home_path = %x[echo $ANDROID_HOME].split("\n").first.to_s
-                                if android_home_path.nil?
+                                if android_home_path.nil? || android_home_path.empty?
                                         raise Error, "Can't find ANDROID_HOME"
                                 end
                                 zipalign_list = %x[find #{android_home_path} -name 'zipalign']
@@ -68,7 +68,7 @@ module DPL
                                 puts "zipalign was found in :#{@@zipAlignPath}"
 				
 				java_home_path = %x[echo $JAVA_HOME].split("\n").first.to_s
-                                if java_home_path.nil?
+                                if java_home_path.nil? || java_home_path.empty?
                                         raise Error, "Can't find JAVA_HOME"
                                 end
                                 jarsigner_list = %x[find #{java_home_path} -name 'jarsigner']
