@@ -11,8 +11,8 @@ describe DPL::Provider::TestFairy do
     %x[echo 'cp $3 $4' > #{@tempdir}/android/zipalign]
     %x[chmod +x #{@tempdir}/android/zipalign]
 
-    @kyestore = File.join(@tempdir,'debug.keystore')
-    %x[curl -Lso #{@kyestore} http://www.testfairy.com/support-files/travis/dpl/debug.keystore]
+    @keystore = File.join(@tempdir,'debug.keystore')
+    %x[curl -Lso #{@keystore} http://www.testfairy.com/support-files/travis/dpl/debug.keystore]
 
     @local_android_app = File.join(@tempdir, 'android.apk')
     %x[curl -Lso #{@local_android_app} http://www.testfairy.com/support-files/travis/dpl/android.apk]
@@ -24,7 +24,7 @@ describe DPL::Provider::TestFairy do
 
   subject :provider do
     # the account is travis-test@testfairy.com
-    described_class.new(DummyContext.new, :api_key => '4b85a2c03ba6026f4e22640a0432638180e1d1ea', :storepass => "android", :alias => "androiddebugkey", :keystore_file => @kyestore, :video => "true", :video_quality => 'low')
+    described_class.new(DummyContext.new, :api_key => '4b85a2c03ba6026f4e22640a0432638180e1d1ea', :storepass => "android", :alias => "androiddebugkey", :keystore_file => @keystore, :video => "true", :video_quality => 'low')
   end
 
   describe "#check_auth" do
