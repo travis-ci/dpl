@@ -112,6 +112,12 @@ module DPL
         alternatives.any? ? option(*alternatives) : raise(Error, "missing #{name}")
       end
     end
+    
+    def optional_option(name, *alternatives)
+      options.fetch(name) do
+        alternatives.any? ? option(*alternatives) : nil
+      end
+    end
 
     def deploy
       setup_git_credentials
