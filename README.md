@@ -398,6 +398,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **app**: Elastic Beanstalk application name.
  * **env**: Elastic Beanstalk environment name which will be updated.
  * **bucket_name**: Bucket name to upload app to.
+ * **bucket_path**: Location within Bucket to upload app to.
 
 #### Examples:
 
