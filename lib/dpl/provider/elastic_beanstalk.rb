@@ -23,7 +23,7 @@ module DPL
         create_bucket unless bucket_exists?
         #zip_file = option(:zipfile) || create_zip
 
-        if optional_option(:zipfile)
+        if options[:zipfile]
           zip_file = File.join(Dir.pwd, option(:zipfile))
         else
           zip_file = create_zip
@@ -53,8 +53,7 @@ module DPL
       end
 
       def region
-        puts DEFAULT_REGION
-        optional_option(:region) || DEFAULT_REGION
+        option(:region) || DEFAULT_REGION
       end
 
       def bucket_name
