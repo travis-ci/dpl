@@ -310,7 +310,7 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 * **repo**: GitHub Repo. Defaults to git repo's name.
 * **file**: File to upload to GitHub Release.
 * **file_glob**: If files should be interpreted as globs (\* and \*\* wildcards). Defaults to false.
-* **release-number**: Overide automatic release detection, set a release manually.
+* **release_number**: Overide automatic release detection, set a release manually.
 
 #### GitHub Two Factor Authentication
 
