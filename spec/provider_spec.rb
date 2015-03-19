@@ -31,7 +31,7 @@ describe DPL::Provider do
 
     example "missing" do
       expect(example_provider).to receive(:gem).with("foo", "~> 1.4").and_raise(LoadError)
-      expect(example_provider.context).to receive(:shell).with('gem install foo -v "~> 1.4" --no-ri --no-rdoc ', retry: true)
+      expect(example_provider.context).to receive(:shell).with('(gem list foo | grep -q -w foo) || gem install foo -v "~> 1.4" --no-ri --no-rdoc ', retry: true)
       example_provider.requires("foo", :version => "~> 1.4")
     end
   end
