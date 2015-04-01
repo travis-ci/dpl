@@ -20,9 +20,13 @@ describe DPL::Provider::TestFairy do
 
   end
 
+  let :context do
+    DummyContext.new
+  end
+
   subject :provider do
     # the account is travis-test@testfairy.com
-    described_class.new(DummyContext.new, :api_key => '4b85a2c03ba6026f4e22640a0432638180e1d1ea', :storepass => "android", :alias => "androiddebugkey", :keystore_file => @kyestore, :video => "true", :video_quality => 'low')
+    described_class.new(context, :api_key => '4b85a2c03ba6026f4e22640a0432638180e1d1ea', :storepass => "android", :alias => "androiddebugkey", :keystore_file => @kyestore, :video => "true", :video_quality => 'low')
   end
 
   describe "#check_auth" do
@@ -44,7 +48,7 @@ describe DPL::Provider::TestFairy do
 
   describe "#push_app" do
     before do
-      provider.stub(:env) { {'ANDROID_HOME' => '/tmp/android'} }
+      context.stub(:env) { {'ANDROID_HOME' => '/tmp/android', 'JAVA_HOME' => '/usr/bin'} }
     end
 
     example "push_app without app_file" do
