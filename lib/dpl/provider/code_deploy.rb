@@ -6,10 +6,7 @@ module DPL
       requires 'aws-sdk', pre: true
 
       def code_deploy
-        @code_deploy ||= begin
-          Aws.add_service('CodeDeploy', api: File.expand_path("../CodeDeploy.api.json", __FILE__)) unless defined? Aws::CodeDeploy
-          Aws::CodeDeploy::Client.new(code_deploy_options)
-        end
+        @code_deploy ||= Aws::CodeDeploy::Client.new(code_deploy_options)
       end
 
       def code_deploy_options
