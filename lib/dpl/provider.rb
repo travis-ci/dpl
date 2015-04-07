@@ -18,6 +18,7 @@ module DPL
     autoload :CloudControl, 'dpl/provider/cloudcontrol'
     autoload :CloudFoundry, 'dpl/provider/cloud_foundry'
     autoload :CodeDeploy,   'dpl/provider/code_deploy'
+    autoload :Lambda,       'dpl/provider/lambda'
     autoload :PyPI,         'dpl/provider/pypi'
     autoload :Divshot,      'dpl/provider/divshot'
     autoload :CloudFiles,   'dpl/provider/cloud_files'
