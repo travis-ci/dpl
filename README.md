@@ -34,6 +34,7 @@ Dpl supports the following providers:
 * [Chef Supermarket](#chef-supermarket)
 * [Lambda](#lambda)
 * [TestFairy](#testfairy)
+* [ExoScale](#exoscale)
 
 ## Installation:
 
@@ -458,7 +459,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
 ### Lambda:
 
-#### Options: 
+#### Options:
 
  * **function_name**: Required. The name of the Lambda being created / updated.
  * **role**: Required. The ARN of the IAM role to assign to this Lambda function.
@@ -521,3 +522,14 @@ and your testers can start testing your app.
 
     dpl --provider=testfairy --api-key=<api-key> --app-file="out/Sample.apk" --keystore-file="out/keystore" --storepass=<storepass> --alias=<alias>
 
+### ExoScale:
+
+#### Options:
+
+* **email**: ExoScale email or Organization ID.
+* **password**: ExoScale password.
+* **deployment**: ExoScale Deployment. Follows the format "APP_NAME/DEP_NAME".
+
+#### Examples:
+
+    dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
