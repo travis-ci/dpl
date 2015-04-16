@@ -6,7 +6,8 @@ describe DPL::Provider::CloudFoundry do
     described_class.new(DummyContext.new, api: 'api.run.awesome.io', username: 'mallomar',
                         password: 'myreallyawesomepassword',
                         organization: 'myorg',
-                        space: 'outer')
+                        space: 'outer',
+                        skip_ssl_validation: true)
   end
 
   describe "#check_auth" do
@@ -14,7 +15,7 @@ describe DPL::Provider::CloudFoundry do
       expect(provider.context).to receive(:shell).with('wget http://go-cli.s3-website-us-east-1.amazonaws.com/releases/latest/cf-cli_amd64.deb -qO temp.deb && sudo dpkg -i temp.deb')
       expect(provider.context).to receive(:shell).with('rm temp.deb')
       expect(provider.context).to receive(:shell).with('cf api api.run.awesome.io')
-      expect(provider.context).to receive(:shell).with('cf login --u mallomar --p myreallyawesomepassword --o myorg --s outer')
+      expect(provider.context).to receive(:shell).with('cf login --u mallomar --p myreallyawesomepassword --o myorg --s outer --skip-ssl-validation')
       provider.check_auth
     end
   end
