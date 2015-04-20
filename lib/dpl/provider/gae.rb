@@ -7,7 +7,7 @@ module DPL
       experimental 'Google App Engine'
 
       # https://developers.google.com/appengine/downloads
-      GAE_VERSION='1.9.17'
+      GAE_VERSION='1.9.19'
       GAE_ZIP_FILE="google_appengine_#{GAE_VERSION}.zip"
       SHA1SUM='eec50aaf922d3b21623fda1b90e199c3ffa9e16e'
       BASE_DIR=Dir.pwd
