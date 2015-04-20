@@ -7,7 +7,7 @@ module DPL
       experimental 'Google App Engine'
 
       # https://developers.google.com/appengine/downloads
-      GAE_VERSION='1.9.17'
+      GAE_VERSION='1.9.19'
       GAE_ZIP_FILE="google_appengine_#{GAE_VERSION}.zip"
       SHA1SUM='eec50aaf922d3b21623fda1b90e199c3ffa9e16e'
       BASE_DIR=Dir.pwd
@@ -22,6 +22,8 @@ module DPL
           unless File.exists? GAE_ZIP_FILE
             $stderr.puts "Downloading Google App Engine SDK"
             File.open(GAE_ZIP_FILE, "wb") do |dest|
+              $stderr.puts "Downloading https://storage.googleapis.com/appengine-sdks/featured/#{GAE_ZIP_FILE}"
+              
               open("https://storage.googleapis.com/appengine-sdks/featured/#{GAE_ZIP_FILE}", "rb") do |src|
                 dest.write(src.read)
               end
