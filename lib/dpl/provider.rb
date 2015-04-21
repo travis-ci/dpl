@@ -6,6 +6,7 @@ module DPL
   class Provider
     include FileUtils
 
+    autoload :Bintray,      'dpl/provider/bintray'
     autoload :Heroku,       'dpl/provider/heroku'
     autoload :Appfog,       'dpl/provider/appfog'
     autoload :EngineYard,   'dpl/provider/engine_yard'
