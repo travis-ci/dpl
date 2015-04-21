@@ -72,9 +72,54 @@ module DPL
         return res
       end
 
+      def putRequest(path)
+        url = URI.parse(@@url)
+        req = Net::HTTP::Put.new(path)
+        req.basic_auth @@user, @@key
+
+        sock = Net::HTTP.new(url.host, url.port)
+        sock.use_ssl = true
+        res = sock.start {|http| http.request(req) }
+
+        return res
+      end
+
+      def putBinaryFileRequest(localFilePath, uploadPath)
+        require 'net/http'
+        require "uri"
+
+        url = URI.parse(@@url)
+
+        data = File.read(localFilePath)
+        http = Net::HTTP.new(url.host, url.port)
+        http.use_ssl = true
+
+        request = Net::HTTP::Put.new(uploadPath)
+        request.basic_auth @@user, @@key
+        request.body = data
+
+        return http.request(request)
+      end
+
+      def uploadFile(localPath, uploadPath)
+        log "Uploading file '#{localPath}' to '#{uploadPath}'..."
+
+        package = @@descriptor["package"]
+        version = @@descriptor["version"]
+        packageName = package["name"]
+        repo = package["repo"]
+        versionName = version["name"]
+
+        path = path = "/content/#{@@user}/#{repo}/#{packageName}/#{versionName}/#{uploadPath}"
+        res = putBinaryFileRequest(localPath, path)
+        logBintrayResponse(res)
+      end
+
       def packageExists
-        packageName = @@descriptor["package"]["name"]
-        path = "/packages/#{@@user}/maven/#{packageName}"
+        package = @@descriptor["package"]
+        name = package["name"]
+        repo = package["repo"]
+        path = "/packages/#{@@user}/#{repo}/#{name}"
         res = headRequest(path)
         code = res.code.to_i
 
@@ -84,12 +129,34 @@ module DPL
         if code == 201 || code == 200
           return true
         end
-        abort("Unexpected HTTP response code #{code} returned from Bintray while checking if package '#{package}' exists. " +
+        abort("Unexpected HTTP response code #{code} returned from Bintray while checking if package '#{name}' exists. " +
+          "Response message: #{res.message}")
+      end
+
+      def versionExists
+        package = @@descriptor["package"]
+        version = @@descriptor["version"]
+        packageName = package["name"]
+        repo = package["repo"]
+        versionName = version["name"]
+
+        path = "/packages/#{@@user}/#{repo}/#{packageName}/versions/#{versionName}"
+        res = headRequest(path)
+        code = res.code.to_i
+
+        if code == 404
+          return false
+        end
+        if code == 201 || code == 200
+          return true
+        end
+        abort("Unexpected HTTP response code #{code} returned from Bintray while checking if version '#{versionName}' exists. " +
           "Response message: #{res.message}")
       end
 
       def createPackage
         package = @@descriptor["package"]
+        repo = package["repo"]
         body = {}
 
         addToMap(body, package, "name")
@@ -104,14 +171,49 @@ module DPL
 
         packageName = package["name"]
         log "Creating package '#{packageName}'..."
-        res = postRequest("/packages/#{@@user}/maven", body)
-        log "Bintray response: #{res.code.to_i} #{res.message}"
+        res = postRequest("/packages/#{@@user}/#{repo}", body)
+        logBintrayResponse(res)
 
-        attributes = package["attributes"]
-        if !attributes.nil?
-          log "Adding attributes for package '#{packageName}'..."
-          res = postRequest("/packages/#{@@user}/maven/#{packageName}/attributes", attributes)
-          log "Bintray response: #{res.code.to_i} #{res.message}"
+        code = res.code.to_i
+        if code == 201 || code == 200
+          attributes = package["attributes"]
+          if !attributes.nil?
+            log "Adding attributes for package '#{packageName}'..."
+            res = postRequest("/packages/#{@@user}/#{repo}/#{packageName}/attributes", attributes)
+            logBintrayResponse(res)
+          end
+        end
+      end
+
+      def createVersion
+        package = @@descriptor["package"]
+        version = @@descriptor["version"]
+        repo = package["repo"]
+        body = {}
+
+        addToMap(body, version, "name")
+        addToMap(body, version, "desc")
+        addToMap(body, version, "released")
+        addToMap(body, version, "vcs_tag")
+        addToMap(body, version, "github_release_notes_file")
+        addToMap(body, version, "github_use_tag_release_notes")
+        addToMap(body, version, "attributes")
+
+        packageName = package["name"]
+        versionName = version["name"]
+        log "Creating version '#{versionName}'..."
+
+        res = postRequest("/packages/#{@@user}/#{repo}/#{packageName}/versions", body)
+        logBintrayResponse(res)
+
+        code = res.code.to_i
+        if code == 201 || code == 200
+          attributes = package["attributes"]
+          if !attributes.nil?
+            log "Adding attributes for version '#{versionName}'..."
+            res = postRequest("/packages/#{@@user}/#{repo}/#{packageName}/versions/#{versionName}/attributes", attributes)
+            logBintrayResponse(res)
+          end
         end
       end
 
@@ -119,6 +221,30 @@ module DPL
         if !packageExists
           createPackage
         end
+      end
+
+      def checkAndCreateVersion
+        if !versionExists
+          createVersion
+        end
+      end
+
+      def getFiles(includePattern, excludePattern)
+        puts "#{includePattern} #{excludePattern}"
+      end
+
+      def uploadFiles
+        files = @@descriptor["files"]
+        if files.nil?
+          return
+        end
+
+        files.each { |patterns|
+          getFiles(patterns["includePattern"], patterns["excludePattern"])
+          puts patterns["uploadPattern"]
+        }
+
+        # uploadFile("C:/temp/5/hola/hola-0.0.0.gem", "a/b/c/d/hola-0.0.0.gem")
       end
 
       def deploy
@@ -129,14 +255,28 @@ module DPL
         initFromArgs
         log "Deploying to Bintray..."
         readDescriptor
-
         checkAndCreatePackage
+        checkAndCreateVersion
+        uploadFiles
       end
 
       def addToMap(toMap, fromMap, key)
         if !fromMap[key].nil?
           toMap[key] = fromMap[key]
         end
+      end
+
+      def logBintrayResponse(res)
+        msg = ""
+        if !res.body.nil?
+          response = JSON.parse(res.body)
+          begin
+            msg = response["message"]
+          rescue
+          end
+        end
+
+        log "Bintray response: #{res.code.to_i} #{res.message}. #{msg}"
       end
 
       def log(msg)
