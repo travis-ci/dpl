@@ -229,7 +229,20 @@ module DPL
         end
       end
 
+      def getFiles(includePattern, excludePattern)
+        puts "#{includePattern} #{excludePattern}"
+      end
+
       def uploadFiles
+        files = @@descriptor["files"]
+        if files.nil?
+          return
+        end
+
+        files.each { |patterns|
+          getFiles(patterns["includePattern"], patterns["excludePattern"])
+          puts patterns["uploadPattern"]
+        }
 
         # uploadFile("C:/temp/5/hola/hola-0.0.0.gem", "a/b/c/d/hola-0.0.0.gem")
       end
