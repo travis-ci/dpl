@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'dpl/provider/cloudcontrol'
+require 'dpl/provider/exoscale'
 
 describe DPL::Provider::ExoScale do
   subject :provider do
@@ -97,7 +97,7 @@ describe DPL::Provider::ExoScale do
       it 'on api success' do
         request = double()
         expect(request).to receive(:basic_auth).with('foo@test.com', 'password')
-        expect(Net::HTTP::Post).to receive(:new).with('/token/').and_return request
+        expect(Net::HTTP::Post).to receive(:new).with('/api/apps/token').and_return request
 
         expect(provider.instance_variable_get(:@http)).to receive(:request).and_return double(
           :code => '200',
