@@ -99,7 +99,7 @@ describe DPL::Provider::ExoScale do
         expect(request).to receive(:basic_auth).with('foo@test.com', 'password')
         expect(Net::HTTP::Post).to receive(:new).with('/api/apps/token').and_return request
 
-        expect(provider.instance_variable_get(:@http)).to receive(:request).and_return double(
+        expect(provider.instance_variable_get(:@tokenHttp)).to receive(:request).and_return double(
           :code => '200',
           :body => '{ "token": "foo_token"}'
         )
@@ -108,7 +108,7 @@ describe DPL::Provider::ExoScale do
       end
 
       it 'on api failure' do
-        expect(provider.instance_variable_get(:@http)).to receive(:request).and_return double(:code => '401')
+        expect(provider.instance_variable_get(:@tokenHttp)).to receive(:request).and_return double(:code => '401')
 
         expect do
           provider.instance_eval { get_token }
