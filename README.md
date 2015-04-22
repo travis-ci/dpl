@@ -51,6 +51,7 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 ###Global Flags
 * `--provider=<provider>` sets the provider you want to deploy to. Every provider has slightly different flags, which are documented in the section about your provider following.
 *  Dpl will deploy by default from the latest commit. Use the `--skip_cleanup`  flag to deploy from the current file state. Note that many providers deploy by git and could ignore this option.
+
 ### Heroku:
 
 #### Options:
