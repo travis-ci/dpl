@@ -270,10 +270,11 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 * **organization**: Cloud Foundry target organization.
 * **api**: Cloud Foundry api URL
 * **space**: Cloud Foundry target space
+* **skip_ssl_validation**: Skip ssl validation. Optional.
 
 #### Examples:
 
-    dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space>
+    dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space> --skip-ssl-validation
 
 ### dotCloud:
 
