@@ -6,7 +6,7 @@ module DPL
 
       def self.install_setuptools
         shell 'wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | sudo python'
-        shell 'rm -f setuptools-*.tar.gz'
+        shell 'rm -f setuptools-*.zip'
       end
 
       def initialize(*args)
