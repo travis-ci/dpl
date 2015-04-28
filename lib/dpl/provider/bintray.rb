@@ -229,22 +229,12 @@ module DPL
         end
       end
 
-      def getFiles(includePattern, excludePattern)
-        puts "#{includePattern} #{excludePattern}"
-      end
-
       def uploadFiles
-        files = @@descriptor["files"]
-        if files.nil?
-          return
+        files = getFilesToUpload
+
+        files.each do |key, val|
+          puts val.toString
         end
-
-        files.each { |patterns|
-          getFiles(patterns["includePattern"], patterns["excludePattern"])
-          puts patterns["uploadPattern"]
-        }
-
-        # uploadFile("C:/temp/5/hola/hola-0.0.0.gem", "a/b/c/d/hola-0.0.0.gem")
       end
 
       def deploy
@@ -258,6 +248,26 @@ module DPL
         checkAndCreatePackage
         checkAndCreateVersion
         uploadFiles
+      end
+
+      def getFilesToUpload
+        filesToUpload = Hash.new()
+        files = @@descriptor["files"]
+        if files.nil?
+          return filesToUpload
+        end
+
+        require 'find'
+
+        files.each { |patterns|
+          fillFilesMap(
+            filesToUpload,
+            patterns["includePattern"],
+            patterns["excludePattern"],
+            patterns["uploadPattern"])
+        }
+
+        return filesToUpload
       end
 
       def addToMap(toMap, fromMap, key)
@@ -281,6 +291,59 @@ module DPL
 
       def log(msg)
         puts "[Bintray Upload] #{msg}"
+      end
+
+      def getRootPath(str)
+        index = str.index('(')
+        if index.nil?
+          return str
+        end
+
+        return str[0, index]
+      end
+
+      def fillFilesMap(map, includePattern, excludePattern, uploadPattern)
+        rootPath = getRootPath(includePattern)
+
+        Find.find(rootPath) do |path|
+          res = path.match(/#{includePattern}/)
+          if !res.nil?
+            if excludePattern.nil? || excludePattern.empty? || !path.match(/#{excludePattern}/)
+              groups = res.captures
+              replacedUploadPattern = uploadPattern
+              for i in 0..groups.size-1
+                replacedUploadPattern = replacedUploadPattern.gsub("$#{i+1}", groups[i])
+              end
+              map[path] = Artifact.new(path, replacedUploadPattern)
+            end
+          end
+        end
+      end
+
+      class Artifact
+        @localPath = nil
+        @uploadPath = nil
+
+        def initialize(localPath, uploadPath)
+          @localPath = localPath
+          @uploadPath = uploadPath
+        end
+
+        def hash
+          return @@localPath.hash
+        end
+
+        def eql?(other)
+          @localPath == other.getLocalPath
+        end
+
+        def getLocalPath
+          return @localPath
+        end
+
+        def toString
+          puts "@localPath = #{@localPath}, @uploadPath = #{@uploadPath}"
+        end
       end
     end
   end
