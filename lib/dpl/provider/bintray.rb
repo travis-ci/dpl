@@ -1,12 +1,18 @@
+require 'json'
+require 'net/http'
+require "uri"
+require 'find'
+
 module DPL
   class Provider
     class Bintray < Provider
 
-      @@file
-      @@user
-      @@key
-      @@url
-      @@descriptor
+      @file
+      @user
+      @key
+      @passphrase
+      @url
+      @descriptor
 
       def check_auth
       end
@@ -16,41 +22,41 @@ module DPL
       end
 
       def initFromArgs
-        @@user = options[:user]
-        @@key = options[:key]
-        @@url = options[:url]
-        @@file = options[:file]
+        @user = options[:user]
+        @key = options[:key]
+        @url = options[:url]
+        @file = options[:file]
+        @passphrase = options[:passphrase]
 
-        if @@user.nil?
+        if @user.nil?
           abort("The 'user' argument is required")
         end
-        if @@key.nil?
+        if @key.nil?
           abort("The 'key' argument is required")
         end
-        if @@file.nil?
+        if @file.nil?
           abort("The 'file' argument is required")
         end
-        if @@url.nil?
-          @@url = 'https://api.bintray.com'
+        if @url.nil?
+          @url = 'https://api.bintray.com'
         end
       end
 
       def readDescriptor
-        log "Reading descriptor file: #{@@file}"
-        file = File.open(@@file)
+        log "Reading descriptor file: #{@file}"
+        file = File.open(@file)
         content = ""
         file.each {|line|
           content << line
         }
 
-        require 'json'
-        @@descriptor = JSON.parse(content)
+        @descriptor = JSON.parse(content)
       end
 
       def headRequest(path)
-        url = URI.parse(@@url)
+        url = URI.parse(@url)
         req = Net::HTTP::Head.new(path)
-        req.basic_auth @@user, @@key
+        req.basic_auth @user, @key
 
         sock = Net::HTTP.new(url.host, url.port)
         sock.use_ssl = true
@@ -62,10 +68,12 @@ module DPL
       def postRequest(path, body)
         req = Net::HTTP::Post.new(path)
         req.add_field('Content-Type', 'application/json')
-        req.basic_auth @@user, @@key
-        req.body = body.to_json
+        req.basic_auth @user, @key
+        if !body.nil?
+          req.body = body.to_json
+        end
 
-        url = URI.parse(@@url)
+        url = URI.parse(@url)
         sock = Net::HTTP.new(url.host, url.port)
         sock.use_ssl = true
         res = sock.start {|http| http.request(req) }
@@ -73,9 +81,9 @@ module DPL
       end
 
       def putRequest(path)
-        url = URI.parse(@@url)
+        url = URI.parse(@url)
         req = Net::HTTP::Put.new(path)
-        req.basic_auth @@user, @@key
+        req.basic_auth @user, @key
 
         sock = Net::HTTP.new(url.host, url.port)
         sock.use_ssl = true
@@ -85,41 +93,38 @@ module DPL
       end
 
       def putBinaryFileRequest(localFilePath, uploadPath)
-        require 'net/http'
-        require "uri"
-
-        url = URI.parse(@@url)
+        url = URI.parse(@url)
 
         data = File.read(localFilePath)
         http = Net::HTTP.new(url.host, url.port)
         http.use_ssl = true
 
         request = Net::HTTP::Put.new(uploadPath)
-        request.basic_auth @@user, @@key
+        request.basic_auth @user, @key
         request.body = data
 
         return http.request(request)
       end
 
-      def uploadFile(localPath, uploadPath)
-        log "Uploading file '#{localPath}' to '#{uploadPath}'..."
+      def uploadFile(artifact)
+        log "Uploading file '#{artifact.getLocalPath}' to #{artifact.getUploadPath}"
 
-        package = @@descriptor["package"]
-        version = @@descriptor["version"]
+        package = @descriptor["package"]
+        version = @descriptor["version"]
         packageName = package["name"]
         repo = package["repo"]
         versionName = version["name"]
 
-        path = path = "/content/#{@@user}/#{repo}/#{packageName}/#{versionName}/#{uploadPath}"
-        res = putBinaryFileRequest(localPath, path)
+        path = "/content/#{@user}/#{repo}/#{packageName}/#{versionName}/#{artifact.getUploadPath}"
+        res = putBinaryFileRequest(artifact.getLocalPath, path)
         logBintrayResponse(res)
       end
 
       def packageExists
-        package = @@descriptor["package"]
+        package = @descriptor["package"]
         name = package["name"]
         repo = package["repo"]
-        path = "/packages/#{@@user}/#{repo}/#{name}"
+        path = "/packages/#{@user}/#{repo}/#{name}"
         res = headRequest(path)
         code = res.code.to_i
 
@@ -134,13 +139,13 @@ module DPL
       end
 
       def versionExists
-        package = @@descriptor["package"]
-        version = @@descriptor["version"]
+        package = @descriptor["package"]
+        version = @descriptor["version"]
         packageName = package["name"]
         repo = package["repo"]
         versionName = version["name"]
 
-        path = "/packages/#{@@user}/#{repo}/#{packageName}/versions/#{versionName}"
+        path = "/packages/#{@user}/#{repo}/#{packageName}/versions/#{versionName}"
         res = headRequest(path)
         code = res.code.to_i
 
@@ -155,7 +160,7 @@ module DPL
       end
 
       def createPackage
-        package = @@descriptor["package"]
+        package = @descriptor["package"]
         repo = package["repo"]
         body = {}
 
@@ -171,7 +176,7 @@ module DPL
 
         packageName = package["name"]
         log "Creating package '#{packageName}'..."
-        res = postRequest("/packages/#{@@user}/#{repo}", body)
+        res = postRequest("/packages/#{@user}/#{repo}", body)
         logBintrayResponse(res)
 
         code = res.code.to_i
@@ -179,15 +184,15 @@ module DPL
           attributes = package["attributes"]
           if !attributes.nil?
             log "Adding attributes for package '#{packageName}'..."
-            res = postRequest("/packages/#{@@user}/#{repo}/#{packageName}/attributes", attributes)
+            res = postRequest("/packages/#{@user}/#{repo}/#{packageName}/attributes", attributes)
             logBintrayResponse(res)
           end
         end
       end
 
       def createVersion
-        package = @@descriptor["package"]
-        version = @@descriptor["version"]
+        package = @descriptor["package"]
+        version = @descriptor["version"]
         repo = package["repo"]
         body = {}
 
@@ -203,7 +208,7 @@ module DPL
         versionName = version["name"]
         log "Creating version '#{versionName}'..."
 
-        res = postRequest("/packages/#{@@user}/#{repo}/#{packageName}/versions", body)
+        res = postRequest("/packages/#{@user}/#{repo}/#{packageName}/versions", body)
         logBintrayResponse(res)
 
         code = res.code.to_i
@@ -211,7 +216,7 @@ module DPL
           attributes = package["attributes"]
           if !attributes.nil?
             log "Adding attributes for version '#{versionName}'..."
-            res = postRequest("/packages/#{@@user}/#{repo}/#{packageName}/versions/#{versionName}/attributes", attributes)
+            res = postRequest("/packages/#{@user}/#{repo}/#{packageName}/versions/#{versionName}/attributes", attributes)
             logBintrayResponse(res)
           end
         end
@@ -232,42 +237,100 @@ module DPL
       def uploadFiles
         files = getFilesToUpload
 
-        files.each do |key, val|
-          puts val.toString
+        files.each do |key, artifact|
+          uploadFile(artifact)
         end
       end
 
-      def deploy
-        require 'net/http'
-        require 'net/https'
-        require 'uri'
+      def publishVersion
+        publish = @descriptor["publish"]
+        if publish
+          package = @descriptor["package"]
+          version = @descriptor["version"]
+          repo = package["repo"]
+          packageName = package["name"]
+          versionName = version["name"]
 
-        initFromArgs
-        log "Deploying to Bintray..."
-        readDescriptor
-        checkAndCreatePackage
-        checkAndCreateVersion
-        uploadFiles
+          log "Publishing version '#{versionName}' of package '#{packageName}'..."
+          res = postRequest("/content/#{@user}/#{repo}/#{packageName}/#{versionName}/publish", nil)
+          logBintrayResponse(res)
+        end
+      end
+
+      def gpgSignVersion
+        version = @descriptor["version"]
+        gpgSign = version["name"]
+        if gpgSign
+          package = @descriptor["package"]
+          repo = package["repo"]
+          packageName = package["name"]
+          versionName = version["name"]
+
+          log "Signing version..."
+          body = nil
+          if !@passphrase.nil?
+            body = {}
+            body["passphrase"] = @passphrase
+          end
+
+          res = postRequest("/gpg/#{@user}/#{repo}/#{packageName}/versions/#{versionName}", body)
+          logBintrayResponse(res)
+        end
+      end
+
+      def getRootPath(str)
+        index = str.index('(')
+        if index.nil?
+          return str
+        end
+
+        return str[0, index]
+      end
+
+      def fillFilesMap(map, includePattern, excludePattern, uploadPattern)
+        rootPath = getRootPath(includePattern)
+
+        Find.find(rootPath) do |path|
+          res = path.match(/#{includePattern}/)
+          if !res.nil? && File.file?(path)
+            if excludePattern.nil? || excludePattern.empty? || !path.match(/#{excludePattern}/)
+              groups = res.captures
+              replacedUploadPattern = uploadPattern
+              for i in 0..groups.size-1
+                replacedUploadPattern = replacedUploadPattern.gsub("$#{i+1}", groups[i])
+              end
+              map[path] = Artifact.new(path, replacedUploadPattern)
+            end
+          end
+        end
       end
 
       def getFilesToUpload
         filesToUpload = Hash.new()
-        files = @@descriptor["files"]
+        files = @descriptor["files"]
         if files.nil?
           return filesToUpload
         end
 
-        require 'find'
-
         files.each { |patterns|
           fillFilesMap(
-            filesToUpload,
-            patterns["includePattern"],
-            patterns["excludePattern"],
-            patterns["uploadPattern"])
+              filesToUpload,
+              patterns["includePattern"],
+              patterns["excludePattern"],
+              patterns["uploadPattern"])
         }
 
         return filesToUpload
+      end
+
+      def deploy
+        initFromArgs
+        readDescriptor
+        checkAndCreatePackage
+        checkAndCreateVersion
+        uploadFiles
+        gpgSignVersion
+        publishVersion
       end
 
       def addToMap(toMap, fromMap, key)
@@ -293,33 +356,6 @@ module DPL
         puts "[Bintray Upload] #{msg}"
       end
 
-      def getRootPath(str)
-        index = str.index('(')
-        if index.nil?
-          return str
-        end
-
-        return str[0, index]
-      end
-
-      def fillFilesMap(map, includePattern, excludePattern, uploadPattern)
-        rootPath = getRootPath(includePattern)
-
-        Find.find(rootPath) do |path|
-          res = path.match(/#{includePattern}/)
-          if !res.nil?
-            if excludePattern.nil? || excludePattern.empty? || !path.match(/#{excludePattern}/)
-              groups = res.captures
-              replacedUploadPattern = uploadPattern
-              for i in 0..groups.size-1
-                replacedUploadPattern = replacedUploadPattern.gsub("$#{i+1}", groups[i])
-              end
-              map[path] = Artifact.new(path, replacedUploadPattern)
-            end
-          end
-        end
-      end
-
       class Artifact
         @localPath = nil
         @uploadPath = nil
@@ -330,7 +366,7 @@ module DPL
         end
 
         def hash
-          return @@localPath.hash
+          return @localPath.hash
         end
 
         def eql?(other)
@@ -339,6 +375,10 @@ module DPL
 
         def getLocalPath
           return @localPath
+        end
+
+        def getUploadPath
+          return @uploadPath
         end
 
         def toString
