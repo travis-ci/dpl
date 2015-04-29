@@ -6,6 +6,7 @@ Dpl supports the following providers:
 
 * [AppFog](#appfog)
 * [Biicode](#biicode)
+* [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
@@ -76,6 +77,82 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 
 
+
+### Bintray:
+
+#### Options:
+
+* **file**: Path to a descriptor file, containing information for the Bintray upload.
+* **user**: Bintray user
+* **key**: Bintray API key
+* **passphrase**: Optional. In case a passphrase is configured on Bintray and GPG signing is used.
+
+#### Descriptor file example:
+```groovy
+{
+	/* Bintray package information.
+	   In case the package already exists on Bintray, only the name, repo and subject 
+	   fields are mandatory. */
+
+	"package": {
+		"name": "auto-upload", // Bintray package name
+		"repo": "maven", // Bintray repository name
+		"subject": "myBintrayUser", // Bintray subject (user)
+		"desc": "I was pushed completely automatically",
+		"website_url": "www.jfrog.com",
+ 		"issue_tracker_url": "https://github.com/bintray/bintray-client-java/issues",
+ 		"vcs_url": "https://github.com/bintray/bintray-client-java.git",
+		"github_use_tag_release_notes": true,
+		"github_release_notes_file": "RELEASE.txt",
+ 		"licenses": ["MIT"],
+ 		"labels": ["cool", "awesome", "gorilla"],
+ 		"public_download_numbers": false,
+ 		"public_stats": false,
+ 		"attributes": [{"name": "att1", "values" : ["val1"], "type": "string"},
+     				   {"name": "att2", "values" : [1, 2.2, 4], "type": "number"},
+     				   {"name": "att5", "values" : ["2014-12-28T19:43:37+0100"], "type": "date"}]
+ 	},
+
+	/* Package version information.
+	   In case the version already exists on Bintray, only the name fields is mandatory. */
+
+	"version": {
+		"name": "0.5",
+		"desc": "This is a version",
+		"released": "2015-01-04",
+		"vcs_tag": "0.5",
+	 	"attributes": [{"name": "VerAtt1", "values" : ["VerVal1"], "type": "string"},
+  					   {"name": "VerAtt2", "values" : [1, 3.3, 5], "type": "number"},
+					   {"name": "VerAtt3", "values" : ["2015-01-01T19:43:37+0100"], "type": "date"}],
+		"gpgSign": false
+	},
+
+	/* Configure the files you would like to upload to Bintray and their upload path.
+	You can define one or more groups of patterns. 
+	Each group contains three patterns:
+
+	includePattern: Pattern in the form of Ruby regular expression, indicating the path of files to be uploaded to Bintray.
+	excludePattern: Optional. Pattern in the form of Ruby regular expression, indicating the path of files to be removed from the list of files specified by the includePattern.
+	uploadPattern: Upload path on Bintray. The path can contain symbols in the form of $1, $2,... that are replaced with capturing groups defined in the include pattern.
+
+	In the example below, the following files are uploaded,
+	1. All gem files located under build/bin/ (including sub directories),
+	except for files under a the do-not-deploy directory.
+	The files will be uploaded to Bintray under the gems folder.
+	2. All files under build/docs. The files will be uploaded to Bintray under the docs folder.*/
+
+	"files": 
+		[
+		{"includePattern": "build/bin/(.*)?(.*\.gem)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gems/$2"},
+		{"includePattern": "build/docs/(.*)", "uploadPattern": "docs/$1"}
+		],
+	"publish": true
+}
+```
+
+#### Examples:
+    dpl --provider=bintray --file=<path> --user=<username> --key=<api-key>
+    dpl --provider=bintray --file=<path> --user=<username> --key=<api-key> --passphrase=<passphrase>
 
 ### Nodejitsu:
 
