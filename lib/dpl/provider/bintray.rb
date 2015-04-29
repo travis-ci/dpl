@@ -278,22 +278,43 @@ module DPL
         end
       end
 
+      # Get the root path from which to start collecting files to be
+      # uploaded to Bintray.
       def getRootPath(str)
         index = str.index('(')
+        path = nil
         if index.nil?
-          return str
+          path = str
+        else
+          path = str[0, index]
         end
 
-        return str[0, index]
+        if !File.exist?(path)
+          log "Warning: Path: #{path} does not exist."
+          return nil
+        end
+        return path
       end
 
+      # Fills a map with Artifact objects which match
+      # the include pattern and do not match the exclude pattern.
+      # The artifacts are files collected from the file system.
       def fillFilesMap(map, includePattern, excludePattern, uploadPattern)
+        # Get the root path from which to start collecting the files.
         rootPath = getRootPath(includePattern)
+        if rootPath.nil?
+          return
+        end
 
+        # Start scanning the root path recursively.
         Find.find(rootPath) do |path|
           res = path.match(/#{includePattern}/)
+          # If the file matches the include pattern and it is not a directory.
           if !res.nil? && File.file?(path)
+            # If the file does not match the exclude pattern.
             if excludePattern.nil? || excludePattern.empty? || !path.match(/#{excludePattern}/)
+              # Using the capturing groups in the include pattern, replace the $1, $2, ...
+              # in the upload pattern.
               groups = res.captures
               replacedUploadPattern = uploadPattern
               for i in 0..groups.size-1
@@ -305,6 +326,8 @@ module DPL
         end
       end
 
+      # Returns a map containing Artifact objects.
+      # The map contains the files to be uploaded to Bintray.
       def getFilesToUpload
         filesToUpload = Hash.new()
         files = @descriptor["files"]
@@ -333,6 +356,7 @@ module DPL
         publishVersion
       end
 
+      # Copies a key from one map to another, if the key exists there.
       def addToMap(toMap, fromMap, key)
         if !fromMap[key].nil?
           toMap[key] = fromMap[key]
@@ -356,6 +380,7 @@ module DPL
         puts "[Bintray Upload] #{msg}"
       end
 
+      # This class represents an artifact (file) to be uploaded to Bintray.
       class Artifact
         @localPath = nil
         @uploadPath = nil
@@ -379,10 +404,6 @@ module DPL
 
         def getUploadPath
           return @uploadPath
-        end
-
-        def toString
-          puts "@localPath = #{@localPath}, @uploadPath = #{@uploadPath}"
         end
       end
     end
