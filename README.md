@@ -6,6 +6,7 @@ Dpl supports the following providers:
 
 * [AppFog](#appfog)
 * [Biicode](#biicode)
+* [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
