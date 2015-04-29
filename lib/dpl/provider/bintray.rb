@@ -282,11 +282,18 @@ module DPL
       # uploaded to Bintray.
       def getRootPath(str)
         index = str.index('(')
+        path = nil
         if index.nil?
-          return str
+          path = str
+        else
+          path = str[0, index]
         end
 
-        return str[0, index]
+        if !File.exist?(path)
+          log "Warning: Path: #{path} does not exist."
+          return nil
+        end
+        return path
       end
 
       # Fills a map with Artifact objects which match
@@ -295,6 +302,9 @@ module DPL
       def fillFilesMap(map, includePattern, excludePattern, uploadPattern)
         # Get the root path from which to start collecting the files.
         rootPath = getRootPath(includePattern)
+        if rootPath.nil?
+          return
+        end
 
         # Start scanning the root path recursively.
         Find.find(rootPath) do |path|
