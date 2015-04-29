@@ -134,14 +134,14 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 	uploadPattern: Upload path on Bintray. The path can contain symbols in the form of $1, $2,... that are replaced with capturing groups defined in the include pattern.
 
 	In the example below, the following files are uploaded,
-	1. All gem files located under build/bin/ (including sub directories under bin),
+	1. All gem files located under build/bin/ (including sub directories),
 	except for files under a the do-not-deploy directory.
 	The files will be uploaded to Bintray under the gems folder.
 	2. All files under build/docs. The files will be uploaded to Bintray under the docs folder.*/
 
 	"files": 
 		[
-		{"includePattern": "build/bin/.*/(.*\.gem)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gems/$1"},
+		{"includePattern": "build/bin/(.*)?(.*\.gem)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gems/$2"},
 		{"includePattern": "build/docs/(.*)", "uploadPattern": "docs/$1"}
 		],
 	"publish": true
