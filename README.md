@@ -75,6 +75,58 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 
 
+### Bintray:
+
+#### Options:
+
+* **file**: Path to a descriptor file, containing information for the Bintray upload.
+* **user**: Bintray user
+* **key**: Bintray API key
+* **passphrase**: Optional. In case a passphrase is configured on Bintray and GPG signing is used.
+
+#### Descriptor file example:
+```groovy
+{
+	"package": {
+		"name": "auto-upload",
+		"repo": "maven",
+		"subject": "myBintrayUser",
+		"desc": "I was pushed completely automatically",
+		"website_url": "www.jfrog.com",
+ 		"issue_tracker_url": "https://github.com/bintray/bintray-client-java/issues",
+ 		"vcs_url": "https://github.com/bintray/bintray-client-java.git",
+ 		"licenses": ["MIT"],
+ 		"labels": ["cool", "awesome", "gorilla"],
+ 		"public_download_numbers": false,
+ 		"public_stats": false,
+ 		"attributes": [{"name": "att1", "values" : ["val1"], "type": "string"},
+     				   {"name": "att2", "values" : [1, 2.2, 4], "type": "number"},
+     				   {"name": "att5", "values" : ["2014-12-28T19:43:37+0100"], "type": "date"}]
+ 	},
+	"version": {
+		"name": "0.5",
+		"desc": "This is a version",
+		"released": "2015-01-04",
+		"vcs_tag": "0.5",
+	 	"attributes": [{"name": "VerAtt1", "values" : ["VerVal1"], "type": "string"},
+  					   {"name": "VerAtt2", "values" : [1, 3.3, 5], "type": "number"},
+					   {"name": "VerAtt3", "values" : ["2015-01-01T19:43:37+0100"], "type": "date"}],
+		"gpgSign": false
+	},
+
+	"files": 
+		[
+		{"includePattern": "", "excludePattern": "", "uploadPattern": ""},
+		{"includePattern": "", "excludePattern": "", "uploadPattern": ""}
+		],
+	"publish": true
+}
+```
+
+#### Examples:
+    dpl --provider=bintray --file=<path> --user=<username> --key=<api-key>
+    dpl --provider=bintray --file=<path> --user=<username> --key=<api-key> --passphrase=<passphrase>
+
 ### Nodejitsu:
 
 #### Options:
