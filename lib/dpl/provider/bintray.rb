@@ -112,10 +112,11 @@ module DPL
         package = @descriptor["package"]
         version = @descriptor["version"]
         packageName = package["name"]
+        subject = package["subject"]
         repo = package["repo"]
         versionName = version["name"]
 
-        path = "/content/#{@user}/#{repo}/#{packageName}/#{versionName}/#{artifact.getUploadPath}"
+        path = "/content/#{subject}/#{repo}/#{packageName}/#{versionName}/#{artifact.getUploadPath}"
         res = putBinaryFileRequest(artifact.getLocalPath, path)
         logBintrayResponse(res)
       end
@@ -123,8 +124,9 @@ module DPL
       def packageExists
         package = @descriptor["package"]
         name = package["name"]
+        subject = package["subject"]
         repo = package["repo"]
-        path = "/packages/#{@user}/#{repo}/#{name}"
+        path = "/packages/#{subject}/#{repo}/#{name}"
         res = headRequest(path)
         code = res.code.to_i
 
@@ -142,10 +144,11 @@ module DPL
         package = @descriptor["package"]
         version = @descriptor["version"]
         packageName = package["name"]
+        subject = package["subject"]
         repo = package["repo"]
         versionName = version["name"]
 
-        path = "/packages/#{@user}/#{repo}/#{packageName}/versions/#{versionName}"
+        path = "/packages/#{subject}/#{repo}/#{packageName}/versions/#{versionName}"
         res = headRequest(path)
         code = res.code.to_i
 
@@ -174,9 +177,10 @@ module DPL
         addToMap(body, package, "public_download_numbers")
         addToMap(body, package, "public_stats")
 
+        subject = package["subject"]
         packageName = package["name"]
         log "Creating package '#{packageName}'..."
-        res = postRequest("/packages/#{@user}/#{repo}", body)
+        res = postRequest("/packages/#{subject}/#{repo}", body)
         logBintrayResponse(res)
 
         code = res.code.to_i
@@ -184,7 +188,7 @@ module DPL
           attributes = package["attributes"]
           if !attributes.nil?
             log "Adding attributes for package '#{packageName}'..."
-            res = postRequest("/packages/#{@user}/#{repo}/#{packageName}/attributes", attributes)
+            res = postRequest("/packages/#{subject}/#{repo}/#{packageName}/attributes", attributes)
             logBintrayResponse(res)
           end
         end
@@ -205,10 +209,11 @@ module DPL
         addToMap(body, version, "attributes")
 
         packageName = package["name"]
+        subject = package["subject"]
         versionName = version["name"]
         log "Creating version '#{versionName}'..."
 
-        res = postRequest("/packages/#{@user}/#{repo}/#{packageName}/versions", body)
+        res = postRequest("/packages/#{subject}/#{repo}/#{packageName}/versions", body)
         logBintrayResponse(res)
 
         code = res.code.to_i
@@ -216,7 +221,7 @@ module DPL
           attributes = package["attributes"]
           if !attributes.nil?
             log "Adding attributes for version '#{versionName}'..."
-            res = postRequest("/packages/#{@user}/#{repo}/#{packageName}/versions/#{versionName}/attributes", attributes)
+            res = postRequest("/packages/#{subject}/#{repo}/#{packageName}/versions/#{versionName}/attributes", attributes)
             logBintrayResponse(res)
           end
         end
@@ -249,10 +254,11 @@ module DPL
           version = @descriptor["version"]
           repo = package["repo"]
           packageName = package["name"]
+          subject = package["subject"]
           versionName = version["name"]
 
           log "Publishing version '#{versionName}' of package '#{packageName}'..."
-          res = postRequest("/content/#{@user}/#{repo}/#{packageName}/#{versionName}/publish", nil)
+          res = postRequest("/content/#{subject}/#{repo}/#{packageName}/#{versionName}/publish", nil)
           logBintrayResponse(res)
         end
       end
@@ -264,6 +270,7 @@ module DPL
           package = @descriptor["package"]
           repo = package["repo"]
           packageName = package["name"]
+          subject = package["subject"]
           versionName = version["name"]
 
           log "Signing version..."
@@ -273,7 +280,7 @@ module DPL
             body["passphrase"] = @passphrase
           end
 
-          res = postRequest("/gpg/#{@user}/#{repo}/#{packageName}/versions/#{versionName}", body)
+          res = postRequest("/gpg/#{subject}/#{repo}/#{packageName}/versions/#{versionName}", body)
           logBintrayResponse(res)
         end
       end
