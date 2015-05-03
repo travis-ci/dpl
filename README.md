@@ -95,7 +95,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 	"package": {
 		"name": "auto-upload", // Bintray package name
 		"repo": "myRepo", // Bintray repository name
-		"subject": "myBintrayUser", // Bintray subject (user)
+		"subject": "myBintrayUser", // Bintray subject (user or organization)
 		"desc": "I was pushed completely automatically",
 		"website_url": "www.jfrog.com",
  		"issue_tracker_url": "https://github.com/bintray/bintray-client-java/issues",
