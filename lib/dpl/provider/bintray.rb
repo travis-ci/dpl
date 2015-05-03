@@ -92,14 +92,22 @@ module DPL
         return res
       end
 
-      def putBinaryFileRequest(localFilePath, uploadPath)
+      def putBinaryFileRequest(localFilePath, uploadPath, matrixParams)
         url = URI.parse(@url)
 
         data = File.read(localFilePath)
         http = Net::HTTP.new(url.host, url.port)
         http.use_ssl = true
 
-        request = Net::HTTP::Put.new(uploadPath)
+        params = ''
+        if !matrixParams.nil?
+          matrixParams.each do |key, val|
+            params = "#{params};#{key}=#{val}"
+          end
+          uploadPath = "#{uploadPath}#{params}"
+        end
+
+        request = Net::HTTP::Put.new("#{uploadPath}")
         request.basic_auth @user, @key
         request.body = data
 
@@ -117,7 +125,7 @@ module DPL
         versionName = version["name"]
 
         path = "/content/#{subject}/#{repo}/#{packageName}/#{versionName}/#{artifact.getUploadPath}"
-        res = putBinaryFileRequest(artifact.getLocalPath, path)
+        res = putBinaryFileRequest(artifact.getLocalPath, path, artifact.getMatrixParams)
         logBintrayResponse(res)
       end
 
@@ -265,7 +273,7 @@ module DPL
 
       def gpgSignVersion
         version = @descriptor["version"]
-        gpgSign = version["name"]
+        gpgSign = version["gpgSign"]
         if gpgSign
           package = @descriptor["package"]
           repo = package["repo"]
@@ -306,7 +314,7 @@ module DPL
       # Fills a map with Artifact objects which match
       # the include pattern and do not match the exclude pattern.
       # The artifacts are files collected from the file system.
-      def fillFilesMap(map, includePattern, excludePattern, uploadPattern)
+      def fillFilesMap(map, includePattern, excludePattern, uploadPattern, matrixParams)
         # Get the root path from which to start collecting the files.
         rootPath = getRootPath(includePattern)
         if rootPath.nil?
@@ -327,7 +335,7 @@ module DPL
               for i in 0..groups.size-1
                 replacedUploadPattern = replacedUploadPattern.gsub("$#{i+1}", groups[i])
               end
-              map[path] = Artifact.new(path, replacedUploadPattern)
+              map[path] = Artifact.new(path, replacedUploadPattern, matrixParams)
             end
           end
         end
@@ -347,7 +355,8 @@ module DPL
               filesToUpload,
               patterns["includePattern"],
               patterns["excludePattern"],
-              patterns["uploadPattern"])
+              patterns["uploadPattern"],
+              patterns["matrixParams"])
         }
 
         return filesToUpload
@@ -371,10 +380,10 @@ module DPL
       end
 
       def logBintrayResponse(res)
-        msg = ""
+        msg = ''
         if !res.body.nil?
-          response = JSON.parse(res.body)
           begin
+            response = JSON.parse(res.body)
             msg = response["message"]
           rescue
           end
@@ -391,10 +400,12 @@ module DPL
       class Artifact
         @localPath = nil
         @uploadPath = nil
+        @matrixParams = nil
 
-        def initialize(localPath, uploadPath)
+        def initialize(localPath, uploadPath, matrixParams)
           @localPath = localPath
           @uploadPath = uploadPath
+          @matrixParams = matrixParams
         end
 
         def hash
@@ -411,6 +422,10 @@ module DPL
 
         def getUploadPath
           return @uploadPath
+        end
+
+        def getMatrixParams
+          return @matrixParams
         end
       end
     end
