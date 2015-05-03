@@ -148,6 +148,20 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 }
 ```
 
+#### Debian Upload
+
+When artifacts are uploaded to a Debian repository using the Automatic index layout, the Debian distribution information is required and must be specified. The information is specified in the descriptor file by the matrixParams as part of the files closure as shown in the following example:
+```groovy
+    "files": 
+        [{"includePattern": "build/bin/(.*\.deb)", "uploadPattern": "$1", 	
+		"matrixParams": {
+			"deb_distribution": "d1", 
+			"deb_component": "c1", 
+			"deb_architecture": "a1"}
+		}
+	]
+```
+
 #### Examples:
     dpl --provider=bintray --file=<path> --user=<username> --key=<api-key>
     dpl --provider=bintray --file=<path> --user=<username> --key=<api-key> --passphrase=<passphrase>
