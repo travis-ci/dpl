@@ -94,7 +94,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 	"package": {
 		"name": "auto-upload", // Bintray package name
-		"repo": "maven", // Bintray repository name
+		"repo": "myRepo", // Bintray repository name
 		"subject": "myBintrayUser", // Bintray subject (user)
 		"desc": "I was pushed completely automatically",
 		"website_url": "www.jfrog.com",
