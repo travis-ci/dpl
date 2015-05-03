@@ -96,8 +96,8 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 	"package": {
 		"name": "auto-upload", // Bintray package name
-		"repo": "maven", // Bintray repository name
-		"subject": "myBintrayUser", // Bintray subject (user)
+		"repo": "myRepo", // Bintray repository name
+		"subject": "myBintrayUser", // Bintray subject (user or organization)
 		"desc": "I was pushed completely automatically",
 		"website_url": "www.jfrog.com",
  		"issue_tracker_url": "https://github.com/bintray/bintray-client-java/issues",
@@ -139,7 +139,9 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 	1. All gem files located under build/bin/ (including sub directories),
 	except for files under a the do-not-deploy directory.
 	The files will be uploaded to Bintray under the gems folder.
-	2. All files under build/docs. The files will be uploaded to Bintray under the docs folder.*/
+	2. All files under build/docs. The files will be uploaded to Bintray under the docs folder.
+	
+	Note: Regular expressions defined as part of the includePattern and excludePattern properties must be wrapped with brackets. */
 
 	"files": 
 		[
@@ -148,6 +150,20 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 		],
 	"publish": true
 }
+```
+
+#### Debian Upload
+
+When artifacts are uploaded to a Debian repository using the Automatic index layout, the Debian distribution information is required and must be specified. The information is specified in the descriptor file by the matrixParams as part of the files closure as shown in the following example:
+```groovy
+    "files": 
+        [{"includePattern": "build/bin/(.*\.deb)", "uploadPattern": "$1", 	
+		"matrixParams": {
+			"deb_distribution": "vivid", 
+			"deb_component": "main", 
+			"deb_architecture": "amd64"}
+		}
+	]
 ```
 
 #### Examples:
