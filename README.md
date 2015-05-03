@@ -35,6 +35,7 @@ Dpl supports the following providers:
 * [Chef Supermarket](#chef-supermarket)
 * [Lambda](#lambda)
 * [TestFairy](#testfairy)
+* [ExoScale](#exoscale)
 
 ## Installation:
 
@@ -52,6 +53,7 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 ###Global Flags
 * `--provider=<provider>` sets the provider you want to deploy to. Every provider has slightly different flags, which are documented in the section about your provider following.
 *  Dpl will deploy by default from the latest commit. Use the `--skip_cleanup`  flag to deploy from the current file state. Note that many providers deploy by git and could ignore this option.
+
 ### Heroku:
 
 #### Options:
@@ -76,6 +78,17 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 
 
+### Nodejitsu:
+
+#### Options:
+
+* **username**: Nodejitsu Username
+* **api-key**: Nodejitsu API Key
+
+#### Examples:
+    dpl --provider=nodejitsu --username=<username> --api-key=<api-key>
+
+
 ### Bintray:
 
 #### Options:
@@ -89,7 +102,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 ```groovy
 {
 	/* Bintray package information.
-	   In case the package already exists on Bintray, only the name, repo and subject 
+	   In case the package already exists on Bintray, only the name, repo and subject
 	   fields are mandatory. */
 
 	"package": {
@@ -126,7 +139,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 	},
 
 	/* Configure the files you would like to upload to Bintray and their upload path.
-	You can define one or more groups of patterns. 
+	You can define one or more groups of patterns.
 	Each group contains three patterns:
 
 	includePattern: Pattern in the form of Ruby regular expression, indicating the path of files to be uploaded to Bintray.
@@ -138,10 +151,10 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 	except for files under a the do-not-deploy directory.
 	The files will be uploaded to Bintray under the gems folder.
 	2. All files under build/docs. The files will be uploaded to Bintray under the docs folder.
-	
+
 	Note: Regular expressions defined as part of the includePattern and excludePattern properties must be wrapped with brackets. */
 
-	"files": 
+	"files":
 		[
 		{"includePattern": "build/bin/(.*)?(.*\.gem)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gems/$2"},
 		{"includePattern": "build/docs/(.*)", "uploadPattern": "docs/$1"}
@@ -154,11 +167,11 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 When artifacts are uploaded to a Debian repository using the Automatic index layout, the Debian distribution information is required and must be specified. The information is specified in the descriptor file by the matrixParams as part of the files closure as shown in the following example:
 ```groovy
-    "files": 
-        [{"includePattern": "build/bin/(.*\.deb)", "uploadPattern": "$1", 	
+    "files":
+        [{"includePattern": "build/bin/(.*\.deb)", "uploadPattern": "$1",
 		"matrixParams": {
-			"deb_distribution": "vivid", 
-			"deb_component": "main", 
+			"deb_distribution": "vivid",
+			"deb_component": "main",
 			"deb_architecture": "amd64"}
 		}
 	]
@@ -167,16 +180,6 @@ When artifacts are uploaded to a Debian repository using the Automatic index lay
 #### Examples:
     dpl --provider=bintray --file=<path> --user=<username> --key=<api-key>
     dpl --provider=bintray --file=<path> --user=<username> --key=<api-key> --passphrase=<passphrase>
-
-### Nodejitsu:
-
-#### Options:
-
-* **username**: Nodejitsu Username
-* **api-key**: Nodejitsu API Key
-
-#### Examples:
-    dpl --provider=nodejitsu --username=<username> --api-key=<api-key>
 
 
 ### Modulus
@@ -361,10 +364,11 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 * **organization**: Cloud Foundry target organization.
 * **api**: Cloud Foundry api URL
 * **space**: Cloud Foundry target space
+* **skip_ssl_validation**: Skip ssl validation. Optional.
 
 #### Examples:
 
-    dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space>
+    dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space> --skip-ssl-validation
 
 ### dotCloud:
 
@@ -551,7 +555,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
 ### Lambda:
 
-#### Options: 
+#### Options:
 
  * **function_name**: Required. The name of the Lambda being created / updated.
  * **role**: Required. The ARN of the IAM role to assign to this Lambda function.
@@ -614,3 +618,14 @@ and your testers can start testing your app.
 
     dpl --provider=testfairy --api-key=<api-key> --app-file="out/Sample.apk" --keystore-file="out/keystore" --storepass=<storepass> --alias=<alias>
 
+### ExoScale:
+
+#### Options:
+
+* **email**: ExoScale email or Organization ID.
+* **password**: ExoScale password.
+* **deployment**: ExoScale Deployment. Follows the format "APP_NAME/DEP_NAME".
+
+#### Examples:
+
+    dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
