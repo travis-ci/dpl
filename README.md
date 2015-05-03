@@ -137,7 +137,9 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 	1. All gem files located under build/bin/ (including sub directories),
 	except for files under a the do-not-deploy directory.
 	The files will be uploaded to Bintray under the gems folder.
-	2. All files under build/docs. The files will be uploaded to Bintray under the docs folder.*/
+	2. All files under build/docs. The files will be uploaded to Bintray under the docs folder.
+	
+	Note: Regular expressions defined as part of the includePattern and excludePattern properties must be wrapped with brackets. */
 
 	"files": 
 		[
@@ -155,9 +157,9 @@ When artifacts are uploaded to a Debian repository using the Automatic index lay
     "files": 
         [{"includePattern": "build/bin/(.*\.deb)", "uploadPattern": "$1", 	
 		"matrixParams": {
-			"deb_distribution": "d1", 
-			"deb_component": "c1", 
-			"deb_architecture": "a1"}
+			"deb_distribution": "vivid", 
+			"deb_component": "main", 
+			"deb_architecture": "amd64"}
 		}
 	]
 ```
