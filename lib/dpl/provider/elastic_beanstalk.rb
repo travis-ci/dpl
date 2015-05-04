@@ -21,7 +21,13 @@ module DPL
 
       def push_app
         create_bucket unless bucket_exists?
-        zip_file = create_zip
+
+        if options[:zip_file]
+          zip_file = File.join(Dir.pwd, options[:zip_file])
+        else
+          zip_file = create_zip
+        end
+
         s3_object = upload(archive_name, zip_file)
         sleep 5 #s3 eventual consistency
         version = create_app_version(s3_object)
@@ -47,7 +53,7 @@ module DPL
       end
 
       def region
-        option(:region) || DEFAULT_REGION
+        options[:region] || DEFAULT_REGION
       end
 
       def bucket_name
