@@ -95,11 +95,14 @@ module DPL
 
       def upload(key, file)
         obj = s3.buckets[bucket_name]
+
         if option(:bucket_path)
           option(:bucket_path).gsub!(/\/*$/,'/')
+          obj = obj.objects["#{option(:bucket_path)}#{key}"]
+        else
+          obj = obj.objects[key]
         end
 
-        obj = obj.objects["#{option(:bucket_path)}#{key}"]
         obj.write(Pathname.new(file))
         obj
       end
