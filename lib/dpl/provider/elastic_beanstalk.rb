@@ -61,7 +61,7 @@ module DPL
       end
 
       def bucket_path
-        @bucket_path ||= option(:bucket_path) ? option(:bucket_path).gsub(/\/*$/,'/') : nil
+        @bucket_path ||= options[:bucket_path] ? option(:bucket_path).gsub(/\/*$/,'/') : nil
       end
 
       def s3
