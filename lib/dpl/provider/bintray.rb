@@ -24,7 +24,7 @@ module DPL
       end
 
       def set_test_mode
-        @test_mode = true;
+        @test_mode = true
       end
 
       def init_from_args
