@@ -86,6 +86,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 * **user**: Bintray user
 * **key**: Bintray API key
 * **passphrase**: Optional. In case a passphrase is configured on Bintray and GPG signing is used.
+* **dry-run**: Optional. If set to true, skips sending requests to Bintray. Useful for testing your configuration.
 
 #### Descriptor file example:
 ```groovy
@@ -145,7 +146,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 	"files": 
 		[
-		{"includePattern": "build/bin/(.*)?(.*\.gem)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gems/$2"},
+		{"includePattern": "build/bin(.*)*/(.*\.gem)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gems/$2"},
 		{"includePattern": "build/docs/(.*)", "uploadPattern": "docs/$1"}
 		],
 	"publish": true

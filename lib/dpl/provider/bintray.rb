@@ -13,6 +13,8 @@ module DPL
       @passphrase
       @url
       @descriptor
+      @dry_run
+      @test_mode = false
 
       def check_auth
       end
@@ -21,12 +23,17 @@ module DPL
         false
       end
 
-      def initFromArgs
+      def set_test_mode
+        @test_mode = true;
+      end
+
+      def init_from_args
         @user = options[:user]
         @key = options[:key]
         @url = options[:url]
         @file = options[:file]
         @passphrase = options[:passphrase]
+        @dry_run = options[:dry_run]
 
         if @user.nil?
           abort("The 'user' argument is required")
@@ -40,20 +47,25 @@ module DPL
         if @url.nil?
           @url = 'https://api.bintray.com'
         end
+        if @dry_run.nil?
+          @dry_run = false
+        end
       end
 
-      def readDescriptor
+      def get_user
+        @user
+      end
+
+      def read_descriptor
         log "Reading descriptor file: #{@file}"
-        file = File.open(@file)
-        content = ""
-        file.each {|line|
-          content << line
-        }
-
-        @descriptor = JSON.parse(content)
+        @descriptor = JSON.parse(File.read(@file))
       end
 
-      def headRequest(path)
+      def set_descriptor(json)
+        @descriptor = JSON.parse(json)
+      end
+
+      def head_request(path)
         url = URI.parse(@url)
         req = Net::HTTP::Head.new(path)
         req.basic_auth @user, @key
@@ -65,7 +77,7 @@ module DPL
         return res
       end
 
-      def postRequest(path, body)
+      def post_request(path, body)
         req = Net::HTTP::Post.new(path)
         req.add_field('Content-Type', 'application/json')
         req.basic_auth @user, @key
@@ -80,63 +92,61 @@ module DPL
         return res
       end
 
-      def putRequest(path)
-        url = URI.parse(@url)
-        req = Net::HTTP::Put.new(path)
-        req.basic_auth @user, @key
-
-        sock = Net::HTTP.new(url.host, url.port)
-        sock.use_ssl = true
-        res = sock.start {|http| http.request(req) }
-
-        return res
-      end
-
-      def putBinaryFileRequest(localFilePath, uploadPath, matrixParams)
+      def put_file_request(local_file_path, upload_path, matrix_params)
         url = URI.parse(@url)
 
-        data = File.read(localFilePath)
+        data = File.read(local_file_path)
         http = Net::HTTP.new(url.host, url.port)
         http.use_ssl = true
 
         params = ''
-        if !matrixParams.nil?
-          matrixParams.each do |key, val|
-            params = "#{params};#{key}=#{val}"
+        if !matrix_params.nil?
+          matrix_params.each do |key, val|
+            params << ";#{key}=#{val}"
           end
-          uploadPath = "#{uploadPath}#{params}"
+          upload_path << params
         end
 
-        request = Net::HTTP::Put.new("#{uploadPath}")
+        request = Net::HTTP::Put.new("#{upload_path}")
         request.basic_auth @user, @key
         request.body = data
 
         return http.request(request)
       end
 
-      def uploadFile(artifact)
-        log "Uploading file '#{artifact.getLocalPath}' to #{artifact.getUploadPath}"
+      def upload_file(artifact)
+        log "Uploading file '#{artifact.get_local_path}' to #{artifact.get_upload_path}"
 
         package = @descriptor["package"]
         version = @descriptor["version"]
-        packageName = package["name"]
+        package_name = package["name"]
         subject = package["subject"]
         repo = package["repo"]
-        versionName = version["name"]
+        version_name = version["name"]
 
-        path = "/content/#{subject}/#{repo}/#{packageName}/#{versionName}/#{artifact.getUploadPath}"
-        res = putBinaryFileRequest(artifact.getLocalPath, path, artifact.getMatrixParams)
-        logBintrayResponse(res)
+        path = "/content/#{subject}/#{repo}/#{package_name}/#{version_name}/#{artifact.get_upload_path}"
+        if !@dry_run
+          res = put_file_request(artifact.get_local_path, path, artifact.get_matrix_params)
+          log_bintray_response(res)
+        end
       end
 
-      def packageExists
+      def package_exists_path
         package = @descriptor["package"]
-        name = package["name"]
         subject = package["subject"]
+        name = package["name"]
         repo = package["repo"]
-        path = "/packages/#{subject}/#{repo}/#{name}"
-        res = headRequest(path)
-        code = res.code.to_i
+        return "/packages/#{subject}/#{repo}/#{name}"
+      end
+
+      def package_exists?
+        path = package_exists_path
+        if !@dry_run
+          res = head_request(path)
+          code = res.code.to_i
+        else
+          code = 404
+        end
 
         if code == 404
           return false
@@ -148,17 +158,25 @@ module DPL
           "Response message: #{res.message}")
       end
 
-      def versionExists
+      def version_exists_path
         package = @descriptor["package"]
         version = @descriptor["version"]
-        packageName = package["name"]
+        package_name = package["name"]
         subject = package["subject"]
         repo = package["repo"]
-        versionName = version["name"]
+        version_name = version["name"]
 
-        path = "/packages/#{subject}/#{repo}/#{packageName}/versions/#{versionName}"
-        res = headRequest(path)
-        code = res.code.to_i
+        return "/packages/#{subject}/#{repo}/#{package_name}/versions/#{version_name}"
+      end
+
+      def version_exists?
+        path = version_exists_path
+        if !@dry_run
+          res = head_request(path)
+          code = res.code.to_i
+        else
+          code = 404
+        end
 
         if code == 404
           return false
@@ -166,136 +184,191 @@ module DPL
         if code == 201 || code == 200
           return true
         end
-        abort("Unexpected HTTP response code #{code} returned from Bintray while checking if version '#{versionName}' exists. " +
+        abort("Unexpected HTTP response code #{code} returned from Bintray while checking if version '#{version_name}' exists. " +
           "Response message: #{res.message}")
       end
 
-      def createPackage
+      def create_package
         package = @descriptor["package"]
         repo = package["repo"]
         body = {}
 
-        addToMap(body, package, "name")
-        addToMap(body, package, "desc")
-        addToMap(body, package, "licenses")
-        addToMap(body, package, "labels")
-        addToMap(body, package, "vcs_url")
-        addToMap(body, package, "website_url")
-        addToMap(body, package, "issue_tracker_url")
-        addToMap(body, package, "public_download_numbers")
-        addToMap(body, package, "public_stats")
+        add_to_map(body, package, "name")
+        add_to_map(body, package, "desc")
+        add_to_map(body, package, "licenses")
+        add_to_map(body, package, "labels")
+        add_to_map(body, package, "vcs_url")
+        add_to_map(body, package, "website_url")
+        add_to_map(body, package, "issue_tracker_url")
+        add_to_map(body, package, "public_download_numbers")
+        add_to_map(body, package, "public_stats")
 
         subject = package["subject"]
-        packageName = package["name"]
-        log "Creating package '#{packageName}'..."
-        res = postRequest("/packages/#{subject}/#{repo}", body)
-        logBintrayResponse(res)
+        package_name = package["name"]
+        log "Creating package '#{package_name}'..."
 
-        code = res.code.to_i
-        if code == 201 || code == 200
-          attributes = package["attributes"]
-          if !attributes.nil?
-            log "Adding attributes for package '#{packageName}'..."
-            res = postRequest("/packages/#{subject}/#{repo}/#{packageName}/attributes", attributes)
-            logBintrayResponse(res)
+        path = "/packages/#{subject}/#{repo}"
+        if !@dry_run
+          res = post_request(path, body)
+          log_bintray_response(res)
+          code = res.code.to_i
+        else
+          code = 200
+        end
+
+        if !@test_mode
+          if code == 201 || code == 200
+            add_package_attributes
           end
         end
+        RequestDetails.new(path, body)
       end
 
-      def createVersion
+      def add_package_attributes
+        package = @descriptor["package"]
+        repo = package["repo"]
+        subject = package["subject"]
+        package_name = package["name"]
+        attributes = package["attributes"]
+        path = nil
+        if !attributes.nil?
+          log "Adding attributes for package '#{package_name}'..."
+          path = "/packages/#{subject}/#{repo}/#{package_name}/attributes"
+          if !@dry_run
+            res = post_request(path, attributes)
+            log_bintray_response(res)
+          end
+        end
+        RequestDetails.new(path, attributes)
+      end
+
+      def create_version
         package = @descriptor["package"]
         version = @descriptor["version"]
         repo = package["repo"]
         body = {}
 
-        addToMap(body, version, "name")
-        addToMap(body, version, "desc")
-        addToMap(body, version, "released")
-        addToMap(body, version, "vcs_tag")
-        addToMap(body, version, "github_release_notes_file")
-        addToMap(body, version, "github_use_tag_release_notes")
-        addToMap(body, version, "attributes")
+        add_to_map(body, version, "name")
+        add_to_map(body, version, "desc")
+        add_to_map(body, version, "released")
+        add_to_map(body, version, "vcs_tag")
+        add_to_map(body, version, "github_release_notes_file")
+        add_to_map(body, version, "github_use_tag_release_notes")
+        add_to_map(body, version, "attributes")
 
-        packageName = package["name"]
+        package_name = package["name"]
         subject = package["subject"]
-        versionName = version["name"]
-        log "Creating version '#{versionName}'..."
+        version_name = version["name"]
+        log "Creating version '#{version_name}'..."
 
-        res = postRequest("/packages/#{subject}/#{repo}/#{packageName}/versions", body)
-        logBintrayResponse(res)
+        path = "/packages/#{subject}/#{repo}/#{package_name}/versions"
+        if !@dry_run
+          res = post_request(path, body)
+          log_bintray_response(res)
+          code = res.code.to_i
+        else
+          code = 200
+        end
 
-        code = res.code.to_i
-        if code == 201 || code == 200
-          attributes = package["attributes"]
-          if !attributes.nil?
-            log "Adding attributes for version '#{versionName}'..."
-            res = postRequest("/packages/#{subject}/#{repo}/#{packageName}/versions/#{versionName}/attributes", attributes)
-            logBintrayResponse(res)
+        if !@test_mode
+          if code == 201 || code == 200
+            add_version_attributes
           end
         end
+        RequestDetails.new(path, body)
       end
 
-      def checkAndCreatePackage
-        if !packageExists
-          createPackage
+      def add_version_attributes
+        package = @descriptor["package"]
+        package_name = package["name"]
+        subject = package["subject"]
+        version = @descriptor["version"]
+        version_name = version["name"]
+        repo = package["repo"]
+        attributes = version["attributes"]
+        path = nil
+        if !attributes.nil?
+          log "Adding attributes for version '#{version_name}'..."
+          path = "/packages/#{subject}/#{repo}/#{package_name}/versions/#{version_name}/attributes"
+          if !@dry_run
+            res = post_request(path, attributes)
+            log_bintray_response(res)
+          end
+        end
+        RequestDetails.new(path, attributes)
+      end
+
+      def check_and_create_package
+        if !package_exists?
+          create_package
         end
       end
 
-      def checkAndCreateVersion
-        if !versionExists
-          createVersion
+      def check_and_create_version
+        if !version_exists?
+          create_version
         end
       end
 
-      def uploadFiles
-        files = getFilesToUpload
+      def upload_files
+        files = get_files_to_upload
 
         files.each do |key, artifact|
-          uploadFile(artifact)
+          upload_file(artifact)
         end
       end
 
-      def publishVersion
+      def publish_version
         publish = @descriptor["publish"]
         if publish
           package = @descriptor["package"]
           version = @descriptor["version"]
           repo = package["repo"]
-          packageName = package["name"]
+          package_name = package["name"]
           subject = package["subject"]
-          versionName = version["name"]
+          version_name = version["name"]
 
-          log "Publishing version '#{versionName}' of package '#{packageName}'..."
-          res = postRequest("/content/#{subject}/#{repo}/#{packageName}/#{versionName}/publish", nil)
-          logBintrayResponse(res)
+          log "Publishing version '#{version_name}' of package '#{package_name}'..."
+          path = "/content/#{subject}/#{repo}/#{package_name}/#{version_name}/publish"
+          if !@dry_run
+            res = post_request(path, nil)
+            log_bintray_response(res)
+          end
         end
+        RequestDetails.new(path, nil)
       end
 
-      def gpgSignVersion
+      def gpg_sign_version
         version = @descriptor["version"]
-        gpgSign = version["gpgSign"]
-        if gpgSign
+        gpg_sign = version["gpgSign"]
+        if gpg_sign
           package = @descriptor["package"]
           repo = package["repo"]
-          packageName = package["name"]
+          package_name = package["name"]
           subject = package["subject"]
-          versionName = version["name"]
+          version_name = version["name"]
 
-          log "Signing version..."
           body = nil
           if !@passphrase.nil?
+            log "Signing version with no passphrase..."
             body = {}
             body["passphrase"] = @passphrase
+          else
+            log "Signing version with passphrase..."
           end
 
-          res = postRequest("/gpg/#{subject}/#{repo}/#{packageName}/versions/#{versionName}", body)
-          logBintrayResponse(res)
+          path = "/gpg/#{subject}/#{repo}/#{package_name}/versions/#{version_name}"
+          if !@dry_run
+            res = post_request(path, body)
+            log_bintray_response(res)
+          end
+          RequestDetails.new(path, body)
         end
       end
 
       # Get the root path from which to start collecting files to be
       # uploaded to Bintray.
-      def getRootPath(str)
+      def get_root_path(str)
         index = str.index('(')
         path = nil
         if index.nil?
@@ -304,7 +377,7 @@ module DPL
           path = str[0, index]
         end
 
-        if !File.exist?(path)
+        if !@test_mode && !File.exist?(path)
           log "Warning: Path: #{path} does not exist."
           return nil
         end
@@ -314,72 +387,78 @@ module DPL
       # Fills a map with Artifact objects which match
       # the include pattern and do not match the exclude pattern.
       # The artifacts are files collected from the file system.
-      def fillFilesMap(map, includePattern, excludePattern, uploadPattern, matrixParams)
+      def fill_files_map(map, include_pattern, exclude_pattern, upload_pattern, matrix_params)
         # Get the root path from which to start collecting the files.
-        rootPath = getRootPath(includePattern)
-        if rootPath.nil?
+        root_path = get_root_path(include_pattern)
+        if root_path.nil?
           return
         end
 
         # Start scanning the root path recursively.
-        Find.find(rootPath) do |path|
-          res = path.match(/#{includePattern}/)
-          # If the file matches the include pattern and it is not a directory.
-          if !res.nil? && File.file?(path)
-            # If the file does not match the exclude pattern.
-            if excludePattern.nil? || excludePattern.empty? || !path.match(/#{excludePattern}/)
-              # Using the capturing groups in the include pattern, replace the $1, $2, ...
-              # in the upload pattern.
-              groups = res.captures
-              replacedUploadPattern = uploadPattern
-              for i in 0..groups.size-1
-                replacedUploadPattern = replacedUploadPattern.gsub("$#{i+1}", groups[i])
-              end
-              map[path] = Artifact.new(path, replacedUploadPattern, matrixParams)
+        Find.find(root_path) do |path|
+          add_if_matches(map, path, include_pattern, exclude_pattern, upload_pattern, matrix_params)
+        end
+      end
+
+      def add_if_matches(map, path, include_pattern, exclude_pattern, upload_pattern, matrix_params)
+        res = path.match(/#{include_pattern}/)
+
+        # If the file matches the include pattern and it is not a directory.
+        # In case test_mode is set, we do not check if the file exists.
+        if !res.nil? && (@test_mode || File.file?(path))
+          # If the file does not match the exclude pattern.
+          if exclude_pattern.nil? || exclude_pattern.empty? || !path.match(/#{exclude_pattern}/)
+            # Using the capturing groups in the include pattern, replace the $1, $2, ...
+            # in the upload pattern.
+            groups = res.captures
+            replaced_upload_pattern = upload_pattern
+            for i in 0..groups.size-1
+              replaced_upload_pattern = replaced_upload_pattern.gsub("$#{i+1}", groups[i])
             end
+            map[path] = Artifact.new(path, replaced_upload_pattern, matrix_params)
           end
         end
       end
 
       # Returns a map containing Artifact objects.
       # The map contains the files to be uploaded to Bintray.
-      def getFilesToUpload
-        filesToUpload = Hash.new()
+      def get_files_to_upload
+        files_to_upload = Hash.new()
         files = @descriptor["files"]
         if files.nil?
-          return filesToUpload
+          return files_to_upload
         end
 
         files.each { |patterns|
-          fillFilesMap(
-              filesToUpload,
+          fill_files_map(
+              files_to_upload,
               patterns["includePattern"],
               patterns["excludePattern"],
               patterns["uploadPattern"],
               patterns["matrixParams"])
         }
 
-        return filesToUpload
+        return files_to_upload
       end
 
       def deploy
-        initFromArgs
-        readDescriptor
-        checkAndCreatePackage
-        checkAndCreateVersion
-        uploadFiles
-        gpgSignVersion
-        publishVersion
+        init_from_args
+        read_descriptor
+        check_and_create_package
+        check_and_create_version
+        upload_files
+        gpg_sign_version
+        publish_version
       end
 
       # Copies a key from one map to another, if the key exists there.
-      def addToMap(toMap, fromMap, key)
-        if !fromMap[key].nil?
-          toMap[key] = fromMap[key]
+      def add_to_map(to_map, from_map, key)
+        if !from_map[key].nil?
+          to_map[key] = from_map[key]
         end
       end
 
-      def logBintrayResponse(res)
+      def log_bintray_response(res)
         msg = ''
         if !res.body.nil?
           begin
@@ -398,14 +477,14 @@ module DPL
 
       # This class represents an artifact (file) to be uploaded to Bintray.
       class Artifact
-        @localPath = nil
-        @uploadPath = nil
+        @local_path = nil
+        @upload_path = nil
         @matrixParams = nil
 
-        def initialize(localPath, uploadPath, matrixParams)
-          @localPath = localPath
-          @uploadPath = uploadPath
-          @matrixParams = matrixParams
+        def initialize(local_path, upload_path, matrix_params)
+          @local_path = local_path
+          @upload_path = upload_path
+          @matrix_params = matrix_params
         end
 
         def hash
@@ -413,19 +492,39 @@ module DPL
         end
 
         def eql?(other)
-          @localPath == other.getLocalPath
+          @localPath == other.get_local_path
         end
 
-        def getLocalPath
-          return @localPath
+        def get_local_path
+          return @local_path
         end
 
-        def getUploadPath
-          return @uploadPath
+        def get_upload_path
+          return @upload_path
         end
 
-        def getMatrixParams
-          return @matrixParams
+        def get_matrix_params
+          return @matrix_params
+        end
+      end
+
+      # Used to return the path and body of REST requests sent to Bintray.
+      # Used for testing.
+      class RequestDetails
+        @path
+        @body
+
+        def initialize(path, body)
+          @path = path
+          @body = body
+        end
+
+        def get_path
+          return @path
+        end
+
+        def get_body
+          return @body
         end
       end
     end
