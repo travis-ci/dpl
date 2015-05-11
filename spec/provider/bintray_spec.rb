@@ -23,26 +23,42 @@ describe DPL::Provider::Bintray do
 
    describe "package_exists?" do
      example do
+       descriptor = JSON.parse(get_descriptor_content)
+       package = descriptor["package"]
+       package_name = package["name"]
+       subject = package["subject"]
+       repo = package["repo"]
+
        init_provider(provider)
-       expect(provider.package_exists_path).to eq('/packages/myBintrayUser/myRepo/auto-upload')
+       expect(provider.package_exists_path).to eq("/packages/#{subject}/#{repo}/#{package_name}")
      end
    end
 
   describe "version_exists?" do
     example do
+      descriptor = JSON.parse(get_descriptor_content)
+      package = descriptor["package"]
+      package_name = package["name"]
+      subject = package["subject"]
+      repo = package["repo"]
+      version_name = descriptor["version"]["name"]
+
       init_provider(provider)
-      expect(provider.version_exists_path).to eq('/packages/myBintrayUser/myRepo/auto-upload/versions/0.5')
+      expect(provider.version_exists_path).to eq("/packages/#{subject}/#{repo}/#{package_name}/versions/#{version_name}")
     end
   end
 
   describe "create_package" do
     example do
-      init_provider(provider)
-      request_details = provider.create_package
-      expect(request_details.get_path).to eq('/packages/myBintrayUser/myRepo')
-
       descriptor = JSON.parse(get_descriptor_content)
       package = descriptor["package"]
+      subject = package["subject"]
+      repo = package["repo"]
+
+      init_provider(provider)
+      request_details = provider.create_package
+      expect(request_details.get_path).to eq("/packages/#{subject}/#{repo}")
+
       body = {
         'name' => package["name"],
         'desc' => package["desc"],
@@ -60,9 +76,15 @@ describe DPL::Provider::Bintray do
 
   describe "create_version" do
     example do
+      descriptor = JSON.parse(get_descriptor_content)
+      package = descriptor["package"]
+      package_name = package["name"]
+      subject = package["subject"]
+      repo = package["repo"]
+
       init_provider(provider)
       request_details = provider.create_version
-      expect(request_details.get_path).to eq('/packages/myBintrayUser/myRepo/auto-upload/versions')
+      expect(request_details.get_path).to eq("/packages/#{subject}/#{repo}/#{package_name}/versions")
 
       descriptor = JSON.parse(get_descriptor_content)
       version = descriptor["version"]
@@ -79,12 +101,16 @@ describe DPL::Provider::Bintray do
 
   describe "add_package_attributes" do
     example do
-      init_provider(provider)
-      request_details = provider.add_package_attributes
-      expect(request_details.get_path).to eq('/packages/myBintrayUser/myRepo/auto-upload/attributes')
-
       descriptor = JSON.parse(get_descriptor_content)
       package = descriptor["package"]
+      package_name = package["name"]
+      subject = package["subject"]
+      repo = package["repo"]
+
+      init_provider(provider)
+      request_details = provider.add_package_attributes
+      expect(request_details.get_path).to eq("/packages/#{subject}/#{repo}/#{package_name}/attributes")
+
       body = package["attributes"]
       expect(request_details.get_body).to eq(body)
     end
@@ -92,9 +118,16 @@ describe DPL::Provider::Bintray do
 
   describe "add_version_attributes" do
     example do
+      descriptor = JSON.parse(get_descriptor_content)
+      package = descriptor["package"]
+      package_name = package["name"]
+      subject = package["subject"]
+      repo = package["repo"]
+      version_name = descriptor["version"]["name"]
+
       init_provider(provider)
       request_details = provider.add_version_attributes
-      expect(request_details.get_path).to eq('/packages/myBintrayUser/myRepo/auto-upload/versions/0.5/attributes')
+      expect(request_details.get_path).to eq("/packages/#{subject}/#{repo}/#{package_name}/versions/#{version_name}/attributes")
 
       descriptor = JSON.parse(get_descriptor_content)
       version = descriptor["version"]
@@ -105,26 +138,47 @@ describe DPL::Provider::Bintray do
 
   describe "publish_version" do
     example do
+      descriptor = JSON.parse(get_descriptor_content)
+      package = descriptor["package"]
+      package_name = package["name"]
+      subject = package["subject"]
+      repo = package["repo"]
+      version_name = descriptor["version"]["name"]
+
       init_provider(provider)
       request_details = provider.publish_version
-      expect(request_details.get_path).to eq('/content/myBintrayUser/myRepo/auto-upload/0.5/publish')
+      expect(request_details.get_path).to eq("/content/#{subject}/#{repo}/#{package_name}/#{version_name}/publish")
     end
   end
 
   describe "gpg_sign_version_without_passphrase" do
     example do
+      descriptor = JSON.parse(get_descriptor_content)
+      package = descriptor["package"]
+      package_name = package["name"]
+      subject = package["subject"]
+      repo = package["repo"]
+      version_name = descriptor["version"]["name"]
+
       init_provider(provider)
       request_details = provider.gpg_sign_version
-      expect(request_details.get_path).to eq('/gpg/myBintrayUser/myRepo/auto-upload/versions/0.5')
+      expect(request_details.get_path).to eq("/gpg/#{subject}/#{repo}/#{package_name}/versions/#{version_name}")
       expect(request_details.get_body).to eq(nil)
     end
   end
 
   describe "gpg_sign_version_with_passphrase" do
     example do
+      descriptor = JSON.parse(get_descriptor_content)
+      package = descriptor["package"]
+      package_name = package["name"]
+      subject = package["subject"]
+      repo = package["repo"]
+      version_name = descriptor["version"]["name"]
+
       init_provider(provider_with_passphrase)
       request_details = provider_with_passphrase.gpg_sign_version
-      expect(request_details.get_path).to eq('/gpg/myBintrayUser/myRepo/auto-upload/versions/0.5')
+      expect(request_details.get_path).to eq("/gpg/#{subject}/#{repo}/#{package_name}/versions/#{version_name}")
 
       body = {
           'passphrase' => 'passphrase'
