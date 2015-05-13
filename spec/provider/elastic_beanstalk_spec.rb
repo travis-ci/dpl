@@ -22,6 +22,7 @@ describe DPL::Provider::ElasticBeanstalk do
     allow(dbl).to receive(:objects).and_return(double("Hash", :[] => dbl))
     dbl
   end
+
   let(:s3_mock) do
     hash_dbl = double("Hash", :[] => bucket_mock, :map => [])
     double("AWS::S3", buckets: hash_dbl)
@@ -31,6 +32,13 @@ describe DPL::Provider::ElasticBeanstalk do
     described_class.new(
       DummyContext.new, :access_key_id => access_key_id, :secret_access_key => secret_access_key,
       :region => region, :app => app, :env => env, :bucket_name => bucket_name, :bucket_path => bucket_path
+    )
+  end
+
+  subject :provider_without_bucket_path do
+    described_class.new(
+      DummyContext.new, :access_key_id => access_key_id, :secret_access_key => secret_access_key,
+      :region => region, :app => app, :env => env, :bucket_name => bucket_name
     )
   end
 
@@ -73,6 +81,25 @@ describe DPL::Provider::ElasticBeanstalk do
       expect(provider).to receive(:update_app).with(app_version)
 
       provider.push_app
+    end
+
+    context 'When the bucket_path option is not set' do
+      example 'Does not prepend bucket_path to the s3 bucket' do
+        allow(s3_mock.buckets).to receive(:map).and_return([bucket_name])
+
+        expect(provider_without_bucket_path).to receive(:s3).and_return(s3_mock).twice
+        expect(provider_without_bucket_path).not_to receive(:create_bucket)
+        expect(provider_without_bucket_path).to receive(:create_zip).and_return('/path/to/file.zip')
+        expect(provider_without_bucket_path).to receive(:archive_name).and_return('file.zip')
+        expect(provider_without_bucket_path).to receive(:bucket_path).and_return(nil)
+        expect(bucket_mock.objects).to receive(:[]).with("file.zip").and_return(bucket_mock)
+        expect(provider_without_bucket_path).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
+        expect(provider_without_bucket_path).to receive(:sleep).with(5)
+        expect(provider_without_bucket_path).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+        expect(provider_without_bucket_path).to receive(:update_app).with(app_version)
+
+        provider_without_bucket_path.push_app
+      end
     end
   end
 end
