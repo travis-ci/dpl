@@ -70,7 +70,7 @@ module DPL
         else
           docs_dir_option = ''
         end
-        context.shell "python setup.py upload_docs #{docs_dir_option}"
+        context.shell "python setup.py upload_docs #{docs_dir_option} -r #{options[:server] || 'pypi'}"
       end
     end
   end
