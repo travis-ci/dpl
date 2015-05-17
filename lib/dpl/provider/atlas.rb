@@ -3,37 +3,41 @@ module DPL
     class Atlas < Provider
       GIMME_URL = 'https://raw.githubusercontent.com/meatballhat/gimme/master/gimme'
       ATLAS_UPLOAD_CLI_GO_REMOTE = 'github.com/hashicorp/atlas-upload-cli'
-      ATLAS_UPLOAD_BOOL_OPTS = %w(vcs debug).map(&:to_sym).freeze
-      ATLAS_UPLOAD_KV_OPTS = %w(address).map(&:to_sym).freeze
-      ATLAS_UPLOAD_KV_MULTI_OPTS = %w(exclude include metadata).map(&:to_sym).freeze
+      ATLAS_UPLOAD_BOOL_ARGS = %w(vcs debug).map(&:to_sym).freeze
+      ATLAS_UPLOAD_KV_ARGS = %w(address).map(&:to_sym).freeze
+      ATLAS_UPLOAD_KV_MULTI_ARGS = %w(exclude include metadata).map(&:to_sym).freeze
+      ATLAS_UPLOAD_INSTALL_SCRIPT = <<-EOF.gsub(/^ {8}/, '').strip
+        if ! command -v atlas-upload &>/dev/null ; then
+          mkdir -p $HOME/bin $HOME/gopath/src
+          export PATH="$HOME/bin:$PATH"
 
-      experimental 'Atlas'
-
-      def self.install_atlas_upload
-        shell <<-EOF.gsub(/^ {10}/, '')
-          mkdir -p ~/bin ~/gopath/src
           if ! command -v gimme &>/dev/null ; then
-            curl -sL -o ~/bin/gimme #{GIMME_URL}
-            chmod +x ~/bin/gimme
+            curl -sL -o $HOME/bin/gimme #{GIMME_URL}
+            chmod +x $HOME/bin/gimme
           fi
 
           export GOPATH="$HOME/gopath:$GOPATH"
           eval "$(gimme 1.4.2)" &>/dev/null
 
           go get #{ATLAS_UPLOAD_CLI_GO_REMOTE}
-          pushd ~/gopath/src/#{ATLAS_UPLOAD_CLI_GO_REMOTE} &>/dev/null
+          pushd $HOME/gopath/src/#{ATLAS_UPLOAD_CLI_GO_REMOTE} &>/dev/null
           make &>/dev/null
-          cp bin/atlas-upload ~/bin/atlas-upload
+          cp bin/atlas-upload $HOME/bin/atlas-upload
           popd &>/dev/null
-        EOF
-      end
+        fi
+      EOF
 
-      install_atlas_upload
+      experimental 'Atlas'
+
+      def deploy
+        assert_app_present!
+        install_atlas_upload
+        super
+      end
 
       def check_auth
         ENV['ATLAS_TOKEN'] = options[:token] if options[:token]
         error 'Missing ATLAS_TOKEN' unless ENV['ATLAS_TOKEN']
-        assert_app_present!
       end
 
       def needs_key?
@@ -41,8 +45,6 @@ module DPL
       end
 
       def push_app
-        assert_app_present!
-
         unless options[:paths]
           here = Dir.pwd
           warn "No paths specified.  Using #{here.inspect}."
@@ -50,37 +52,42 @@ module DPL
         end
 
         Array(options[:paths]).each do |path|
-          context.shell "~/bin/atlas-upload #{atlas_upload_options} #{atlas_app} #{path}"
+          context.shell "atlas-upload #{atlas_upload_args} #{atlas_app} #{path}"
         end
       end
 
       private
 
+      def install_atlas_upload
+        context.shell ATLAS_UPLOAD_INSTALL_SCRIPT
+      end
+
       def assert_app_present!
         error 'Missing Atlas app name' unless options.key?(:app)
       end
 
-      def atlas_upload_options
-        return @atlas_upload_options if @atlas_upload_options
+      def atlas_upload_args
+        return options[:args] if options.key?(:args)
+        return @atlas_upload_args if @atlas_upload_args
 
-        opts = []
+        args = []
 
-        ATLAS_UPLOAD_BOOL_OPTS.each do |opt|
-          opts << "-#{opt}" if options.key?(opt)
+        ATLAS_UPLOAD_BOOL_ARGS.each do |arg|
+          args << "-#{arg}" if options.key?(arg)
         end
 
-        ATLAS_UPLOAD_KV_OPTS.each do |opt|
-          opts << ["-#{opt}", options[opt].inspect].join('=') if options.key?(opt)
+        ATLAS_UPLOAD_KV_ARGS.each do |arg|
+          args << ["-#{arg}", options[arg].inspect].join('=') if options.key?(arg)
         end
 
-        ATLAS_UPLOAD_KV_MULTI_OPTS.each do |opt|
-          next unless options.key?(opt)
-          Array(options[opt]).each do |opt_entry|
-            opts << ["-#{opt}", opt_entry.inspect].join('=')
+        ATLAS_UPLOAD_KV_MULTI_ARGS.each do |arg|
+          next unless options.key?(arg)
+          Array(options[arg]).each do |arg_entry|
+            args << ["-#{arg}", arg_entry.inspect].join('=')
           end
         end
 
-        @atlas_upload_options = opts.join(' ')
+        @atlas_upload_args = args.join(' ')
       end
 
       def atlas_app
