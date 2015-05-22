@@ -111,7 +111,7 @@ module DPL
       end
 
       def upload_file(artifact)
-        log "Uploading file '#{artifact.get_local_path}' to #{artifact.get_upload_path}"
+        log "Uploading file '#{artifact.local_path}' to #{artifact.upload_path}"
 
         package = @descriptor["package"]
         version = @descriptor["version"]
@@ -120,9 +120,9 @@ module DPL
         repo = package["repo"]
         version_name = version["name"]
 
-        path = "/content/#{subject}/#{repo}/#{package_name}/#{version_name}/#{artifact.get_upload_path}"
+        path = "/content/#{subject}/#{repo}/#{package_name}/#{version_name}/#{artifact.upload_path}"
         if !@dry_run
-          res = put_file_request(artifact.get_local_path, path, artifact.get_matrix_params)
+          res = put_file_request(artifact.local_path, path, artifact.matrix_params)
           log_bintray_response(res)
         end
       end
@@ -488,20 +488,12 @@ module DPL
         end
 
         def eql?(other)
-          @localPath == other.get_local_path
+          @localPath == other.local_path
         end
 
-        def get_local_path
-          return @local_path
-        end
-
-        def get_upload_path
-          return @upload_path
-        end
-
-        def get_matrix_params
-          return @matrix_params
-        end
+        attr_reader :local_path
+        attr_reader :upload_path
+        attr_reader :matrix_params
       end
 
       # Used to return the path and body of REST requests sent to Bintray.
@@ -515,13 +507,8 @@ module DPL
           @body = body
         end
 
-        def get_path
-          return @path
-        end
-
-        def get_body
-          return @body
-        end
+        attr_reader :path
+        attr_reader :body
       end
     end
   end

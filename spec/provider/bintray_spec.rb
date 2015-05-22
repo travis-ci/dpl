@@ -56,7 +56,7 @@ describe DPL::Provider::Bintray do
 
       init_provider(provider)
       request_details = provider.create_package
-      expect(request_details.get_path).to eq("/packages/#{subject}/#{repo}")
+      expect(request_details.path).to eq("/packages/#{subject}/#{repo}")
 
       body = {
           'name' => package["name"],
@@ -69,7 +69,7 @@ describe DPL::Provider::Bintray do
           'public_download_numbers' => package["public_download_numbers"],
           'public_stats' => package["public_stats"]
       }
-      expect(request_details.get_body).to eq(body)
+      expect(request_details.body).to eq(body)
     end
   end
 
@@ -83,7 +83,7 @@ describe DPL::Provider::Bintray do
 
       init_provider(provider)
       request_details = provider.create_version
-      expect(request_details.get_path).to eq("/packages/#{subject}/#{repo}/#{package_name}/versions")
+      expect(request_details.path).to eq("/packages/#{subject}/#{repo}/#{package_name}/versions")
 
       version = descriptor["version"]
       body = {
@@ -93,7 +93,7 @@ describe DPL::Provider::Bintray do
           'vcs_tag' => version["vcs_tag"],
           'attributes' => version["attributes"]
       }
-      expect(request_details.get_body).to eq(body)
+      expect(request_details.body).to eq(body)
     end
   end
 
@@ -107,10 +107,10 @@ describe DPL::Provider::Bintray do
 
       init_provider(provider)
       request_details = provider.add_package_attributes
-      expect(request_details.get_path).to eq("/packages/#{subject}/#{repo}/#{package_name}/attributes")
+      expect(request_details.path).to eq("/packages/#{subject}/#{repo}/#{package_name}/attributes")
 
       body = package["attributes"]
-      expect(request_details.get_body).to eq(body)
+      expect(request_details.body).to eq(body)
     end
   end
 
@@ -125,12 +125,12 @@ describe DPL::Provider::Bintray do
 
       init_provider(provider)
       request_details = provider.add_version_attributes
-      expect(request_details.get_path).to eq("/packages/#{subject}/#{repo}/#{package_name}/versions/#{version_name}/attributes")
+      expect(request_details.path).to eq("/packages/#{subject}/#{repo}/#{package_name}/versions/#{version_name}/attributes")
 
       descriptor = JSON.parse(descriptor_content)
       version = descriptor["version"]
       body = version["attributes"]
-      expect(request_details.get_body).to eq(body)
+      expect(request_details.body).to eq(body)
     end
   end
 
@@ -145,7 +145,7 @@ describe DPL::Provider::Bintray do
 
       init_provider(provider)
       request_details = provider.publish_version
-      expect(request_details.get_path).to eq("/content/#{subject}/#{repo}/#{package_name}/#{version_name}/publish")
+      expect(request_details.path).to eq("/content/#{subject}/#{repo}/#{package_name}/#{version_name}/publish")
     end
   end
 
@@ -160,8 +160,8 @@ describe DPL::Provider::Bintray do
 
       init_provider(provider)
       request_details = provider.gpg_sign_version
-      expect(request_details.get_path).to eq("/gpg/#{subject}/#{repo}/#{package_name}/versions/#{version_name}")
-      expect(request_details.get_body).to eq(nil)
+      expect(request_details.path).to eq("/gpg/#{subject}/#{repo}/#{package_name}/versions/#{version_name}")
+      expect(request_details.body).to eq(nil)
     end
   end
 
@@ -176,12 +176,12 @@ describe DPL::Provider::Bintray do
 
       init_provider(provider_with_passphrase)
       request_details = provider_with_passphrase.gpg_sign_version
-      expect(request_details.get_path).to eq("/gpg/#{subject}/#{repo}/#{package_name}/versions/#{version_name}")
+      expect(request_details.path).to eq("/gpg/#{subject}/#{repo}/#{package_name}/versions/#{version_name}")
 
       body = {
           'passphrase' => 'passphrase'
       }
-      expect(request_details.get_body).to eq(body)
+      expect(request_details.body).to eq(body)
     end
   end
 
@@ -200,12 +200,12 @@ describe DPL::Provider::Bintray do
       provider.add_if_matches(files_to_upload, 'build/files/c.txt', 'build/files/(.*.gem)', 'exclude', 'a/b/$1', nil)
 
       expect(files_to_upload["build/files/a.gem"]).not_to eq(nil)
-      expect(files_to_upload["build/files/a.gem"].get_upload_path).to eq('a/b/a.gem')
-      expect(files_to_upload["build/files/a.gem"].get_matrix_params).to eq(nil)
+      expect(files_to_upload["build/files/a.gem"].upload_path).to eq('a/b/a.gem')
+      expect(files_to_upload["build/files/a.gem"].matrix_params).to eq(nil)
 
       expect(files_to_upload["build/files/b.gem"]).not_to eq(nil)
-      expect(files_to_upload["build/files/b.gem"].get_upload_path).to eq('a/b/b.gem')
-      expect(files_to_upload["build/files/b.gem"].get_matrix_params).to eq(matrix_params)
+      expect(files_to_upload["build/files/b.gem"].upload_path).to eq('a/b/b.gem')
+      expect(files_to_upload["build/files/b.gem"].matrix_params).to eq(matrix_params)
 
       expect(files_to_upload["build/files/c.gem"]).to eq(nil)
       expect(files_to_upload["build/files/c.txt"]).to eq(nil)
