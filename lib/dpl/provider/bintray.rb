@@ -52,16 +52,12 @@ module DPL
         end
       end
 
-      def get_user
-        @user
-      end
-
       def read_descriptor
         log "Reading descriptor file: #{@file}"
         @descriptor = JSON.parse(File.read(@file))
       end
 
-      def set_descriptor(json)
+      def descriptor=(json)
         @descriptor = JSON.parse(json)
       end
 

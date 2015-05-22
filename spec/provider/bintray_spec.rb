@@ -22,7 +22,7 @@ describe DPL::Provider::Bintray do
 
   describe "package_exists?" do
     example do
-      descriptor = JSON.parse(get_descriptor_content)
+      descriptor = JSON.parse(descriptor_content)
       package = descriptor["package"]
       package_name = package["name"]
       subject = package["subject"]
@@ -35,7 +35,7 @@ describe DPL::Provider::Bintray do
 
   describe "version_exists?" do
     example do
-      descriptor = JSON.parse(get_descriptor_content)
+      descriptor = JSON.parse(descriptor_content)
       package = descriptor["package"]
       package_name = package["name"]
       subject = package["subject"]
@@ -49,7 +49,7 @@ describe DPL::Provider::Bintray do
 
   describe "create_package" do
     example do
-      descriptor = JSON.parse(get_descriptor_content)
+      descriptor = JSON.parse(descriptor_content)
       package = descriptor["package"]
       subject = package["subject"]
       repo = package["repo"]
@@ -75,7 +75,7 @@ describe DPL::Provider::Bintray do
 
   describe "create_version" do
     example do
-      descriptor = JSON.parse(get_descriptor_content)
+      descriptor = JSON.parse(descriptor_content)
       package = descriptor["package"]
       package_name = package["name"]
       subject = package["subject"]
@@ -85,7 +85,6 @@ describe DPL::Provider::Bintray do
       request_details = provider.create_version
       expect(request_details.get_path).to eq("/packages/#{subject}/#{repo}/#{package_name}/versions")
 
-      descriptor = JSON.parse(get_descriptor_content)
       version = descriptor["version"]
       body = {
           'name' => version["name"],
@@ -100,7 +99,7 @@ describe DPL::Provider::Bintray do
 
   describe "add_package_attributes" do
     example do
-      descriptor = JSON.parse(get_descriptor_content)
+      descriptor = JSON.parse(descriptor_content)
       package = descriptor["package"]
       package_name = package["name"]
       subject = package["subject"]
@@ -117,7 +116,7 @@ describe DPL::Provider::Bintray do
 
   describe "add_version_attributes" do
     example do
-      descriptor = JSON.parse(get_descriptor_content)
+      descriptor = JSON.parse(descriptor_content)
       package = descriptor["package"]
       package_name = package["name"]
       subject = package["subject"]
@@ -128,7 +127,7 @@ describe DPL::Provider::Bintray do
       request_details = provider.add_version_attributes
       expect(request_details.get_path).to eq("/packages/#{subject}/#{repo}/#{package_name}/versions/#{version_name}/attributes")
 
-      descriptor = JSON.parse(get_descriptor_content)
+      descriptor = JSON.parse(descriptor_content)
       version = descriptor["version"]
       body = version["attributes"]
       expect(request_details.get_body).to eq(body)
@@ -137,7 +136,7 @@ describe DPL::Provider::Bintray do
 
   describe "publish_version" do
     example do
-      descriptor = JSON.parse(get_descriptor_content)
+      descriptor = JSON.parse(descriptor_content)
       package = descriptor["package"]
       package_name = package["name"]
       subject = package["subject"]
@@ -152,7 +151,7 @@ describe DPL::Provider::Bintray do
 
   describe "gpg_sign_version_without_passphrase" do
     example do
-      descriptor = JSON.parse(get_descriptor_content)
+      descriptor = JSON.parse(descriptor_content)
       package = descriptor["package"]
       package_name = package["name"]
       subject = package["subject"]
@@ -168,7 +167,7 @@ describe DPL::Provider::Bintray do
 
   describe "gpg_sign_version_with_passphrase" do
     example do
-      descriptor = JSON.parse(get_descriptor_content)
+      descriptor = JSON.parse(descriptor_content)
       package = descriptor["package"]
       package_name = package["name"]
       subject = package["subject"]
@@ -215,11 +214,11 @@ describe DPL::Provider::Bintray do
 
   def init_provider(bintray)
     bintray.init_from_args
-    bintray.set_descriptor(get_descriptor_content)
+    bintray.descriptor=descriptor_content
     bintray.set_test_mode
   end
 
-  def get_descriptor_content
+  def descriptor_content
     return """ {
           \"package\": {
             \"name\": \"auto-upload\",
