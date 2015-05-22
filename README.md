@@ -403,6 +403,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **zip-file**: The zip-file that you want to deploy. _**Note:**_ you also need to use the `skip-cleanup` or the zipfile you are trying to upload will be removed during cleanup.
  * **bucket_name**: Bucket name to upload app to.
  * **bucket_path**: Location within Bucket to upload app to.
+ * **include_git**: Defaults to false. If true, the generated .zip will include the .git directory tree
 
 #### Examples:
 

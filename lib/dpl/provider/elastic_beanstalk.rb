@@ -81,7 +81,9 @@ module DPL
       end
 
       def files_to_pack
-        `git ls-files -z`.split("\x0")
+        files = `git ls-files -z`.split("\x0")
+        return files + `find .git -print0`.split("\x0") if options[:include_git]
+        files
       end
 
       def create_zip
