@@ -60,6 +60,10 @@ module DPL
         option(:bucket_name)
       end
 
+      def bucket_path
+        @bucket_path ||= options[:bucket_path] ? option(:bucket_path).gsub(/\/*$/,'/') : nil
+      end
+
       def s3
         @s3 ||= AWS::S3.new
       end
@@ -94,7 +98,8 @@ module DPL
       end
 
       def upload(key, file)
-        obj = s3.buckets[bucket_name].objects[key]
+        obj = s3.buckets[bucket_name]
+        obj = bucket_path ? obj.objects["#{bucket_path}#{key}"] : obj.objects[key]
         obj.write(Pathname.new(file))
         obj
       end
