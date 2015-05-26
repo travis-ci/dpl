@@ -16,7 +16,7 @@ describe DPL::Provider::NPM do
 
   describe "#push_app" do
     example do
-      expect(provider.context).to receive(:shell).with("npm publish")
+      expect(provider.context).to receive(:shell).with("env NPM_API_KEY=test npm publish")
       provider.push_app
     end
   end
@@ -24,8 +24,8 @@ describe DPL::Provider::NPM do
   describe "#setup_auth" do
     example do
       f = double(:npmrc)
-      expect(File).to receive(:open).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE)).and_return(f)
-      expect(f).to receive(:puts).with("_auth = test")
+      expect(File).to receive(:open).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE), 'w').and_return(f)
+      expect(f).to receive(:puts).with("_auth = ${NPM_API_KEY}")
       expect(f).to receive(:puts).with("email = foo@blah.com")
       provider.setup_auth
     end

@@ -12,7 +12,7 @@ module DPL
 
       def setup_auth
         File.open(File.expand_path(NPMRC_FILE), 'w') do |f|
-          f.puts("_auth = #{option(:api_key)}")
+          f.puts("_auth = ${NPM_API_KEY}")
           f.puts("email = #{option(:email)}")
         end
       end
@@ -23,7 +23,7 @@ module DPL
       end
 
       def push_app
-        context.shell "npm publish"
+        context.shell "env NPM_API_KEY=#{option(:api_key)} npm publish"
       end
     end
   end
