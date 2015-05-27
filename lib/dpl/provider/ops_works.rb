@@ -22,8 +22,16 @@ module DPL
 
       end
 
+      def access_key_id
+        options[:access_key_id] || context.env['AWS_ACCESS_KEY_ID'] || raise(Error, "missing access_key_id")
+      end
+
+      def secret_access_key
+        options[:secret_access_key] || context.env['AWS_SECRET_ACCESS_KEY'] || raise(Error, "missing secret_access_key")
+      end
+
       def setup_auth
-        AWS.config(access_key_id: option(:access_key_id), secret_access_key: option(:secret_access_key))
+        AWS.config(access_key_id: access_key_id, secret_access_key: secret_access_key)
       end
 
       def check_auth

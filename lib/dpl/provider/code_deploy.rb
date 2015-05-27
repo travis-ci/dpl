@@ -12,10 +12,18 @@ module DPL
       def code_deploy_options
         code_deploy_options = {
           region:      options[:region] || 'us-east-1',
-          credentials: Aws::Credentials.new(option(:access_key_id), option(:secret_access_key))
+          credentials: Aws::Credentials.new(access_key_id, secret_access_key)
         }
         code_deploy_options[:endpoint] = options[:endpoint] if options[:endpoint]
         code_deploy_options
+      end
+
+      def access_key_id
+        options[:access_key_id] || context.env['AWS_ACCESS_KEY_ID'] || raise(Error, "missing access_key_id")
+      end
+
+      def secret_access_key
+        options[:secret_access_key] || context.env['AWS_SECRET_ACCESS_KEY'] || raise(Error, "missing secret_access_key")
       end
 
       def needs_key?
