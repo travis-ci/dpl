@@ -41,11 +41,11 @@ module DPL
       end
 
       def env_name
-        option(:env)
+        options[:env] || context.env['ELASTIC_BEANSTALK_ENV']
       end
 
       def version_label
-        "travis-#{sha}-#{Time.now.to_i}"
+        context.env['ELASTIC_BEANSTALK_LABEL'] || "travis-#{sha}-#{Time.now.to_i}"
       end
 
       def archive_name
