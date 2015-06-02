@@ -35,6 +35,7 @@ Dpl supports the following providers:
 * [Lambda](#lambda)
 * [TestFairy](#testfairy)
 * [ExoScale](#exoscale)
+* [AWS CodeDeploy](#codedeploy)
 
 ## Installation:
 
@@ -537,3 +538,20 @@ and your testers can start testing your app.
 #### Examples:
 
     dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
+
+### AWS CodeDeploy:
+
+#### Options:
+
+* **access-key-id**: AWS Access Key.
+* **secret_access_key**: AWS Secret Access Key.
+* **application**: CodeDeploy Application Name.
+* **deployment_group**: CodeDeploy Deployment Group Name.
+* **revision_type**: CodeDeploy Revision Type (S3 or GitHub).
+* **commit_id**: Commit ID in case of GitHub.
+* **repository**: Repository Name in case of GitHub.
+* **region**: AWS Availability Zone.
+
+#### Examples:
+
+    dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone>
