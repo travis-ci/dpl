@@ -59,7 +59,7 @@ module DPL
           deployment_group_name:  options[:deployment_group] || option(:deployment_group_name),
           description:            options[:description]      || default_description
         })
-        log "Triggered deployment #{deployment.deployment_id.inspect}."
+        log "Triggered deployment #{data.deployment_id.inspect}."
         return unless options[:wait_until_deployed]
         print "Deploying "
         deployment = wait_until_deployed(data[:deployment_id])
@@ -76,8 +76,8 @@ module DPL
       def wait_until_deployed(deployment_id)
         deployment = nil
         loop do
-          result = code_deploy.get_deployment(:deployment_id)
-          deployment = result[:deploymentInfo]
+          result = code_deploy.get_deployment(deployment_id: deployment_id)
+          deployment = result[:deployment_info]
           break unless deployment[:status] == "Created" || deployment[:status] == "Queued" || deployment[:status] == "InProgress"
           print "."
           sleep 5
