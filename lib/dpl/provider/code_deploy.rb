@@ -74,7 +74,7 @@ module DPL
       end
 
       def wait_until_deployed(deployment_id)
-        deployment = nil
+        deployment = {}
         loop do
           result = code_deploy.get_deployment(deployment_id: deployment_id)
           deployment = result[:deployment_info]
