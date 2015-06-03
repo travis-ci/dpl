@@ -53,15 +53,36 @@ module DPL
       end
 
       def push_app
-        deployment = code_deploy.create_deployment({
+        data = code_deploy.create_deployment({
           revision:               revision,
           application_name:       options[:application]      || option(:application_name),
           deployment_group_name:  options[:deployment_group] || option(:deployment_group_name),
           description:            options[:description]      || default_description
         })
-        log "Triggered deployment #{deployment.deployment_id.inspect}."
+        log "Triggered deployment #{data.deployment_id.inspect}."
+        return unless options[:wait_until_deployed]
+        print "Deploying "
+        deployment = wait_until_deployed(data[:deployment_id])
+        print "\n"
+        if deployment[:status] == 'Succeeded'
+          log "Deployment successful."
+        else
+          error "Deployment failed."
+        end
       rescue Aws::CodeDeploy::Errors::DeploymentLimitExceededException => exception
         error(exception.message)
+      end
+
+      def wait_until_deployed(deployment_id)
+        deployment = nil
+        loop do
+          result = code_deploy.get_deployment(deployment_id: deployment_id)
+          deployment = result[:deployment_info]
+          break unless deployment[:status] == "Created" || deployment[:status] == "Queued" || deployment[:status] == "InProgress"
+          print "."
+          sleep 5
+        end
+        deployment
       end
 
       def bundle_type
