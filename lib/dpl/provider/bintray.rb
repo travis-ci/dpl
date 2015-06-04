@@ -6,14 +6,6 @@ require 'find'
 module DPL
   class Provider
     class Bintray < Provider
-
-      @file
-      @user
-      @key
-      @passphrase
-      @url
-      @descriptor
-      @dry_run
       @test_mode = false
 
       def check_auth
@@ -23,9 +15,7 @@ module DPL
         false
       end
 
-      def set_test_mode
-        @test_mode = true
-      end
+      attr_writer :test_mode
 
       def init_from_args
         @user = options[:user]
