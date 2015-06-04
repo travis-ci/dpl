@@ -78,7 +78,7 @@ module DPL
         loop do
           result = code_deploy.get_deployment(deployment_id: deployment_id)
           deployment = result[:deployment_info]
-          break unless deployment[:status] == "Created" || deployment[:status] == "Queued" || deployment[:status] == "InProgress"
+          break if deployment[:status] == "Succeeded" || deployment[:status] == "Failed" || deployment[:status] == "Stopped"
           print "."
           sleep 5
         end
