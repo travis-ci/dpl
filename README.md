@@ -539,7 +539,7 @@ and your testers can start testing your app.
 
     dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
 
-### CodeDeploy:
+### AWS CodeDeploy:
 
 #### Options:
 
