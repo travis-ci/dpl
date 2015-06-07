@@ -297,7 +297,7 @@ module DPL
       end
 
       def upload_files
-        files = get_files_to_upload
+        files = files_to_upload
 
         files.each do |key, artifact|
           upload_file(artifact)
@@ -354,7 +354,7 @@ module DPL
 
       # Get the root path from which to start collecting files to be
       # uploaded to Bintray.
-      def get_root_path(str)
+      def root_path(str)
         index = str.index('(')
         path = nil
         if index.nil?
@@ -375,7 +375,7 @@ module DPL
       # The artifacts are files collected from the file system.
       def fill_files_map(map, include_pattern, exclude_pattern, upload_pattern, matrix_params)
         # Get the root path from which to start collecting the files.
-        root_path = get_root_path(include_pattern)
+        root_path = root_path(include_pattern)
         if root_path.nil?
           return
         end
@@ -408,23 +408,23 @@ module DPL
 
       # Returns a map containing Artifact objects.
       # The map contains the files to be uploaded to Bintray.
-      def get_files_to_upload
-        files_to_upload = Hash.new()
+      def files_to_upload
+        upload_files = Hash.new()
         files = @descriptor["files"]
         if files.nil?
-          return files_to_upload
+          return upload_files
         end
 
         files.each { |patterns|
           fill_files_map(
-              files_to_upload,
+              upload_files,
               patterns["includePattern"],
               patterns["excludePattern"],
               patterns["uploadPattern"],
               patterns["matrixParams"])
         }
 
-        return files_to_upload
+        return upload_files
       end
 
       def deploy
