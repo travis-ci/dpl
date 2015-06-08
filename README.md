@@ -551,7 +551,8 @@ and your testers can start testing your app.
 * **commit_id**: Commit ID in case of GitHub.
 * **repository**: Repository Name in case of GitHub.
 * **region**: AWS Availability Zone.
+* **wait-until-deployed**: Wait until the app is deployed and return the deployment status (Optional, Default false).
 
 #### Examples:
 
-    dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone>
+    dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>

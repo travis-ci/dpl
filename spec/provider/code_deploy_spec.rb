@@ -255,6 +255,24 @@ describe DPL::Provider::CodeDeploy do
         expect(provider).to receive(:log).with(/Triggered deployment \"#{deployment_id}\"\./)
         provider.push_app
       end
+
+       before do
+        allow(provider.code_deploy).to receive(:get_deployment).and_return(
+          {:deployment_info => {:status => "Created"}},
+          {:deployment_info => {:status => "Queued"}},
+          {:deployment_info => {:status => "InProgress"}},
+          {:deployment_info => {:status => "Succeeded"}})
+      end
+
+      example 'with :wait_until_deployed' do
+        old_options = provider.options
+        provider.stub(:options) {old_options.merge({
+          app_id: 'app-id',
+          wait_until_deployed: true})}
+        expect(provider).to receive(:log).with(/Triggered deployment \"#{deployment_id}\"\./)
+        expect(provider).to receive(:log).with(/Deployment successful./)
+        provider.push_app
+      end
     end
 
     context 'with an error' do
