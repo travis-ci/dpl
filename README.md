@@ -213,6 +213,11 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 
 It is possible to set file-specific `Cache-Control` and `Expires` headers using `value: file[, file]` format.
 
+#### Environment variables:
+
+ * **AWS_ACCESS_KEY_ID**: AWS Access Key ID. Used if the `access-key-id` option is omitted.
+ * **AWS_SECRET_ACCESS_KEY**: AWS Secret Key. Used if the `secret-access-key` option is omitted.
+
 ##### Example:
 
     --cache_control="no-cache: index.html"
@@ -233,6 +238,12 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 * **app-id**: The app ID.
 * **migrate**: Migrate the database. (Default: false)
 * **wait-until-deployed**: Wait until the app is deployed and return the deployment status. (Default: false)
+
+#### Environment variables:
+
+ * **AWS_ACCESS_KEY_ID**: AWS Access Key ID. Used if the `access-key-id` option is omitted.
+ * **AWS_SECRET_ACCESS_KEY**: AWS Secret Key. Used if the `secret-access-key` option is omitted.
+
 #### Examples:
 
     dpl --provider=opsworks --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --app-id=<app-id> --migrate --wait-until-deployed
@@ -405,6 +416,11 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **bucket_name**: Bucket name to upload app to.
  * **bucket_path**: Location within Bucket to upload app to.
 
+#### Environment variables:
+
+ * **AWS_ACCESS_KEY_ID**: AWS Access Key ID. Used if the `access-key-id` option is omitted.
+ * **AWS_SECRET_ACCESS_KEY**: AWS Secret Key. Used if the `secret-access-key` option is omitted.
+
 #### Examples:
 
     dpl --provider=elasticbeanstalk --access-key-id=<access-key-id> --secret-access-key="<secret-access-key>" --app="example-app-name" --env="example-app-environment" --region="us-west-2"
@@ -552,6 +568,11 @@ and your testers can start testing your app.
 * **repository**: Repository Name in case of GitHub.
 * **region**: AWS Availability Zone.
 * **wait-until-deployed**: Wait until the app is deployed and return the deployment status (Optional, Default false).
+
+#### Environment variables:
+
+ * **AWS_ACCESS_KEY_ID**: AWS Access Key ID. Used if the `access-key-id` option is omitted.
+ * **AWS_SECRET_ACCESS_KEY**: AWS Secret Key. Used if the `secret-access-key` option is omitted.
 
 #### Examples:
 
