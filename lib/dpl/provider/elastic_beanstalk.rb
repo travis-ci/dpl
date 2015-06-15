@@ -41,7 +41,7 @@ module DPL
       end
 
       def env_name
-        options[:env] || context.env['ELASTIC_BEANSTALK_ENV']
+        options[:env] || context.env['ELASTIC_BEANSTALK_ENV'] || raise(Error, "missing env")
       end
 
       def version_label
