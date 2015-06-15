@@ -405,6 +405,12 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **bucket_name**: Bucket name to upload app to.
  * **bucket_path**: Location within Bucket to upload app to.
 
+#### Environment variables:
+
+ * **ELASTIC_BEANSTALK_ENV**: Elastic Beanstalk environment name which will be updated. Is only used if `env` option is omitted.
+ * **ELASTIC_BEANSTALK_VERSION**: Label name of the new version.
+ * **ELASTIC_BEANSTALK_DESCRIPTION**: Description of the new version. Defaults to the last commit message.
+
 #### Examples:
 
     dpl --provider=elasticbeanstalk --access-key-id=<access-key-id> --secret-access-key="<secret-access-key>" --app="example-app-name" --env="example-app-environment" --region="us-west-2"
