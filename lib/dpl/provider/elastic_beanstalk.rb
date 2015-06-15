@@ -48,6 +48,10 @@ module DPL
         context.env['ELASTIC_BEANSTALK_LABEL'] || "travis-#{sha}-#{Time.now.to_i}"
       end
 
+      def version_description
+        context.env['ELASTIC_BEANSTALK_DESCRIPTION'] || commit_msg
+      end
+
       def archive_name
         "#{version_label}.zip"
       end
@@ -106,7 +110,7 @@ module DPL
 
       def create_app_version(s3_object)
         # Elastic Beanstalk doesn't support descriptions longer than 200 characters
-        description = commit_msg[0, 200]
+        description = version_description[0, 200]
         options = {
           :application_name  => app_name,
           :version_label     => version_label,
