@@ -61,9 +61,8 @@ group :gcs do
 end
 
 group :elastic_beanstalk do
+  gem 'aws-sdk', '~> 2.6.32'
   gem 'rubyzip', '~> 1.1'
-  gem 'nokogiri', '~>1.6.8'
-  gem 'aws-sdk-v1'
 end
 
 group :bitballoon do
