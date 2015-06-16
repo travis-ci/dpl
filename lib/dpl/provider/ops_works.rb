@@ -40,16 +40,20 @@ module DPL
       end
 
       def custom_json
-        {
-          deploy: {
-            ops_works_app[:shortname] => {
-              migrate: !!options[:migrate],
-              scm: {
-                revision: current_sha
+        if options[:custom_json]
+          options[:custom_json]
+        else
+          {
+            deploy: {
+              ops_works_app[:shortname] => {
+                migrate: !!options[:migrate],
+                scm: {
+                  revision: current_sha
+                }
               }
             }
           }
-        }
+        end
       end
 
       def current_sha
@@ -69,11 +73,11 @@ module DPL
       end
 
       def push_app
-        Timeout::timeout(600) do
+        Timeout::timeout(1200) do
           create_deployment
         end
       rescue Timeout::Error
-        error 'Timeout: Could not finish deployment in 10 minutes.'
+        error 'Timeout: Could not finish deployment in 20 minutes.'
       end
 
       def create_deployment
