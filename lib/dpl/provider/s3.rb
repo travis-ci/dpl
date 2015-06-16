@@ -37,8 +37,16 @@ module DPL
         log "Logging in with Access Key: #{access_key_id[-4..-1].rjust(20, '*')}"
       end
 
+      def bucket_name
+        options[:bucket] || context.env['S3_BUCKET']
+      end
+
+      def upload_dir
+        options[:upload_dir] || context.env['S3_UPLOAD_DIR']
+      end
+
       def upload_path(filename)
-        [options[:upload_dir], filename].compact.join("/")
+        [upload_dir, filename].compact.join("/")
       end
 
       def push_app
@@ -53,13 +61,13 @@ module DPL
             opts[:expires]       = get_option_value_by_filename(options[:expires], filename) if options[:expires]
             unless File.directory?(filename)
               log "uploading %p" % filename
-              api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
+              api.bucket(bucket_name).object(upload_path(filename)).upload_file(filename, opts)
             end
           end
         end
 
         if suffix = options[:index_document_suffix]
-          api.bucket(option(:bucket)).website.put(
+          api.bucket(bucket_name).website.put(
             website_configuration: {
               index_document: {
                 suffix: suffix
