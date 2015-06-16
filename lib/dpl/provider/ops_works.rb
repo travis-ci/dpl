@@ -73,11 +73,11 @@ module DPL
       end
 
       def push_app
-        Timeout::timeout(1200) do
+        Timeout::timeout(600) do
           create_deployment
         end
       rescue Timeout::Error
-        error 'Timeout: Could not finish deployment in 20 minutes.'
+        error 'Timeout: Could not finish deployment in 10 minutes.'
       end
 
       def create_deployment

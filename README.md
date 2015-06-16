@@ -329,6 +329,7 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 * **app-id**: The app ID.
 * **migrate**: Migrate the database. (Default: false)
 * **wait-until-deployed**: Wait until the app is deployed and return the deployment status. (Default: false)
+* **custom_json**: Override custom_json options. If using this, default configuration will be overriden. See the code [here](https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/ops_works.rb#L34). More about `custom_json` [here](http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json.html).
 
 #### Environment variables:
 
