@@ -39,6 +39,7 @@ module DPL
     autoload :ChefSupermarket,  'dpl/provider/chef_supermarket'
     autoload :TestFairy,        'dpl/provider/testfairy'
     autoload :ExoScale,         'dpl/provider/exoscale'
+    autoload :Transifex,        'dpl/provider/transifex'
 
 
     def self.new(context, options)
