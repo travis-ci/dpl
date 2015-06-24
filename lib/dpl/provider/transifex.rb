@@ -14,9 +14,10 @@ module DPL
         false
       end
 
-      def check_app
+      def check_auth
         install_deploy_dependencies
         write_transifexrc
+        context.shell 'tx status'
       end
 
       def push_app
