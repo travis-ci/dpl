@@ -7,7 +7,8 @@ module DPL
       DEFAULT_HOSTNAME = 'https://www.transifex.com'
 
       def install_deploy_dependencies
-        self.class.pip 'transifex', 'transifex', options[:cli_version] || DEFAULT_CLIENT_VERSION
+        cli_version = options[:cli_version] || DEFAULT_CLIENT_VERSION
+        self.class.pip 'transifex', 'transifex', cli_version
       end
 
       def needs_key?
@@ -24,17 +25,15 @@ module DPL
         source_push
       end
 
-      private
-
       def write_transifexrc
         File.open(File.expand_path('~/.transifexrc'), 'w') do |f|
-          f.puts <<-EOF.gsub(/^ {12}/, '')
-            [#{options[:hostname] || DEFAULT_HOSTNAME}]
-            hostname = #{options[:hostname] || DEFAULT_HOSTNAME}
-            username = #{options[:username]}
-            password = #{options[:password]}
-            token = #{options[:token]}
-          EOF
+          f.puts [
+            "[#{options[:hostname] || DEFAULT_HOSTNAME}]",
+            "hostname = #{options[:hostname] || DEFAULT_HOSTNAME}",
+            "username = #{options[:username]}",
+            "password = #{options[:password]}",
+            "token = #{options[:token]}",
+          ].join("\n")
         end
       end
 

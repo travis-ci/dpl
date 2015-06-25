@@ -79,7 +79,7 @@ describe DPL::Provider::Transifex do
       expect(provider.context).to(
         receive(:shell).with('tx push --source --no-interactive', retry: true)
       )
-      provider.send(:source_push)
+      provider.source_push
     end
   end
 
@@ -92,7 +92,7 @@ describe DPL::Provider::Transifex do
 
     example 'writes config with hostname header' do
       expect(fake_config).to receive(:puts).with(/^\[#{options[:hostname]}\]/)
-      provider.send(:write_transifexrc)
+      provider.write_transifexrc
     end
 
     %w(
@@ -103,7 +103,7 @@ describe DPL::Provider::Transifex do
     ).map(&:to_sym).each do |key|
       example "writes config with #{key} key" do
         expect(fake_config).to receive(:puts).with(/^#{key} = #{options[key]}$/)
-        provider.send(:write_transifexrc)
+        provider.write_transifexrc
       end
     end
   end
