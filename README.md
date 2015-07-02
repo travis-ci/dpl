@@ -24,7 +24,6 @@ Dpl supports the following providers:
 * [AWS OpsWorks](#opsworks)
 * [Modulus](#modulus)
 * [Github Releases](#github-releases)
-* [Ninefold](#ninefold)
 * [Hackage](#hackage)
 * [Deis](#deis)
 * [Google Cloud Storage](#google-cloud-storage)
@@ -333,17 +332,6 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=cloud66 --redeployment_hook=<url>
-
-### Ninefold
-
-#### Options:
-
-* **auth_token**: Ninefold deploy auth token
-* **app_id**: Ninefold deploy app ID
-
-#### Examples:
-
-    dpl --provider=ninefold --auth_token=<auth_token> --app_id=<app_id>
 
 ### Hackage:
 
