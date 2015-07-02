@@ -6,8 +6,6 @@ require 'find'
 module DPL
   class Provider
     class Bintray < Provider
-      @test_mode = false
-
       def check_auth
       end
 
@@ -15,9 +13,18 @@ module DPL
         false
       end
 
-      attr_writer :test_mode
+      attr_accessor :test_mode
+      attr_reader :user
+      attr_reader :key
+      attr_reader :file
+      attr_reader :passphrase
+      attr_reader :url
+      attr_reader :dry_run
+      attr_reader :descriptor
 
-      def init_from_args
+      def initialize(*args)
+        super(*args)
+        @test_mode = false
         @user = options[:user]
         @key = options[:key]
         @url = options[:url]
@@ -43,8 +50,8 @@ module DPL
       end
 
       def read_descriptor
-        log "Reading descriptor file: #{@file}"
-        @descriptor = JSON.parse(File.read(@file))
+        log "Reading descriptor file: #{file}"
+        @descriptor = JSON.parse(File.read(file))
       end
 
       def descriptor=(json)
@@ -52,9 +59,9 @@ module DPL
       end
 
       def head_request(path)
-        url = URI.parse(@url)
+        url = URI.parse(self.url)
         req = Net::HTTP::Head.new(path)
-        req.basic_auth @user, @key
+        req.basic_auth user, key
 
         sock = Net::HTTP.new(url.host, url.port)
         sock.use_ssl = true
@@ -66,12 +73,12 @@ module DPL
       def post_request(path, body)
         req = Net::HTTP::Post.new(path)
         req.add_field('Content-Type', 'application/json')
-        req.basic_auth @user, @key
+        req.basic_auth user, key
         if !body.nil?
           req.body = body.to_json
         end
 
-        url = URI.parse(@url)
+        url = URI.parse(self.url)
         sock = Net::HTTP.new(url.host, url.port)
         sock.use_ssl = true
         res = sock.start {|http| http.request(req) }
@@ -79,7 +86,7 @@ module DPL
       end
 
       def put_file_request(local_file_path, upload_path, matrix_params)
-        url = URI.parse(@url)
+        url = URI.parse(self.url)
 
         data = File.read(local_file_path)
         http = Net::HTTP.new(url.host, url.port)
@@ -94,7 +101,7 @@ module DPL
         end
 
         request = Net::HTTP::Put.new("#{upload_path}")
-        request.basic_auth @user, @key
+        request.basic_auth user, key
         request.body = data
 
         return http.request(request)
@@ -103,22 +110,24 @@ module DPL
       def upload_file(artifact)
         log "Uploading file '#{artifact.local_path}' to #{artifact.upload_path}"
 
-        package = @descriptor["package"]
-        version = @descriptor["version"]
+        if dry_run
+          return
+        end
+
+        package = descriptor["package"]
+        version = descriptor["version"]
         package_name = package["name"]
         subject = package["subject"]
         repo = package["repo"]
         version_name = version["name"]
 
         path = "/content/#{subject}/#{repo}/#{package_name}/#{version_name}/#{artifact.upload_path}"
-        if !@dry_run
-          res = put_file_request(artifact.local_path, path, artifact.matrix_params)
-          log_bintray_response(res)
-        end
+        res = put_file_request(artifact.local_path, path, artifact.matrix_params)
+        log_bintray_response(res)
       end
 
       def package_exists_path
-        package = @descriptor["package"]
+        package = descriptor["package"]
         subject = package["subject"]
         name = package["name"]
         repo = package["repo"]
@@ -127,7 +136,7 @@ module DPL
 
       def package_exists?
         path = package_exists_path
-        if !@dry_run
+        if !dry_run
           res = head_request(path)
           code = res.code.to_i
         else
@@ -145,8 +154,8 @@ module DPL
       end
 
       def version_exists_path
-        package = @descriptor["package"]
-        version = @descriptor["version"]
+        package = descriptor["package"]
+        version = descriptor["version"]
         package_name = package["name"]
         subject = package["subject"]
         repo = package["repo"]
@@ -157,7 +166,7 @@ module DPL
 
       def version_exists?
         path = version_exists_path
-        if !@dry_run
+        if !dry_run
           res = head_request(path)
           code = res.code.to_i
         else
@@ -175,7 +184,7 @@ module DPL
       end
 
       def create_package
-        package = @descriptor["package"]
+        package = descriptor["package"]
         repo = package["repo"]
         body = {}
 
@@ -194,7 +203,7 @@ module DPL
         log "Creating package '#{package_name}'..."
 
         path = "/packages/#{subject}/#{repo}"
-        if !@dry_run
+        if !dry_run
           res = post_request(path, body)
           log_bintray_response(res)
           code = res.code.to_i
@@ -202,7 +211,7 @@ module DPL
           code = 200
         end
 
-        if !@test_mode
+        if !test_mode
           if code == 201 || code == 200
             add_package_attributes
           end
@@ -211,7 +220,7 @@ module DPL
       end
 
       def add_package_attributes
-        package = @descriptor["package"]
+        package = descriptor["package"]
         repo = package["repo"]
         subject = package["subject"]
         package_name = package["name"]
@@ -220,7 +229,7 @@ module DPL
         if !attributes.nil?
           log "Adding attributes for package '#{package_name}'..."
           path = "/packages/#{subject}/#{repo}/#{package_name}/attributes"
-          if !@dry_run
+          if !dry_run
             res = post_request(path, attributes)
             log_bintray_response(res)
           end
@@ -229,8 +238,8 @@ module DPL
       end
 
       def create_version
-        package = @descriptor["package"]
-        version = @descriptor["version"]
+        package = descriptor["package"]
+        version = descriptor["version"]
         repo = package["repo"]
         body = {}
 
@@ -248,7 +257,7 @@ module DPL
         log "Creating version '#{version_name}'..."
 
         path = "/packages/#{subject}/#{repo}/#{package_name}/versions"
-        if !@dry_run
+        if !dry_run
           res = post_request(path, body)
           log_bintray_response(res)
           code = res.code.to_i
@@ -256,7 +265,7 @@ module DPL
           code = 200
         end
 
-        if !@test_mode
+        if !test_mode
           if code == 201 || code == 200
             add_version_attributes
           end
@@ -265,10 +274,10 @@ module DPL
       end
 
       def add_version_attributes
-        package = @descriptor["package"]
+        package = descriptor["package"]
         package_name = package["name"]
         subject = package["subject"]
-        version = @descriptor["version"]
+        version = descriptor["version"]
         version_name = version["name"]
         repo = package["repo"]
         attributes = version["attributes"]
@@ -276,7 +285,7 @@ module DPL
         if !attributes.nil?
           log "Adding attributes for version '#{version_name}'..."
           path = "/packages/#{subject}/#{repo}/#{package_name}/versions/#{version_name}/attributes"
-          if !@dry_run
+          if !dry_run
             res = post_request(path, attributes)
             log_bintray_response(res)
           end
@@ -305,10 +314,10 @@ module DPL
       end
 
       def publish_version
-        publish = @descriptor["publish"]
+        publish = descriptor["publish"]
         if publish
-          package = @descriptor["package"]
-          version = @descriptor["version"]
+          package = descriptor["package"]
+          version = descriptor["version"]
           repo = package["repo"]
           package_name = package["name"]
           subject = package["subject"]
@@ -316,7 +325,7 @@ module DPL
 
           log "Publishing version '#{version_name}' of package '#{package_name}'..."
           path = "/content/#{subject}/#{repo}/#{package_name}/#{version_name}/publish"
-          if !@dry_run
+          if !dry_run
             res = post_request(path, nil)
             log_bintray_response(res)
           end
@@ -325,26 +334,26 @@ module DPL
       end
 
       def gpg_sign_version
-        version = @descriptor["version"]
+        version = descriptor["version"]
         gpg_sign = version["gpgSign"]
         if gpg_sign
-          package = @descriptor["package"]
+          package = descriptor["package"]
           repo = package["repo"]
           package_name = package["name"]
           subject = package["subject"]
           version_name = version["name"]
 
           body = nil
-          if !@passphrase.nil?
+          if !passphrase.nil?
             log "Signing version with no passphrase..."
             body = {}
-            body["passphrase"] = @passphrase
+            body["passphrase"] = passphrase
           else
             log "Signing version with passphrase..."
           end
 
           path = "/gpg/#{subject}/#{repo}/#{package_name}/versions/#{version_name}"
-          if !@dry_run
+          if !dry_run
             res = post_request(path, body)
             log_bintray_response(res)
           end
@@ -363,7 +372,7 @@ module DPL
           path = str[0, index]
         end
 
-        if !@test_mode && !File.exist?(path)
+        if !test_mode && !File.exist?(path)
           log "Warning: Path: #{path} does not exist."
           return nil
         end
@@ -391,7 +400,7 @@ module DPL
 
         # If the file matches the include pattern and it is not a directory.
         # In case test_mode is set, we do not check if the file exists.
-        if !res.nil? && (@test_mode || File.file?(path))
+        if !res.nil? && (test_mode || File.file?(path))
           # If the file does not match the exclude pattern.
           if exclude_pattern.nil? || exclude_pattern.empty? || !path.match(/#{exclude_pattern}/)
             # Using the capturing groups in the include pattern, replace the $1, $2, ...
@@ -410,7 +419,7 @@ module DPL
       # The map contains the files to be uploaded to Bintray.
       def files_to_upload
         upload_files = Hash.new()
-        files = @descriptor["files"]
+        files = descriptor["files"]
         if files.nil?
           return upload_files
         end
@@ -428,7 +437,6 @@ module DPL
       end
 
       def deploy
-        init_from_args
         read_descriptor
         check_and_create_package
         check_and_create_version
@@ -463,10 +471,6 @@ module DPL
 
       # This class represents an artifact (file) to be uploaded to Bintray.
       class Artifact
-        @local_path = nil
-        @upload_path = nil
-        @matrixParams = nil
-
         def initialize(local_path, upload_path, matrix_params)
           @local_path = local_path
           @upload_path = upload_path
@@ -489,9 +493,6 @@ module DPL
       # Used to return the path and body of REST requests sent to Bintray.
       # Used for testing.
       class RequestDetails
-        @path
-        @body
-
         def initialize(path, body)
           @path = path
           @body = body

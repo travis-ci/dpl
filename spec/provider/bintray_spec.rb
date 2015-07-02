@@ -213,7 +213,6 @@ describe DPL::Provider::Bintray do
   end
 
   def init_provider(bintray)
-    bintray.init_from_args
     bintray.descriptor=descriptor_content
     bintray.test_mode = true
   end
