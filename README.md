@@ -35,7 +35,7 @@ Dpl supports the following providers:
 * [Lambda](#lambda)
 * [TestFairy](#testfairy)
 * [ExoScale](#exoscale)
-* [AWS CodeDeploy](#codedeploy)
+* [AWS CodeDeploy](#aws-codedeploy)
 
 ## Installation:
 
