@@ -40,20 +40,16 @@ module DPL
       end
 
       def custom_json
-        if options[:custom_json]
-          options[:custom_json]
-        else
-          {
-            deploy: {
-              ops_works_app[:shortname] => {
-                migrate: !!options[:migrate],
-                scm: {
-                  revision: current_sha
-                }
+        options[:custom_json] || {
+          deploy: {
+            ops_works_app[:shortname] => {
+              migrate: !!options[:migrate],
+              scm: {
+                revision: current_sha
               }
             }
           }
-        end
+        }
       end
 
       def current_sha
