@@ -37,7 +37,7 @@ describe DPL::Provider::Heroku do
       "created_at" => "2012-01-01T12:00:00Z",
       "id" => "abc",
       "status" => "pending",
-      "stream_url" => "http://example.com/stream",
+      "output_stream_url" => "http://example.com/stream",
       "updated_at" => "2012-01-01T12:00:00Z",
       "user" => { "id" => "01234567-89ab-cdef-0123-456789abcdef", "email" => "username@example.com" }
     } }
