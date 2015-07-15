@@ -499,8 +499,9 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
 #### Environment variables:
 
- * **AWS_ACCESS_KEY_ID**: AWS Access Key ID. Used if the `access-key-id` option is omitted.
- * **AWS_SECRET_ACCESS_KEY**: AWS Secret Key. Used if the `secret-access-key` option is omitted.
+ * **ELASTIC_BEANSTALK_ENV**: Elastic Beanstalk environment name which will be updated. Is only used if `env` option is omitted.
+ * **ELASTIC_BEANSTALK_VERSION**: Label name of the new version.
+ * **ELASTIC_BEANSTALK_DESCRIPTION**: Description of the new version. Defaults to the last commit message.
 
 #### Examples:
 
