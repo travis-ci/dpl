@@ -663,6 +663,8 @@ and your testers can start testing your app.
 
 An elementary provider that executes a single command.
 
+Deployment will be marked a failure if the script exits with nonzero status.
+
 #### Option:
 
 * **script**: script to execute.
