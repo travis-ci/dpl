@@ -5,7 +5,7 @@ require 'fileutils'
 module DPL
   class Provider
     class Lambda < Provider
-      requires 'aws-sdk', pre: true
+      requires 'aws-sdk', version: '2.0.37'
       requires 'rubyzip', load: 'zip'
 
       def lambda
@@ -99,7 +99,7 @@ module DPL
       def check_auth
         log "Using Access Key: #{option(:access_key_id)[-4..-1].rjust(20, '*')}"
       end
- 
+
       def output_file_path
         @output_file_path ||= '/tmp/' + random_chars(8) + '-lambda.zip'
       end
