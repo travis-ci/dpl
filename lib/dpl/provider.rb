@@ -39,6 +39,7 @@ module DPL
     autoload :TestFairy,        'dpl/provider/testfairy'
     autoload :ExoScale,         'dpl/provider/exoscale'
     autoload :Bintray,          'dpl/provider/bintray'
+    autoload :Script,           'dpl/provider/script'
 
 
     def self.new(context, options)
