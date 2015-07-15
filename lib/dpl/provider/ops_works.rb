@@ -40,7 +40,7 @@ module DPL
       end
 
       def custom_json
-        {
+        options[:custom_json] || {
           deploy: {
             ops_works_app[:shortname] => {
               migrate: !!options[:migrate],
