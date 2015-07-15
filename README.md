@@ -36,6 +36,7 @@ Dpl supports the following providers:
 * [TestFairy](#testfairy)
 * [ExoScale](#exoscale)
 * [AWS CodeDeploy](#aws-codedeploy)
+* [Script](#script)
 
 ## Installation:
 
@@ -657,3 +658,15 @@ and your testers can start testing your app.
 #### Examples:
 
     dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>
+
+### Script:
+
+An elementary provider that executes a single command.
+
+#### Option:
+
+* **script**: script to execute.
+
+#### Example:
+
+    dpl --provider=script --script=./script/deploy.sh
