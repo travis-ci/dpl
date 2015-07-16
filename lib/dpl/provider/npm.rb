@@ -22,6 +22,8 @@ module DPL
       end
 
       def push_app
+        log "NPM API key format changed recently. If your deployment fails, check your API key in ~/.npmrc."
+        log "http://docs.travis-ci.com/user/deployment/npm/"
         context.shell "env NPM_API_KEY=#{option(:api_key)} npm publish"
       end
     end
