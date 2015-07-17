@@ -2,6 +2,9 @@ require 'simplecov'
 require 'dpl/error'
 require 'dpl/provider'
 require 'rspec/its'
+require 'coveralls'
+
+Coveralls.wear!
 
 SimpleCov.start do
   coverage_dir '.coverage'
