@@ -41,6 +41,7 @@ module DPL
     autoload :S3,               'dpl/provider/s3'
     autoload :Script,           'dpl/provider/script'
     autoload :TestFairy,        'dpl/provider/testfairy'
+    autoload :Transifex,        'dpl/provider/transifex'
 
 
     def self.new(context, options)
