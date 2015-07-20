@@ -11,6 +11,7 @@ module DPL
 
       def initialize(*args)
         super(*args)
+        self.class.pip 'twine'
         self.class.pip 'wheel' if options[:distributions].to_s.include? 'bdist_wheel'
       end
 
@@ -64,7 +65,9 @@ module DPL
 
       def push_app
         context.shell "python setup.py register -r #{options[:server] || 'pypi'}"
-        context.shell "python setup.py #{options[:distributions] || 'sdist'} upload -r #{options[:server] || 'pypi'}"
+        context.shell "python setup.py #{options[:distributions] || 'sdist'}"
+        context.shell "twine upload -r #{options[:server] || 'pypi'} dist/*"
+        context.shell "rm -rf dist/*"
         if options[:docs_dir]
           docs_dir_option = '--upload-dir ' + options[:docs_dir]
         else
