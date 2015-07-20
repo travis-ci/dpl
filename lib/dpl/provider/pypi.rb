@@ -5,7 +5,7 @@ module DPL
       PYPIRC_FILE = '~/.pypirc'
 
       def self.install_setuptools
-        shell 'wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | sudo python'
+        shell 'wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python'
         shell 'rm -f setuptools-*.zip'
       end
 
