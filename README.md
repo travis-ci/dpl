@@ -354,6 +354,31 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
     dpl --provider=appfog --email=<email> --password=<password>
     dpl --provider=appfog --email=<email> --password=<password> --app=<app>
 
+### Atlas:
+
+The Atlas provider uses the [`atlas-upload-cli`](https://github.com/hashicorp/atlas-upload-cli) command. The [Atlas Upload CLI](https://github.com/hashicorp/atlas-upload-cli) is a lightweight command line interface for uploading application code to [Atlas](https://atlas.hashicorp.com/homepage?utm_source=github&utm_medium=travis-ci&utm_campaign=dpl) to kick off Atlas-based deployment processes from Travis CI.
+
+You first need to create an [Atlas account](https://atlas.hashicorp.com/account/new?utm_source=github&utm_medium=travis-ci&utm_campaign=dpl), then generate an [Atlas API token](https://atlas.hashicorp.com/settings/tokens) for Travis CI.
+
+#### Options:
+
+* **--token** (Required): Atlas API token.
+* **--app** (Required): Atlas application name (`"<atlas-username>/<app-name>"`).
+* **-exclude=<path>** (Optional): Glob pattern of files or directories to exclude (this may be specified multiple times).
+* **-include=<path>** (Optional): Glob pattern of files/directories to include (this may be specified multiple times, any excludes will override conflicting includes).
+* **-address=<url>** (Optional): The address of the Atlas server.
+* **-vcs** (Optional): Use VCS to determine which files to include/exclude.
+* **-metadata<k=v>** (Optional): Arbitrary key-value (string) metadata to be sent with the upload; may be specified multiple times.
+* **-debug** (Optional): Turn on debug output.
+* **-version** (Optional): Print the version of this application.
+
+#### Examples:
+
+    dpl --provider=atlas --token=ATLAS_USERNAME --app="ATLAS_USERNAME/APP_NAME"
+    dpl --provider=atlas --token=ATLAS_USERNAME --app="ATLAS_USERNAME/APP_NAME" -debug -vcs -version
+    dpl --provider=atlas --token=ATLAS_USERNAME --app="ATLAS_USERNAME/APP_NAME" -exclude="*.log" -include="build/*" -include="bin/*"
+    dpl --provider=atlas --token=ATLAS_USERNAME --app="ATLAS_USERNAME/APP_NAME" -metadata="foo=bar" -metadata="bar=baz"
+
 ### Divshot.io:
 
 #### Options:
