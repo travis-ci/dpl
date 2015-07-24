@@ -4,6 +4,7 @@
 Dpl supports the following providers:
 
 * [AppFog](#appfog)
+* [Atlas](#atlas)
 * [Biicode](#biicode)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
