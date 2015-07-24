@@ -363,15 +363,15 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 
 #### Options:
 
-* **--token** (Required): Atlas API token.
-* **--app** (Required): Atlas application name (`"<atlas-username>/<app-name>"`).
-* **-exclude=<path>** (Optional): Glob pattern of files or directories to exclude (this may be specified multiple times).
-* **-include=<path>** (Optional): Glob pattern of files/directories to include (this may be specified multiple times, any excludes will override conflicting includes).
-* **-address=<url>** (Optional): The address of the Atlas server.
-* **-vcs** (Optional): Use VCS to determine which files to include/exclude.
-* **-metadata<k=v>** (Optional): Arbitrary key-value (string) metadata to be sent with the upload; may be specified multiple times.
-* **-debug** (Optional): Turn on debug output.
-* **-version** (Optional): Print the version of this application.
+* `--token` (Required): Atlas API token.
+* `--app` (Required): Atlas application name (`"<atlas-username>/<app-name>"`).
+* `-exclude=<path>` (Optional): Glob pattern of files or directories to exclude (this may be specified multiple times).
+* `-include=<path>` (Optional): Glob pattern of files/directories to include (this may be specified multiple times, any excludes will override conflicting includes).
+* `-address=<url>` (Optional): The address of the Atlas server.
+* `-vcs` (Optional): Use VCS to determine which files to include/exclude.
+* `-metadata<k=v>` (Optional): Arbitrary key-value (string) metadata to be sent with the upload; may be specified multiple times.
+* `-debug` (Optional): Turn on debug output.
+* `-version` (Optional): Print the version of this application.
 
 #### Examples:
 
