@@ -364,21 +364,21 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Options:
 
 * `--token` (Required): Atlas API token.
-* `--app` (Required): Atlas application name (`"<atlas-username>/<app-name>"`).
+* `--app` (Required): Atlas application name (`<atlas-username>/<app-name>`).
 * `-exclude=<path>` (Optional): Glob pattern of files or directories to exclude (this may be specified multiple times).
 * `-include=<path>` (Optional): Glob pattern of files/directories to include (this may be specified multiple times, any excludes will override conflicting includes).
 * `-address=<url>` (Optional): The address of the Atlas server.
 * `-vcs` (Optional): Use VCS to determine which files to include/exclude.
-* `-metadata<k=v>` (Optional): Arbitrary key-value (string) metadata to be sent with the upload; may be specified multiple times.
+* `-metadata=<k=v>` (Optional): Arbitrary key-value (string) metadata to be sent with the upload; may be specified multiple times.
 * `-debug` (Optional): Turn on debug output.
 * `-version` (Optional): Print the version of this application.
 
 #### Examples:
 
-    dpl --provider=atlas --token=ATLAS_USERNAME --app="ATLAS_USERNAME/APP_NAME"
-    dpl --provider=atlas --token=ATLAS_USERNAME --app="ATLAS_USERNAME/APP_NAME" -debug -vcs -version
-    dpl --provider=atlas --token=ATLAS_USERNAME --app="ATLAS_USERNAME/APP_NAME" -exclude="*.log" -include="build/*" -include="bin/*"
-    dpl --provider=atlas --token=ATLAS_USERNAME --app="ATLAS_USERNAME/APP_NAME" -metadata="foo=bar" -metadata="bar=baz"
+    dpl --provider=atlas --token=ATLAS_USERNAME --app=ATLAS_USERNAME/APP_NAME
+    dpl --provider=atlas --token=ATLAS_USERNAME --app=ATLAS_USERNAME/APP_NAME -debug -vcs -version
+    dpl --provider=atlas --token=ATLAS_USERNAME --app=ATLAS_USERNAME/APP_NAME -exclude="*.log" -include="build/*" -include="bin/*"
+    dpl --provider=atlas --token=ATLAS_USERNAME --app=ATLAS_USERNAME/APP_NAME -metadata="foo=bar" -metadata="bar=baz"
 
 ### Divshot.io:
 
