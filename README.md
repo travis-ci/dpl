@@ -4,7 +4,7 @@
 Dpl supports the following providers:
 
 * [AppFog](#appfog)
-* [Atlas](#atlas)
+* [Atlas by HashiCorp](#atlas)
 * [Biicode](#biicode)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
@@ -375,10 +375,10 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 
 #### Examples:
 
-    dpl --provider=atlas --token=ATLAS_USERNAME --app=ATLAS_USERNAME/APP_NAME
-    dpl --provider=atlas --token=ATLAS_USERNAME --app=ATLAS_USERNAME/APP_NAME -debug -vcs -version
-    dpl --provider=atlas --token=ATLAS_USERNAME --app=ATLAS_USERNAME/APP_NAME -exclude="*.log" -include="build/*" -include="bin/*"
-    dpl --provider=atlas --token=ATLAS_USERNAME --app=ATLAS_USERNAME/APP_NAME -metadata="foo=bar" -metadata="bar=baz"
+    dpl --provider=atlas --token=ATLAS_TOKEN --app=ATLAS_USERNAME/APP_NAME
+    dpl --provider=atlas --token=ATLAS_TOKEN --app=ATLAS_USERNAME/APP_NAME -debug -vcs -version
+    dpl --provider=atlas --token=ATLAS_TOKEN --app=ATLAS_USERNAME/APP_NAME -exclude="*.log" -include="build/*" -include="bin/*"
+    dpl --provider=atlas --token=ATLAS_TOKEN --app=ATLAS_USERNAME/APP_NAME -metadata="foo=bar" -metadata="bar=baz"
 
 ### Divshot.io:
 
