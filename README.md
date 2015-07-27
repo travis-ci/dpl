@@ -359,7 +359,7 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 
 The Atlas provider uses the [`atlas-upload-cli`](https://github.com/hashicorp/atlas-upload-cli) command. The [Atlas Upload CLI](https://github.com/hashicorp/atlas-upload-cli) is a lightweight command line interface for uploading application code to [Atlas](https://atlas.hashicorp.com/homepage?utm_source=github&utm_medium=travis-ci&utm_campaign=dpl) to kick off Atlas-based deployment processes from Travis CI.
 
-You first need to create an [Atlas account](https://atlas.hashicorp.com/account/new?utm_source=github&utm_medium=travis-ci&utm_campaign=dpl), then generate an [Atlas API token](https://atlas.hashicorp.com/settings/tokens) for Travis CI.
+You first need to create an [Atlas account](https://atlas.hashicorp.com/account/new?utm_source=github&utm_medium=travis-ci&utm_campaign=dpl), then, generate an [Atlas API token](https://atlas.hashicorp.com/settings/tokens) for Travis CI.
 
 #### Options:
 
