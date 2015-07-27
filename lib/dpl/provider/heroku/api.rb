@@ -32,8 +32,8 @@ module DPL
           log "triggering new deployment"
           response   = post(:builds, source_blob: { url: get_url, version: version })
           @build_id  = response.fetch('id')
-          stream_url = response.fetch('output_stream_url')
-          context.shell "curl #{Shellwords.escape(stream_url)}"
+          output_stream_url = response.fetch('output_stream_url')
+          context.shell "curl #{Shellwords.escape(output_stream_url)}"
         end
 
         def verify_build
