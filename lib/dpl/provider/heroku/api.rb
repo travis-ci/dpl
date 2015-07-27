@@ -72,7 +72,7 @@ module DPL
           options = {
             method: :get,
             path: "/apps/#{option(:app)}/#{subpath}",
-            headers: { "Accept" => "application/vnd.heroku+json; version=3.streaming-build-output" },
+            headers: { "Accept" => "application/vnd.heroku+json; version=3" },
             expects: [200]
           }.merge(options)
 
@@ -83,7 +83,7 @@ module DPL
           options = {
             method: :post,
             path: "/apps/#{option(:app)}/#{subpath}",
-            headers: { "Accept" => "application/vnd.heroku+json; version=3.streaming-build-output" },
+            headers: { "Accept" => "application/vnd.heroku+json; version=3" },
             expects: [200, 201]
           }.merge(options)
 
