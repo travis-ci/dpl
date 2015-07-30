@@ -86,7 +86,7 @@ module DPL
 
       def push_app
         packages = []
-        glob_args = ["**/*"]
+        glob_args = Array(options.fetch(:package_glob, '**/*'))
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           Dir.glob(*glob_args) do |filename|
             unless File.directory?(filename)

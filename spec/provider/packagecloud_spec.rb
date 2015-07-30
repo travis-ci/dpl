@@ -32,4 +32,25 @@ describe DPL::Provider::Packagecloud do
 
   end
 
+  describe "#push_app" do
+    it 'defaults to searching everywhere' do
+      expect(Dir).to receive(:glob).with('**/*')
+      expect { provider.push_app }.to raise_error(DPL::Error)
+    end
+
+    it 'accepts and uses a string glob' do
+      provider.options.update(:package_glob => 'foo*.gem')
+
+      expect(Dir).to receive(:glob).with('foo*.gem')
+      expect { provider.push_app }.to raise_error(DPL::Error)
+    end
+
+    it 'accepts and uses an array of globs' do
+      provider.options.update(:package_glob => ['*.rpm', '**/*.deb'])
+
+      expect(Dir).to receive(:glob).with('*.rpm', '**/*.deb')
+      expect { provider.push_app }.to raise_error(DPL::Error)
+    end
+  end
+
 end
