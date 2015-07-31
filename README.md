@@ -3,6 +3,7 @@
 ## Supported Providers:
 Dpl supports the following providers:
 
+* [Anynines](#anynines)
 * [AppFog](#appfog)
 * [Biicode](#biicode)
 * [Bintray](#bintray)
@@ -340,6 +341,14 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 
     dpl --provider=opsworks --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --app-id=<app-id> --migrate --wait-until-deployed
 
+### Anynines:
+
+#### Options:
+
+* **username**: anynines username.
+* **password**: anynines password.
+* **organization**: anynines target organization.
+* **space**: anynines target space
 
 ### Appfog:
 
