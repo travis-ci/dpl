@@ -350,6 +350,10 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 * **organization**: anynines target organization.
 * **space**: anynines target space
 
+#### Examples:
+
+    dpl --provider=anynines --username=<username> --password=<password> --organization=<organization> --space=<space>
+
 ### Appfog:
 
 #### Options:
