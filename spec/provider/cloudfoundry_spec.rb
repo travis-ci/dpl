@@ -7,6 +7,7 @@ describe DPL::Provider::CloudFoundry do
                         password: 'myreallyawesomepassword',
                         organization: 'myorg',
                         space: 'outer',
+                        manifest: 'worker-manifest.yml',
                         skip_ssl_validation: true)
   end
 
@@ -33,11 +34,17 @@ describe DPL::Provider::CloudFoundry do
   end
 
   describe "#push_app" do
-    example do
-      expect(provider.context).to receive(:shell).with('cf push')
+    example "With manifest" do
+      expect(provider.context).to receive(:shell).with('cf push -f worker-manifest.yml')
       expect(provider.context).to receive(:shell).with('cf logout')
       provider.push_app
+    end
 
+    example "Without manifest" do
+      provider.options.update(:manifest => nil)
+      expect(provider.context).to receive(:shell).with('cf push ')
+      expect(provider.context).to receive(:shell).with('cf logout')
+      provider.push_app
     end
   end
 end
