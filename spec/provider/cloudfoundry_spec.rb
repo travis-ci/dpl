@@ -42,7 +42,7 @@ describe DPL::Provider::CloudFoundry do
 
     example "Without manifest" do
       provider.options.update(:manifest => nil)
-      expect(provider.context).to receive(:shell).with('cf push ')
+      expect(provider.context).to receive(:shell).with('cf push')
       expect(provider.context).to receive(:shell).with('cf logout')
       provider.push_app
     end
