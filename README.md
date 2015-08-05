@@ -413,6 +413,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **organization**: Cloud Foundry target organization.
 * **api**: Cloud Foundry api URL
 * **space**: Cloud Foundry target space
+* **manifest**: Path to manifest file. Optional.
 * **skip_ssl_validation**: Skip ssl validation. Optional.
 
 #### Examples:
