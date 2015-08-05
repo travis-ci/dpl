@@ -30,7 +30,6 @@ describe DPL::Provider::PyPI do
 
   describe "#push_app" do
     example do
-      expect(provider.context).to receive(:shell).with("python setup.py register -r pypi")
       expect(provider.context).to receive(:shell).with("python setup.py sdist")
       expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
@@ -40,7 +39,6 @@ describe DPL::Provider::PyPI do
 
     example "with :distributions option" do
       provider.options.update(:distributions => 'sdist bdist')
-      expect(provider.context).to receive(:shell).with("python setup.py register -r pypi")
       expect(provider.context).to receive(:shell).with("python setup.py sdist bdist")
       expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
@@ -50,7 +48,6 @@ describe DPL::Provider::PyPI do
 
     example "with :server option" do
       provider.options.update(:server => 'http://blah.com')
-      expect(provider.context).to receive(:shell).with("python setup.py register -r http://blah.com")
       expect(provider.context).to receive(:shell).with("python setup.py sdist")
       expect(provider.context).to receive(:shell).with("twine upload -r http://blah.com dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
@@ -60,7 +57,6 @@ describe DPL::Provider::PyPI do
 
     example "with :docs_dir option" do
       provider.options.update(:docs_dir => 'some/dir')
-      expect(provider.context).to receive(:shell).with("python setup.py register -r pypi")
       expect(provider.context).to receive(:shell).with("python setup.py sdist")
       expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
