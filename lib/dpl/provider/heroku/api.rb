@@ -32,8 +32,8 @@ module DPL
           log "triggering new deployment"
           response   = post(:builds, source_blob: { url: get_url, version: version })
           @build_id  = response.fetch('id')
-          stream_url = response.fetch('output_stream_url')
-          context.shell "curl #{Shellwords.escape(stream_url)}"
+          output_stream_url = response.fetch('output_stream_url')
+          context.shell "curl #{Shellwords.escape(output_stream_url)}"
         end
 
         def verify_build
@@ -72,7 +72,7 @@ module DPL
           options = {
             method: :get,
             path: "/apps/#{option(:app)}/#{subpath}",
-            headers: { "Accept" => "application/vnd.heroku+json; version=3.streaming-build-output" },
+            headers: { "Accept" => "application/vnd.heroku+json; version=3" },
             expects: [200]
           }.merge(options)
 
@@ -83,7 +83,7 @@ module DPL
           options = {
             method: :post,
             path: "/apps/#{option(:app)}/#{subpath}",
-            headers: { "Accept" => "application/vnd.heroku+json; version=3.streaming-build-output" },
+            headers: { "Accept" => "application/vnd.heroku+json; version=3" },
             expects: [200, 201]
           }.merge(options)
 
