@@ -15,6 +15,7 @@ describe DPL::Provider::PyPI do
 
   describe "#initialize" do
     example "with :distributions option containing 'bdist_wheel'" do
+      expect(described_class).to receive(:pip).with("twine")
       expect(described_class).to receive(:pip).with("wheel")
       described_class.new(DummyContext.new, :user => 'foo', :password => 'bar', :distributions => 'bdist_wheel sdist')
     end
@@ -30,7 +31,9 @@ describe DPL::Provider::PyPI do
   describe "#push_app" do
     example do
       expect(provider.context).to receive(:shell).with("python setup.py register -r pypi")
-      expect(provider.context).to receive(:shell).with("python setup.py sdist upload -r pypi")
+      expect(provider.context).to receive(:shell).with("python setup.py sdist")
+      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*")
       expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r pypi")
       provider.push_app
     end
@@ -38,7 +41,9 @@ describe DPL::Provider::PyPI do
     example "with :distributions option" do
       provider.options.update(:distributions => 'sdist bdist')
       expect(provider.context).to receive(:shell).with("python setup.py register -r pypi")
-      expect(provider.context).to receive(:shell).with("python setup.py sdist bdist upload -r pypi")
+      expect(provider.context).to receive(:shell).with("python setup.py sdist bdist")
+      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*")
       expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r pypi")
       provider.push_app
     end
@@ -46,7 +51,9 @@ describe DPL::Provider::PyPI do
     example "with :server option" do
       provider.options.update(:server => 'http://blah.com')
       expect(provider.context).to receive(:shell).with("python setup.py register -r http://blah.com")
-      expect(provider.context).to receive(:shell).with("python setup.py sdist upload -r http://blah.com")
+      expect(provider.context).to receive(:shell).with("python setup.py sdist")
+      expect(provider.context).to receive(:shell).with("twine upload -r http://blah.com dist/*")
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*")
       expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r http://blah.com")
       provider.push_app
     end
@@ -54,7 +61,9 @@ describe DPL::Provider::PyPI do
     example "with :docs_dir option" do
       provider.options.update(:docs_dir => 'some/dir')
       expect(provider.context).to receive(:shell).with("python setup.py register -r pypi")
-      expect(provider.context).to receive(:shell).with("python setup.py sdist upload -r pypi")
+      expect(provider.context).to receive(:shell).with("python setup.py sdist")
+      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*")
       expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir some/dir -r pypi")
       provider.push_app
     end
@@ -65,7 +74,7 @@ describe DPL::Provider::PyPI do
       f = double(:f)
       expect(f).to receive(:puts).with("    pypi")
       expect(f).to receive(:puts).with("[pypi]")
-      expect(f).to receive(:puts).with(["repository: http://pypi.python.org/pypi",
+      expect(f).to receive(:puts).with(["repository: https://pypi.python.org/pypi",
                                     "username: foo",
                                     "password: bar"
                                    ])

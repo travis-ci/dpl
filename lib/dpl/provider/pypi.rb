@@ -1,16 +1,17 @@
 module DPL
   class Provider
     class PyPI < Provider
-      DEFAULT_SERVER = 'http://pypi.python.org/pypi'
+      DEFAULT_SERVER = 'https://pypi.python.org/pypi'
       PYPIRC_FILE = '~/.pypirc'
 
       def self.install_setuptools
-        shell 'wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | sudo python'
+        shell 'wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python'
         shell 'rm -f setuptools-*.zip'
       end
 
       def initialize(*args)
         super(*args)
+        self.class.pip 'twine'
         self.class.pip 'wheel' if options[:distributions].to_s.include? 'bdist_wheel'
       end
 
@@ -64,7 +65,9 @@ module DPL
 
       def push_app
         context.shell "python setup.py register -r #{options[:server] || 'pypi'}"
-        context.shell "python setup.py #{options[:distributions] || 'sdist'} upload -r #{options[:server] || 'pypi'}"
+        context.shell "python setup.py #{options[:distributions] || 'sdist'}"
+        context.shell "twine upload -r #{options[:server] || 'pypi'} dist/*"
+        context.shell "rm -rf dist/*"
         if options[:docs_dir]
           docs_dir_option = '--upload-dir ' + options[:docs_dir]
         else
