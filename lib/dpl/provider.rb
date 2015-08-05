@@ -6,6 +6,7 @@ module DPL
   class Provider
     include FileUtils
 
+    autoload :Anynines,         'dpl/provider/anynines'
     autoload :Appfog,           'dpl/provider/appfog'
     autoload :Atlas,            'dpl/provider/atlas'
     autoload :Biicode,          'dpl/provider/biicode'
