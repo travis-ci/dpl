@@ -22,7 +22,7 @@ module DPL
       end
 
       def push_app
-        context.shell "cf push #{manifest}"
+        context.shell "cf push#{manifest}"
         context.shell "cf logout"
       end
 
@@ -33,7 +33,7 @@ module DPL
       end
 
       def manifest
-        options[:manifest].nil? ? "" : "-f #{options[:manifest]}"
+        options[:manifest].nil? ? "" : " -f #{options[:manifest]}"
       end
     end
   end
