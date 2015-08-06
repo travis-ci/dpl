@@ -30,7 +30,9 @@ module DPL
       end
 
       def setup_git_ssh(path, key_path)
-        unless context.shell "./deis git:remote"
+        super(path, key_path)
+
+        unless context.shell "./deis git:remote --app=#{option(:app)}"
           error 'Adding git remote failed.'
         end
       end
@@ -42,22 +44,15 @@ module DPL
       end
 
       def push_app
-        wait_until_key_is_set
         unless context.shell "git push deis HEAD:refs/heads/master -f"
           error 'Deploying application failed.'
         end
       end
 
       def run(command)
-        unless context.shell "deis apps:run #{command}"
+        unless context.shell "deis run -- #{command}"
           error 'Running command failed.'
         end
-      end
-
-      private
-
-      def wait_until_key_is_set
-        sleep 5
       end
     end
   end
