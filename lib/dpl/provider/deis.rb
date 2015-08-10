@@ -101,7 +101,11 @@ module DPL
       end
 
       def controller_url
-        "http://#{option(:controller)}"
+        if option(:controller) =~ /\Ahttp/
+          option(:controller)
+        else
+          "http://#{option(:controller)}"
+        end
       end
     end
   end
