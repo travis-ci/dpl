@@ -29,6 +29,17 @@ describe DPL::Provider::Deis do
     end
   end
 
+  describe '#controller_url' do
+    example 'no protocol specified' do
+      expect(provider.send(:controller_url)).to eq 'http://deis.deisapps.com'
+    end
+
+    example 'protocol specified' do
+      options[:controller] = 'https://deis.deisapps.com'
+      expect(provider.send(:controller_url)).to eq 'https://deis.deisapps.com'
+    end
+  end
+
   describe "#needs_key?" do
     example do
       expect(provider.needs_key?).to eq(true)
