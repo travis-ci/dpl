@@ -17,6 +17,7 @@ describe DPL::Provider::NPM do
   describe "#push_app" do
     example do
       expect(provider.context).to receive(:shell).with("env NPM_API_KEY=test npm publish")
+      expect(FileUtils).to receive(:rm).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE))
       provider.push_app
     end
   end
