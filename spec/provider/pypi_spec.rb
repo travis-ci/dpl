@@ -49,7 +49,7 @@ describe DPL::Provider::PyPI do
     example "with :server option" do
       provider.options.update(:server => 'http://blah.com')
       expect(provider.context).to receive(:shell).with("python setup.py sdist")
-      expect(provider.context).to receive(:shell).with("twine upload -r http://blah.com dist/*")
+      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
       expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r http://blah.com")
       provider.push_app
