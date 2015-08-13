@@ -65,7 +65,7 @@ module DPL
 
       def push_app
         context.shell "python setup.py #{options[:distributions] || 'sdist'}"
-        context.shell "twine upload -r #{options[:server] || 'pypi'} dist/*"
+        context.shell "twine upload -r pypi dist/*"
         context.shell "rm -rf dist/*"
         if options[:docs_dir]
           docs_dir_option = '--upload-dir ' + options[:docs_dir]
