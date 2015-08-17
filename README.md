@@ -542,7 +542,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Environment variables:
 
  * **ELASTIC_BEANSTALK_ENV**: Elastic Beanstalk environment name which will be updated. Is only used if `env` option is omitted.
- * **ELASTIC_BEANSTALK_VERSION**: Label name of the new version.
+ * **ELASTIC_BEANSTALK_LABEL**: Label name of the new version.
  * **ELASTIC_BEANSTALK_DESCRIPTION**: Description of the new version. Defaults to the last commit message.
 
 #### Examples:
