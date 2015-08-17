@@ -15,7 +15,6 @@ describe DPL::Provider::PyPI do
 
   describe "#initialize" do
     example "with :distributions option containing 'bdist_wheel'" do
-      expect(described_class).to receive(:pip).with("twine")
       expect(described_class).to receive(:pip).with("wheel")
       described_class.new(DummyContext.new, :user => 'foo', :password => 'bar', :distributions => 'bdist_wheel sdist')
     end
