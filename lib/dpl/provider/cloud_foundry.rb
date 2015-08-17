@@ -14,7 +14,9 @@ module DPL
       end
 
       def check_app
-        error 'Application must have a manifest.yml for unattended deployment' unless File.exists? 'manifest.yml'
+        if options[:manifest]
+          error 'Application must have a manifest.yml for unattended deployment' unless File.exists? options[:manifest]
+        end
       end
 
       def needs_key?
