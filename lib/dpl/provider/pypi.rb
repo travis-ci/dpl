@@ -9,13 +9,17 @@ module DPL
         shell 'rm -f setuptools-*.zip'
       end
 
+      def self.install_twine
+        shell("pip install twine", retry: true) if `which twine`.chop.empty?
+      end
+
       def initialize(*args)
         super(*args)
-        self.class.pip 'twine'
         self.class.pip 'wheel' if options[:distributions].to_s.include? 'bdist_wheel'
       end
 
       install_setuptools
+      install_twine
 
       def config
         {
