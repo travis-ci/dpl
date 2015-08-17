@@ -274,6 +274,8 @@ When artifacts are uploaded to a Debian repository using the Automatic index lay
 
 ### biicode:
 
+**Requires `sudo`; cannot be used on containers**
+
 #### Options:
 
 * **user**: biicode username.
