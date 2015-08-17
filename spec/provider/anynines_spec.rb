@@ -18,24 +18,4 @@ describe DPL::Provider::Anynines do
       provider.check_auth
     end
   end
-
-  describe "#check_app" do
-    example do
-      expect{provider.check_app}.to raise_error('Application must have a manifest.yml for unattended deployment')
-    end
-  end
-
-  describe "#needs_key?" do
-    example do
-      expect(provider.needs_key?).to eq(false)
-    end
-  end
-
-  describe "#push_app" do
-    example do
-      expect(provider.context).to receive(:shell).with('cf push')
-      expect(provider.context).to receive(:shell).with('cf logout')
-      provider.push_app
-    end
-  end
 end
