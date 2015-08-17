@@ -48,7 +48,7 @@ module DPL
         log "Making tarball in #{tmp_cookbook_dir}"
         system("tar -czf #{cookbook_name}.tgz #{cookbook_name}", :chdir => tmp_cookbook_dir)
 
-        uri = "http://cookbooks.opscode.com/api/v1/cookbooks"
+        uri = "https://supermarket.chef.io/api/v1/cookbooks"
 
         log "Uploading to #{uri}"
         category_string = { 'category'=>cookbook_category }.to_json
