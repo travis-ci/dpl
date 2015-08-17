@@ -75,6 +75,10 @@ group :packagecloud do
   gem 'packagecloud-ruby', '= 0.2.17'
 end
 
+group :testfairy do
+  gem 'multipart-post'
+end
+
 group :chef_supermarket do
   gem 'chef'
 end
