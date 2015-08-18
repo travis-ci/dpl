@@ -11,9 +11,8 @@ module DPL
       end
 
       def setup_auth
-        File.open(File.expand_path(NPMRC_FILE), 'w') do |f|
-          f.puts("//registry.npmjs.org/:_authToken=${NPM_API_KEY}")
-        end
+        f = File.open(File.expand_path(NPMRC_FILE), 'w')
+        f.puts("//registry.npmjs.org/:_authToken=${NPM_API_KEY}")
       end
 
       def check_auth

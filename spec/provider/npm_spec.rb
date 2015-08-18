@@ -26,8 +26,7 @@ describe DPL::Provider::NPM do
     example do
       f = double(:npmrc)
       expect(File).to receive(:open).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE), 'w').and_return(f)
-      expect(f).to receive(:puts).with("_auth = ${NPM_API_KEY}")
-      expect(f).to receive(:puts).with("email = foo@blah.com")
+      expect(f).to receive(:puts).with("//registry.npmjs.org/:_authToken=${NPM_API_KEY}")
       provider.setup_auth
     end
   end
