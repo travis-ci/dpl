@@ -24,10 +24,41 @@ describe DPL::Provider::NPM do
 
   describe "#setup_auth" do
     example do
-      f = double(:npmrc)
-      expect(File).to receive(:open).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE), 'w').and_return(f)
-      expect(f).to receive(:puts).with("//registry.npmjs.org/:_authToken=${NPM_API_KEY}")
-      provider.setup_auth
+      test_setup_auth
     end
   end
+
+  context 'when package.json exists' do
+    let(:custom_rpm_registry) { 'npm.example.com' }
+    before :each do
+      expect(File).to receive(:exists?).with('package.json').and_return(true)
+    end
+
+    context 'and it defines custom RPM registry' do
+      before { expect(File).to receive(:read).with('package.json').and_return("{\"publishConfig\":{\"registry\":\"#{custom_rpm_registry}\"}}") }
+
+      describe '#setup_auth' do
+        example do
+          test_setup_auth(custom_rpm_registry)
+        end
+      end
+    end
+
+    context 'and it does not define custom RPM registry' do
+      before { expect(File).to receive(:read).with('package.json').and_return("{}") }
+
+      describe '#setup_auth' do
+        example do
+          test_setup_auth
+        end
+      end
+    end
+  end
+end
+
+def test_setup_auth(registry=DPL::Provider::NPM::DEFAULT_NPM_REGISTRY)
+  f = double(:npmrc)
+  expect(File).to receive(:open).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE), 'w').and_return(f)
+  expect(f).to receive(:puts).with("//#{registry}/:_authToken=${NPM_API_KEY}")
+  provider.setup_auth
 end
