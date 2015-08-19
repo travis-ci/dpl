@@ -7,6 +7,7 @@ describe DPL::Provider::Atlas do
   before :all do
     @origwd = Dir.pwd
     @tmpdir = Dir.mktmpdir
+    @home   = ENV['HOME']
     ENV['HOME'] = @tmpdir
     Dir.chdir(@tmpdir)
   end
@@ -14,6 +15,7 @@ describe DPL::Provider::Atlas do
   after :all do
     FileUtils.rm_rf(@tmpdir) if @tmpdir
     Dir.chdir(@origwd) if @origwd
+    ENV['HOME'] = @home
   end
 
   let(:context) { DummyContext.new }
