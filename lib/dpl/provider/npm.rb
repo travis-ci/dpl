@@ -44,7 +44,7 @@ module DPL
 
       def npmrc_file_content
         if npm_version =~ /^1/
-          "_auth = ${NPM_API_KEY}\nemail = #{option(:email)}\nregistry = #{package_registry}"
+          "_auth = ${NPM_API_KEY}\nemail = #{option(:email)}"
         else
           "//#{package_registry}/:_authToken=${NPM_API_KEY}"
         end

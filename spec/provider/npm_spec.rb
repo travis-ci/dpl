@@ -39,7 +39,7 @@ describe DPL::Provider::NPM do
 
     describe "#setup_auth" do
       example do
-        test_setup_auth(DPL::Provider::NPM::DEFAULT_NPM_REGISTRY, "_auth = ${NPM_API_KEY}\nemail = foo@blah.com\nregistry = #{DPL::Provider::NPM::DEFAULT_NPM_REGISTRY}")
+        test_setup_auth(DPL::Provider::NPM::DEFAULT_NPM_REGISTRY, "_auth = ${NPM_API_KEY}\nemail = foo@blah.com")
       end
     end
   end
