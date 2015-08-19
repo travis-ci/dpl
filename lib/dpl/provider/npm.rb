@@ -14,8 +14,9 @@ module DPL
       end
 
       def setup_auth
-        f = File.open(File.expand_path(NPMRC_FILE), 'w')
-        f.puts("//#{package_registry}/:_authToken=${NPM_API_KEY}")
+        file = File.open(File.expand_path(NPMRC_FILE), 'w')
+        file.puts("//#{package_registry}/:_authToken=${NPM_API_KEY}")
+        file.flush
       end
 
       def check_auth
