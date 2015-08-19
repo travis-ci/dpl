@@ -60,5 +60,6 @@ def test_setup_auth(registry=DPL::Provider::NPM::DEFAULT_NPM_REGISTRY)
   f = double(:npmrc)
   expect(File).to receive(:open).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE), 'w').and_return(f)
   expect(f).to receive(:puts).with("//#{registry}/:_authToken=${NPM_API_KEY}")
+  allow(f).to receive(:flush)
   provider.setup_auth
 end
