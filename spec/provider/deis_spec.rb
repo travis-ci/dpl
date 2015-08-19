@@ -6,9 +6,10 @@ describe DPL::Provider::Deis do
     {
       :app => 'example',
       :key_name => 'key',
-      :controller => 'deis.deisapps.com',
+      :controller => 'https://deis.deisapps.com',
       :username => 'travis',
-      :password => 'secret'
+      :password => 'secret',
+      :client_version => '1.0'
     }
   end
 
@@ -17,14 +18,10 @@ describe DPL::Provider::Deis do
   end
 
   describe "#install_deploy_dependencies" do
-    example 'without version specified' do
-      expect(provider.class).to receive(:pip).with('deis', 'deis', nil)
-      provider.install_deploy_dependencies
-    end
-
-    example 'with version specified' do
-      options[:cli_version] = '1.0'
-      expect(provider.class).to receive(:pip).with('deis', 'deis', '1.0')
+    example do
+      expect(provider.context).to receive(:shell).with(
+        'curl -sSL http://deis.io/deis-cli/install.sh | sh -s 1.0'
+      ).and_return(true)
       provider.install_deploy_dependencies
     end
   end
@@ -38,7 +35,7 @@ describe DPL::Provider::Deis do
   describe "#check_auth" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'deis login http://deis.deisapps.com --username=travis --password=secret'
+        './deis login https://deis.deisapps.com --username=travis --password=secret'
       ).and_return(true)
       provider.check_auth
     end
@@ -47,7 +44,7 @@ describe DPL::Provider::Deis do
   describe "#check_app" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'deis apps:info --app=example'
+        './deis apps:info --app=example'
       ).and_return(true)
       provider.check_app
     end
@@ -59,31 +56,17 @@ describe DPL::Provider::Deis do
     let(:identity_file) { File.join(Dir.pwd, 'key_file') }
     example do
       expect(provider.context).to receive(:shell).with(
-        'deis keys:add key_file'
+        './deis keys:add key_file'
       ).and_return(true)
       provider.setup_key('key_file')
     end
   end
 
   describe "#setup_git_ssh" do
-    let(:ssh_config_handle) { double 'ssh_config_handle' }
-    let(:ssh_config) { File.join(Dir.home, '.ssh', 'config') }
-    let(:identity_file) { File.join(Dir.pwd, 'key_file') }
-    let(:git_ssh) { File.join(Dir.pwd, 'foo') }
-    after { FileUtils.rm provider.context.env.delete('GIT_SSH') }
-
     example do
-      expect(File).to receive(:open).with(git_ssh, 'w').and_call_original
-      expect(File).to receive(:open).with(ssh_config, 'a')
-        .and_yield(ssh_config_handle)
-
-      expect(ssh_config_handle).to receive(:write).with(
-        "\nHost deis-repo\n  Hostname deis.deisapps.com\n  Port 2222\n" \
-        "  User git\n  IdentityFile #{identity_file}\n"
-      )
       expect(provider.context).to receive(:shell).with(
-        'git remote add deis ssh://git@deis.deisapps.com:2222/example.git'
-      )
+        './deis git:remote --app=example'
+      ).and_return(true)
       provider.setup_git_ssh('foo', 'key_file')
     end
   end
@@ -91,7 +74,7 @@ describe DPL::Provider::Deis do
   describe "#remove_key" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'deis keys:remove key'
+        './deis keys:remove key'
       ).and_return(true)
       provider.remove_key
     end
@@ -100,7 +83,7 @@ describe DPL::Provider::Deis do
   describe "#push_app" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'git push deis-repo:example.git HEAD:refs/heads/master -f'
+        'git push deis HEAD:refs/heads/master -f'
       ).and_return(true)
       provider.push_app
     end
@@ -109,7 +92,7 @@ describe DPL::Provider::Deis do
   describe "#run" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'deis apps:run shell command'
+        'deis run -- shell command'
       ).and_return(true)
       provider.run('shell command')
     end
