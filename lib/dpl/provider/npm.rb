@@ -15,7 +15,7 @@ module DPL
 
       def setup_auth
         file = File.open(File.expand_path(NPMRC_FILE), 'w')
-        file.puts("//#{package_registry}/:_authToken=${NPM_API_KEY}")
+        file.puts(npmrc_file_content)
         file.flush
       end
 
@@ -40,6 +40,18 @@ module DPL
         end
 
         DEFAULT_NPM_REGISTRY
+      end
+
+      def npmrc_file_content
+        if npm_version =~ /^1/
+          "_auth = ${NPM_API_KEY}\nemail = #{option(:email)}\nregistry = #{package_registry}"
+        else
+          "//#{package_registry}/:_authToken=${NPM_API_KEY}"
+        end
+      end
+
+      def npm_version
+        `npm --version`
       end
     end
   end

@@ -2,6 +2,10 @@ require 'spec_helper'
 require 'dpl/provider/npm'
 
 describe DPL::Provider::NPM do
+  before :each do
+    allow(subject).to receive(:npm_version).and_return('2.11.3')
+  end
+
   subject :provider do
     described_class.new(DummyContext.new, :email => 'foo@blah.com', :api_key => 'test')
   end
@@ -25,6 +29,18 @@ describe DPL::Provider::NPM do
   describe "#setup_auth" do
     example do
       test_setup_auth
+    end
+  end
+
+  context 'when NPM is version 1.x' do
+    before :each do
+      allow(subject).to receive(:npm_version).and_return('1.4.28')
+    end
+
+    describe "#setup_auth" do
+      example do
+        test_setup_auth(DPL::Provider::NPM::DEFAULT_NPM_REGISTRY, "_auth = ${NPM_API_KEY}\nemail = foo@blah.com\nregistry = #{DPL::Provider::NPM::DEFAULT_NPM_REGISTRY}")
+      end
     end
   end
 
@@ -56,10 +72,10 @@ describe DPL::Provider::NPM do
   end
 end
 
-def test_setup_auth(registry=DPL::Provider::NPM::DEFAULT_NPM_REGISTRY)
+def test_setup_auth(registry = DPL::Provider::NPM::DEFAULT_NPM_REGISTRY, content = "//#{registry}/:_authToken=${NPM_API_KEY}")
   f = double(:npmrc)
   expect(File).to receive(:open).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE), 'w').and_return(f)
-  expect(f).to receive(:puts).with("//#{registry}/:_authToken=${NPM_API_KEY}")
+  expect(f).to receive(:puts).with(content)
   allow(f).to receive(:flush)
   provider.setup_auth
 end
