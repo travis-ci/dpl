@@ -30,7 +30,16 @@ module DPL
       end
 
       def setup_git_ssh(path, key_path)
-        super(path, key_path)
+        key_path = File.expand_path(key_path)
+        path     = File.expand_path(path)
+
+        File.open(path, 'w') do |file|
+          file.write "#!/bin/sh\n"
+          file.write "exec ssh -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i #{key_path} \"$@\"\n"
+        end
+
+        chmod(0740, path)
+        context.env['GIT_SSH'] = path
 
         unless context.shell "./deis git:remote --app=#{option(:app)}"
           error 'Adding git remote failed.'
