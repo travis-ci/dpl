@@ -53,10 +53,6 @@ group :gcs do
   gem 'mime-types'
 end
 
-group :gae do
-  gem 'rubyzip'
-end
-
 group :elastic_beanstalk do
   gem 'rubyzip'
   gem 'aws-sdk-v1'

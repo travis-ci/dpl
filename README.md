@@ -42,6 +42,7 @@ Dpl supports the following providers:
 * [ExoScale](#exoscale)
 * [AWS CodeDeploy](#aws-codedeploy)
 * [Script](#script)
+* [Google App Engine (experimental)](#google-app-engine)
 
 ## Installation:
 
@@ -719,3 +720,27 @@ Deployment will be marked a failure if the script exits with nonzero status.
 #### Example:
 
     dpl --provider=script --script=./script/deploy.sh
+
+### Google App Engine:
+
+Deploys to Google App Engine and Google App Engine Managed VMs via the Google Cloud SDK and
+it's [`gcloud` tool](https://cloud.google.com/sdk/gcloud/) using a [Service Account](https://developers.google.com/console/help/new/#serviceaccounts).
+
+#### Options:
+
+* **project**: [Project ID](https://developers.google.com/console/help/new/#projectnumber) used to identify the project on Google Cloud.
+* **keyfile**: Path to the JSON file containing your [Service Account](https://developers.google.com/console/help/new/#serviceaccounts) credentials in [JSON Web Token](https://tools.ietf.org/html/rfc7519) format. To be obtained via the [Google Developers Console](https://console.developers.google.com/project/_/apiui/credential). Defaults to `"service-account.json"`. Note that this file should be handled with care as it contains authorization keys.
+* **config**: Path to your module configuration file. Defaults to `"app.yaml"`. This file is runtime dependent ([Go](https://cloud.google.com/appengine/docs/go/config/appconfig), [Java](https://cloud.google.com/appengine/docs/java/configyaml/appconfig_yaml), [PHP](https://developers.google.com/console/help/new/#projectnumber), [Python](https://cloud.google.com/appengine/docs/python/config/appconfig))
+* **version**: The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you. See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
+* **default**: Flag to set the deployed version to be the default serving version. See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
+* **verbosity**: Let's you adjust the verbosity when invoking `"gcloud"`. Defaults to `"warning"`. See [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/).
+* **docker_build**: If deploying a Managed VM, specifies where to build your image. Typical values are `"remote"` to build on Google Cloud Engine (currently unavailable due to [issues with `gcloud`](https://groups.google.com/forum/#!topic/google-cloud-sdk/DOML82QPp6s)) and `"local"` which requires Docker to be set up properly (to utilize this on Travis CI, read [Using Docker on Travis CI](http://blog.travis-ci.com/2015-08-19-using-docker-on-travis-ci/)). Defaults to `"remote"`.
+
+#### Environment variables:
+
+ * **GOOGLECLOUDPROJECT** or **CLOUDSDK_CORE_PROJECT**: Can be used instead of the `project` option.
+ * **GOOGLECLOUDKEYFILE**: Can be used instead of the `keyfile` option.
+
+#### Example:
+
+    dpl --provider=gae --project=example --default=true
