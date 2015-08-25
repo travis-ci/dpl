@@ -9,8 +9,8 @@ module DPL
 
       def check_auth
         initial_go_tools_install
-        context.shell "cf api #{option(:api)}"
-        context.shell "cf login --u #{option(:username)} --p #{option(:password)} --o #{option(:organization)} --s #{option(:space)} #{'--skip-ssl-validation' if options[:skip_ssl_validation]}"
+        context.shell "cf api #{option(:api)} #{'--skip-ssl-validation' if options[:skip_ssl_validation]}"
+        context.shell "cf login --u #{option(:username)} --p #{option(:password)} --o #{option(:organization)} --s #{option(:space)}"
       end
 
       def check_app
