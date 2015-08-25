@@ -9,6 +9,7 @@ Dpl supports the following providers:
 * [Biicode](#biicode)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
+* [Boxfuse](#boxfuse)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [cloudControl](#cloudcontrol)
@@ -170,6 +171,24 @@ When artifacts are uploaded to a Debian repository using the Automatic index lay
 #### Examples:
     dpl --provider=bintray --file=<path> --user=<username> --key=<api-key>
     dpl --provider=bintray --file=<path> --user=<username> --key=<api-key> --passphrase=<passphrase>
+
+
+### Boxfuse
+
+Boxfuse will transform your .jar or .war file of your JVM-based app into a minimal machine image based upon which it will launch EC2 instances on AWS.
+
+#### Options
+
+All options can be configured directly in boxfuse.conf as described in [the documentaion](https://boxfuse.com/docs/commandline/#configuration).
+
+For authentication you can also use Travis CI secure environment variable:
+
+* **BOXFUSE_USER**: Your Boxfuse user
+* **BOXFUSE_SECRET**: Your Boxfuse secret
+
+#### Examples
+    dpl --provider=boxfuse
+
 
 ### Nodejitsu:
 
