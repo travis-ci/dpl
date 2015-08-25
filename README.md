@@ -182,6 +182,9 @@ Boxfuse will transform your .jar or .war file of your JVM-based application into
 * **user**: Your Boxfuse user
 * **secret**: Your Boxfuse secret
 * **configfile**: The Boxfuse configuration file to use (default: boxfuse.conf)
+* **payload**: The file to use as a payload for the image
+* **app**: The Boxfuse app to deploy (default: auto-detected based on payload file name)
+* **version**: The version to assign to the image (default: auto-detected based on payload file name)
 * **env**: The Boxfuse environment to deploy to (default: test)
 
 All options can also be configured directly in boxfuse.conf as described in [the documentation](https://boxfuse.com/docs/commandline/#configuration).
