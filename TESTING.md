@@ -22,3 +22,6 @@ and uses that to deploy.
 Notice that this is not a merge commit, so it is important
 that when you are testing your PR, the branch `foo` is up-to-date
 with https://github.com/travis-ci/dpl/tree/master/.
+
+When opening a PR, be sure to run at least one deployment with the new configuration,
+and provide a link to the build in the PR.
