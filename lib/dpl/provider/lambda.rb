@@ -5,11 +5,11 @@ require 'fileutils'
 module DPL
   class Provider
     class Lambda < Provider
-      requires 'aws-sdk', version: '2.0.37'
+      requires 'aws-sdk'
       requires 'rubyzip', load: 'zip'
 
       def lambda
-        @lambda ||= ::Aws::Lambda::Client.new(lambda_options)
+        @lambda ||= ::Aws::LambdaPreview::Client.new(lambda_options)
       end
 
       def lambda_options
@@ -33,11 +33,11 @@ module DPL
         })
 
         log "Uploaded lambda: #{response.function_name}."
-      rescue ::Aws::Lambda::Errors::ServiceException => exception
+      rescue ::Aws::LambdaPreview::Errors::ServiceException => exception
         error(exception.message)
-      rescue ::Aws::Lambda::Errors::InvalidParameterValueException => exception
+      rescue ::Aws::LambdaPreview::Errors::InvalidParameterValueException => exception
         error(exception.message)
-      rescue ::Aws::Lambda::Errors::ResourceNotFoundException => exception
+      rescue ::Aws::LambdaPreview::Errors::ResourceNotFoundException => exception
         error(exception.message)
       end
 
