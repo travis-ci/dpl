@@ -11,6 +11,13 @@ module DPL
       GCLOUD="#{INSTALL}/#{NAME}/bin/gcloud"
 
       def install_deploy_dependencies
+        # FIXME this is a workaround for https://code.google.com/p/google-cloud-sdk/issues/detail?id=228
+        if docker_build == "remote" && !File.exists?("#{Dir.home}/.ssh/google_compute_engine")
+          unless context.shell('ssh-keygen -f ~/.ssh/google_compute_engine -t rsa -N \'\'')
+            error 'Failed to generate SSH key for remote Docker build.'
+          end
+        end
+
         if File.exists? GCLOUD
           return
         end
