@@ -53,7 +53,7 @@ describe DPL::Provider::Lambda do
 
   describe '#lambda' do
     example do
-      expect(Aws::Lambda::Client).to receive(:new).with(client_options).once
+      expect(Aws::LambdaPreview::Client).to receive(:new).with(client_options).once
       provider.lambda
     end
   end
