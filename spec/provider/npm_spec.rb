@@ -61,6 +61,18 @@ describe DPL::Provider::NPM do
       end
     end
 
+    context 'and it defines custom RPM registry with trailing slash' do
+      let(:host) { 'npm.example.com'}
+      let(:custom_rpm_registry) { host + '/' }
+      before { expect(File).to receive(:read).with('package.json').and_return("{\"publishConfig\":{\"registry\":\"#{custom_rpm_registry}\"}}") }
+
+      describe '#setup_auth' do
+        example do
+          test_setup_auth(host)
+        end
+      end
+    end
+
     context 'and it does not define custom RPM registry' do
       before { expect(File).to receive(:read).with('package.json').and_return("{}") }
 
