@@ -10,6 +10,7 @@ Dpl supports the following providers:
 * [Anynines](#anynines)
 * [AppFog](#appfog)
 * [Atlas by HashiCorp](#atlas)
+* [Azure Web Apps](#azurewebapps)
 * [Biicode](#biicode)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
@@ -399,6 +400,25 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
     dpl --provider=atlas --token=ATLAS_TOKEN --app=ATLAS_USERNAME/APP_NAME --debug --vcs --version
     dpl --provider=atlas --token=ATLAS_TOKEN --app=ATLAS_USERNAME/APP_NAME --exclude="*.log" --include="build/*" --include="bin/*"
     dpl --provider=atlas --token=ATLAS_TOKEN --app=ATLAS_USERNAME/APP_NAME --metadata="foo=bar" --metadata="bar=baz"
+
+### Azure Web Apps:
+
+#### Options:
+
+* **site**: Web App Name (if your app lives at myapp.azurewebsites.net, the name would be myapp).
+* **username**: Web App Deployment Username.
+* **password**: Web App Deployment Password.
+* **quiet**: If passed, Azure's deployment output will not be printed.
+
+#### Environment variables:
+
+ * **AZURE_WA_SITE** Web App Name. Used if the `site` option is omitted.
+ * **AZURE_WA_USERNAME**: Web App Deployment Username. Used if the `username` option is omitted.
+ * **AZURE_WA_PASSWORD**: Web App Deployment Password. Used if the `password` option is omitted.
+
+#### Examples:
+
+    dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite
 
 ### Divshot.io:
 

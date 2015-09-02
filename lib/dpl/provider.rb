@@ -9,6 +9,7 @@ module DPL
     autoload :Anynines,         'dpl/provider/anynines'
     autoload :Appfog,           'dpl/provider/appfog'
     autoload :Atlas,            'dpl/provider/atlas'
+    autoload :AzureWebApps,     'dpl/provider/azure_webapps'
     autoload :Biicode,          'dpl/provider/biicode'
     autoload :Bintray,          'dpl/provider/bintray'
     autoload :BitBalloon,       'dpl/provider/bitballoon'
