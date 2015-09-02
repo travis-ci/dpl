@@ -55,6 +55,18 @@ module DPL
         end
       end
 
+      def commit_msg
+        # elastic beanstalk has a limitation for build
+        # descriptions to be no more than 100 characters in length
+        msg = super
+        
+        if msg.length > 100
+          msg[0, 97] + '...'
+        else
+          msg
+        end
+      end
+
       private
 
       def app_name
