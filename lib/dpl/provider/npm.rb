@@ -27,6 +27,7 @@ module DPL
       def push_app
         log "NPM API key format changed recently. If your deployment fails, check your API key in ~/.npmrc."
         log "http://docs.travis-ci.com/user/deployment/npm/"
+        log "#{NPMRC_FILE} size: #{File.size(File.expand_path(NPMRC_FILE))}"
         context.shell "env NPM_API_KEY=#{option(:api_key)} npm publish"
         FileUtils.rm(File.expand_path(NPMRC_FILE))
       end
@@ -43,10 +44,11 @@ module DPL
       end
 
       def npmrc_file_content
+        log "NPM version: #{npm_version}"
         if npm_version =~ /^1/
           "_auth = ${NPM_API_KEY}\nemail = #{option(:email)}"
         else
-          "//#{package_registry}/:_authToken=${NPM_API_KEY}"
+          "//#{package_registry.gsub(/\/+$/,'')}/:_authToken=${NPM_API_KEY}"
         end
       end
 

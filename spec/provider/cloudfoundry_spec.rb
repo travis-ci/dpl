@@ -15,8 +15,8 @@ describe DPL::Provider::CloudFoundry do
     example do
       expect(provider.context).to receive(:shell).with('wget http://go-cli.s3-website-us-east-1.amazonaws.com/releases/latest/cf-cli_amd64.deb -qO temp.deb && sudo dpkg -i temp.deb')
       expect(provider.context).to receive(:shell).with('rm temp.deb')
-      expect(provider.context).to receive(:shell).with('cf api api.run.awesome.io')
-      expect(provider.context).to receive(:shell).with('cf login --u mallomar --p myreallyawesomepassword --o myorg --s outer --skip-ssl-validation')
+      expect(provider.context).to receive(:shell).with('cf api api.run.awesome.io --skip-ssl-validation')
+      expect(provider.context).to receive(:shell).with('cf login --u mallomar --p myreallyawesomepassword --o myorg --s outer')
       provider.check_auth
     end
   end

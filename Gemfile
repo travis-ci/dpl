@@ -32,11 +32,11 @@ group :sss do
 end
 
 group :code_deploy do
-  gem 'aws-sdk', '>= 2.0.18.pre', '< 2.0.38'
+  gem 'aws-sdk', '>= 2.0.18.pre'
 end
 
 group :lambda do
-  gem 'aws-sdk', '>= 2.0.18.pre', '< 2.0.38'
+  gem 'aws-sdk', '>= 2.0.18.pre'
   gem 'rubyzip'
 end
 

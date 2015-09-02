@@ -2,7 +2,7 @@ module DPL
   class Provider
     class Deis < Provider
       def install_deploy_dependencies
-        context.shell "curl -sSL http://deis.io/deis-cli/install.sh | sh -s #{option(:client_version)}"
+        context.shell "curl -sSL http://deis.io/deis-cli/install.sh | sh -s #{option(:cli_version)}"
       end
 
       def needs_key?

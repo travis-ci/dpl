@@ -22,6 +22,7 @@ describe DPL::Provider::NPM do
     example do
       expect(provider.context).to receive(:shell).with("env NPM_API_KEY=test npm publish")
       expect(FileUtils).to receive(:rm).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE))
+      provider.setup_auth
       provider.push_app
     end
   end
@@ -56,6 +57,18 @@ describe DPL::Provider::NPM do
       describe '#setup_auth' do
         example do
           test_setup_auth(custom_rpm_registry)
+        end
+      end
+    end
+
+    context 'and it defines custom RPM registry with trailing slash' do
+      let(:host) { 'npm.example.com'}
+      let(:custom_rpm_registry) { host + '/' }
+      before { expect(File).to receive(:read).with('package.json').and_return("{\"publishConfig\":{\"registry\":\"#{custom_rpm_registry}\"}}") }
+
+      describe '#setup_auth' do
+        example do
+          test_setup_auth(host)
         end
       end
     end

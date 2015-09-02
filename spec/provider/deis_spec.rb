@@ -9,7 +9,7 @@ describe DPL::Provider::Deis do
       :controller => 'https://deis.deisapps.com',
       :username => 'travis',
       :password => 'secret',
-      :client_version => '1.0'
+      :cli_version => '1.0'
     }
   end
 
