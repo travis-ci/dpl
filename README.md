@@ -14,6 +14,7 @@ Dpl supports the following providers:
 * [Biicode](#biicode)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
+* [Boxfuse](#boxfuse)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [cloudControl](#cloudcontrol)
@@ -176,6 +177,36 @@ When artifacts are uploaded to a Debian repository using the Automatic index lay
 #### Examples:
     dpl --provider=bintray --file=<path> --user=<username> --key=<api-key>
     dpl --provider=bintray --file=<path> --user=<username> --key=<api-key> --passphrase=<passphrase>
+
+
+### Boxfuse
+
+Boxfuse will transform your .jar or .war file of your JVM-based application into a minimal machine image based upon which it will launch EC2 instances on AWS.
+
+#### Options
+
+* **user**: Your Boxfuse user
+* **secret**: Your Boxfuse secret
+* **configfile**: The Boxfuse configuration file to use (default: boxfuse.conf)
+* **payload**: The file to use as a payload for the image
+* **app**: The Boxfuse app to deploy (default: auto-detected based on payload file name)
+* **version**: The version to assign to the image (default: auto-detected based on payload file name)
+* **env**: The Boxfuse environment to deploy to (default: test)
+
+All options can also be configured directly in boxfuse.conf as described in [the documentation](https://boxfuse.com/docs/commandline/#configuration).
+
+#### Environment Variables
+
+For authentication you can also use Travis CI secure environment variable:
+
+* **BOXFUSE_USER**: Your Boxfuse user
+* **BOXFUSE_SECRET**: Your Boxfuse secret
+
+#### Examples
+    dpl --provider=boxfuse
+    dpl --provider=boxfuse --user=<your-boxfuse-user> --secret=<your-boxfuse-secret> --env=<your-boxfuse-environment>
+    dpl --provider=boxfuse --configfile=<your-boxfuse-config-file>
+
 
 ### Nodejitsu:
 

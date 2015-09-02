@@ -13,6 +13,7 @@ module DPL
     autoload :Biicode,          'dpl/provider/biicode'
     autoload :Bintray,          'dpl/provider/bintray'
     autoload :BitBalloon,       'dpl/provider/bitballoon'
+    autoload :Boxfuse,          'dpl/provider/boxfuse'
     autoload :ChefSupermarket,  'dpl/provider/chef_supermarket'
     autoload :Cloud66,          'dpl/provider/cloud66'
     autoload :CloudControl,     'dpl/provider/cloudcontrol'
