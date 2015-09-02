@@ -3,11 +3,11 @@ require 'json'
 module DPL
   class Provider
     class S3 < Provider
-      requires 'aws-sdk-v1'
+      requires 'aws-sdk'
       requires 'mime-types'
 
       def api
-        @api ||= AWS::S3.new(endpoint: options[:endpoint] || 's3.amazonaws.com')
+        @api ||= ::Aws::S3::Resource.new(s3_options)
       end
 
       def needs_key?
@@ -15,7 +15,7 @@ module DPL
       end
 
       def check_app
-
+        log 'Warning: The endpoint option is no longer used and can be removed.' if options[:endpoint]
       end
 
       def access_key_id
@@ -26,12 +26,14 @@ module DPL
         options[:secret_access_key] || context.env['AWS_SECRET_ACCESS_KEY'] || raise(Error, "missing secret_access_key")
       end
 
-      def setup_auth
-        AWS.config(:access_key_id => option(:access_key_id), :secret_access_key => option(:secret_access_key), :region => options[:region]||'us-east-1')
+      def s3_options
+        {
+          region:      options[:region] || 'us-east-1',
+          credentials: ::Aws::Credentials.new(access_key_id, secret_access_key)
+        }
       end
 
       def check_auth
-        setup_auth
         log "Logging in with Access Key: #{option(:access_key_id)[-4..-1].rjust(20, '*')}"
       end
 
@@ -47,29 +49,33 @@ module DPL
             content_type = MIME::Types.type_for(filename).first.to_s
             opts         = { :content_type => content_type }.merge(encoding_option_for(filename))
             opts[:cache_control] = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]
-            opts[:acl]           = options[:acl] if options[:acl]
+            opts[:acl]           = options[:acl].gsub(/_/, '-') if options[:acl]
             opts[:expires]       = get_option_value_by_filename(options[:expires], filename) if options[:expires]
             unless File.directory?(filename)
               log "uploading %p" % filename
-              api.buckets[option(:bucket)].objects.create(upload_path(filename), File.read(filename), opts)
+              api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
             end
           end
         end
 
         if suffix = options[:index_document_suffix]
-          api.buckets[option(:bucket)].configure_website do |cfg|
-            cfg.index_document_suffix = suffix
-          end
+          api.bucket(option(:bucket)).website.put(
+            website_configuration: {
+              index_document: {
+                suffix: suffix
+              }
+            }
+          )
         end
       end
 
       def deploy
         super
-      rescue AWS::S3::Errors::InvalidAccessKeyId
+      rescue ::Aws::S3::Errors::InvalidAccessKeyId
         raise Error, "Invalid S3 Access Key Id, Stopping Deploy"
-      rescue AWS::S3::Errors::SignatureDoesNotMatch
+      rescue ::Aws::S3::Errors::ChecksumError
         raise Error, "Aws Secret Key does not match Access Key Id, Stopping Deploy"
-      rescue AWS::S3::Errors::AccessDenied
+      rescue ::Aws::S3::Errors::AccessDenied
         raise Error, "Oops, It looks like you tried to write to a bucket that isn't yours or doesn't exist yet. Please create the bucket before trying to write to it."
       end
 

@@ -331,7 +331,6 @@ For authentication you can also use Travis CI secure environment variable:
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **bucket**: S3 Bucket.
 * **region**: S3 Region. Defaults to us-east-1.
-* **endpoint**: S3 Endpoint. Defaults to s3.amazonaws.com.
 * **upload-dir**: S3 directory to upload to. Defaults to root directory.
 * **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
 * **detect-encoding**: Set HTTP header `Content-Encoding` for files compressed with `gzip` and `compress` utilities. Defaults to not set.
