@@ -3,7 +3,7 @@ require 'json'
 module DPL
   class Provider
     class S3 < Provider
-      requires 'aws-sdk'
+      requires 'aws-sdk', version: '>= 2.0.22'
       requires 'mime-types'
 
       def api
