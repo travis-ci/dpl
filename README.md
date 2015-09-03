@@ -10,7 +10,7 @@ Dpl supports the following providers:
 * [Anynines](#anynines)
 * [AppFog](#appfog)
 * [Atlas by HashiCorp](#atlas)
-* [Azure Web Apps](#azurewebapps)
+* [Azure Web Apps](#azure-web-apps)
 * [Biicode](#biicode)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
