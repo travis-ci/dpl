@@ -13,10 +13,9 @@ describe DPL::Provider::CloudFoundry do
 
   describe "#check_auth" do
     example do
-      expect(provider.context).to receive(:shell).with('wget http://go-cli.s3-website-us-east-1.amazonaws.com/releases/latest/cf-cli_amd64.deb -qO temp.deb && sudo dpkg -i temp.deb')
-      expect(provider.context).to receive(:shell).with('rm temp.deb')
-      expect(provider.context).to receive(:shell).with('cf api api.run.awesome.io --skip-ssl-validation')
-      expect(provider.context).to receive(:shell).with('cf login --u mallomar --p myreallyawesomepassword --o myorg --s outer')
+      expect(provider.context).to receive(:shell).with('wget http://go-cli.s3-website-us-east-1.amazonaws.com/releases/latest/cf-linux-amd64.tgz -qO cf-linux-amd64.tgz && tar -zxvf cf-linux-amd64.tgz && rm cf-linux-amd64.tgz')
+      expect(provider.context).to receive(:shell).with('./cf api api.run.awesome.io --skip-ssl-validation')
+      expect(provider.context).to receive(:shell).with('./cf login --u mallomar --p myreallyawesomepassword --o myorg --s outer')
       provider.check_auth
     end
   end
@@ -45,15 +44,15 @@ describe DPL::Provider::CloudFoundry do
 
   describe "#push_app" do
     example "With manifest" do
-      expect(provider.context).to receive(:shell).with('cf push -f worker-manifest.yml')
-      expect(provider.context).to receive(:shell).with('cf logout')
+      expect(provider.context).to receive(:shell).with('./cf push -f worker-manifest.yml')
+      expect(provider.context).to receive(:shell).with('./cf logout')
       provider.push_app
     end
 
     example "Without manifest" do
       provider.options.update(:manifest => nil)
-      expect(provider.context).to receive(:shell).with('cf push')
-      expect(provider.context).to receive(:shell).with('cf logout')
+      expect(provider.context).to receive(:shell).with('./cf push')
+      expect(provider.context).to receive(:shell).with('./cf logout')
       provider.push_app
     end
   end
