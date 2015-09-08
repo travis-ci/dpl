@@ -438,7 +438,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **site**: Web App Name (if your app lives at myapp.azurewebsites.net, the name would be myapp).
 * **username**: Web App Deployment Username.
 * **password**: Web App Deployment Password.
-* **quiet**: If passed, Azure's deployment output will not be printed.
+* **verbose**: If passed, Azure's deployment output will be printed. Warning: If you provide incorrect credentials, Git will print those in clear text. Correct authentication credentials will remain hidden.
 
 #### Environment variables:
 
@@ -448,7 +448,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 
 #### Examples:
 
-    dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite
+    dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --verbose
 
 ### Divshot.io:
 
