@@ -27,7 +27,7 @@ module DPL
 
         status = wait_thr.value
         if !status.success?
-          raise Error, "Script #{File.join(ENV['PWD'], script)} failed with status #{status}"
+          raise Error, "Script #{File.join(ENV['PWD'], script)} failed with status #{status.exitstatus}"
         end
       end
 

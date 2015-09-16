@@ -29,6 +29,7 @@ describe DPL::Provider::Script do
     before :each do
       # TODO: Found a better way to test this
       allow(@status).to receive(:success?).and_return(false)
+      allow(@status).to receive(:exitstatus).and_return(1)
     end
 
     it 'raises error' do
