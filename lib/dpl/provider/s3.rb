@@ -34,7 +34,7 @@ module DPL
       end
 
       def check_auth
-        log "Logging in with Access Key: #{option(:access_key_id)[-4..-1].rjust(20, '*')}"
+        log "Logging in with Access Key: #{access_key_id[-4..-1].rjust(20, '*')}"
       end
 
       def upload_path(filename)
