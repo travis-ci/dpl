@@ -97,4 +97,15 @@ describe DPL::Provider::Deis do
       provider.run('shell command')
     end
   end
+
+  describe "#cleanup" do
+    example do
+      expect(provider.context).to receive(:shell).with('mv deis ~/deis')
+      expect(provider.context).to receive(:shell).with('mv .dpl ~/dpl')
+      expect(provider.context).to receive(:shell).with('git stash --all')
+      expect(provider.context).to receive(:shell).with('mv ~/dpl .dpl')
+      expect(provider.context).to receive(:shell).with('mv ~/deis deis')
+      provider.cleanup
+    end
+  end
 end
