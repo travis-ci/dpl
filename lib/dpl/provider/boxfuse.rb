@@ -48,8 +48,7 @@ module DPL
 
         context.shell "curl -L https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/latest/boxfuse-commandline-latest-linux-x64.tar.gz | tar xz"
 
-        @command = "boxfuse/boxfuse run " + @param_user + @param_secret + @param_configfile + @param_payload + @param_image + @param_env + @param_extra_args
-        context.shell "echo " + @command
+        @command = "boxfuse/boxfuse run" + @param_user + @param_secret + @param_configfile + @param_payload + @param_image + @param_env + @param_extra_args
         context.fold("Deploying application") { context.shell @command }
       end
 
