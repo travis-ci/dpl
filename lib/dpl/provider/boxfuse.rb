@@ -7,9 +7,9 @@ module DPL
         @secret = options[:secret]
         @configfile = options[:configfile]
         @payload = options[:payload]
-        @app = options[:app]
         @image = options[:image]
         @env = options[:env]
+        @extra_args = options[:extra_args]
 
         @param_user = ''
         if @user.to_s != ''
@@ -31,24 +31,25 @@ module DPL
           @param_payload = ' "' + @payload + '"'
         end
 
-        @param_app = ''
-        if @app.to_s != ''
-          @param_app = " -app=" + @app
-        end
-
         @param_image = ''
         if @image.to_s != ''
           @param_image = " -image=" + @image
         end
 
-        @param_env = ' test'
+        @param_env = ' -env=test'
         if @env.to_s != ''
           @param_env = " -env=" + @env
         end
 
+        @param_extra_args = ''
+        if @extra_args.to_s != ''
+          @param_extra_args = " " + @extra_args
+        end
+
         context.shell "curl -L https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/latest/boxfuse-commandline-latest-linux-x64.tar.gz | tar xz"
 
-        @command = "boxfuse/boxfuse run" + @param_user + @param_secret + @param_configfile + @param_payload + @param_app + @param_image + @param_env
+        @command = "boxfuse/boxfuse run " + @param_user + @param_secret + @param_configfile + @param_payload + @param_image + @param_env + @param_extra_args
+        context.shell "echo " + @command
         context.fold("Deploying application") { context.shell @command }
       end
 
