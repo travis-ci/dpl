@@ -1,5 +1,3 @@
-require 'open3'
-
 module DPL
   class Provider
     class Script < Provider
@@ -17,17 +15,9 @@ module DPL
       end
 
       def push_app
-        stdin, stdout, stderr, wait_thr = Open3.popen3(script)
-        while wait_thr.status do
-          sleep 1
-        end
-
-        log stdout.read
-        warn stderr.read
-
-        status = wait_thr.value
-        if !status.success?
-          raise Error, "Script #{File.join(ENV['PWD'], script)} failed with status #{status.exitstatus}"
+        context.shell script
+        if $?.exitstatus != 0
+          raise Error, "Script #{script} failed with status #{$?.exitstatus}"
         end
       end
 
