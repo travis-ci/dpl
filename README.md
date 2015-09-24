@@ -590,7 +590,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **region**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
  * **app**: Elastic Beanstalk application name.
  * **env**: Elastic Beanstalk environment name which will be updated.
- * **zip-file**: The zip-file that you want to deploy. _**Note:**_ you also need to use the `skip-cleanup` or the zipfile you are trying to upload will be removed during cleanup.
+ * **zip_file**: The zip file that you want to deploy. _**Note:**_ you also need to use the `skip_cleanup` or the zip file you are trying to upload will be removed during cleanup.
  * **bucket_name**: Bucket name to upload app to.
  * **bucket_path**: Location within Bucket to upload app to.
 
