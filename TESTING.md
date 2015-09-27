@@ -11,6 +11,8 @@ deploy:
   edge:
   	source: myown/dpl
     branch: foo
+  on:
+  	branches: TEST_BRANCH # or all_branches: true
   ⋮ # rest of provider X configuration
 ```
 
