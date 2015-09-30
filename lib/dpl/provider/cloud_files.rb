@@ -3,6 +3,7 @@ require 'dpl/provider'
 module DPL
   class Provider
     class CloudFiles < Provider
+      requires 'net-ssh', load: 'net/ssh', version: '~> 2.9.2' # Anything higher requires Ruby 2.x
       requires 'fog'
       experimental 'Rackspace Cloud Files'
 
