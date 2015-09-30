@@ -41,7 +41,6 @@ group :lambda do
 end
 
 group :cloud_files do
-  gem 'fog-google', '~> 0.1.0'
   gem 'fog'
 end
 
