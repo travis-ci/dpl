@@ -5,6 +5,7 @@ platforms :mri_19 do
   gem 'slop', '~> 3.6.0'
   gem 'ohai', '~> 7.4.0'
   gem 'amq-protocol', '~> 1.9.2'
+  gem 'net-ssh', '~> 2.9.2'
 end
 
 group :heroku do
