@@ -2,6 +2,8 @@ module DPL
   class Provider
     class TestFairy < Provider
 
+      requires "multipart-post", load: 'net/http/post/multipart', version: '2.0.0'
+
       require "net/http"
       require 'net/http/post/multipart'
       require 'json'
@@ -70,10 +72,14 @@ module DPL
       end
 
       def download_from_url(url)
-        puts "downloading  from #{url} "
+        puts "downloading from #{url} "
+        url = "#{url}?api_key=#{option(:api_key)}"
         uri = URI.parse(url)
         instrumentedFile = Net::HTTP.start(uri.host, uri.port) do |http|
-          resp = http.get(uri.path)
+          resp = http.get "#{uri.path}?#{uri.query}"
+          if resp.code == "302"
+            resp = Net::HTTP.get_response(URI.parse(resp.header['location']))
+          end
           file = Tempfile.new(['instrumented', '.apk'])
           file.write(resp.body)
           file.flush
