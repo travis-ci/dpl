@@ -1,4 +1,5 @@
 require 'json'
+require 'uri'
 
 module DPL
   class Provider
@@ -36,7 +37,7 @@ module DPL
         if File.exists?('package.json')
           data = JSON.parse(File.read('package.json'))
           if data['publishConfig'] && data['publishConfig']['registry']
-            return data['publishConfig']['registry']
+            return URI(data['publishConfig']['registry']).host
           end
         end
 
@@ -48,7 +49,7 @@ module DPL
         if npm_version =~ /^1/
           "_auth = ${NPM_API_KEY}\nemail = #{option(:email)}"
         else
-          "//#{package_registry.gsub(/\/+$/,'')}/:_authToken=${NPM_API_KEY}"
+          "//#{package_registry}/:_authToken=${NPM_API_KEY}"
         end
       end
 
