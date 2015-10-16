@@ -775,6 +775,7 @@ Deployment will be marked a failure if the script exits with nonzero status.
 
 Deploys to Google App Engine and Google App Engine Managed VMs via the Google Cloud SDK and
 it's [`gcloud` tool](https://cloud.google.com/sdk/gcloud/) using a [Service Account](https://developers.google.com/console/help/new/#serviceaccounts).
+In order to use this provider, please make sure you have the [App Engine Admin API](https://developers.google.com/apis-explorer/#p/appengine/v1beta4/) enabled [in the Google Developers Console](https://console.developers.google.com/project/_/apiui/apiview/appengine/overview).
 
 #### Options:
 
