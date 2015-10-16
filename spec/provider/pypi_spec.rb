@@ -62,6 +62,14 @@ describe DPL::Provider::PyPI do
       expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir some/dir -r pypi")
       provider.push_app
     end
+
+    example "with :upload_docs false option" do
+      provider.options.update(:upload_docs => false)
+      expect(provider.context).to receive(:shell).with("python setup.py sdist")
+      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*")
+      provider.push_app
+    end
   end
 
   describe "#write_servers" do
