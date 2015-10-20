@@ -775,6 +775,7 @@ Deployment will be marked a failure if the script exits with nonzero status.
 
 Deploys to Google App Engine and Google App Engine Managed VMs via the Google Cloud SDK and
 it's [`gcloud` tool](https://cloud.google.com/sdk/gcloud/) using a [Service Account](https://developers.google.com/console/help/new/#serviceaccounts).
+In order to use this provider, please make sure you have the [App Engine Admin API](https://developers.google.com/apis-explorer/#p/appengine/v1beta4/) enabled [in the Google Developers Console](https://console.developers.google.com/project/_/apiui/apiview/appengine/overview).
 
 #### Options:
 
@@ -782,9 +783,10 @@ it's [`gcloud` tool](https://cloud.google.com/sdk/gcloud/) using a [Service Acco
 * **keyfile**: Path to the JSON file containing your [Service Account](https://developers.google.com/console/help/new/#serviceaccounts) credentials in [JSON Web Token](https://tools.ietf.org/html/rfc7519) format. To be obtained via the [Google Developers Console](https://console.developers.google.com/project/_/apiui/credential). Defaults to `"service-account.json"`. Note that this file should be handled with care as it contains authorization keys.
 * **config**: Path to your module configuration file. Defaults to `"app.yaml"`. This file is runtime dependent ([Go](https://cloud.google.com/appengine/docs/go/config/appconfig), [Java](https://cloud.google.com/appengine/docs/java/configyaml/appconfig_yaml), [PHP](https://developers.google.com/console/help/new/#projectnumber), [Python](https://cloud.google.com/appengine/docs/python/config/appconfig))
 * **version**: The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you. See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
-* **default**: Flag to set the deployed version to be the default serving version. See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
+* **no_promote**: Flag to not promote the deployed version. See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
 * **verbosity**: Let's you adjust the verbosity when invoking `"gcloud"`. Defaults to `"warning"`. See [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/).
 * **docker_build**: If deploying a Managed VM, specifies where to build your image. Typical values are `"remote"` to build on Google Cloud Engine and `"local"` which requires Docker to be set up properly (to utilize this on Travis CI, read [Using Docker on Travis CI](http://blog.travis-ci.com/2015-08-19-using-docker-on-travis-ci/)). Defaults to `"remote"`.
+* **no_stop_previous_version**: Flag to prevent your deployment from stopping the previously promoted version. This is from the future, so might not work (yet). See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
 
 #### Environment variables:
 
@@ -793,4 +795,4 @@ it's [`gcloud` tool](https://cloud.google.com/sdk/gcloud/) using a [Service Acco
 
 #### Example:
 
-    dpl --provider=gae --project=example --default=true
+    dpl --provider=gae --project=example --no_promote=true
