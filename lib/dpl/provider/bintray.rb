@@ -149,6 +149,7 @@ module DPL
         if code == 201 || code == 200
           return true
         end
+        name = descriptor["package"]["name"]
         abort("Unexpected HTTP response code #{code} returned from Bintray while checking if package '#{name}' exists. " +
                   "Response message: #{res.message}")
       end
@@ -179,6 +180,7 @@ module DPL
         if code == 201 || code == 200
           return true
         end
+        version_name = descriptor["version"]["name"]
         abort("Unexpected HTTP response code #{code} returned from Bintray while checking if version '#{version_name}' exists. " +
                   "Response message: #{res.message}")
       end
