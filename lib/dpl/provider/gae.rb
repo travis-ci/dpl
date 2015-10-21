@@ -54,8 +54,8 @@ module DPL
         options[:config] || 'app.yaml'
       end
 
-      def default
-        options[:default]
+      def no_promote
+        options[:no_promote]
       end
 
       def verbosity
@@ -66,6 +66,10 @@ module DPL
         options[:docker_build] || 'remote'
       end
 
+      def no_stop_previous_version
+          options[:no_stop_previous_version]
+      end
+
       def push_app
         command = GCLOUD
         command << ' --quiet'
@@ -74,7 +78,8 @@ module DPL
         command << " preview app deploy \"#{config}\""
         command << " --version \"#{version}\""
         command << " --docker-build \"#{docker_build}\""
-        command << (default ? ' --set-default' : '')
+        command << " --#{no_promote ? 'no-' : ''}promote"
+        command << (no_stop_previous_version ? '--no-stop-previous-version' : '')
         unless context.shell(command)
           error 'Deployment failed.'
         end

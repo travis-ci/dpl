@@ -46,7 +46,8 @@ describe DPL::Provider::NPM do
   end
 
   context 'when package.json exists' do
-    let(:custom_rpm_registry) { 'npm.example.com' }
+    let(:host) { 'npm.example.com' }
+    let(:custom_rpm_registry) { 'https://' + host }
     before :each do
       expect(File).to receive(:exists?).with('package.json').and_return(true)
     end
@@ -56,14 +57,14 @@ describe DPL::Provider::NPM do
 
       describe '#setup_auth' do
         example do
-          test_setup_auth(custom_rpm_registry)
+          test_setup_auth(host)
         end
       end
     end
 
     context 'and it defines custom RPM registry with trailing slash' do
-      let(:host) { 'npm.example.com'}
-      let(:custom_rpm_registry) { host + '/' }
+      let(:host) { 'npm.example.com' }
+      let(:custom_rpm_registry) { 'https://' + host + '/' }
       before { expect(File).to receive(:read).with('package.json').and_return("{\"publishConfig\":{\"registry\":\"#{custom_rpm_registry}\"}}") }
 
       describe '#setup_auth' do
