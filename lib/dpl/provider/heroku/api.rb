@@ -61,7 +61,7 @@ module DPL
         end
 
         def source_blob
-          @source_blog ||= post(:sources).fetch("source_blob")
+          @source_blob ||= post(:sources).fetch("source_blob")
         end
 
         def version
