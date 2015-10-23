@@ -51,7 +51,7 @@ describe DPL::Provider::Heroku do
         expect(provider).to receive(:post).with(
           :builds, source_blob: {url: 'http://example.com/source.tgz', version: 'sha'}
         ).and_return(response_body)
-        expect(provider.context).to receive(:shell).with('curl  http://example.com/stream')
+        expect(provider.context).to receive(:shell).with('curl   http://example.com/stream')
         provider.trigger_build
         expect(provider.build_id).to eq('abc')
       end
@@ -67,7 +67,7 @@ describe DPL::Provider::Heroku do
         expect(provider).to receive(:post).with(
           :builds, source_blob: {url: 'http://example.com/source.tgz', version: 'sha'}
         ).and_return(response_body)
-        expect(provider.context).to receive(:shell).with('curl -vv http://example.com/stream')
+        expect(provider.context).to receive(:shell).with('curl -vv  http://example.com/stream')
         provider.trigger_build
         expect(provider.build_id).to eq('abc')
       end

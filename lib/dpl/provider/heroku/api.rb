@@ -25,7 +25,7 @@ module DPL
 
         def upload_archive
           log "uploading application archive"
-          context.shell "curl #{verbose_flag} #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' --data-binary @#{archive_file}"
+          context.shell "curl #{verbose_flag} #{retry_flag} #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' --data-binary @#{archive_file}"
         end
 
         def trigger_build
@@ -33,7 +33,7 @@ module DPL
           response   = post(:builds, source_blob: { url: get_url, version: version })
           @build_id  = response.fetch('id')
           output_stream_url = response.fetch('output_stream_url')
-          context.shell "curl #{verbose_flag} #{Shellwords.escape(output_stream_url)}"
+          context.shell "curl #{verbose_flag} #{retry_flag} #{Shellwords.escape(output_stream_url)}"
         end
 
         def verify_build
@@ -99,7 +99,7 @@ module DPL
           options[:verbose] && '-vv'
         end
 
-        def retry
+        def retry_flag
           options[:retry] && "--retry #{options[:retry]}"
         end
       end
