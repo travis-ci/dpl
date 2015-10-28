@@ -210,7 +210,7 @@ module DPL
     end
 
     def encoding_for(path)
-      file_cmd_output = `file #{path}`
+      file_cmd_output = `file '#{path}'`
       case file_cmd_output
       when /gzip compressed/
         'gzip'
