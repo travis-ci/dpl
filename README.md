@@ -436,6 +436,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Options:
 
 * **site**: Web App Name (if your app lives at myapp.azurewebsites.net, the name would be myapp).
+* **slot**: Optional. Slot name if your app uses staging deployment. (e.g. if your slot lives at myapp-test.azurewebsites.net, the slot would be myapp-test).
 * **username**: Web App Deployment Username.
 * **password**: Web App Deployment Password.
 * **verbose**: If passed, Azure's deployment output will be printed. Warning: If you provide incorrect credentials, Git will print those in clear text. Correct authentication credentials will remain hidden.
