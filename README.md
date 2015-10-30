@@ -444,12 +444,13 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Environment variables:
 
  * **AZURE_WA_SITE** Web App Name. Used if the `site` option is omitted.
+ * **AZURE_WA_SLOT** Optional. Slot name if your app uses staging deployment. Used if the `slot` option is omitted.
  * **AZURE_WA_USERNAME**: Web App Deployment Username. Used if the `username` option is omitted.
  * **AZURE_WA_PASSWORD**: Web App Deployment Password. Used if the `password` option is omitted.
 
 #### Examples:
 
-    dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --verbose
+    dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --slot=dplsite-test --verbose
 
 ### Divshot.io:
 
