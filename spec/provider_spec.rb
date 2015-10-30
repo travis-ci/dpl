@@ -157,7 +157,7 @@ describe DPL::Provider do
     example do
       path = 'file with a space'
       expect(provider).to receive(:`).at_least(1).times.with("file '#{path}'").and_return("#{path}: empty")
-      expect(provider.encoding_for(path)).to eq('gzip')
+      expect(provider.encoding_for(path)).to be_nil
     end
   end
 

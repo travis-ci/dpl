@@ -139,7 +139,7 @@ describe DPL::Provider::S3 do
       path = 'foo.js'
       provider.options.update(:detect_encoding => true)
       expect(Dir).to receive(:glob).and_yield(path)
-      expect(provider).to receive(:`).at_least(1).times.with("file #{path}").and_return('gzip compressed')
+      expect(provider).to receive(:`).at_least(1).times.with("file '#{path}'").and_return('gzip compressed')
       expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:content_encoding => 'gzip'))
       provider.push_app
     end
