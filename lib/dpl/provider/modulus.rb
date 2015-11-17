@@ -16,7 +16,8 @@ module DPL
       end
 
       def push_app
-        context.shell "MODULUS_TOKEN=#{option(:api_key)} modulus deploy -p #{option(:project_name)}"
+        ENV['MODULUS_TOKEN']="#{option(:api_key)}"
+        context.shell "modulus deploy -p #{option(:project_name)}"
       end
     end
   end
