@@ -28,7 +28,7 @@ module DPL
       end
 
       def push_app
-        log "Deploying to Azure Web App '#{config['site']}'"
+        log "Deploying to Azure Web App '#{config[slot] || config['site']}'"
 
         if !!options[:verbose]
           context.shell "git push --force --quiet #{git_target} master"
