@@ -26,6 +26,7 @@ module DPL
     autoload :ElasticBeanstalk, 'dpl/provider/elastic_beanstalk'
     autoload :EngineYard,       'dpl/provider/engine_yard'
     autoload :ExoScale,         'dpl/provider/exoscale'
+    autoload :Firebase,         'dpl/provider/firebase'
     autoload :GAE,              'dpl/provider/gae'
     autoload :GCS,              'dpl/provider/gcs'
     autoload :Hackage,          'dpl/provider/hackage'

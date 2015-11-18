@@ -27,6 +27,7 @@ Dpl supports the following providers:
 * [Elastic Beanstalk](#elastic-beanstalk)
 * [Engine Yard](#engine-yard)
 * [ExoScale](#exoscale)
+* [Firebase](#firebase)
 * [Github Releases](#github-releases)
 * [Google App Engine (experimental)](#google-app-engine)
 * [Google Cloud Storage](#google-cloud-storage)
@@ -796,3 +797,14 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Example:
 
     dpl --provider=gae --project=example --no_promote=true
+
+### Firebase:
+
+#### Options:
+
+* **token**: Your Firebase CI access token (generate with `firebase login:ci`)
+* **project**: Deploy to a different Firebase project than specified in your `firebase.json` (e.g. `myapp-staging`)
+
+#### Examples:
+
+    dpl --provider=firebase --token=<token> --project=<project>
