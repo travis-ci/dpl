@@ -43,6 +43,7 @@ module DPL
     autoload :Releases,         'dpl/provider/releases'
     autoload :RubyGems,         'dpl/provider/rubygems'
     autoload :S3,               'dpl/provider/s3'
+    autoload :Scalingo,         'dpl/provider/scalingo'
     autoload :Script,           'dpl/provider/script'
     autoload :TestFairy,        'dpl/provider/testfairy'
     autoload :Transifex,        'dpl/provider/transifex'
