@@ -23,7 +23,7 @@ module DPL
 
         $stderr.puts 'Bootstrapping Google Cloud SDK ...'
 
-        unless context.shell("#{BOOTSTRAP} --usage-reporting=false --command-completion=false --path-update=false --additional-components=preview")
+        unless context.shell("#{BOOTSTRAP} --usage-reporting=false --command-completion=false --path-update=false --additional-components=app")
           error 'Could not bootstrap Google Cloud SDK.'
         end
       end
