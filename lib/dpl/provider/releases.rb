@@ -4,7 +4,7 @@ module DPL
       require 'pathname'
 
       requires 'octokit'
-      requires 'mime-types'
+      requires 'mime-types', version: '~> 2.0'
 
       def travis_tag
         # Check if $TRAVIS_TAG is unset or set but empty
