@@ -785,7 +785,7 @@ Note: You only need to connect once to Scalingo CLI, credentials are stored loca
     dpl --provider=scalingo --username=<username> --password=<password>
 
     dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --remote="scalingo-staging"
-    dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --remote="scalingo-staging" branch="master"
+    dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --remote="scalingo-staging" --branch="master"
 
     dpl --provider=scalingo
 
