@@ -100,7 +100,7 @@ module DPL
         end
 
         def retry_flag
-          options[:retry] && "--retry #{options[:retry]}"
+          options[:retry] && "--retry #{options[:retry].to_i}"
         end
       end
     end
