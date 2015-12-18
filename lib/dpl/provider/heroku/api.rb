@@ -96,7 +96,7 @@ module DPL
         end
 
         def verbose_flag
-          options[:verbose] && '-vv'
+          options[:verbose] && '-vvv'
         end
 
         def retry_flag
