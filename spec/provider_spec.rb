@@ -150,8 +150,14 @@ describe DPL::Provider do
   describe "#encoding_for" do
     example do
       path = 'foo.js'
-      expect(provider).to receive(:`).at_least(1).times.with("file #{path}").and_return('gzip compressed')
+      expect(provider).to receive(:`).at_least(1).times.with("file '#{path}'").and_return("#{path}: gzip compressed")
       expect(provider.encoding_for(path)).to eq('gzip')
+    end
+
+    example do
+      path = 'file with a space'
+      expect(provider).to receive(:`).at_least(1).times.with("file '#{path}'").and_return("#{path}: empty")
+      expect(provider.encoding_for(path)).to be_nil
     end
   end
 

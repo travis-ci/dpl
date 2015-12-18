@@ -20,7 +20,7 @@ module DPL
 
         def pack_archive
           log "creating application archive"
-          context.shell "tar -zcf #{archive_file} ."
+          context.shell "tar -zcf #{archive_file} --exclude .git ."
         end
 
         def upload_archive

@@ -26,6 +26,7 @@ module DPL
     autoload :ElasticBeanstalk, 'dpl/provider/elastic_beanstalk'
     autoload :EngineYard,       'dpl/provider/engine_yard'
     autoload :ExoScale,         'dpl/provider/exoscale'
+    autoload :Firebase,         'dpl/provider/firebase'
     autoload :GAE,              'dpl/provider/gae'
     autoload :GCS,              'dpl/provider/gcs'
     autoload :Hackage,          'dpl/provider/hackage'
@@ -42,6 +43,7 @@ module DPL
     autoload :Releases,         'dpl/provider/releases'
     autoload :RubyGems,         'dpl/provider/rubygems'
     autoload :S3,               'dpl/provider/s3'
+    autoload :Scalingo,         'dpl/provider/scalingo'
     autoload :Script,           'dpl/provider/script'
     autoload :TestFairy,        'dpl/provider/testfairy'
     autoload :Transifex,        'dpl/provider/transifex'
@@ -210,7 +212,7 @@ module DPL
     end
 
     def encoding_for(path)
-      file_cmd_output = `file #{path}`
+      file_cmd_output = `file '#{path}'`
       case file_cmd_output
       when /gzip compressed/
         'gzip'
