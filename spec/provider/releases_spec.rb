@@ -196,11 +196,37 @@ describe DPL::Provider::Releases do
       allow(provider.api).to receive(:release)
       allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
       allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => [""]})
-      allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([double(:name => "foo.bar"), double(:name => "foo.foo")])
+      allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([double(:name => "foo.bar", :url => 'foo-bar-url'), double(:name => "foo.foo", :url => 'foo-foo-url')])
 
       expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
       expect(provider).to receive(:log).with("foo.bar already exists, skipping.")
       expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
+
+      provider.push_app
+    end
+
+    example "When Release Exists and has Files but overwrite flag is true" do
+      allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["exists.txt"])
+      provider.options.update(:overwrite => true)
+
+      allow(provider).to receive(:releases).and_return([""])
+      allow(provider).to receive(:get_tag).and_return("v0.0.0")
+
+      provider.releases.map do |release|
+        allow(release).to receive(:tag_name).and_return("v0.0.0")
+        allow(release).to receive(:rels).and_return({:self => nil})
+        allow(release.rels[:self]).to receive(:href)
+      end
+
+      allow(provider.api).to receive(:release)
+      allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
+      allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => [""]})
+      allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([double(:name => "exists.txt", :url => "release-url")])
+
+      expect(provider.api).to receive(:delete_release_asset).with("release-url").and_return(true)
+      expect(provider.api).to receive(:upload_asset).with(anything, "exists.txt", {:name=>"exists.txt", :content_type=>"text/plain"})
 
       provider.push_app
     end

@@ -100,22 +100,23 @@ module DPL
         end
 
         files.each do |file|
-          already_exists = false
+          existing_url = nil
           filename = Pathname.new(file).basename.to_s
           api.release(release_url).rels[:assets].get.data.each do |existing_file|
             if existing_file.name == filename
-              already_exists = true
+              existing_url = existing_file.url
             end
           end
-          if already_exists
-            log "#{filename} already exists, skipping."
-          else
+          if !existing_url || (existing_url && options[:overwrite])
+            api.delete_release_asset(existing_url) if existing_url
             content_type = MIME::Types.type_for(file).first.to_s
             if content_type.empty?
               # Specify the default content type, as it is required by GitHub
               content_type = "application/octet-stream"
             end
             api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
+          else
+            log "#{filename} already exists, skipping."
           end
         end
 
