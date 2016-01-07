@@ -272,7 +272,7 @@ describe DPL::Provider::Releases do
       end
 
       it "returns 'https://example.com/api/v3'" do
-        expect(provider.api_endpoint).to eq('https://example.com/api/v3')
+        expect(provider.api_endpoint).to eq("https://example.com/api/v#{DPL::Provider::Releases::DEFAULT_GITHUB_API_VERSION}")
       end
 
       context "and api_version '4' is given" do

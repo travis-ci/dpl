@@ -3,6 +3,8 @@ module DPL
     class Releases < Provider
       require 'pathname'
 
+      DEFAULT_GITHUB_API_VERSION = '3'
+
       requires 'octokit'
       requires 'mime-types', version: '~> 2.0'
 
@@ -128,7 +130,7 @@ module DPL
       def api_endpoint
         if options[:host]
           host = options[:host]
-          api_version = options[:api_version] || '3'
+          api_version = options[:api_version] || DEFAULT_GITHUB_API_VERSION
           "https://#{host}/api/v#{api_version}"
         else
           "https://api.github.com"
