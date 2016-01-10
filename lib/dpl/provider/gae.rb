@@ -79,7 +79,7 @@ module DPL
         command << " --version \"#{version}\""
         command << " --docker-build \"#{docker_build}\""
         command << " --#{no_promote ? 'no-' : ''}promote"
-        command << (no_stop_previous_version ? '--no-stop-previous-version' : '')
+        command << (no_stop_previous_version ? ' --no-stop-previous-version' : '')
         unless context.shell(command)
           error 'Deployment failed.'
         end
