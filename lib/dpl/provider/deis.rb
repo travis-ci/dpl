@@ -35,7 +35,7 @@ module DPL
 
         File.open(path, 'w') do |file|
           file.write "#!/bin/sh\n"
-          file.write "exec ssh -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i #{key_path} \"$@\"\n"
+          file.write "exec ssh #{verbose_flag} -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i #{key_path} \"$@\"\n"
         end
 
         chmod(0740, path)
