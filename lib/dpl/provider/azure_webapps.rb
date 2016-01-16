@@ -32,15 +32,15 @@ module DPL
 
         if !!options[:skip_cleanup]
           log "Skipping Cleanup"
-          context.shell "git checkout master"
+          context.shell "git checkout HEAD"
           context.shell "git add . --all --force"
           context.shell "git commit -m \"Skip Cleanup Commit\""
         end
 
         if !!options[:verbose]
-          context.shell "git push --force --quiet #{git_target} master"
+          context.shell "git push --force --quiet #{git_target} HEAD:master"
         else
-          context.shell "git push --force --quiet #{git_target} master > /dev/null 2>&1"
+          context.shell "git push --force --quiet #{git_target} HEAD:master > /dev/null 2>&1"
         end
       end
     end
