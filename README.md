@@ -597,6 +597,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **zip_file**: The zip file that you want to deploy. _**Note:**_ you also need to use the `skip_cleanup` or the zip file you are trying to upload will be removed during cleanup.
  * **bucket_name**: Bucket name to upload app to.
  * **bucket_path**: Location within Bucket to upload app to.
+ * **only_create_app_version**: only create the app version, don't actually deploy it.
 
 #### Environment variables:
 
