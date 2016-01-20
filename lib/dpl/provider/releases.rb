@@ -119,7 +119,7 @@ module DPL
           end
         end
 
-        api.update_release(release_url, options.merge({:draft => false}))
+        api.update_release(release_url, {:draft => false}.merge(options))
       end
     end
   end
