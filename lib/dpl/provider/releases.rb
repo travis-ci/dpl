@@ -96,7 +96,7 @@ module DPL
 
         #If for some reason GitHub hasn't already created a release for the tag, create one
         if tag_matched == false
-          release_url = api.create_release(slug, get_tag, options).rels[:self].href
+          release_url = api.create_release(slug, get_tag, options.merge({:draft => true})).rels[:self].href
         end
 
         files.each do |file|
@@ -118,6 +118,8 @@ module DPL
             api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
           end
         end
+
+        api.update_release(release_url, {:draft => false}.merge(options))
       end
     end
   end
