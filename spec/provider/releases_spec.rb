@@ -200,6 +200,7 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
       expect(provider).to receive(:log).with("foo.bar already exists, skipping.")
+      expect(provider).to receive(:log).with("bar.txt doesn't exist, uploading.")
       expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
 
       provider.push_app
@@ -227,6 +228,7 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:delete_release_asset).with("release-url").and_return(true)
       expect(provider.api).to receive(:upload_asset).with(anything, "exists.txt", {:name=>"exists.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
 
       provider.push_app
     end

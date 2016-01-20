@@ -107,20 +107,28 @@ module DPL
               existing_url = existing_file.url
             end
           end
-          if !existing_url || (existing_url && options[:overwrite])
-            api.delete_release_asset(existing_url) if existing_url
-            content_type = MIME::Types.type_for(file).first.to_s
-            if content_type.empty?
-              # Specify the default content type, as it is required by GitHub
-              content_type = "application/octet-stream"
-            end
-            api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
+          if !existing_url
+            log "#{filename} doesn't exist, uploading."
+            upload_file(file, filename, release_url)
+          elsif existing_url && options[:overwrite]
+            log "#{filename} already exists, overwriting."
+            api.delete_release_asset(existing_url)
+            upload_file(file, filename, release_url)
           else
             log "#{filename} already exists, skipping."
           end
         end
 
         api.update_release(release_url, {:draft => false}.merge(options))
+      end
+
+      def upload_file(file, filename, release_url)
+        content_type = MIME::Types.type_for(file).first.to_s
+        if content_type.empty?
+          # Specify the default content type, as it is required by GitHub
+          content_type = "application/octet-stream"
+        end
+        api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
       end
     end
   end
