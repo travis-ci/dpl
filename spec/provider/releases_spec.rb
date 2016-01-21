@@ -112,7 +112,7 @@ describe DPL::Provider::Releases do
       expect(provider.context).not_to receive(:shell).with("git fetch --tags")
       expect(provider).to receive(:log).with("Deploying to repo: foo/bar")
       expect(provider).to receive(:log).with("Current tag is: bar")
-      
+
       provider.check_app
     end
   end
@@ -174,6 +174,7 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:upload_asset).with(anything, "test/foo.bar", {:name=>"foo.bar", :content_type=>"application/octet-stream"})
       expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
 
       provider.push_app
     end
@@ -199,6 +200,7 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
       expect(provider).to receive(:log).with("foo.bar already exists, skipping.")
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
 
       provider.push_app
     end
@@ -227,6 +229,7 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:upload_asset).with(anything, "test/foo.bar", {:name=>"foo.bar", :content_type=>"application/octet-stream"})
       expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
 
       provider.push_app
     end
@@ -245,6 +248,27 @@ describe DPL::Provider::Releases do
       allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
 
       expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
+
+      provider.push_app
+    end
+
+    example "When draft is true" do
+      allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["bar.txt"])
+      provider.options.update(:release_number => "1234")
+      provider.options.update(:draft => true)
+
+      allow(provider).to receive(:slug).and_return("foo/bar")
+
+      allow(provider.api).to receive(:release)
+      allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
+      allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => nil})
+      allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
+
+      expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => true))
 
       provider.push_app
     end

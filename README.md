@@ -520,6 +520,9 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **file_glob**: If files should be interpreted as globs (\* and \*\* wildcards). Defaults to false.
 * **release-number**: Overide automatic release detection, set a release manually.
 
+Additionally, options can be passed to [Octokit](https://github.com/octokit/octokit.rb) client.
+These are documented in https://github.com/octokit/octokit.rb/blob/master/lib/octokit/client/releases.rb.
+
 #### GitHub Two Factor Authentication
 
 For accounts using two factor authentication, you have to use an oauth token as a username and password will not work.
