@@ -71,12 +71,14 @@ module DPL
         context.shell "python setup.py #{options[:distributions] || 'sdist'}"
         context.shell "twine upload -r pypi dist/*"
         context.shell "rm -rf dist/*"
-        if options[:docs_dir]
-          docs_dir_option = '--upload-dir ' + options[:docs_dir]
-        else
-          docs_dir_option = ''
+        if options.fetch(:upload_docs, true)
+          if options[:docs_dir]
+            docs_dir_option = '--upload-dir ' + options[:docs_dir]
+          else
+            docs_dir_option = ''
+          end
+          context.shell "python setup.py upload_docs #{docs_dir_option} -r #{options[:server] || 'pypi'}"
         end
-        context.shell "python setup.py upload_docs #{docs_dir_option} -r #{options[:server] || 'pypi'}"
       end
     end
   end
