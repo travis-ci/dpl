@@ -291,9 +291,17 @@ For authentication you can also use Travis CI secure environment variable:
 
 * **user**: PyPI Username.
 * **password**: PyPI Password.
-* **server**: Optional. Only required if you want to release to a different index. Follows the form of "https://mypackageindex.com/index".
-* **distributions**: A space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
-* **docs_dir**: A path to the directory to upload documentation from. Defaults to 'build/docs'
+* **server**: Optional. Only required if you want to release to a different index. Follows the form of 'https://mypackageindex.com/index'. Defaults to 'https://pypi.python.org/pypi'.
+* **distributions**: Optional. A space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
+* **docs_dir**: Optional. A path to the directory to upload documentation from. Defaults to 'build/docs'
+
+#### Environment variables:
+
+ * **PYPI_USER**: PyPI Username. Used if the `user` option is omitted.
+ * **PYPI_PASSWORD**: PyPI Password. Used if the `password` option is omitted.
+ * **PYPI_SERVER** Optional. Only required if you want to release to a different index. Used if the `server` option is omitted.
+ * **PYPI_DISTRIBUTIONS** Optional. A space-separated list of distributions to be uploaded to PyPI. Used if the `distributions` option is omitted.
+ * **PYPI_DOCS_DIR** Optional. A path to the directory to upload documentation from. Used if the `docs_dir` option is omitted.
 
 #### Examples:
 
