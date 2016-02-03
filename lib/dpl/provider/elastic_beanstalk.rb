@@ -27,6 +27,10 @@ module DPL
       def check_app
       end
 
+      def only_create_app_version
+        options[:only_create_app_version]
+      end
+
       def push_app
         create_bucket unless bucket_exists?
 
@@ -39,7 +43,9 @@ module DPL
         s3_object = upload(archive_name, zip_file)
         sleep 5 #s3 eventual consistency
         version = create_app_version(s3_object)
-        update_app(version)
+        if !only_create_app_version
+          update_app(version)
+        end
       end
 
       private
