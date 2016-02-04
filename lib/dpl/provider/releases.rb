@@ -108,7 +108,6 @@ module DPL
             end
           end
           if !existing_url
-            log "#{filename} doesn't exist, uploading."
             upload_file(file, filename, release_url)
           elsif existing_url && options[:overwrite]
             log "#{filename} already exists, overwriting."
