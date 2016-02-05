@@ -26,6 +26,9 @@ module DPL
         end
       end
 
+      def check_auth
+      end
+
       def push_app
         context.shell "env ATOM_ACCESS_TOKEN=#{option(:api_key)} apm publish --tag #{get_tag}"
       end
