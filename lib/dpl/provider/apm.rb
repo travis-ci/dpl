@@ -29,7 +29,7 @@ module DPL
         context.env['ATOM_ACCESS_TOKEN'] = option(:api_key)
       end
 
-      def check_app
+      def push_app
         context.shell <<-bash
           echo "Downloading latest Atom release..."
           ATOM_CHANNEL="${ATOM_CHANNEL:=stable}"
@@ -76,11 +76,10 @@ module DPL
           "$ATOM_SCRIPT_PATH" -v
           echo "Using APM version:"
           "$APM_SCRIPT_PATH" -v
-        bash
-      end
 
-      def push_app
-        context.shell "\"$APM_SCRIPT_PATH\" publish --tag #{get_tag}"
+          echo "Deploying package:"
+          "$APM_SCRIPT_PATH" publish --tag "$TRAVIS_TAG"
+        bash
       end
     end
   end
