@@ -2,6 +2,8 @@ module DPL
   class Provider
     class APM < Provider
       experimental "Atom Package Manager"
+      context.shell "curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh"
+      apt_get "build-essential git libgnome-keyring-dev fakeroot"
 
       def needs_key?
         false
