@@ -7,6 +7,7 @@ module DPL
     include FileUtils
 
     autoload :Anynines,         'dpl/provider/anynines'
+    autoload :APM,              'dpl/provider/apm'
     autoload :Appfog,           'dpl/provider/appfog'
     autoload :Atlas,            'dpl/provider/atlas'
     autoload :AzureWebApps,     'dpl/provider/azure_webapps'
