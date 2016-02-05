@@ -30,7 +30,7 @@ module DPL
       end
 
       def push_app
-        context.shell "env ATOM_ACCESS_TOKEN=#{option(:api_key)} #{context.env['APM_SCRIPT_PATH']} publish --tag #{get_tag}"
+        context.shell "env ATOM_ACCESS_TOKEN=#{option(:api_key)} $APM_SCRIPT_PATH publish --tag #{get_tag}"
       end
     end
   end
