@@ -44,6 +44,31 @@ module DPL
         unless context.shell "./deis git:remote --app=#{option(:app)}"
           error 'Adding git remote failed.'
         end
+
+        wait_for_git_access
+      end
+
+      def wait_for_git_access()
+        retry_count=0
+        max_retries=30
+
+        #Parse out the git remote host and port
+        git_remote=`cat .git/config  | grep -A1 '[remote] "deis"' | tail -n 1 | sed 's/.*url = //'`
+        remote_uri=git_remote.split("ssh://")[1].split("/")[0]
+        remote_host=remote_uri.split(":")[0]
+        remote_port=remote_uri.split(":")[1]
+        puts "Git remote is #{remote_host} at port #{remote_port}"
+
+        #Try and connect to the github remote via ssh.
+        while retry_count < max_retries
+          puts "Waiting for ssh key to propagate..."
+          if context.shell "#{context.env['GIT_SSH']} #{remote_host} -p #{remote_port}  2>&1 | grep -c 'PTY allocation request failed' > /dev/null"
+            puts "SSH connection established."
+            break
+          end
+          retry_count += 1
+          sleep(1)
+        end
       end
 
       def remove_key
