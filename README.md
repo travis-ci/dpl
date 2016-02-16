@@ -151,7 +151,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 	The files will be uploaded to Bintray under the gems folder.
 	2. All files under build/docs. The files will be uploaded to Bintray under the docs folder.
 
-	Note: Regular expressions defined as part of the includePattern and excludePattern properties must be wrapped with brackets. */
+	Note: Regular expressions defined as part of the includePattern property must be wrapped with brackets. */
 
 	"files":
 		[
