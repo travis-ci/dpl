@@ -132,7 +132,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 		"released": "2015-01-04",
 		"vcs_tag": "0.5",
 	 	"attributes": [{"name": "VerAtt1", "values" : ["VerVal1"], "type": "string"},
-  					   {"name": "VerAtt2", "values" : [1, 3.3, 5], "type": "number"},
+  					   {"name": "VerAtt2", "values" : [1, 3.2, 5], "type": "number"},
 					   {"name": "VerAtt3", "values" : ["2015-01-01T19:43:37+0100"], "type": "date"}],
 		"gpgSign": false
 	},
