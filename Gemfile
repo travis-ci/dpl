@@ -63,6 +63,7 @@ end
 
 group :bitballoon do
   gem 'bitballoon'
+  gem 'jwt', '< 1.5.3', platforms: :mri_19
 end
 
 group :puppet_forge do
