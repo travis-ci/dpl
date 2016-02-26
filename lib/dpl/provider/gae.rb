@@ -81,8 +81,9 @@ module DPL
         command << " --#{no_promote ? 'no-' : ''}promote"
         command << (no_stop_previous_version ? ' --no-stop-previous-version' : '')
         unless context.shell(command)
-          error 'Deployment failed.'
+          log 'Deployment failed.'
           context.shell('find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;')
+          error ''
         end
       end
     end
