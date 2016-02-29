@@ -84,7 +84,7 @@ describe DPL::Provider::GCS do
       path = 'foo.js'
       provider.options.update(:detect_encoding => true)
       expect(Dir).to receive(:glob).and_yield(path)
-      expect(provider).to receive(:`).at_least(1).times.with("file #{path}").and_return('gzip compressed')
+      expect(provider).to receive(:`).at_least(1).times.with("file '#{path}'").and_return('gzip compressed')
       expect(File).to receive(:read).with(path).and_return("")
       expect_any_instance_of(GStore::Client).to receive(:put_object).with(
         anything(),

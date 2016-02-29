@@ -20,7 +20,7 @@ module DPL
 
         def pack_archive
           log "creating application archive"
-          context.shell "tar -zcf #{archive_file} ."
+          context.shell "tar -zcf #{archive_file} --exclude .git ."
         end
 
         def upload_archive
@@ -33,7 +33,7 @@ module DPL
           response   = post(:builds, source_blob: { url: get_url, version: version })
           @build_id  = response.fetch('id')
           output_stream_url = response.fetch('output_stream_url')
-          context.shell "curl #{verbose_flag} #{retry_flag} #{Shellwords.escape(output_stream_url)}"
+          context.shell "curl #{verbose_flag} #{ssl_protocol_flag} #{retry_flag} #{Shellwords.escape(output_stream_url)}"
         end
 
         def verify_build
@@ -96,11 +96,18 @@ module DPL
         end
 
         def verbose_flag
-          options[:verbose] && '-vv'
+          options[:verbose] && '-vvv'
         end
 
         def retry_flag
-          options[:retry] && "--retry #{options[:retry]}"
+          options[:retry] && "--retry #{options[:retry].to_i}"
+        end
+
+        def ssl_protocol_flag
+          opt = options[:ssl_protocol]
+          if opt =~ /\A(tlsv1(.\d)?|sslv[23])\z/
+            "--#{opt}"
+          end
         end
       end
     end

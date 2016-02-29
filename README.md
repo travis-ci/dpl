@@ -27,6 +27,7 @@ Dpl supports the following providers:
 * [Elastic Beanstalk](#elastic-beanstalk)
 * [Engine Yard](#engine-yard)
 * [ExoScale](#exoscale)
+* [Firebase](#firebase)
 * [Github Releases](#github-releases)
 * [Google App Engine (experimental)](#google-app-engine)
 * [Google Cloud Storage](#google-cloud-storage)
@@ -43,6 +44,7 @@ Dpl supports the following providers:
 * [Rackspace Cloud Files](#rackspace-cloud-files)
 * [RubyGems](#rubygems)
 * [S3](#s3)
+* [Scalingo](#scalingo)
 * [Script](#script)
 * [TestFairy](#testfairy)
 
@@ -436,6 +438,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Options:
 
 * **site**: Web App Name (if your app lives at myapp.azurewebsites.net, the name would be myapp).
+* **slot**: Optional. Slot name if your app uses staging deployment. (e.g. if your slot lives at myapp-test.azurewebsites.net, the slot would be myapp-test).
 * **username**: Web App Deployment Username.
 * **password**: Web App Deployment Password.
 * **verbose**: If passed, Azure's deployment output will be printed. Warning: If you provide incorrect credentials, Git will print those in clear text. Correct authentication credentials will remain hidden.
@@ -443,12 +446,13 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Environment variables:
 
  * **AZURE_WA_SITE** Web App Name. Used if the `site` option is omitted.
+ * **AZURE_WA_SLOT** Optional. Slot name if your app uses staging deployment. Used if the `slot` option is omitted.
  * **AZURE_WA_USERNAME**: Web App Deployment Username. Used if the `username` option is omitted.
  * **AZURE_WA_PASSWORD**: Web App Deployment Password. Used if the `password` option is omitted.
 
 #### Examples:
 
-    dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --verbose
+    dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --slot=dplsite-test --verbose
 
 ### Divshot.io:
 
@@ -757,6 +761,34 @@ and your testers can start testing your app.
 
     dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>
 
+### Scalingo:
+
+#### Options:
+* **api_key**: scalingo API Key. Not necessary if username and password are used.
+* **username**: scalingo username. Not necessary if api_key is used.
+* **password**: scalingo password. Not necessary if api_key is used.
+* **remote**: Remote url or git remote name of your git repository. By default remote name is "scalingo".
+* **branch**: Branch of your git repository. By default branch name is "master".
+* **app**: Only necessary if your repository does not contain the appropriate remote. Specifying the app will add a remote to your local repository: `git remote add <remote> git@scalingo.com:<app>.git`
+
+#### Use:
+
+You can connect to Scalingo using your username/password or your api key.
+It needs [Scalingo CLI](http://cli.scalingo.com/) which will be [downloaded here](http://cli.scalingo.com/).
+Then, it will push your project to Scalingo and deploy it automatically.
+
+Note: You only need to connect once to Scalingo CLI, credentials are stored locally.
+
+#### Examples:
+
+    dpl --provider=scalingo --api_key="aaAAbbBB0011223344"
+    dpl --provider=scalingo --username=<username> --password=<password>
+
+    dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --remote="scalingo-staging"
+    dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --remote="scalingo-staging" --branch="master"
+
+    dpl --provider=scalingo
+
 ### Script:
 
 An elementary provider that executes a single command.
@@ -796,3 +828,14 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Example:
 
     dpl --provider=gae --project=example --no_promote=true
+
+### Firebase:
+
+#### Options:
+
+* **token**: Your Firebase CI access token (generate with `firebase login:ci`)
+* **project**: Deploy to a different Firebase project than specified in your `firebase.json` (e.g. `myapp-staging`)
+
+#### Examples:
+
+    dpl --provider=firebase --token=<token> --project=<project>

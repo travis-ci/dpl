@@ -22,7 +22,7 @@ describe DPL::Provider::Modulus do
 
   describe "#push_app" do
     it 'should include the api key and project name specified' do
-      expect(provider.context).to receive(:shell).with("MODULUS_TOKEN=test-token modulus deploy -p test-project")
+      expect(provider.context).to receive(:shell).with("env MODULUS_TOKEN=test-token modulus deploy -p test-project")
       provider.push_app
     end
   end
