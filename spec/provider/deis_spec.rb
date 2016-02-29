@@ -83,7 +83,7 @@ describe DPL::Provider::Deis do
   describe "#push_app" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'git push deis HEAD:refs/heads/master -f'
+        'git push  deis HEAD:refs/heads/master -f'
       ).and_return(true)
       provider.push_app
     end

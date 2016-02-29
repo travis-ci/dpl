@@ -35,7 +35,7 @@ module DPL
 
         File.open(path, 'w') do |file|
           file.write "#!/bin/sh\n"
-          file.write "exec ssh -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i #{key_path} \"$@\"\n"
+          file.write "exec ssh #{verbose_flag} -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i #{key_path} \"$@\"\n"
         end
 
         chmod(0740, path)
@@ -53,7 +53,7 @@ module DPL
       end
 
       def push_app
-        unless context.shell "git push deis HEAD:refs/heads/master -f"
+        unless context.shell "git push #{verbose_flag} deis HEAD:refs/heads/master -f"
           error 'Deploying application failed.'
         end
       end
@@ -69,6 +69,10 @@ module DPL
         context.shell "mv deis ~/deis"
         super
         context.shell "mv ~/deis deis"
+      end
+
+      def verbose_flag
+        '-v' if options[:verbose]
       end
     end
   end
