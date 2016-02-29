@@ -25,7 +25,7 @@ module DPL
 
         def upload_archive
           log "uploading application archive"
-          context.shell "curl #{verbose_flag} #{retry_flag} #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' -H 'Expect:' --data-binary @#{archive_file}"
+          context.shell "curl #{verbose_flag} #{ssl_protocol_flag} #{retry_flag} #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' -H 'Expect:' --data-binary @#{archive_file}"
         end
 
         def trigger_build
