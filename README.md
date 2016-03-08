@@ -20,13 +20,10 @@ Dpl supports the following providers:
 * [Chef Supermarket](#chef-supermarket)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
-* [cloudControl](#cloudcontrol)
 * [Deis](#deis)
 * [Divshot.io](#divshotio)
-* [dotCloud (experimental)](#dotcloud)
 * [Elastic Beanstalk](#elastic-beanstalk)
 * [Engine Yard](#engine-yard)
-* [ExoScale](#exoscale)
 * [Firebase](#firebase)
 * [Github Releases](#github-releases)
 * [Google App Engine (experimental)](#google-app-engine)
@@ -263,18 +260,6 @@ For authentication you can also use Travis CI secure environment variable:
     dpl --provider=openshift --user=<username> --password=<password> --domain=<domain>
     dpl --provider=openshift --user=<username> --password=<password> --domain=<domain> --app=<app>
 
-### cloudControl:
-
-#### Options:
-
-* **email**: cloudControl email.
-* **password**: cloudControl password.
-* **deployment**: cloudControl Deployment. Follows the format "APP_NAME/DEP_NAME".
-
-#### Examples:
-
-    dpl --provider=cloudcontrol --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
-
 ### RubyGems:
 
 #### Options:
@@ -488,19 +473,6 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space> --skip-ssl-validation
-
-### dotCloud:
-
-#### Options:
-
-* **api_key**: dotCloud api key.
-* **app**: dotcloud app.
-* **service**: dotcloud service to run commands on. Defaults to 'www'.
-
-#### Examples:
-
-    dpl --provider=dotcloud --api_key=<api_key> --app=<app>
-    dpl --provider=dotcloud --api_key=<api_key> --app=<app> --service=<service>
 
 ### Rackspace Cloud Files:
 
@@ -738,18 +710,6 @@ and your testers can start testing your app.
 #### Examples:
 
     dpl --provider=testfairy --api-key=<api-key> --app-file="out/Sample.apk" --keystore-file="out/keystore" --storepass=<storepass> --alias=<alias>
-
-### ExoScale:
-
-#### Options:
-
-* **email**: ExoScale email or Organization ID.
-* **password**: ExoScale password.
-* **deployment**: ExoScale Deployment. Follows the format "APP_NAME/DEP_NAME".
-
-#### Examples:
-
-    dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
 
 ### AWS CodeDeploy:
 
