@@ -27,6 +27,7 @@ Dpl supports the following providers:
 * [Elastic Beanstalk](#elastic-beanstalk)
 * [Engine Yard](#engine-yard)
 * [ExoScale](#exoscale)
+* [Firebase](#firebase)
 * [Github Releases](#github-releases)
 * [Google App Engine (experimental)](#google-app-engine)
 * [Google Cloud Storage](#google-cloud-storage)
@@ -43,6 +44,7 @@ Dpl supports the following providers:
 * [Rackspace Cloud Files](#rackspace-cloud-files)
 * [RubyGems](#rubygems)
 * [S3](#s3)
+* [Scalingo](#scalingo)
 * [Script](#script)
 * [TestFairy](#testfairy)
 
@@ -130,7 +132,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 		"released": "2015-01-04",
 		"vcs_tag": "0.5",
 	 	"attributes": [{"name": "VerAtt1", "values" : ["VerVal1"], "type": "string"},
-  					   {"name": "VerAtt2", "values" : [1, 3.3, 5], "type": "number"},
+  					   {"name": "VerAtt2", "values" : [1, 3.2, 5], "type": "number"},
 					   {"name": "VerAtt3", "values" : ["2015-01-01T19:43:37+0100"], "type": "date"}],
 		"gpgSign": false
 	},
@@ -149,7 +151,7 @@ As a rule of thumb, you should switch to the Git strategy if you run into issues
 	The files will be uploaded to Bintray under the gems folder.
 	2. All files under build/docs. The files will be uploaded to Bintray under the docs folder.
 
-	Note: Regular expressions defined as part of the includePattern and excludePattern properties must be wrapped with brackets. */
+	Note: Regular expressions defined as part of the includePattern property must be wrapped with brackets. */
 
 	"files":
 		[
@@ -289,9 +291,17 @@ For authentication you can also use Travis CI secure environment variable:
 
 * **user**: PyPI Username.
 * **password**: PyPI Password.
-* **server**: Optional. Only required if you want to release to a different index. Follows the form of "https://mypackageindex.com/index".
-* **distributions**: A space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
-* **docs_dir**: A path to the directory to upload documentation from. Defaults to 'build/docs'
+* **server**: Optional. Only required if you want to release to a different index. Follows the form of 'https://mypackageindex.com/index'. Defaults to 'https://pypi.python.org/pypi'.
+* **distributions**: Optional. A space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
+* **docs_dir**: Optional. A path to the directory to upload documentation from. Defaults to 'build/docs'
+
+#### Environment variables:
+
+ * **PYPI_USER**: PyPI Username. Used if the `user` option is omitted.
+ * **PYPI_PASSWORD**: PyPI Password. Used if the `password` option is omitted.
+ * **PYPI_SERVER** Optional. Only required if you want to release to a different index. Used if the `server` option is omitted.
+ * **PYPI_DISTRIBUTIONS** Optional. A space-separated list of distributions to be uploaded to PyPI. Used if the `distributions` option is omitted.
+ * **PYPI_DOCS_DIR** Optional. A path to the directory to upload documentation from. Used if the `docs_dir` option is omitted.
 
 #### Examples:
 
@@ -436,6 +446,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Options:
 
 * **site**: Web App Name (if your app lives at myapp.azurewebsites.net, the name would be myapp).
+* **slot**: Optional. Slot name if your app uses staging deployment. (e.g. if your slot lives at myapp-test.azurewebsites.net, the slot would be myapp-test).
 * **username**: Web App Deployment Username.
 * **password**: Web App Deployment Password.
 * **verbose**: If passed, Azure's deployment output will be printed. Warning: If you provide incorrect credentials, Git will print those in clear text. Correct authentication credentials will remain hidden.
@@ -443,12 +454,13 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Environment variables:
 
  * **AZURE_WA_SITE** Web App Name. Used if the `site` option is omitted.
+ * **AZURE_WA_SLOT** Optional. Slot name if your app uses staging deployment. Used if the `slot` option is omitted.
  * **AZURE_WA_USERNAME**: Web App Deployment Username. Used if the `username` option is omitted.
  * **AZURE_WA_PASSWORD**: Web App Deployment Password. Used if the `password` option is omitted.
 
 #### Examples:
 
-    dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --verbose
+    dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --slot=dplsite-test --verbose
 
 ### Divshot.io:
 
@@ -514,7 +526,11 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **repo**: GitHub Repo. Defaults to git repo's name.
 * **file**: File to upload to GitHub Release.
 * **file_glob**: If files should be interpreted as globs (\* and \*\* wildcards). Defaults to false.
+* **overwrite**: If files with the same name should be overwritten. Defaults to false.
 * **release-number**: Overide automatic release detection, set a release manually.
+
+Additionally, options can be passed to [Octokit](https://github.com/octokit/octokit.rb) client.
+These are documented in https://github.com/octokit/octokit.rb/blob/master/lib/octokit/client/releases.rb.
 
 #### GitHub Two Factor Authentication
 
@@ -593,6 +609,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **zip_file**: The zip file that you want to deploy. _**Note:**_ you also need to use the `skip_cleanup` or the zip file you are trying to upload will be removed during cleanup.
  * **bucket_name**: Bucket name to upload app to.
  * **bucket_path**: Location within Bucket to upload app to.
+ * **only_create_app_version**: only create the app version, don't actually deploy it.
 
 #### Environment variables:
 
@@ -608,7 +625,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
 #### Options:
 
- * **access_token**: Optinoal. The access_token which can be found in the `.bitballoon` file after a deployment using the bitballoon CLI. Only required if no `.bitballoon` file is present.
+ * **access_token**: Optional. The access_token which can be found in the `.bitballoon` file after a deployment using the bitballoon CLI. Only required if no `.bitballoon` file is present.
  * **site_id**: Optional. The site_id which can be found in the .bitballoon file after a deployment using the bitballoon CLI. Only required if no `.bitballoon` file is present.
  * **local_dir**: Optional. The sub-directory of the built assets for deployment. Default to current path.
 
@@ -757,6 +774,34 @@ and your testers can start testing your app.
 
     dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>
 
+### Scalingo:
+
+#### Options:
+* **api_key**: scalingo API Key. Not necessary if username and password are used.
+* **username**: scalingo username. Not necessary if api_key is used.
+* **password**: scalingo password. Not necessary if api_key is used.
+* **remote**: Remote url or git remote name of your git repository. By default remote name is "scalingo".
+* **branch**: Branch of your git repository. By default branch name is "master".
+* **app**: Only necessary if your repository does not contain the appropriate remote. Specifying the app will add a remote to your local repository: `git remote add <remote> git@scalingo.com:<app>.git`
+
+#### Use:
+
+You can connect to Scalingo using your username/password or your api key.
+It needs [Scalingo CLI](http://cli.scalingo.com/) which will be [downloaded here](http://cli.scalingo.com/).
+Then, it will push your project to Scalingo and deploy it automatically.
+
+Note: You only need to connect once to Scalingo CLI, credentials are stored locally.
+
+#### Examples:
+
+    dpl --provider=scalingo --api_key="aaAAbbBB0011223344"
+    dpl --provider=scalingo --username=<username> --password=<password>
+
+    dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --remote="scalingo-staging"
+    dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --remote="scalingo-staging" --branch="master"
+
+    dpl --provider=scalingo
+
 ### Script:
 
 An elementary provider that executes a single command.
@@ -796,3 +841,14 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Example:
 
     dpl --provider=gae --project=example --no_promote=true
+
+### Firebase:
+
+#### Options:
+
+* **token**: Your Firebase CI access token (generate with `firebase login:ci`)
+* **project**: Deploy to a different Firebase project than specified in your `firebase.json` (e.g. `myapp-staging`)
+
+#### Examples:
+
+    dpl --provider=firebase --token=<token> --project=<project>
