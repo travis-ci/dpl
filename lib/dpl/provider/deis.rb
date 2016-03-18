@@ -1,6 +1,9 @@
 module DPL
   class Provider
     class Deis < Provider
+      
+      requires 'git'
+
       def install_deploy_dependencies
         context.shell "curl -sSL http://deis.io/deis-cli/install.sh | sh -s #{option(:cli_version)}"
       end
@@ -53,7 +56,9 @@ module DPL
         max_retries=30
 
         #Parse out the git remote host and port
-        git_remote=`cat .git/config  | grep -A1 '[remote] "deis"' | tail -n 1 | sed 's/.*url = //'`
+        #git_remote=`cat .git/config  | grep -A1 '[remote] "deis"' | tail -n 1 | sed 's/.*url = //'`
+        git=Git.open("./")
+        git_remote=git.remote("deis").url
         remote_uri=git_remote.split("ssh://")[1].split("/")[0]
         remote_host=remote_uri.split(":")[0]
         remote_port=remote_uri.split(":")[1]
