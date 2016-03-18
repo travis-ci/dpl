@@ -368,7 +368,7 @@ module DPL
       def root_path(str)
         index = str.index('(')
         path = nil
-        if index.nil?
+        if index.nil? || str.start_with?('(')
           path = str
         else
           path = str[0, index]

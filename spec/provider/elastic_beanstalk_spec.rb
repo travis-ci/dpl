@@ -16,6 +16,7 @@ describe DPL::Provider::ElasticBeanstalk do
   let(:env) { 'live' }
   let(:bucket_name) { "travis-elasticbeanstalk-test-builds-#{region}" }
   let(:bucket_path) { "some/app"}
+  let(:only_create_app_version) { nil }
 
   let(:bucket_mock) do
     dbl = double("bucket mock", write: nil)
@@ -31,7 +32,8 @@ describe DPL::Provider::ElasticBeanstalk do
   subject :provider do
     described_class.new(
       DummyContext.new, :access_key_id => access_key_id, :secret_access_key => secret_access_key,
-      :region => region, :app => app, :env => env, :bucket_name => bucket_name, :bucket_path => bucket_path
+      :region => region, :app => app, :env => env, :bucket_name => bucket_name, :bucket_path => bucket_path,
+      :only_create_app_version => only_create_app_version
     )
   end
 
@@ -81,6 +83,24 @@ describe DPL::Provider::ElasticBeanstalk do
       expect(provider).to receive(:update_app).with(app_version)
 
       provider.push_app
+    end
+    
+    context 'only creates app version' do
+      let(:only_create_app_version) { true }
+      
+      example 'verify the app is not updated' do
+      
+        expect(provider).to receive(:s3).and_return(s3_mock).twice
+        expect(provider).to receive(:create_bucket)
+        expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
+        expect(provider).to receive(:archive_name).and_return('file.zip')
+        expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
+        expect(provider).to receive(:sleep).with(5)
+        expect(provider).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+        expect(provider).not_to receive(:update_app).with(app_version)
+
+        provider.push_app
+      end
     end
 
     context 'When the bucket_path option is not set' do

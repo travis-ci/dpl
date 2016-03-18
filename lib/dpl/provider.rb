@@ -26,6 +26,7 @@ module DPL
     autoload :ElasticBeanstalk, 'dpl/provider/elastic_beanstalk'
     autoload :EngineYard,       'dpl/provider/engine_yard'
     autoload :ExoScale,         'dpl/provider/exoscale'
+    autoload :Firebase,         'dpl/provider/firebase'
     autoload :GAE,              'dpl/provider/gae'
     autoload :GCS,              'dpl/provider/gcs'
     autoload :Hackage,          'dpl/provider/hackage'
@@ -42,6 +43,7 @@ module DPL
     autoload :Releases,         'dpl/provider/releases'
     autoload :RubyGems,         'dpl/provider/rubygems'
     autoload :S3,               'dpl/provider/s3'
+    autoload :Scalingo,         'dpl/provider/scalingo'
     autoload :Script,           'dpl/provider/script'
     autoload :TestFairy,        'dpl/provider/testfairy'
     autoload :Transifex,        'dpl/provider/transifex'
@@ -167,6 +169,9 @@ module DPL
     def cleanup
       return if options[:skip_cleanup]
       context.shell "mv .dpl ~/dpl"
+      log "Cleaning up git repository with `git stash --all`. " \
+        "If you need build artifacts for deployment, set `deploy.skip_cleanup: true`. " \
+        "See https://docs.travis-ci.com/user/deployment/#Uploading-Files."
       context.shell "git stash --all"
       context.shell "mv ~/dpl .dpl"
     end
