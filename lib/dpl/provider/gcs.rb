@@ -13,7 +13,8 @@ module DPL
       def client
         @client ||= GStore::Client.new(
           :access_key => option(:access_key_id),
-          :secret_key => option(:secret_access_key)
+          :secret_key => option(:secret_access_key),
+          :debug => options[:debug] ? options[:debug] : false
         )
       end
 
