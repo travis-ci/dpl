@@ -67,6 +67,15 @@ describe DPL::Provider::Deis do
       expect(provider.context).to receive(:shell).with(
         './deis git:remote --app=example'
       ).and_return(true)
+
+      expect(provider.context).to receive(:shell).with(
+        /grep -c 'PTY allocation request failed'/
+      ).and_return(false)
+
+      expect(provider.context).to receive(:shell).with(
+        /grep -c 'PTY allocation request failed'/
+      ).and_return(true)
+
       provider.setup_git_ssh('foo', 'key_file')
     end
   end
