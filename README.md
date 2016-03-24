@@ -831,6 +831,7 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 * **no_promote**: Flag to not promote the deployed version. See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
 * **verbosity**: Let's you adjust the verbosity when invoking `"gcloud"`. Defaults to `"warning"`. See [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/).
 * **docker_build**: If deploying a Managed VM, specifies where to build your image. Typical values are `"remote"` to build on Google Cloud Engine and `"local"` which requires Docker to be set up properly (to utilize this on Travis CI, read [Using Docker on Travis CI](http://blog.travis-ci.com/2015-08-19-using-docker-on-travis-ci/)). Defaults to `"remote"`.
+* **cloud_build**: By default, the provider will attempt to use [Google Cloud Container Builder](https://cloud.google.com/container-builder/docs/) to build the Docker image that will be deployed (this requires the [Container Builder API](https://console.developers.google.com/apis/api/cloudbuild.googleapis.com/overview) to be enabled for your project). If you want to avoid this, set this option to `"false"`. When building locally, this will not have any effect.
 * **no_stop_previous_version**: Flag to prevent your deployment from stopping the previously promoted version. This is from the future, so might not work (yet). See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
 
 #### Environment variables:

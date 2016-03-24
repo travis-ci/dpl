@@ -59,7 +59,7 @@ module DPL
       end
 
       def use_cloud_build
-        options[:use_cloud_build] || 'false'
+        options[:use_cloud_build] || 'true'
       end
 
       def verbosity
