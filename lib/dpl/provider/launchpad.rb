@@ -5,6 +5,12 @@ module DPL
   class Provider
     class Launchpad < Provider
 
+      def initialize(context, options)
+        super
+        @http = Net::HTTP.new('api.launchpad.net', 443)
+        @http.use_ssl = true
+      end
+
       def check_auth
       end
 
@@ -13,21 +19,30 @@ module DPL
       end
 
       def push_app
-        http = Net::HTTP.new('api.launchpad.net', 443)
-        http.use_ssl = true
-        req = Net::HTTP::Post.new("/1.0/" + options[:slug] + "/+code-import")
-        req.set_form_data('ws.op' => 'requestImport')
-        req['Authorization'] =
-          'OAuth oauth_consumer_key="Travis%20Deploy", ' +
-          'oauth_nonce="' + rand(36**32).to_s(36) + '",' +
-          'oauth_signature="%26' + options[:oauth_token_secret] + '",' +
-          'oauth_signature_method="PLAINTEXT",' +
-          'oauth_timestamp="' + Time::now().to_i.to_s + '",' +
-          'oauth_token="' + options[:oauth_token] + '",' +
-          'oauth_version="1.0"'
-        response = http.request(req)
-        error('Deploy failed! Response Code: ' + response.code.to_s) if response.code != '200'
+        response = api_call('/1.0/' + options[:slug] + '/+code-import', {'ws.op' => 'requestImport'})
+        error('Deploy failed! Launchpad credentials invalid. ' + response.code.to_s) if response.code == '401'
+        error('Error: ' + response.code + ' ' + response.body) if response.code != '200'
       end
+
+      private
+
+        def api_call(path, data)
+          req = Net::HTTP::Post.new(path)
+          req.set_form_data(data)
+          req['Authorization'] = get_authorization_header
+          return @http.request(req)
+        end
+
+        def get_authorization_header
+          return 'OAuth oauth_consumer_key="Travis%20Deploy", ' +
+                 'oauth_nonce="' + rand(36**32).to_s(36) + '",' +
+                 'oauth_signature="%26' + options[:oauth_token_secret] + '",' +
+                 'oauth_signature_method="PLAINTEXT",' +
+                 'oauth_timestamp="' + Time::now().to_i.to_s + '",' +
+                 'oauth_token="' + options[:oauth_token] + '",' +
+                 'oauth_version="1.0"'
+        end
+
     end
   end
 end
