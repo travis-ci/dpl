@@ -58,6 +58,10 @@ module DPL
         options[:no_promote]
       end
 
+      def use_cloud_build
+        options[:use_cloud_build] || 'false'
+      end
+
       def verbosity
         options[:verbosity] || 'warning'
       end
@@ -67,10 +71,11 @@ module DPL
       end
 
       def no_stop_previous_version
-          options[:no_stop_previous_version]
+        options[:no_stop_previous_version]
       end
 
       def push_app
+        context.shell "#{GCLOUD} config set app/use_cloud_build #{use_cloud_build}"
         command = GCLOUD
         command << ' --quiet'
         command << " --verbosity \"#{verbosity}\""
@@ -81,8 +86,9 @@ module DPL
         command << " --#{no_promote ? 'no-' : ''}promote"
         command << (no_stop_previous_version ? ' --no-stop-previous-version' : '')
         unless context.shell(command)
-          error 'Deployment failed.'
+          log 'Deployment failed.'
           context.shell('find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;')
+          error ''
         end
       end
     end
