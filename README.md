@@ -13,7 +13,6 @@ Dpl supports the following providers:
 * [AWS CodeDeploy](#aws-codedeploy)
 * [AWS OpsWorks](#opsworks)
 * [Azure Web Apps](#azure-web-apps)
-* [Biicode](#biicode)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
 * [Boxfuse](#boxfuse)
@@ -318,20 +317,6 @@ For authentication you can also use Travis CI secure environment variable:
 #### Examples:
 
     dpl --provider=npm --email=<email> --api-key=<api-key>
-
-### biicode:
-
-**Requires `sudo`; cannot be used on containers**
-
-#### Options:
-
-* **user**: biicode username.
-* **password**: biicode password.
-
-#### Examples:
-
-    dpl --provider=biicode --user=<user> --password=<password>
-
 
 ### S3:
 
