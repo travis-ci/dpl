@@ -12,7 +12,7 @@ deploy:
   	source: myown/dpl
     branch: foo
   on:
-  	branches: TEST_BRANCH # or all_branches: true
+  	branch: TEST_BRANCH # or all_branches: true
   ⋮ # rest of provider X configuration
 ```
 
