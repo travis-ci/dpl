@@ -34,6 +34,7 @@ Dpl supports the following providers:
 * [Hackage](#hackage)
 * [Heroku](#heroku)
 * [Lambda](#lambda)
+* [Launchpad](#launchpad)
 * [Modulus](#modulus)
 * [Nodejitsu](#nodejitsu)
 * [NPM](#npm)
@@ -708,6 +709,24 @@ Deploy contents of a specific directory using specific module name:
         --zip="${TRAVIS_BUILD_DIR}/dist"  \
         --module_name="copy" \
         --handler_name="handler";
+```
+
+### Launchpad:
+
+#### Options:
+
+ * **slug**: Required. `~user-name/project-name/branch-name`
+ * **oauth_token**: Required. Your OAUTH token for Launchpad
+ * **oauth_token_secret**: Required. Your OAUTH token secret for Launchpad
+
+#### Example:
+
+Deploy contents of current working directory using default module:
+```
+    dpl --provider="launchpad" \
+        --slug="~user-name/project-name/branch-name" \
+        --oauth_token="${LAUNCHPAD_OAUTH_TOKEN}" \
+        --oauth_token_secret="${LAUNCHPAD_OAUTH_TOKEN_SECRET}";
 ```
 
 ### TestFairy:
