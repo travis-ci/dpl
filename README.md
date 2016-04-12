@@ -47,6 +47,7 @@ Dpl supports the following providers:
 * [S3](#s3)
 * [Scalingo](#scalingo)
 * [Script](#script)
+* [Surge.sh](#surgesh)
 * [TestFairy](#testfairy)
 
 ## Installation:
@@ -871,3 +872,22 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Examples:
 
     dpl --provider=firebase --token=<token> --project=<project>
+    
+
+
+### Surge.sh
+
+#### Options:
+
+* **project** Path to project folder relative to repo root. Defaults to repo root if not set.
+* **domain** Domain to publish to. Can be omitted if domain is set in the `CNAME` file in the project folder. 
+
+ 
+#### Environment variables:
+
+* **SURGE_LOGIN**: Set it to the email address you use with Surge
+* **SURGE_TOKEN**: Set it to your login token (get it by doing a `surge token`)
+
+#### Example:
+    dpl --provider=surge --project=<project-path> --domain=<domain-name>
+    
