@@ -2,10 +2,9 @@ module DPL
   class Provider
     class Surge < Provider
       npm_g 'surge'
-      context.shell "git rev-parse && cd \"$(git rev-parse --show-toplevel)\"" # Go to repo root 
 
       def project
-        File.expand_path("./" + (options[:project] || '') )
+        File.expand_path(context.env['TRAVIS_BUILD_DIR'] + "/" + (options[:project] || '') )
       end
 
       def domain
