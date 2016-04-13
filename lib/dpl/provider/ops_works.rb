@@ -40,7 +40,7 @@ module DPL
       end
 
       def custom_json
-        eval(options[:custom_json]) || {
+        YAML.load(options[:custom_json]) || {
           deploy: {
             ops_works_app[:shortname] => {
               migrate: !!options[:migrate],
@@ -85,7 +85,7 @@ module DPL
           custom_json: custom_json.to_json
         }
         if !options[:instance_ids].nil?
-          deployment_config[:instance_ids] = [*option(:instance_ids)]
+          deployment_config[:instance_ids] = YAML.load(option(:instance_ids)) 
         end
         data = client.create_deployment(deployment_config)
         log "Deployment created: #{data[:deployment_id]}"
