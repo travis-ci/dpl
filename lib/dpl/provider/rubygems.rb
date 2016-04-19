@@ -37,6 +37,11 @@ module DPL
         setup_auth
         setup_gem
         context.shell "gem build #{gemspec || option(:gem)}.gemspec"
+
+        if options[:gemspec] && options[:gemspec].include?(File::Separator)
+          options[:gemspec] = options[:gemspec].split(File::Separator)[-1]
+        end
+
         Dir.glob("#{gemspec || option(:gem)}-*.gem") do |f|
           if options[:host]
             log ::Gems.push(File.new(f), options[:host])
@@ -45,6 +50,34 @@ module DPL
           end
         end
       end
+
+      # def push_app
+      #   setup_auth
+      #   setup_gem
+      #   context.shell "gem build #{gemspec || option(:gem)}.gemspec"
+      #
+      #   gemspec_file = gemspec
+      #   # if !gemspec_file.nil? && gemspec_file.include?(File::Separator)
+      #   #   puts gemspec
+      #   #   gemspec_file = gemspec_file.split(File::Separator)[-1]
+      #   #   puts file
+      #   # end
+      #
+      #   files_to_push = Dir.glob("#{gemspec_file || option(:gem)}-*.gem")
+      #   if files_to_push.any?
+      #     files_to_push do |f|
+      #       if options[:host]
+      #         log ::Gems.push(File.new(f), options[:host])
+      #       else
+      #         log ::Gems.push(File.new f)
+      #       end
+      #     end
+      #   else
+      #     log "Did not find any files to push."
+      #   end
+      # end
+
+
     end
   end
 end
