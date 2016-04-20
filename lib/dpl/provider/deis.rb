@@ -59,8 +59,7 @@ module DPL
         git=Git.open("./")
         git_remote=git.remote("deis").url
         remote_uri=git_remote.split("ssh://")[1].split("/")[0]
-        remote_host=remote_uri.split(":")[0]
-        remote_port=remote_uri.split(":")[1]
+        remote_host, remote_port = remote_uri.split(":")
         puts "Git remote is #{remote_host} at port #{remote_port}"
 
         #Try and connect to the github remote via ssh.
