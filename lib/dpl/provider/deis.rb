@@ -55,8 +55,7 @@ module DPL
         retry_count=0
         max_retries=30
 
-        #Parse out the git remote host and port
-        #git_remote=`cat .git/config  | grep -A1 '[remote] "deis"' | tail -n 1 | sed 's/.*url = //'`
+        #Get the deis git remote host and port
         git=Git.open("./")
         git_remote=git.remote("deis").url
         remote_uri=git_remote.split("ssh://")[1].split("/")[0]
