@@ -20,6 +20,9 @@ module DPL
       end
 
       def push_app
+        # Options defined at
+        #   https://docs.aws.amazon.com/sdkforruby/api/Aws/LambdaPreview/Client.html
+        #   https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html
         response = lambda.upload_function({
           function_name:  options[:name]           || option(:function_name),
           description:    options[:description]    || default_description,
@@ -28,8 +31,8 @@ module DPL
           role:           option(:role),
           handler:        handler,
           function_zip:   function_zip,
-          runtime:        default_runtime,
-          mode:           default_mode
+          runtime:        options[:runtime]        || default_runtime,
+          mode:           default_mode,
         })
 
         log "Uploaded lambda: #{response.function_name}."

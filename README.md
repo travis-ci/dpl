@@ -13,7 +13,6 @@ Dpl supports the following providers:
 * [AWS CodeDeploy](#aws-codedeploy)
 * [AWS OpsWorks](#opsworks)
 * [Azure Web Apps](#azure-web-apps)
-* [Biicode](#biicode)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
 * [Boxfuse](#boxfuse)
@@ -47,6 +46,7 @@ Dpl supports the following providers:
 * [S3](#s3)
 * [Scalingo](#scalingo)
 * [Script](#script)
+* [Surge.sh](#surgesh)
 * [TestFairy](#testfairy)
 
 ## Installation:
@@ -319,20 +319,6 @@ For authentication you can also use Travis CI secure environment variable:
 #### Examples:
 
     dpl --provider=npm --email=<email> --api-key=<api-key>
-
-### biicode:
-
-**Requires `sudo`; cannot be used on containers**
-
-#### Options:
-
-* **user**: biicode username.
-* **password**: biicode password.
-
-#### Examples:
-
-    dpl --provider=biicode --user=<user> --password=<password>
-
 
 ### S3:
 
@@ -687,6 +673,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **description**: Optional. The description of the Lambda being created / updated. Defaults to "Deploy build #{context.env['TRAVIS_BUILD_NUMBER']} to AWS Lambda via Travis CI"
  * **timeout**: Optional. The function execution time at which Lambda should terminate the function. Defaults to 3 (seconds).
  * **memory_size**: Optional. The amount of memory in MB to allocate to this Lambda. Defaults to 128.
+ * **runtime**: Optional. The Lambda runtime to use. Defaults to `node`.
 
 #### Examples:
 
@@ -871,3 +858,22 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Examples:
 
     dpl --provider=firebase --token=<token> --project=<project>
+    
+
+
+### Surge.sh
+
+#### Options:
+
+* **project** Path to project folder relative to repo root. Defaults to repo root if not set.
+* **domain** Domain to publish to. Can be omitted if domain is set in the `CNAME` file in the project folder. 
+
+ 
+#### Environment variables:
+
+* **SURGE_LOGIN**: Set it to the email address you use with Surge
+* **SURGE_TOKEN**: Set it to your login token (get it by doing a `surge token`)
+
+#### Example:
+    dpl --provider=surge --project=<project-path> --domain=<domain-name>
+    
