@@ -31,6 +31,7 @@ module DPL
     autoload :Hackage,          'dpl/provider/hackage'
     autoload :Heroku,           'dpl/provider/heroku'
     autoload :Lambda,           'dpl/provider/lambda'
+    autoload :Launchpad,        'dpl/provider/launchpad'
     autoload :Modulus,          'dpl/provider/modulus'
     autoload :Nodejitsu,        'dpl/provider/nodejitsu'
     autoload :NPM,              'dpl/provider/npm'
@@ -44,6 +45,7 @@ module DPL
     autoload :S3,               'dpl/provider/s3'
     autoload :Scalingo,         'dpl/provider/scalingo'
     autoload :Script,           'dpl/provider/script'
+    autoload :Surge,            'dpl/provider/surge'
     autoload :TestFairy,        'dpl/provider/testfairy'
     autoload :Transifex,        'dpl/provider/transifex'
 
