@@ -10,7 +10,6 @@ module DPL
     autoload :Appfog,           'dpl/provider/appfog'
     autoload :Atlas,            'dpl/provider/atlas'
     autoload :AzureWebApps,     'dpl/provider/azure_webapps'
-    autoload :Biicode,          'dpl/provider/biicode'
     autoload :Bintray,          'dpl/provider/bintray'
     autoload :BitBalloon,       'dpl/provider/bitballoon'
     autoload :Boxfuse,          'dpl/provider/boxfuse'
