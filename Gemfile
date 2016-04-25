@@ -82,3 +82,7 @@ end
 group :chef_supermarket do
   gem 'chef'
 end
+
+group :deis do
+  gem 'git'
+end
