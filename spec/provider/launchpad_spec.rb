@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'dpl/provider/cloudcontrol'
+require 'dpl/provider/launchpad'
 
 describe DPL::Provider::Launchpad do
   subject :provider do
