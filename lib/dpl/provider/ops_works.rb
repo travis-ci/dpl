@@ -40,6 +40,7 @@ module DPL
       end
 
       def custom_json
+        options[:custom_json] = YAML.load(options[:custom_json]) if options[:custom_json].is_a? String
         options[:custom_json] || {
           deploy: {
             ops_works_app[:shortname] => {
@@ -85,6 +86,7 @@ module DPL
           custom_json: custom_json.to_json
         }
         if !options[:instance_ids].nil?
+          options[:instance_ids] = YAML.load(options[:instance_ids]) if options[:instance_ids].is_a? String
           deployment_config[:instance_ids] = option(:instance_ids)
         end
         data = client.create_deployment(deployment_config)
