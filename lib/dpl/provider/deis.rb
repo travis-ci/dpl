@@ -5,7 +5,11 @@ module DPL
       requires 'git'
 
       def install_deploy_dependencies
-        context.shell "curl -sSL http://deis.io/deis-cli/install.sh | sh -s #{option(:cli_version)}"
+        if #{option(:cli_version)} == 2 
+          context.shell "curl -sSL http://deis.io/deis-cli/install-v2.sh | bash"
+        else
+          context.shell "curl -sSL http://deis.io/deis-cli/install.sh | sh -s #{option(:cli_version)}"
+        end
       end
 
       def needs_key?
