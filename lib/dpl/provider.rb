@@ -13,6 +13,7 @@ module DPL
     autoload :Bintray,          'dpl/provider/bintray'
     autoload :BitBalloon,       'dpl/provider/bitballoon'
     autoload :Boxfuse,          'dpl/provider/boxfuse'
+    autoload :Catalyze,         'dpl/provider/catalyze'
     autoload :ChefSupermarket,  'dpl/provider/chef_supermarket'
     autoload :Cloud66,          'dpl/provider/cloud66'
     autoload :CloudFiles,       'dpl/provider/cloud_files'
