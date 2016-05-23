@@ -3,7 +3,9 @@ module DPL
     class Catalyze < Provider
       def config
         {
+            # the git repository to deploy to
             "target" => options[:target] || context.env['CATALYZE_TARGET'],
+            # the pathspec for files to add to git for deployment e.g. your build directory. defaults to all files.
             "path" => options[:path] || context.env['CATALYZE_PATH'] || '.'
         }
       end
@@ -45,3 +47,5 @@ module DPL
     end
   end
 end
+
+//Are you sure you want to continue connecting (yes/no)?
