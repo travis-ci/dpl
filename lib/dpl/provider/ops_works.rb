@@ -3,7 +3,7 @@ require 'timeout'
 module DPL
   class Provider
     class OpsWorks < Provider
-      requires 'aws-sdk'
+      requires 'aws-sdk', version: '~> 2'
       experimental 'AWS OpsWorks'
 
       def opsworks
@@ -37,12 +37,7 @@ module DPL
         options[:secret_access_key] || context.env['AWS_SECRET_ACCESS_KEY'] || raise(Error, "missing secret_access_key")
       end
 
-      def setup_auth
-        Aws.config.update(credentials: ::Aws::Credentials.new(access_key_id, secret_access_key))
-      end
-
       def check_auth
-        setup_auth
         log "Logging in with Access Key: #{access_key_id[-4..-1].rjust(20, '*')}"
       end
 
