@@ -80,6 +80,15 @@ describe DPL::Provider::OpsWorks do
       ).and_return({})
       provider.push_app
     end
+
+    example 'with :layer-ids' do
+      provider.options.update(app_id: 'app-id', layer_ids: ['layer-id'])
+      expect(client).to receive(:describe_apps).with(app_ids: ['app-id']).and_return({apps: [ops_works_app]})
+      expect(client).to receive(:create_deployment).with(
+        stack_id: 'stack-id', app_id: 'app-id', layer_ids:['layer-id'], command: {name: 'deploy'}, comment: 'Deploy build 123 via Travis CI', custom_json: custom_json
+      ).and_return({})
+      provider.push_app
+    end
   end
 
   describe "#api" do
