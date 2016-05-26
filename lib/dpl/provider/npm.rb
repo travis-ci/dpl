@@ -22,8 +22,7 @@ module DPL
 
       def check_auth
         setup_auth
-        api_key = option(:api_key).gsub(/[^-]/, '*')[0..-5] + option(:api_key)[-4..-1]
-        log "Authenticated with email #{option(:email)} and api-key #{api_key}"
+        log "Authenticated with email #{option(:email)} and API key #{option(:api_key)[-4..-1].rjust(20, '*')}"
       end
 
       def push_app
