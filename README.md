@@ -648,7 +648,7 @@ c. Add the key as a deploy key using the catalyze cli within the associated repo
 3. Setup Catalyze as a known host for Travis CI:  
 a. List your known hosts by running ```cat ~/.ssh/known_hosts```  
 b. Find and copy the line from known_hosts that includes the git remote found in step #1. It'll look something like "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..."  
-c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts` file:  
+c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts` file:    
 ```
     before_deploy:  echo "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..." >> ~/.ssh/known_hosts
 ```
