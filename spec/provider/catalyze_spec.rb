@@ -15,7 +15,7 @@ describe DPL::Provider::Catalyze do
 
   describe "#push_app" do
     it 'should push the current branch to the target' do
-      expect(provider.context).to receive(:shell).with("git push --force --quiet test-target HEAD:master")
+      expect(provider.context).to receive(:shell).with("git push --force test-target HEAD:master")
       provider.push_app
     end
     it 'should add and commit local build files if skip_cleanup is true' do
@@ -23,7 +23,7 @@ describe DPL::Provider::Catalyze do
       expect(provider.context).to receive(:shell).with("git checkout HEAD")
       expect(provider.context).to receive(:shell).with("git add test-path --all --force")
       expect(provider.context).to receive(:shell).with("git commit -m \"Local build\" --quiet")
-      expect(provider.context).to receive(:shell).with("git push --force --quiet test-target HEAD:master")
+      expect(provider.context).to receive(:shell).with("git push --force test-target HEAD:master")
       provider.push_app
     end
     it 'should use a path of "." if the path is not specified' do
@@ -32,7 +32,7 @@ describe DPL::Provider::Catalyze do
       expect(provider.context).to receive(:shell).with("git checkout HEAD")
       expect(provider.context).to receive(:shell).with("git add . --all --force")
       expect(provider.context).to receive(:shell).with("git commit -m \"Local build\" --quiet")
-      expect(provider.context).to receive(:shell).with("git push --force --quiet test-target HEAD:master")
+      expect(provider.context).to receive(:shell).with("git push --force test-target HEAD:master")
       provider.push_app
     end
   end
