@@ -42,7 +42,7 @@ module DPL
           context.shell "git commit -m \"#{commit_message}\" --quiet"
         end
 
-        context.shell "git push --force --quiet #{config['target']} HEAD:master"
+        context.shell "git push --force #{config['target']} HEAD:master"
       end
     end
   end
