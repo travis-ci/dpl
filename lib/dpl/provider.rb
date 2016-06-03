@@ -213,7 +213,7 @@ module DPL
     end
 
     def default_text_encoding?
-      !options[:default_text_encoding].empty?
+      options[:default_text_encoding]
     end
 
     def default_text_encoding

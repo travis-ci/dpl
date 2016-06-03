@@ -163,7 +163,7 @@ describe DPL::Provider do
     example do
       path = 'foo.js'
       expect(provider).to receive(:`).at_least(1).times.with("file '#{path}'").and_return("#{path}: ASCII text, with very long line")
-      expect(provider.encoding_for(path)).to eq('')
+      expect(provider.encoding_for(path)).to eq(nil)
     end
 
     example do
