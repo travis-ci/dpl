@@ -84,9 +84,13 @@ module DPL
         content_type = MIME::Types.type_for(path).first
         content_data[:content_type] = content_type.to_s
 
+        encoding = encoding_for(path)
         if detect_encoding?
-          encoding = encoding_for(path)
           content_data[:content_encoding] = encoding if encoding
+        end
+
+        if encoding == 'text' && default_text_charset?
+          content_data[:content_type] = "#{content_data[:content_type]}; charset=#{default_text_charset}"
         end
 
         return content_data
