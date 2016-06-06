@@ -163,14 +163,14 @@ describe DPL::Provider do
     example do
       path = 'foo.js'
       expect(provider).to receive(:`).at_least(1).times.with("file '#{path}'").and_return("#{path}: ASCII text, with very long line")
-      expect(provider.encoding_for(path)).to eq(nil)
+      expect(provider.encoding_for(path)).to eq('text')
     end
 
     example do
       path = 'foo.js'
-      provider.options.update(:default_text_encoding => 'UTF-8')
+      provider.options.update(:default_text_charset => 'UTF-8')
       expect(provider).to receive(:`).at_least(1).times.with("file '#{path}'").and_return("#{path}: ASCII text, with very long line")
-      expect(provider.encoding_for(path)).to eq('utf-8')
+      expect(provider.encoding_for(path)).to eq('text')
     end
   end
 
