@@ -721,24 +721,25 @@ and your testers can start testing your app.
 
 #### Options:
 
-* **access-key-id**: AWS Access Key.
+* **access_key_id**: AWS Access Key.
 * **secret_access_key**: AWS Secret Access Key.
 * **application**: CodeDeploy Application Name.
 * **deployment_group**: CodeDeploy Deployment Group Name.
 * **revision_type**: CodeDeploy Revision Type (S3 or GitHub).
 * **commit_id**: Commit ID in case of GitHub.
 * **repository**: Repository Name in case of GitHub.
+* **bucket**: S3 bucket in case of S3.
 * **region**: AWS Availability Zone.
-* **wait-until-deployed**: Wait until the app is deployed and return the deployment status (Optional, Default false).
+* **wait_until_deployed**: Wait until the app is deployed and return the deployment status (Optional, Default false).
 
 #### Environment variables:
 
- * **AWS_ACCESS_KEY_ID**: AWS Access Key ID. Used if the `access-key-id` option is omitted.
- * **AWS_SECRET_ACCESS_KEY**: AWS Secret Key. Used if the `secret-access-key` option is omitted.
+ * **AWS_ACCESS_KEY_ID**: AWS Access Key ID. Used if the `access_key_id` option is omitted.
+ * **AWS_SECRET_ACCESS_KEY**: AWS Secret Key. Used if the `secret_access_key` option is omitted.
 
 #### Examples:
 
-    dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>
+    dpl --provider=codedeploy --access_key_id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --bucket=<bucket name> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait_until_deployed=<true>
 
 ### Scalingo:
 
