@@ -330,7 +330,9 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 
  * **AWS_ACCESS_KEY_ID**: AWS Access Key ID. Used if the `access-key-id` option is omitted.
  * **AWS_SECRET_ACCESS_KEY**: AWS Secret Key. Used if the `secret-access-key` option is omitted.
-
+ * **S3_BUCKET**: S3 Bucket. Used if the `bucket` option is omitted.
+ * **S3_UPLOAD_DIR**: S3 directory to upload to. Used if the `upload-dir` option is omitted.
+ 
 ##### Example:
 
     --cache_control="no-cache: index.html"
