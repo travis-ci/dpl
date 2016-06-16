@@ -62,10 +62,6 @@ module DPL
         options[:verbosity] || 'warning'
       end
 
-      def docker_build
-        options[:docker_build] || 'remote'
-      end
-
       def no_stop_previous_version
         options[:no_stop_previous_version]
       end
@@ -77,7 +73,6 @@ module DPL
         command << " --project \"#{project}\""
         command << " preview app deploy \"#{config}\""
         command << " --version \"#{version}\""
-        command << " --docker-build \"#{docker_build}\""
         command << " --#{no_promote ? 'no-' : ''}promote"
         command << (no_stop_previous_version ? ' --no-stop-previous-version' : '')
         unless context.shell(command)
