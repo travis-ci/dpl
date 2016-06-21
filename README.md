@@ -847,6 +847,10 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 * **url**: Required. The url of repository host to push to.
 * **gpg-passphase**: Required. The passphase for GPG signing.
 * **secret-key-file**: Required. The file of secret key used for GPG signing.
+* **username**: Required. The username for Nexus repository server authorizing.
+* **password**: Required. The password for Nexus repository server authorizing.
+* **retry-count**: Optional. The times a failed deployment will be retried before giving up. Default is 1.
 
 #### Example:
-     dpl --provider=maven --id=<ID> --url=<url>  --gpg-passphrase=<passphrase> --secret-key-file=<file>
+
+     dpl --provider=maven --id=<ID> --url=<url>  --gpg-passphrase=<******> --secret-key-file=<file> --username=<username> --passoword=<*****>
