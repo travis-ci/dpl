@@ -4,6 +4,8 @@ module DPL
       requires 'builder'
 
       SETTINGS_XML = './settings.xml'
+      DEFAULT_ID = "nexus-releases"
+      DEFAULT_URL = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 
       def needs_key?
         false
@@ -24,14 +26,6 @@ module DPL
 
       def gpg_passphrase
         options[:gpg_passphrase]|| raise(Error, "missing gpg_passphrase")
-      end
-
-      def id
-        options[:id]|| raise(Error, "missing id")
-      end
-
-      def url
-        options[:url] || raise(Error, "missing url")
       end
 
       def settings_xml
@@ -60,6 +54,14 @@ module DPL
         options[:retry_count] || 1
       end
 
+      def id
+        options[:id]|| DEFAULT_ID
+      end
+
+      def url
+        options[:url] || DEFAULT_URL
+      end
+      
       def push_app
         File.open(SETTINGS_XML, 'w') { |file| file.write(settings_xml) }
         context.shell "gpg --import #{secret_key_file()}"
