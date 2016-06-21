@@ -45,6 +45,7 @@ Dpl supports the following providers:
 * [Script](#script)
 * [Surge.sh](#surgesh)
 * [TestFairy](#testfairy)
+* [Maven Repository](#maven-repository)
 
 ## Installation:
 
@@ -836,4 +837,16 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 
 #### Example:
     dpl --provider=surge --project=<project-path> --domain=<domain-name>
-    
+
+
+### Maven Repository
+
+#### Options:
+
+* **id**: Required. The repository id.
+* **url**: Required. The url of repository host to push to.
+* **gpg-passphase**: Required. The passphase for GPG signing.
+* **secret-key-file**: Required. The file of secret key used for GPG signing.
+
+#### Example:
+     dpl --provider=maven --id=<ID> --url=<url>  --gpg-passphrase=<passphrase> --secret-key-file=<file>
