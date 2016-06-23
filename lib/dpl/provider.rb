@@ -213,6 +213,14 @@ module DPL
       options[:detect_encoding]
     end
 
+    def default_text_charset?
+      options[:default_text_charset]
+    end
+
+    def default_text_charset
+      options[:default_text_charset].downcase
+    end
+
     def encoding_for(path)
       file_cmd_output = `file '#{path}'`
       case file_cmd_output
@@ -220,6 +228,10 @@ module DPL
         'gzip'
       when /compress'd/
         'compress'
+      when /text/
+        'text'
+      when /data/
+        # Shrugs?
       end
     end
 
