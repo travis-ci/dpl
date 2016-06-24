@@ -45,6 +45,7 @@ Dpl supports the following providers:
 * [Script](#script)
 * [Surge.sh](#surgesh)
 * [TestFairy](#testfairy)
+* [Maven Repository](#maven-repository)
 
 ## Installation:
 
@@ -836,4 +837,20 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 
 #### Example:
     dpl --provider=surge --project=<project-path> --domain=<domain-name>
-    
+
+
+### Maven Repository
+
+#### Options:
+
+* **gpg-passphase**: Required. The passphase for GPG signing.
+* **secret-key-file**: Required. The file of secret key used for GPG signing.
+* **username**: Required. The username for Nexus repository server authorizing.
+* **password**: Required. The password for Nexus repository server authorizing.
+* **retry-count**: Optional. The times a failed deployment will be retried before giving up. Default is 1.
+* **id**: Optional. The repository id. Default value: `nexus-releases`.
+* **url**: Optional. The url of repository server to push to. Default value: `https://oss.sonatype.org/service/local/staging/deploy/maven2/`.
+
+#### Example:
+
+     dpl --provider=maven --gpg-passphrase=<******> --secret-key-file=<file> --username=<username> --passoword=<*****>

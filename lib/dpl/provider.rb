@@ -45,7 +45,7 @@ module DPL
     autoload :Surge,            'dpl/provider/surge'
     autoload :TestFairy,        'dpl/provider/testfairy'
     autoload :Transifex,        'dpl/provider/transifex'
-
+    autoload :Maven,		'dpl/provider/maven'
 
     def self.new(context, options)
       return super if self < Provider
