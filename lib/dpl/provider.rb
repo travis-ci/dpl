@@ -1,6 +1,7 @@
 require 'dpl/error'
 require 'dpl/version'
 require 'fileutils'
+require 'json/pure'
 
 module DPL
   class Provider
