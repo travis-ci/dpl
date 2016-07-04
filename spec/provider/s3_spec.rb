@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'set'
 require 'dpl/provider/s3'
 
 describe DPL::Provider::S3 do
@@ -48,7 +49,7 @@ describe DPL::Provider::S3 do
   end
 
   before :each do
-    provider.stub(:s3_options).and_return(client_options)
+    allow(provider).to receive(:s3_options).and_return(client_options)
   end
 
   describe "#check_auth" do
@@ -162,6 +163,53 @@ describe DPL::Provider::S3 do
       expect(Dir).to receive(:glob).with("**/*", File::FNM_DOTMATCH)
       provider.push_app
     end
+
+    example "when delete option is not set" do
+      expect(Dir).to receive(:glob).and_yield("foo.html")
+      allow_any_instance_of(Aws::S3::Object).to receive(:upload_file)
+      expect(provider).to_not receive(:delete_not_synced_files)
+      provider.push_app
+    end
+
+    example "when delete option is set" do
+      provider.options.update(:delete => true)
+      expect(Dir).to receive(:glob).and_yield("foo.html").and_yield("bar.txt").and_yield("baz.js")
+      allow_any_instance_of(Aws::S3::Object).to receive(:upload_file)
+      expect(provider).to receive(:delete_not_synced_files).with(Set.new ["foo.html", "bar.txt", "baz.js"])
+      provider.push_app
+    end
+
+    describe "#delete_not_synced_files" do
+      example "deleting old files" do
+        def s3_object_double(name)
+          object = double "s3-object-#{name}"
+          allow(object).to receive(:key).and_return name
+          object
+        end
+
+        list_objects_response = double
+        allow(list_objects_response).to receive(:contents).and_return([
+          s3_object_double("foo.html"),
+          s3_object_double("bar.txt"),
+          s3_object_double("baz.js"),
+          s3_object_double("old.file")
+        ])
+
+        provider.options.update(:delete => true)
+        expect(Dir).to receive(:glob).and_yield("foo.html").and_yield("bar.txt").and_yield("baz.js")
+
+        allow_any_instance_of(Aws::S3::Object).to receive(:upload_file)
+        allow_any_instance_of(Aws::S3::Client).to receive(:list_objects_v2).and_return(list_objects_response)
+
+        expect(provider.client).to receive(:delete_object).with(
+          bucket: "my-bucket",
+          key: "old.file"
+        )
+
+        provider.push_app
+      end
+    end
+
   end
 
   describe "#check_app" do

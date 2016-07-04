@@ -1,10 +1,15 @@
 require 'json'
 require 'aws-sdk'
 require 'mime-types'
+require 'set'
 
 module DPL
   class Provider
     class S3 < Provider
+      def client
+        @client ||= ::Aws::S3::Client.new(s3_options)
+      end
+
       def api
         @api ||= ::Aws::S3::Resource.new(s3_options)
       end
@@ -43,6 +48,7 @@ module DPL
       def push_app
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
+        synced_files = Set.new
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           Dir.glob(*glob_args) do |filename|
             opts                          = content_data_for(filename)
@@ -52,9 +58,11 @@ module DPL
             opts[:storage_class]          = options[:storage_class] if options[:storage_class]
             opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
             unless File.directory?(filename)
-              log "uploading #{filename.inspect} with #{opts.inspect}"
-              result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
+              to_location = upload_path(filename)
+              log "uploading #{filename.inspect} with #{opts.inspect} --> #{to_location}"
+              result = api.bucket(option(:bucket)).object(to_location).upload_file(filename, opts)
               warn "error while uploading #{filename.inspect}" unless result
+              synced_files.add to_location
             end
           end
         end
@@ -68,6 +76,8 @@ module DPL
             }
           )
         end
+
+        delete_not_synced_files synced_files if options[:delete] == true
       end
 
       def deploy
@@ -81,6 +91,23 @@ module DPL
       end
 
       private
+      def delete_not_synced_files(synced_files)
+        # list available files
+        objects = client.list_objects_v2(
+          bucket: option(:bucket),
+          prefix: options[:upload_dir]
+        )
+
+        # delete non-synced files
+        to_be_deleted = objects.contents.keep_if { |obj| !synced_files.include?(obj.key) }
+        to_be_deleted.each do |obj|
+          log "deleting old file: #{obj.key}"
+          client.delete_object(
+            bucket: option(:bucket),
+            key: obj.key)
+        end
+      end
+
       def content_data_for(path)
         content_data = {}
         content_type = MIME::Types.type_for(path).first

@@ -1,6 +1,7 @@
 Gemfile-*
 Gemfile.lock
 .coverage
+.bundle
 coverage
 .dpl
 setuptools*.zip
