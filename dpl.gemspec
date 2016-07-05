@@ -20,9 +20,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-its'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'json', '1.8.1'
-  s.add_development_dependency 'json_pure'
   s.add_development_dependency 'coveralls'
 
+  s.add_runtime_dependency 'json_pure'
 
   # prereleases from Travis CI
   if ENV['CI']
