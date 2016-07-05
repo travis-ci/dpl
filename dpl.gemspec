@@ -16,13 +16,11 @@ Gem::Specification.new do |s|
   s.require_path          = 'lib'
   s.required_ruby_version = '>= 1.9.3'
 
-  json_version = '1.8.1'
-
   s.add_development_dependency 'rspec', '~> 3.0.0'
   s.add_development_dependency 'rspec-its'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'json', json_version
-  s.add_development_dependency 'json_pure', json_version
+  s.add_development_dependency 'json', '1.8.1'
+  s.add_development_dependency 'json_pure'
   s.add_development_dependency 'coveralls'
 
 
