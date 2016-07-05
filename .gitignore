@@ -2,6 +2,7 @@ Gemfile-*
 Gemfile.lock
 .coverage
 .bundle
+.vscode
 coverage
 .dpl
 setuptools*.zip
