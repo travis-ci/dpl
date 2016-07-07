@@ -9,7 +9,7 @@ describe DPL::Provider::Deis do
       :controller => 'https://deis.deisapps.com',
       :username => 'travis',
       :password => 'secret',
-      :cli_version => '1.0'
+      :cli_version => 'v2.0.0'
     }
   end
 
@@ -20,7 +20,7 @@ describe DPL::Provider::Deis do
   describe "#install_deploy_dependencies" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'curl -sSL http://deis.io/deis-cli/install.sh | sh -s 1.0'
+        'curl -sSL http://deis.io/deis-cli/install-v2.sh | bash -x -s v2.0.0'
       ).and_return(true)
       provider.install_deploy_dependencies
     end
