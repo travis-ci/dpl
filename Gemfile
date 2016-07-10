@@ -39,7 +39,7 @@ end
 
 group :lambda do
   gem 'aws-sdk', '>= 2.0.18.pre'
-  gem 'rubyzip'
+  gem 'rubyzip', '~> 1.1'
 end
 
 group :cloud_files do
@@ -57,7 +57,7 @@ group :gcs do
 end
 
 group :elastic_beanstalk do
-  gem 'rubyzip'
+  gem 'rubyzip', '~> 1.1'
   gem 'aws-sdk-v1'
 end
 
