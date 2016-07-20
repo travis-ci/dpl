@@ -21,6 +21,7 @@ group :openshift do
 end
 
 group :appfog do
+  gem 'json_pure'
   gem 'af'
 end
 
@@ -67,11 +68,13 @@ group :bitballoon do
 end
 
 group :puppet_forge do
+  gem 'json_pure'
   gem 'puppet'
   gem 'puppet-blacksmith'
 end
 
 group :packagecloud do
+  gem 'json_pure'
   gem 'packagecloud-ruby', '= 0.2.17'
 end
 
