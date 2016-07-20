@@ -1,6 +1,7 @@
 module DPL
   class Provider
     class Appfog < Provider
+      requires 'json_pure'
       requires 'af', :load => 'vmc'
 
       def check_auth
