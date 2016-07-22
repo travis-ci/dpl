@@ -16,6 +16,9 @@ sudo: false
 
 cache: bundler
 
+script:
+  - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'
+
 deploy:
   provider: rubygems
   api_key:
