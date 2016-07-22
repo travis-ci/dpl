@@ -11,6 +11,7 @@ Dpl supports the following providers:
 * [AppFog](#appfog)
 * [Atlas by HashiCorp](#atlas)
 * [AWS CodeDeploy](#aws-codedeploy)
+* [AWS Elastic Beanstalk](#elastic-beanstalk)
 * [AWS OpsWorks](#opsworks)
 * [Azure Web Apps](#azure-web-apps)
 * [Bintray](#bintray)
@@ -21,7 +22,6 @@ Dpl supports the following providers:
 * [Cloud Foundry](#cloud-foundry)
 * [Deis](#deis)
 * [Divshot.io](#divshotio)
-* [Elastic Beanstalk](#elastic-beanstalk)
 * [Engine Yard](#engine-yard)
 * [Firebase](#firebase)
 * [Github Releases](#github-releases)
@@ -343,6 +343,30 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999 --expires="2012-12-21 00:00:00 -0000"
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir= BUILD --upload-dir=BUILDS
 
+### Elastic Beanstalk:
+
+#### Options:
+
+ * **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **region**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
+ * **app**: Elastic Beanstalk application name.
+ * **env**: Elastic Beanstalk environment name which will be updated.
+ * **zip_file**: The zip file that you want to deploy. _**Note:**_ you also need to use the `skip_cleanup` or the zip file you are trying to upload will be removed during cleanup.
+ * **bucket_name**: Bucket name to upload app to.
+ * **bucket_path**: Location within Bucket to upload app to.
+ * **only_create_app_version**: only create the app version, don't actually deploy it.
+
+#### Environment variables:
+
+ * **ELASTIC_BEANSTALK_ENV**: Elastic Beanstalk environment name which will be updated. Is only used if `env` option is omitted.
+ * **ELASTIC_BEANSTALK_LABEL**: Label name of the new version.
+ * **ELASTIC_BEANSTALK_DESCRIPTION**: Description of the new version. Defaults to the last commit message.
+
+#### Examples:
+
+    dpl --provider=elasticbeanstalk --access-key-id=<access-key-id> --secret-access-key="<secret-access-key>" --app="example-app-name" --env="example-app-environment" --region="us-west-2"
+
 ### OpsWorks:
 
 #### Options:
@@ -556,30 +580,6 @@ For accounts using two factor authentication, you have to use an oauth token as 
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public-read
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir=BUILD --upload-dir=BUILDS
-
-### Elastic Beanstalk:
-
-#### Options:
-
- * **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
- * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
- * **region**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
- * **app**: Elastic Beanstalk application name.
- * **env**: Elastic Beanstalk environment name which will be updated.
- * **zip_file**: The zip file that you want to deploy. _**Note:**_ you also need to use the `skip_cleanup` or the zip file you are trying to upload will be removed during cleanup.
- * **bucket_name**: Bucket name to upload app to.
- * **bucket_path**: Location within Bucket to upload app to.
- * **only_create_app_version**: only create the app version, don't actually deploy it.
-
-#### Environment variables:
-
- * **ELASTIC_BEANSTALK_ENV**: Elastic Beanstalk environment name which will be updated. Is only used if `env` option is omitted.
- * **ELASTIC_BEANSTALK_LABEL**: Label name of the new version.
- * **ELASTIC_BEANSTALK_DESCRIPTION**: Description of the new version. Defaults to the last commit message.
-
-#### Examples:
-
-    dpl --provider=elasticbeanstalk --access-key-id=<access-key-id> --secret-access-key="<secret-access-key>" --app="example-app-name" --env="example-app-environment" --region="us-west-2"
 
 ### BitBalloon:
 
@@ -818,7 +818,7 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Examples:
 
     dpl --provider=firebase --token=<token> --project=<project>
-    
+
 
 
 ### Surge.sh
@@ -826,9 +826,9 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Options:
 
 * **project** Path to project folder relative to repo root. Defaults to repo root if not set.
-* **domain** Domain to publish to. Can be omitted if domain is set in the `CNAME` file in the project folder. 
+* **domain** Domain to publish to. Can be omitted if domain is set in the `CNAME` file in the project folder.
 
- 
+
 #### Environment variables:
 
 * **SURGE_LOGIN**: Set it to the email address you use with Surge
@@ -836,4 +836,4 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 
 #### Example:
     dpl --provider=surge --project=<project-path> --domain=<domain-name>
-    
+
