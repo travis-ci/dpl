@@ -4,7 +4,7 @@ require 'net/https'
 
 module DPL
   class Provider
-    class CloudControl < Provider
+    class Exoscale < Provider
       attr_accessor :app_name
       attr_accessor :dep_name
 
@@ -13,8 +13,11 @@ module DPL
         option(:email) && option(:password) && option(:deployment)
         @app_name, @dep_name = options[:deployment].split('/')
 
-        @http = Net::HTTP.new('api.cloudcontrol.com', 443)
+        @http = Net::HTTP.new('api.app.exo.io', 443)
         @http.use_ssl = true
+
+        @tokenHttp = Net::HTTP.new('portal.exoscale.ch', 443)
+        @tokenHttp.use_ssl = true
       end
 
       def check_auth
@@ -47,6 +50,14 @@ module DPL
       end
 
     private
+
+    def get_token
+      request = Net::HTTP::Post.new '/api/apps/token'
+      request.basic_auth options[:email], options[:password]
+      response = @tokenHttp.request(request)
+      error('authorization failed') if response.code != '200'
+      return JSON.parse response.body
+    end
 
         def get_token
           request = Net::HTTP::Post.new '/token/'
@@ -91,25 +102,6 @@ module DPL
           end
           return @user
         end
-    end
-
-    class ExoScale < CloudControl
-      def initialize(context, options)
-        super
-        @http = Net::HTTP.new('api.app.exo.io', 443)
-        @http.use_ssl = true
-
-        @tokenHttp = Net::HTTP.new('portal.exoscale.ch', 443)
-        @tokenHttp.use_ssl = true
-      end
-    private
-      def get_token
-        request = Net::HTTP::Post.new '/api/apps/token'
-        request.basic_auth options[:email], options[:password]
-        response = @tokenHttp.request(request)
-        error('authorization failed') if response.code != '200'
-        return JSON.parse response.body
-      end
     end
   end
 end
