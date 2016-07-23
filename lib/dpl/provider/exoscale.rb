@@ -4,7 +4,7 @@ require 'net/https'
 
 module DPL
   class Provider
-    class Exoscale < Provider
+    class ExoScale < Provider
       attr_accessor :app_name
       attr_accessor :dep_name
 
