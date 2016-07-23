@@ -59,14 +59,6 @@ module DPL
         return JSON.parse response.body
       end
 
-      def get_token
-        request = Net::HTTP::Post.new '/token/'
-        request.basic_auth options[:email], options[:password]
-        response = @http.request(request)
-        error('authorization failed') if response.code != '200'
-        return JSON.parse response.body
-      end
-
       def headers_with_token(options = {})
         @token = get_token if options[:new_token] || @token.nil?
         return {
