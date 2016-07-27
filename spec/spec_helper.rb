@@ -1,3 +1,4 @@
+require 'json/pure'
 require 'dpl/error'
 require 'dpl/provider'
 require 'rspec/its'

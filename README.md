@@ -11,17 +11,18 @@ Dpl supports the following providers:
 * [AppFog](#appfog)
 * [Atlas by HashiCorp](#atlas)
 * [AWS CodeDeploy](#aws-codedeploy)
+* [AWS Elastic Beanstalk](#elastic-beanstalk)
 * [AWS OpsWorks](#opsworks)
 * [Azure Web Apps](#azure-web-apps)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
 * [Boxfuse](#boxfuse)
+* [Catalyze](#catalyze)
 * [Chef Supermarket](#chef-supermarket)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [Deis](#deis)
 * [Divshot.io](#divshotio)
-* [Elastic Beanstalk](#elastic-beanstalk)
 * [Engine Yard](#engine-yard)
 * [Firebase](#firebase)
 * [Github Releases](#github-releases)
@@ -343,6 +344,30 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999 --expires="2012-12-21 00:00:00 -0000"
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir= BUILD --upload-dir=BUILDS
 
+### Elastic Beanstalk:
+
+#### Options:
+
+ * **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **region**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
+ * **app**: Elastic Beanstalk application name.
+ * **env**: Elastic Beanstalk environment name which will be updated.
+ * **zip_file**: The zip file that you want to deploy. _**Note:**_ you also need to use the `skip_cleanup` or the zip file you are trying to upload will be removed during cleanup.
+ * **bucket_name**: Bucket name to upload app to.
+ * **bucket_path**: Location within Bucket to upload app to.
+ * **only_create_app_version**: only create the app version, don't actually deploy it.
+
+#### Environment variables:
+
+ * **ELASTIC_BEANSTALK_ENV**: Elastic Beanstalk environment name which will be updated. Is only used if `env` option is omitted.
+ * **ELASTIC_BEANSTALK_LABEL**: Label name of the new version.
+ * **ELASTIC_BEANSTALK_DESCRIPTION**: Description of the new version. Defaults to the last commit message.
+
+#### Examples:
+
+    dpl --provider=elasticbeanstalk --access-key-id=<access-key-id> --secret-access-key="<secret-access-key>" --app="example-app-name" --env="example-app-environment" --region="us-west-2"
+
 ### OpsWorks:
 
 #### Options:
@@ -557,30 +582,6 @@ For accounts using two factor authentication, you have to use an oauth token as 
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999
     dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir=BUILD --upload-dir=BUILDS
 
-### Elastic Beanstalk:
-
-#### Options:
-
- * **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
- * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
- * **region**: AWS Region the Elastic Beanstalk app is running in. Defaults to 'us-east-1'. Please be aware that this must match the region of the elastic beanstalk app.
- * **app**: Elastic Beanstalk application name.
- * **env**: Elastic Beanstalk environment name which will be updated.
- * **zip_file**: The zip file that you want to deploy. _**Note:**_ you also need to use the `skip_cleanup` or the zip file you are trying to upload will be removed during cleanup.
- * **bucket_name**: Bucket name to upload app to.
- * **bucket_path**: Location within Bucket to upload app to.
- * **only_create_app_version**: only create the app version, don't actually deploy it.
-
-#### Environment variables:
-
- * **ELASTIC_BEANSTALK_ENV**: Elastic Beanstalk environment name which will be updated. Is only used if `env` option is omitted.
- * **ELASTIC_BEANSTALK_LABEL**: Label name of the new version.
- * **ELASTIC_BEANSTALK_DESCRIPTION**: Description of the new version. Defaults to the last commit message.
-
-#### Examples:
-
-    dpl --provider=elasticbeanstalk --access-key-id=<access-key-id> --secret-access-key="<secret-access-key>" --app="example-app-name" --env="example-app-environment" --region="us-west-2"
-
 ### BitBalloon:
 
 #### Options:
@@ -621,6 +622,37 @@ For accounts using two factor authentication, you have to use an oauth token as 
     dpl --provider=packagecloud --username=packageuser --token=t0k3n --repository=myrepo
     dpl --provider=packagecloud --username=packageuser --token=t0k3n --repository=myrepo --dist=ubuntu/precise
     dpl --provider=packagecloud --username=packageuser --token=t0k3n --repository=myrepo --local-dir="${TRAVIS_BUILD_DIR}/pkgs" --dist=ubuntu/precise
+
+### Catalyze:
+
+#### Options:
+
+ * **target**: Required. The git remote repository to deploy to.
+ * **path**: Optional. If using the skip_cleanup option to deploy from current file state, you can optionally specify the pathspec for the files to deploy. If not specified then all files are deployed. 
+
+#### Examples:
+
+    dpl --provider=catalyze --target=ssh://git@git.catalyzeapps.com:2222/app1234.git
+    dpl --provider=catalyze --target=ssh://git@git.catalyzeapps.com:2222/app1234.git --skip_cleanup=true
+    dpl --provider=catalyze --target=ssh://git@git.catalyzeapps.com:2222/app1234.git --skip_cleanup=true --path=build
+
+
+#### Setup:
+
+1. Get the deployment target for Catalyze:  
+a. Make sure your catalyze environment is [associated](https://resources.catalyze.io/paas/paas-cli-reference/#associate).  
+b. Get the git remote by running ```git remote -v``` from within the associated repo.  
+2. Setup a deployment key to Catalyze for Travis CI:  
+a. Install the travis-ci cli.  
+b. Get the public SSH key for your travis project and save it to a file by running ```travis pubkey > travis.pub```  
+c. Add the key as a deploy key using the catalyze cli within the associated repo. For example:  ```catalyze deploy-keys add travisci ./travis.pub code-1```  
+3. Setup Catalyze as a known host for Travis CI:  
+a. List your known hosts by running ```cat ~/.ssh/known_hosts```  
+b. Find and copy the line from known_hosts that includes the git remote found in step #1. It'll look something like "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..."  
+c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts` file:    
+```
+    before_deploy:  echo "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..." >> ~/.ssh/known_hosts
+```
 
 ### Chef Supermarket:
 
@@ -818,7 +850,7 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Examples:
 
     dpl --provider=firebase --token=<token> --project=<project>
-    
+
 
 
 ### Surge.sh
@@ -826,9 +858,9 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Options:
 
 * **project** Path to project folder relative to repo root. Defaults to repo root if not set.
-* **domain** Domain to publish to. Can be omitted if domain is set in the `CNAME` file in the project folder. 
+* **domain** Domain to publish to. Can be omitted if domain is set in the `CNAME` file in the project folder.
 
- 
+
 #### Environment variables:
 
 * **SURGE_LOGIN**: Set it to the email address you use with Surge
@@ -836,4 +868,4 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 
 #### Example:
     dpl --provider=surge --project=<project-path> --domain=<domain-name>
-    
+
