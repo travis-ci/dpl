@@ -89,3 +89,7 @@ end
 group :deis do
   gem 'git'
 end
+
+group :opsworks do
+  gem 'aws-sdk', '>= 2.0.18.pre'
+end

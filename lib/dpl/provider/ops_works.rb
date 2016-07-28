@@ -3,15 +3,18 @@ require 'timeout'
 module DPL
   class Provider
     class OpsWorks < Provider
-      requires 'aws-sdk-v1'
+      requires 'aws-sdk', version: '~> 2'
       experimental 'AWS OpsWorks'
 
-      def api
-        @api ||= AWS::OpsWorks.new
+      def opsworks
+        @opsworks ||= Aws::OpsWorks::Client.new(opsworks_options)
       end
 
-      def client
-        @client ||= api.client
+      def opsworks_options
+        {
+          region:      region || 'us-east-1',
+          credentials: ::Aws::Credentials.new(access_key_id, secret_access_key)
+        }
       end
 
       def needs_key?
@@ -22,6 +25,10 @@ module DPL
 
       end
 
+      def region
+        options[:region] || context.env['AWS_DEFAULT_REGION']
+      end
+
       def access_key_id
         options[:access_key_id] || context.env['AWS_ACCESS_KEY_ID'] || raise(Error, "missing access_key_id")
       end
@@ -30,13 +37,8 @@ module DPL
         options[:secret_access_key] || context.env['AWS_SECRET_ACCESS_KEY'] || raise(Error, "missing secret_access_key")
       end
 
-      def setup_auth
-        AWS.config(access_key_id: access_key_id, secret_access_key: secret_access_key)
-      end
-
       def check_auth
-        setup_auth
-        log "Logging in with Access Key: #{option(:access_key_id)[-4..-1].rjust(20, '*')}"
+        log "Logging in with Access Key: #{access_key_id[-4..-1].rjust(20, '*')}"
       end
 
       def custom_json
@@ -61,7 +63,7 @@ module DPL
       end
 
       def fetch_ops_works_app
-        data = client.describe_apps(app_ids: [option(:app_id)])
+        data = opsworks.describe_apps(app_ids: [option(:app_id)])
         unless data[:apps] && data[:apps].count == 1
           raise Error, "App #{option(:app_id)} not found.", error.backtrace
         end
@@ -87,7 +89,11 @@ module DPL
         if !options[:instance_ids].nil?
           deployment_config[:instance_ids] = Array(option(:instance_ids))
         end
-        data = client.create_deployment(deployment_config)
+        if !options[:layer_ids].nil?
+          deployment_config[:layer_ids] = Array(option(:layer_ids))
+        end
+        log "creating deployment #{deployment_config.to_json}"
+        data = opsworks.create_deployment(deployment_config)
         log "Deployment created: #{data[:deployment_id]}"
         return unless options[:wait_until_deployed]
         print "Deploying "
@@ -103,7 +109,7 @@ module DPL
       def wait_until_deployed(deployment_id)
         deployment = nil
         loop do
-          result = client.describe_deployments(deployment_ids: [deployment_id])
+          result = opsworks.describe_deployments(deployment_ids: [deployment_id])
           deployment = result[:deployments].first
           break unless deployment[:status] == "running"
           print "."
@@ -118,10 +124,8 @@ module DPL
 
       def deploy
         super
-      rescue AWS::Errors::ClientError => error
-        raise Error, "Stopping Deploy, OpsWorks error: #{error.message}", error.backtrace
-      rescue AWS::Errors::ServerError => error
-        raise Error, "Stopping Deploy, OpsWorks server error: #{error.message}", error.backtrace
+      rescue Aws::Errors::ServiceError => error
+        raise Error, "Stopping Deploy, OpsWorks service error: #{error.message}", error.backtrace
       end
     end
   end

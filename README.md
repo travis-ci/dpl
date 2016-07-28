@@ -375,9 +375,11 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 * **access-key-id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **app-id**: The app ID.
+* **instance-ids**: An instance id. (Use this option multiple times to specify multiple instance ids. Default: [])
+* **layer-ids**: A layer id. (Use this option multiple times to specify multiple layer ids. Default: [])
 * **migrate**: Migrate the database. (Default: false)
 * **wait-until-deployed**: Wait until the app is deployed and return the deployment status. (Default: false)
-* **custom_json**: Override custom_json options. If using this, default configuration will be overriden. See the code [here](https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/ops_works.rb#L34). More about `custom_json` [here](http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json.html).
+* **custom_json**: Override custom_json options. If using this, default configuration will be overriden. See the code [here](https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/ops_works.rb#L43). More about `custom_json` [here](http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json.html).
 
 #### Environment variables:
 
@@ -387,6 +389,7 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 #### Examples:
 
     dpl --provider=opsworks --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --app-id=<app-id> --migrate --wait-until-deployed
+    dpl --provider=opsworks --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --app-id=<app-id> --layer-ids=<layer-id>
 
 ### Anynines:
 
