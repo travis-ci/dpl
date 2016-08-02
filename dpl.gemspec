@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-its'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'json', '1.8.1'
-  s.add_development_dependency 'tins', '< 1.7.0'
+  s.add_development_dependency 'tins', '~> 1.6.0', '>= 1.6.0'
   s.add_development_dependency 'coveralls'
 
   # prereleases from Travis CI
