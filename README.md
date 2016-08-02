@@ -24,6 +24,7 @@ Dpl supports the following providers:
 * [Deis](#deis)
 * [Divshot.io](#divshotio)
 * [Engine Yard](#engine-yard)
+* [ExoScale](#exoscale)
 * [Firebase](#firebase)
 * [Github Releases](#github-releases)
 * [Google App Engine (experimental)](#google-app-engine)
@@ -631,7 +632,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Options:
 
  * **target**: Required. The git remote repository to deploy to.
- * **path**: Optional. If using the skip_cleanup option to deploy from current file state, you can optionally specify the pathspec for the files to deploy. If not specified then all files are deployed. 
+ * **path**: Optional. If using the skip_cleanup option to deploy from current file state, you can optionally specify the pathspec for the files to deploy. If not specified then all files are deployed.
 
 #### Examples:
 
@@ -642,17 +643,17 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
 #### Setup:
 
-1. Get the deployment target for Catalyze:  
-a. Make sure your catalyze environment is [associated](https://resources.catalyze.io/paas/paas-cli-reference/#associate).  
-b. Get the git remote by running ```git remote -v``` from within the associated repo.  
-2. Setup a deployment key to Catalyze for Travis CI:  
-a. Install the travis-ci cli.  
-b. Get the public SSH key for your travis project and save it to a file by running ```travis pubkey > travis.pub```  
-c. Add the key as a deploy key using the catalyze cli within the associated repo. For example:  ```catalyze deploy-keys add travisci ./travis.pub code-1```  
-3. Setup Catalyze as a known host for Travis CI:  
-a. List your known hosts by running ```cat ~/.ssh/known_hosts```  
-b. Find and copy the line from known_hosts that includes the git remote found in step #1. It'll look something like "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..."  
-c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts` file:    
+1. Get the deployment target for Catalyze:
+a. Make sure your catalyze environment is [associated](https://resources.catalyze.io/paas/paas-cli-reference/#associate).
+b. Get the git remote by running ```git remote -v``` from within the associated repo.
+2. Setup a deployment key to Catalyze for Travis CI:
+a. Install the travis-ci cli.
+b. Get the public SSH key for your travis project and save it to a file by running ```travis pubkey > travis.pub```
+c. Add the key as a deploy key using the catalyze cli within the associated repo. For example:  ```catalyze deploy-keys add travisci ./travis.pub code-1```
+3. Setup Catalyze as a known host for Travis CI:
+a. List your known hosts by running ```cat ~/.ssh/known_hosts```
+b. Find and copy the line from known_hosts that includes the git remote found in step #1. It'll look something like "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..."
+c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts` file:
 ```
     before_deploy:  echo "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..." >> ~/.ssh/known_hosts
 ```
@@ -775,6 +776,18 @@ and your testers can start testing your app.
 #### Examples:
 
     dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>
+
+### ExoScale:
+
+#### Options:
+
+* **email**: ExoScale email or Organization ID.
+* **password**: ExoScale password.
+* **deployment**: ExoScale Deployment. Follows the format "APP_NAME/DEP_NAME".
+
+#### Examples:
+
+    dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
 
 ### Scalingo:
 
