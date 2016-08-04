@@ -3,6 +3,8 @@ module DPL
     class Releases < Provider
       require 'pathname'
 
+      DEFAULT_GITHUB_API_VERSION = '3'
+
       requires 'octokit'
       requires 'mime-types', version: '~> 2.0'
 
@@ -58,6 +60,11 @@ module DPL
       end
 
       def check_app
+        log "Configuring API endpoint: #{api_endpoint}"
+        Octokit.configure do |c|
+          c.api_endpoint = api_endpoint
+        end
+
         log "Deploying to repo: #{slug}"
 
         context.shell 'git fetch --tags' if travis_tag.nil?
@@ -84,7 +91,7 @@ module DPL
 
         if options[:release_number]
           tag_matched = true
-          release_url = "https://api.github.com/repos/" + slug + "/releases/" + options[:release_number]
+          release_url = "#{api_endpoint}/repos/" + slug + "/releases/" + options[:release_number]
         else
           releases.each do |release|
             if release.tag_name == get_tag
@@ -128,6 +135,16 @@ module DPL
           content_type = "application/octet-stream"
         end
         api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
+      end
+
+      def api_endpoint
+        if options[:host]
+          host = options[:host]
+          api_version = options[:api_version] || DEFAULT_GITHUB_API_VERSION
+          "https://#{host}/api/v#{api_version}"
+        else
+          "https://api.github.com"
+        end
       end
     end
   end

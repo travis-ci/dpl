@@ -98,7 +98,9 @@ describe DPL::Provider::Releases do
       allow(provider).to receive(:slug).and_return("foo/bar")
       allow(provider).to receive(:get_tag).and_return("foo")
 
+      expect(Octokit).to receive(:api_endpoint=).with("https://api.github.com")
       expect(provider.context).to receive(:shell).with("git fetch --tags")
+      expect(provider).to receive(:log).with("Configuring API endpoint: https://api.github.com")
       expect(provider).to receive(:log).with("Deploying to repo: foo/bar")
       expect(provider).to receive(:log).with("Current tag is: foo")
 
@@ -110,6 +112,7 @@ describe DPL::Provider::Releases do
       allow(provider).to receive(:slug).and_return("foo/bar")
 
       expect(provider.context).not_to receive(:shell).with("git fetch --tags")
+      expect(provider).to receive(:log).with("Configuring API endpoint: https://api.github.com")
       expect(provider).to receive(:log).with("Deploying to repo: foo/bar")
       expect(provider).to receive(:log).with("Current tag is: bar")
 
@@ -298,6 +301,37 @@ describe DPL::Provider::Releases do
       expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => true))
 
       provider.push_app
+    end
+  end
+
+  describe "#api_endpoint" do
+    context "when host is not given" do
+      it 'returns "https://api.github.com"' do
+        expect(provider.api_endpoint).to eq('https://api.github.com')
+      end
+
+      context "when api_version '4' is given" do
+        it "ignores api_version value" do
+          expect(provider.api_endpoint).to eq('https://api.github.com')
+        end
+      end
+    end
+
+    context "when host 'example.com' is given (for GitHub Enterprise)" do
+      before :each do
+        provider.options.update(:host => 'example.com')
+      end
+
+      it "returns 'https://example.com/api/v3'" do
+        expect(provider.api_endpoint).to eq("https://example.com/api/v#{DPL::Provider::Releases::DEFAULT_GITHUB_API_VERSION}")
+      end
+
+      context "and api_version '4' is given" do
+        it "returns 'https://example.com/api/v4'" do
+          provider.options.update(:api_version => '4')
+          expect(provider.api_endpoint).to eq('https://example.com/api/v4')
+        end
+      end
     end
   end
 end
