@@ -6,6 +6,8 @@ module DPL
       # https://github.com/opscode/chef/blob/11.16.4/lib/chef/knife/cookbook_site_share.rb
 
       # Compatibility with ruby 1.9
+      requires 'rack', version: '< 2.0'
+      requires 'mime-types', version: '~> 1.16'
       requires 'chef', version: '< 12.0'
       requires 'chef', load: 'chef/config'
       requires 'chef', load: 'chef/cookbook_loader'

@@ -58,16 +58,8 @@ module DPL
         options[:no_promote]
       end
 
-      def use_cloud_build
-        options[:use_cloud_build] || 'false'
-      end
-
       def verbosity
         options[:verbosity] || 'warning'
-      end
-
-      def docker_build
-        options[:docker_build] || 'remote'
       end
 
       def no_stop_previous_version
@@ -75,14 +67,12 @@ module DPL
       end
 
       def push_app
-        context.shell "#{GCLOUD} config set app/use_cloud_build #{use_cloud_build}"
         command = GCLOUD
         command << ' --quiet'
         command << " --verbosity \"#{verbosity}\""
         command << " --project \"#{project}\""
         command << " preview app deploy \"#{config}\""
         command << " --version \"#{version}\""
-        command << " --docker-build \"#{docker_build}\""
         command << " --#{no_promote ? 'no-' : ''}promote"
         command << (no_stop_previous_version ? ' --no-stop-previous-version' : '')
         unless context.shell(command)

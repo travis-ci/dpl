@@ -21,6 +21,7 @@ group :openshift do
 end
 
 group :appfog do
+  gem 'json_pure'
   gem 'af'
 end
 
@@ -39,7 +40,7 @@ end
 
 group :lambda do
   gem 'aws-sdk', '>= 2.0.18.pre'
-  gem 'rubyzip'
+  gem 'rubyzip', '~> 1.1'
 end
 
 group :cloud_files do
@@ -57,7 +58,7 @@ group :gcs do
 end
 
 group :elastic_beanstalk do
-  gem 'rubyzip'
+  gem 'rubyzip', '~> 1.1'
   gem 'aws-sdk-v1'
 end
 
@@ -67,11 +68,13 @@ group :bitballoon do
 end
 
 group :puppet_forge do
+  gem 'json_pure'
   gem 'puppet'
   gem 'puppet-blacksmith'
 end
 
 group :packagecloud do
+  gem 'json_pure'
   gem 'packagecloud-ruby', '= 0.2.17'
 end
 
@@ -85,4 +88,8 @@ end
 
 group :deis do
   gem 'git'
+end
+
+group :opsworks do
+  gem 'aws-sdk', '>= 2.0.18.pre'
 end

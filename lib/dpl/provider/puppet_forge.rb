@@ -3,6 +3,7 @@ module DPL
     class PuppetForge < Provider
       require 'pathname'
 
+      requires 'json_pure', :version => '< 2.0', :load => 'json/pure'
       requires 'puppet', :load => 'puppet/face'
       requires 'puppet-blacksmith', :load => 'puppet_blacksmith'
 
