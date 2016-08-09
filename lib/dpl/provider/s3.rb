@@ -52,7 +52,8 @@ module DPL
             opts[:expires]       = get_option_value_by_filename(options[:expires], filename) if options[:expires]
             unless File.directory?(filename)
               log "uploading #{filename.inspect} with #{opts.inspect}"
-              api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
+              result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
+              warn "error while uploading #{filename.inspect}" unless result
             end
           end
         end
