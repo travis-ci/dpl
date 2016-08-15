@@ -52,7 +52,7 @@ Dpl supports the following providers:
 
 Dpl is published to rubygems.
 
-* Dpl requires ruby with a version greater than 1.8.7
+* Dpl requires ruby with a version greater than 1.9.3
 * To install: `gem install dpl`
 
 ## Usage:
