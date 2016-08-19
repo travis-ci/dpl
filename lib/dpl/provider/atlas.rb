@@ -16,14 +16,16 @@ module DPL
             chmod +x $HOME/bin/gimme
           fi
 
-          export GOPATH="$HOME/gopath:$GOPATH"
-          eval "$(gimme 1.4.2)" &>/dev/null
+          if [ -z $GOPATH ]; then
+            export GOPATH="$HOME/gopath"
+          else
+            export GOPATH="$HOME/gopath:$GOPATH"
+          fi
+          eval "$(gimme 1.6)" &> /dev/null
 
+          unset GIT_HTTP_USER_AGENT
           go get #{ATLAS_UPLOAD_CLI_GO_REMOTE}
-          pushd $HOME/gopath/src/#{ATLAS_UPLOAD_CLI_GO_REMOTE} &>/dev/null
-          make &>/dev/null
-          cp bin/atlas-upload $HOME/bin/atlas-upload
-          popd &>/dev/null
+          cp $HOME/gopath/bin/atlas-upload-cli $HOME/bin/atlas-upload
         fi
       EOF
 
