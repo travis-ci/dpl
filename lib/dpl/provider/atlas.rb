@@ -23,7 +23,6 @@ module DPL
           fi
           eval "$(gimme 1.6)" &> /dev/null
 
-          unset GIT_HTTP_USER_AGENT
           go get #{ATLAS_UPLOAD_CLI_GO_REMOTE}
           cp $HOME/gopath/bin/atlas-upload-cli $HOME/bin/atlas-upload
         fi
@@ -61,7 +60,9 @@ module DPL
       private
 
       def install_atlas_upload
-        context.shell ATLAS_UPLOAD_INSTALL_SCRIPT
+        without_git_http_user_agent do
+          context.shell ATLAS_UPLOAD_INSTALL_SCRIPT
+        end
       end
 
       def assert_app_present!
@@ -95,6 +96,13 @@ module DPL
       def atlas_app
         @atlas_app ||= options.fetch(:app).to_s
       end
+
+      def without_git_http_user_agent(&block)
+        git_http_user_agent = ENV.delete("GIT_HTTP_USER_AGENT")
+        yield
+        ENV["GIT_HTTP_USER_AGENT"] = git_http_user_agent
+      end
+
     end
   end
 end
