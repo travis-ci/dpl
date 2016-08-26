@@ -127,6 +127,13 @@ describe DPL::Provider::S3 do
       provider.push_app
     end
 
+    example "Sets Storage Class" do
+      provider.options.update(:storage_class => "STANDARD_AI")
+      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:storage_class => "STANDARD_AI"))
+      provider.push_app
+    end
+
     example "Sets Website Index Document" do
       provider.options.update(:index_document_suffix => "test/index.html")
       expect(Dir).to receive(:glob).and_yield(__FILE__)
