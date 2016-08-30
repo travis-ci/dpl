@@ -72,6 +72,7 @@ describe DPL::Provider::Heroku do
     describe "#push_app" do
       example do
         provider.options[:git] = "git://something"
+        expect(provider.context).to receive(:shell).with("git fetch origin $TRAVIS_BRANCH --unshallow")
         expect(provider.context).to receive(:shell).with("git push git://something HEAD:refs/heads/master -f")
         provider.push_app
         expect(provider.context.env['GIT_HTTP_USER_AGENT']).to include("dpl/#{DPL::VERSION}")
