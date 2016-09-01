@@ -6,10 +6,10 @@ module DPL
       Options:
         - repo [optional, for pushed to other repos]
         - github-token [required]
-        - target_branch [optional, defaults to gh-pages]
+        - target-branch [optional, defaults to gh-pages]
         - local-dir [optional, defaults to `pwd`]
         - fqdn [optional]
-        - project_name [optional, defaults to gh_fqdn or repo slug]
+        - project-name [optional, defaults to fqdn or repo slug]
         - email [optional]
         - name [optional]
       """
