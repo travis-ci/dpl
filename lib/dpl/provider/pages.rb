@@ -53,7 +53,7 @@ module DPL
         context.shell "git config user.name '#{@gh_name}'"
         context.shell "echo '#{@gh_fqdn}' > CNAME" unless not @gh_fqdn
         context.shell 'git add .'
-        context.shell "git commit -m 'Deploy #{@project_name} to #{@target_branch}'"
+        context.shell "git commit -m 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}'"
         context.shell "git push --force --quiet 'https://#{@gh_token}@#{@gh_ref}' master:#{@target_branch} > /dev/null 2>&1"
       end
 
