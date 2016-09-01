@@ -15,8 +15,6 @@ module DPL
       """
 
       def initialize(context, options)
-        printf "[DEBUG] Options passed to dpl: %s\n", options unless !options[:debug]
-
         super
 
         @build_dir = options[:local_dir] || '.'
