@@ -26,6 +26,7 @@ Dpl supports the following providers:
 * [Engine Yard](#engine-yard)
 * [ExoScale](#exoscale)
 * [Firebase](#firebase)
+* [Github Pages](#github-pages)
 * [Github Releases](#github-releases)
 * [Google App Engine (experimental)](#google-app-engine)
 * [Google Cloud Storage](#google-cloud-storage)
@@ -505,6 +506,23 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=cloudfiles --username=<username> --api-key=<api-key> --region=<region> --container=<container>
+
+### GitHub Pages:
+
+#### Options:
+
+* **github-token**: GitHub oauth token with `repo` permission.
+* **repo**: Repo slug, defaults to current one.
+* **target-branch**: Branch to push force to, defaults to gh-pages.
+* **local-dir**: Directory to push to GitHub Pages, defaults to current.
+* **fqdn**: Optional, no default, sets a main domain for your website.
+* **project-name**: Defaults to fqdn or repo slug, used for metadata.
+* **email**: Optional, comitter info.
+* **name**: Optional, comitter.
+
+#### Examples:
+
+    dpl --provider=pages --github-token=<api-key> --local-dir=build
 
 ### GitHub Releases:
 
