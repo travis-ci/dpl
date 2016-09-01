@@ -38,6 +38,9 @@ module DPL
         options.fetch(:repo) { context.env['TRAVIS_REPO_SLUG'] }
       end
 
+      def check_auth
+      end
+
       def needs_key?
         false
       end
