@@ -47,10 +47,10 @@ module DPL
 
       def github_deploy
         context.shell 'rm -rf .git > /dev/null 2>&1'
-        context.shell 'touch \"deployed by #{gh_name} at `date`\"'
+        context.shell "touch \"deployed by #{@gh_name} at `date`\""
         context.shell 'git init'
-        context.shell "git config user.email '#{gh_email}'"
-        context.shell "git config user.name '#{gh_name}'"
+        context.shell "git config user.email '#{@gh_email}'"
+        context.shell "git config user.name '#{@gh_name}'"
         context.shell "echo '#{@gh_fqdn}' > CNAME" unless not @gh_fqdn
         context.shell 'git add .'
         context.shell "git commit -m 'Deploy #{@project_name} to #{@target_branch}'"
