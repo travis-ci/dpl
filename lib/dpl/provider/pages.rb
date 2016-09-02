@@ -48,10 +48,10 @@ module DPL
       def github_deploy
         context.shell 'rm -rf .git > /dev/null 2>&1'
         context.shell "touch \"deployed by #{@gh_name} at `date`\""
-        context.shell 'git init'
+        context.shell 'git init' or raise 'Could not create new git repo'
         context.shell "git config user.email '#{@gh_email}'"
         context.shell "git config user.name '#{@gh_name}'"
-        context.shell "echo '#{@gh_fqdn}' > CNAME" unless not @gh_fqdn
+        context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
         context.shell 'git add .'
         context.shell "git commit -m 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}'"
         context.shell "git push --force --quiet 'https://#{@gh_token}@#{@gh_ref}' master:#{@target_branch} > /dev/null 2>&1"
@@ -60,7 +60,7 @@ module DPL
       def push_app
         FileUtils.cd(@build_dir, :verbose => true) do
           unless github_deploy
-            error "Couldn't push the build to '#{@target_branch}'"
+            error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
           end
         end
       end
