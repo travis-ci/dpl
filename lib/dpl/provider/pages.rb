@@ -14,6 +14,9 @@ module DPL
         - name [optional]
       """
 
+      require 'tmpdir'
+
+
       def initialize(context, options)
         super
 
