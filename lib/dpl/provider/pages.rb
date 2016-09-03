@@ -58,11 +58,14 @@ module DPL
       end
 
       def push_app
-        FileUtils.cd(@build_dir, :verbose => true) do
-          unless github_deploy
-            error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
-          end
-        end
+        Dir.mktmpdir {|tmpdir|
+            FileUtils.cp_r("#{@build_dir}/.", tmpdir)
+            FileUtils.cd(tmpdir, :verbose => true) do
+              unless github_deploy
+                error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
+              end
+            end
+        }
       end
 
     end
