@@ -675,6 +675,9 @@ c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts`
 
 #### Options:
 
+ * **access_key_id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **secret_access_key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **region**: AWS Region the Lambda function is running in. Defaults to 'us-east-1'.
  * **function_name**: Required. The name of the Lambda being created / updated.
  * **role**: Required. The ARN of the IAM role to assign to this Lambda function.
  * **handler_name**: Required. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module.
