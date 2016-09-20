@@ -45,6 +45,7 @@ end
 
 group :cloud_files do
   gem 'fog-google', '< 0.1.1', platforms: :mri_19
+  gem 'fog-profitbricks', '< 2.0', platforms: :mri_19
   gem 'fog'
 end
 

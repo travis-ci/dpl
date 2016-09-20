@@ -52,7 +52,7 @@ Dpl supports the following providers:
 
 Dpl is published to rubygems.
 
-* Dpl requires ruby with a version greater than 1.8.7
+* Dpl requires ruby with a version greater than 1.9.3
 * To install: `gem install dpl`
 
 ## Usage:
@@ -69,17 +69,17 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 
 #### Options:
 * **api-key**: Heroku API Key
-* **strategy[git/anvil]**: Deployment strategy for Dpl. Defaults to anvil.
+* **strategy**: Deployment strategy for Dpl. Defaults to `api`. Other options are `git`, `git ssh`, and `git deploykey`.
 * **app**: Heroku app name. Defaults to the name of your git repo.
 * **username**: heroku username. Not necessary if api-key is used. Requires git strategy.
 * **password**: heroku password. Not necessary if api-key is used. Requires git strategy.
 
-#### Git vs Anvil Deploy:
-* Anvil will run the [buildpack](https://devcenter.heroku.com/articles/buildpacks) compilation step on the Travis CI VM, whereas the Git strategy will run it on a Heroku dyno, which provides the same environment the application will then run under and might be slightly faster.
+#### API vs Git vs Anvil Deploy:
+* API deploy will tar up the current directory (minus the git repo) and send it to Heroku.
+* Git deploy will send the contents of the git repo only, so may not contain any local changes.
+* Anvil deploys are no longer supported since Heroku shut down the Anvil service.
 * The Git strategy allows using *user* and *password* instead of *api-key*.
 * When using Git, Heroku might send you an email for every deploy, as it adds a temporary SSH key to your account.
-
-As a rule of thumb, you should switch to the Git strategy if you run into issues with Anvil or if you're using the [user-env-compile](https://devcenter.heroku.com/articles/labs-user-env-compile) plugin.
 
 #### Examples:
 
@@ -316,6 +316,7 @@ For authentication you can also use Travis CI secure environment variable:
 * **bucket**: S3 Bucket.
 * **region**: S3 Region. Defaults to us-east-1.
 * **upload-dir**: S3 directory to upload to. Defaults to root directory.
+* **storage-class**: S3 storage class to upload as. Defaults to "STANDARD". Other values are "STANDARD_IA" or "REDUCED_REDUNDANCY". Details can be found [here](https://aws.amazon.com/s3/storage-classes/).
 * **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
 * **detect-encoding**: Set HTTP header `Content-Encoding` for files compressed with `gzip` and `compress` utilities. Defaults to not set.
 * **cache_control**: Set HTTP header `Cache-Control` to suggest that the browser cache the file. Defaults to `no-cache`. Valid options are `no-cache`, `no-store`, `max-age=<seconds>`,`s-maxage=<seconds>` `no-transform`, `public`, `private`.
@@ -674,6 +675,9 @@ c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts`
 
 #### Options:
 
+ * **access_key_id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **secret_access_key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **region**: AWS Region the Lambda function is running in. Defaults to 'us-east-1'.
  * **function_name**: Required. The name of the Lambda being created / updated.
  * **role**: Required. The ARN of the IAM role to assign to this Lambda function.
  * **handler_name**: Required. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module.
