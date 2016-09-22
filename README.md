@@ -266,8 +266,13 @@ For authentication you can also use Travis CI secure environment variable:
 ### RubyGems:
 
 #### Options:
-
-* **api-key**: Rubygems Api Key.
+* **api-key**: API Key
+* **app**: ?
+* **user**: RubyGems username. Not necessary if api-key is used.
+* **password**: RubyGems password. Not necessary if api-key is used.
+* **gem**: Gem's name to be built
+* **gemspec**: Gemspec file name
+* **host**: RubyGems host
 
 #### Examples:
 
