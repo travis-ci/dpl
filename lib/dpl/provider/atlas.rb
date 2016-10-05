@@ -16,14 +16,15 @@ module DPL
             chmod +x $HOME/bin/gimme
           fi
 
-          export GOPATH="$HOME/gopath:$GOPATH"
-          eval "$(gimme 1.4.2)" &>/dev/null
+          if [ -z $GOPATH ]; then
+            export GOPATH="$HOME/gopath"
+          else
+            export GOPATH="$HOME/gopath:$GOPATH"
+          fi
+          eval "$(gimme 1.6)" &> /dev/null
 
           go get #{ATLAS_UPLOAD_CLI_GO_REMOTE}
-          pushd $HOME/gopath/src/#{ATLAS_UPLOAD_CLI_GO_REMOTE} &>/dev/null
-          make &>/dev/null
-          cp bin/atlas-upload $HOME/bin/atlas-upload
-          popd &>/dev/null
+          cp $HOME/gopath/bin/atlas-upload-cli $HOME/bin/atlas-upload
         fi
       EOF
 
@@ -59,7 +60,9 @@ module DPL
       private
 
       def install_atlas_upload
-        context.shell ATLAS_UPLOAD_INSTALL_SCRIPT
+        without_git_http_user_agent do
+          context.shell ATLAS_UPLOAD_INSTALL_SCRIPT
+        end
       end
 
       def assert_app_present!
@@ -93,6 +96,13 @@ module DPL
       def atlas_app
         @atlas_app ||= options.fetch(:app).to_s
       end
+
+      def without_git_http_user_agent(&block)
+        git_http_user_agent = ENV.delete("GIT_HTTP_USER_AGENT")
+        yield
+        ENV["GIT_HTTP_USER_AGENT"] = git_http_user_agent
+      end
+
     end
   end
 end

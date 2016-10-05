@@ -1,3 +1,5 @@
+require 'time'
+
 module DPL
   class Provider
     class ElasticBeanstalk < Provider
@@ -32,6 +34,7 @@ module DPL
       end
 
       def push_app
+        @start_time = Time.now
         create_bucket unless bucket_exists?
 
         if options[:zip_file]
@@ -45,6 +48,7 @@ module DPL
         version = create_app_version(s3_object)
         if !only_create_app_version
           update_app(version)
+          wait_until_deployed if options[:wait_until_deployed]
         end
       end
 
@@ -136,6 +140,40 @@ module DPL
           :auto_create_application => false
         }
         eb.create_application_version(options)
+      end
+
+      # Wait until EB environment update finishes
+      def wait_until_deployed
+        errorEvents = 0 # errors counter, should remain 0 for successful deployment
+        events = []
+
+        loop do
+          environment = eb.describe_environments({
+            :application_name  => app_name,
+            :environment_names => [env_name]
+          })[:environments].first
+
+          eb.describe_events({
+            :environment_name  => env_name,
+            :start_time        => @start_time.utc.iso8601,
+          })[:events].reverse.each do |event|
+            message = "#{event[:event_date]} [#{event[:severity]}] #{event[:message]}"
+            unless events.include?(message)
+              events.push(message)
+              if event[:severity] == "ERROR"
+                errorEvents += 1
+                warn(message)
+              else
+                log(message)
+              end
+            end
+          end
+
+          break if environment[:status] == "Ready"
+          sleep 5
+        end
+
+        if errorEvents > 0 then error("Deployment failed.") end
       end
 
       def update_app(version)

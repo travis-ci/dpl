@@ -1,6 +1,9 @@
 module DPL
   class Provider
     class Deis < Provider
+      
+      requires 'git'
+
       def install_deploy_dependencies
         context.shell "curl -sSL http://deis.io/deis-cli/install.sh | sh -s #{option(:cli_version)}"
       end
@@ -44,6 +47,31 @@ module DPL
         unless context.shell "./deis git:remote --app=#{option(:app)}"
           error 'Adding git remote failed.'
         end
+
+        wait_for_git_access
+      end
+
+      def wait_for_git_access()
+        retry_count=0
+        max_retries=30
+
+        #Get the deis git remote host and port
+        git=Git.open("./")
+        git_remote=git.remote("deis").url
+        remote_uri=git_remote.split("ssh://")[1].split("/")[0]
+        remote_host, remote_port = remote_uri.split(":")
+        puts "Git remote is #{remote_host} at port #{remote_port}"
+
+        #Try and connect to the github remote via ssh.
+        while retry_count < max_retries
+          puts "Waiting for ssh key to propagate..."
+          if context.shell "#{context.env['GIT_SSH']} #{remote_host} -p #{remote_port}  2>&1 | grep -c 'PTY allocation request failed' > /dev/null"
+            puts "SSH connection established."
+            break
+          end
+          retry_count += 1
+          sleep(1)
+        end
       end
 
       def remove_key
@@ -53,7 +81,7 @@ module DPL
       end
 
       def push_app
-        unless context.shell "git push #{verbose_flag} deis HEAD:refs/heads/master -f"
+        unless context.shell "bash -c 'git push #{verbose_flag} deis HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'"
           error 'Deploying application failed.'
         end
       end

@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'aws-sdk-v1'
 require 'dpl/provider/s3'
 
 describe DPL::Provider::S3 do
@@ -125,6 +124,13 @@ describe DPL::Provider::S3 do
       provider.options.update(:acl => "public_read")
       expect(Dir).to receive(:glob).and_yield(__FILE__)
       expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:acl => "public-read"))
+      provider.push_app
+    end
+
+    example "Sets Storage Class" do
+      provider.options.update(:storage_class => "STANDARD_AI")
+      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:storage_class => "STANDARD_AI"))
       provider.push_app
     end
 

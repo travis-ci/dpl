@@ -46,14 +46,15 @@ module DPL
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           Dir.glob(*glob_args) do |filename|
-            content_type = MIME::Types.type_for(filename).first.to_s
-            opts         = { :content_type => content_type }.merge(encoding_option_for(filename))
+            opts                 = content_data_for(filename)
             opts[:cache_control] = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]
             opts[:acl]           = options[:acl].gsub(/_/, '-') if options[:acl]
             opts[:expires]       = get_option_value_by_filename(options[:expires], filename) if options[:expires]
+            opts[:storage_class] = options[:storage_class] if options[:storage_class]
             unless File.directory?(filename)
-              log "uploading %p" % filename
-              api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
+              log "uploading #{filename.inspect} with #{opts.inspect}"
+              result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
+              warn "error while uploading #{filename.inspect}" unless result
             end
           end
         end
@@ -80,12 +81,21 @@ module DPL
       end
 
       private
-      def encoding_option_for(path)
-        if detect_encoding? && encoding_for(path)
-          {:content_encoding => encoding_for(path)}
-        else
-          {}
+      def content_data_for(path)
+        content_data = {}
+        content_type = MIME::Types.type_for(path).first
+        content_data[:content_type] = content_type.to_s
+
+        encoding = encoding_for(path)
+        if detect_encoding?
+          content_data[:content_encoding] = encoding if encoding
         end
+
+        if encoding == 'text' && default_text_charset?
+          content_data[:content_type] = "#{content_data[:content_type]}; charset=#{default_text_charset}"
+        end
+
+        return content_data
       end
 
       def get_option_value_by_filename(option_values, filename)

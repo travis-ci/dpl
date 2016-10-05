@@ -10,22 +10,19 @@ module DPL
     autoload :Appfog,           'dpl/provider/appfog'
     autoload :Atlas,            'dpl/provider/atlas'
     autoload :AzureWebApps,     'dpl/provider/azure_webapps'
-    autoload :Biicode,          'dpl/provider/biicode'
     autoload :Bintray,          'dpl/provider/bintray'
     autoload :BitBalloon,       'dpl/provider/bitballoon'
     autoload :Boxfuse,          'dpl/provider/boxfuse'
+    autoload :Catalyze,         'dpl/provider/catalyze'
     autoload :ChefSupermarket,  'dpl/provider/chef_supermarket'
     autoload :Cloud66,          'dpl/provider/cloud66'
-    autoload :CloudControl,     'dpl/provider/cloudcontrol'
     autoload :CloudFiles,       'dpl/provider/cloud_files'
     autoload :CloudFoundry,     'dpl/provider/cloud_foundry'
     autoload :CodeDeploy,       'dpl/provider/code_deploy'
     autoload :Deis,             'dpl/provider/deis'
     autoload :Divshot,          'dpl/provider/divshot'
-    autoload :DotCloud,         'dpl/provider/dot_cloud'
     autoload :ElasticBeanstalk, 'dpl/provider/elastic_beanstalk'
     autoload :EngineYard,       'dpl/provider/engine_yard'
-    autoload :ExoScale,         'dpl/provider/exoscale'
     autoload :Firebase,         'dpl/provider/firebase'
     autoload :GAE,              'dpl/provider/gae'
     autoload :GCS,              'dpl/provider/gcs'
@@ -46,6 +43,7 @@ module DPL
     autoload :S3,               'dpl/provider/s3'
     autoload :Scalingo,         'dpl/provider/scalingo'
     autoload :Script,           'dpl/provider/script'
+    autoload :Surge,            'dpl/provider/surge'
     autoload :TestFairy,        'dpl/provider/testfairy'
     autoload :Transifex,        'dpl/provider/transifex'
 
@@ -215,6 +213,14 @@ module DPL
       options[:detect_encoding]
     end
 
+    def default_text_charset?
+      options[:default_text_charset]
+    end
+
+    def default_text_charset
+      options[:default_text_charset].downcase
+    end
+
     def encoding_for(path)
       file_cmd_output = `file '#{path}'`
       case file_cmd_output
@@ -222,6 +228,10 @@ module DPL
         'gzip'
       when /compress'd/
         'compress'
+      when /text/
+        'text'
+      when /data/
+        # Shrugs?
       end
     end
 
