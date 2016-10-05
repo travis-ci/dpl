@@ -88,10 +88,10 @@ module DPL
           custom_json: custom_json.to_json
         }
         if !options[:instance_ids].nil?
-          deployment_config[:instance_ids] = Array(option(:instance_ids))
+          deployment_config[:instance_ids] = Array(option(:instance_ids).split(','))
         end
         if !options[:layer_ids].nil?
-          deployment_config[:layer_ids] = Array(option(:layer_ids))
+          deployment_config[:layer_ids] = Array(option(:layer_ids).split(','))
         end
         log "creating deployment #{deployment_config.to_json}"
         data = opsworks.create_deployment(deployment_config)
