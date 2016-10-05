@@ -1,4 +1,5 @@
 require 'timeout'
+require 'yaml'
 
 module DPL
   class Provider
