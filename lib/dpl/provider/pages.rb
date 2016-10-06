@@ -10,8 +10,8 @@ module DPL
         - local-dir [optional, defaults to `pwd`]
         - fqdn [optional]
         - project-name [optional, defaults to fqdn or repo slug]
-        - email [optional]
-        - name [optional]
+        - email [optional, defaults to deploy@travis-ci.org]
+        - name [optional, defaults to Deployment Bot]
       """
 
       require 'tmpdir'

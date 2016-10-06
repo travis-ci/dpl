@@ -517,8 +517,8 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **local-dir**: Directory to push to GitHub Pages, defaults to current.
 * **fqdn**: Optional, no default, sets a main domain for your website.
 * **project-name**: Defaults to fqdn or repo slug, used for metadata.
-* **email**: Optional, comitter info.
-* **name**: Optional, comitter.
+* **email**: Optional, comitter info, defaults to deploy@travis-ci.org.
+* **name**: Optional, comitter, defaults to Deployment Bot.
 
 #### Examples:
 
