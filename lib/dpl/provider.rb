@@ -36,6 +36,7 @@ module DPL
     autoload :Openshift,        'dpl/provider/openshift'
     autoload :OpsWorks,         'dpl/provider/ops_works'
     autoload :Packagecloud,     'dpl/provider/packagecloud'
+    autoload :Pages,            'dpl/provider/pages'
     autoload :PuppetForge,      'dpl/provider/puppet_forge'
     autoload :PyPI,             'dpl/provider/pypi'
     autoload :Releases,         'dpl/provider/releases'
