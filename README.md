@@ -26,6 +26,7 @@ Dpl supports the following providers:
 * [Engine Yard](#engine-yard)
 * [ExoScale](#exoscale)
 * [Firebase](#firebase)
+* [Github Pages](#github-pages)
 * [Github Releases](#github-releases)
 * [Google App Engine (experimental)](#google-app-engine)
 * [Google Cloud Storage](#google-cloud-storage)
@@ -69,17 +70,17 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 
 #### Options:
 * **api-key**: Heroku API Key
-* **strategy[git/anvil]**: Deployment strategy for Dpl. Defaults to anvil.
+* **strategy**: Deployment strategy for Dpl. Defaults to `api`. Other options are `git`, `git ssh`, and `git deploykey`.
 * **app**: Heroku app name. Defaults to the name of your git repo.
 * **username**: heroku username. Not necessary if api-key is used. Requires git strategy.
 * **password**: heroku password. Not necessary if api-key is used. Requires git strategy.
 
-#### Git vs Anvil Deploy:
-* Anvil will run the [buildpack](https://devcenter.heroku.com/articles/buildpacks) compilation step on the Travis CI VM, whereas the Git strategy will run it on a Heroku dyno, which provides the same environment the application will then run under and might be slightly faster.
+#### API vs Git vs Anvil Deploy:
+* API deploy will tar up the current directory (minus the git repo) and send it to Heroku.
+* Git deploy will send the contents of the git repo only, so may not contain any local changes.
+* Anvil deploys are no longer supported since Heroku shut down the Anvil service.
 * The Git strategy allows using *user* and *password* instead of *api-key*.
 * When using Git, Heroku might send you an email for every deploy, as it adds a temporary SSH key to your account.
-
-As a rule of thumb, you should switch to the Git strategy if you run into issues with Anvil or if you're using the [user-env-compile](https://devcenter.heroku.com/articles/labs-user-env-compile) plugin.
 
 #### Examples:
 
@@ -506,6 +507,23 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 
     dpl --provider=cloudfiles --username=<username> --api-key=<api-key> --region=<region> --container=<container>
 
+### GitHub Pages:
+
+#### Options:
+
+* **github-token**: GitHub oauth token with `repo` permission.
+* **repo**: Repo slug, defaults to current one.
+* **target-branch**: Branch to push force to, defaults to gh-pages.
+* **local-dir**: Directory to push to GitHub Pages, defaults to current.
+* **fqdn**: Optional, no default, sets a main domain for your website.
+* **project-name**: Defaults to fqdn or repo slug, used for metadata.
+* **email**: Optional, comitter info, defaults to deploy@travis-ci.org.
+* **name**: Optional, comitter, defaults to Deployment Bot.
+
+#### Examples:
+
+    dpl --provider=pages --github-token=<api-key> --local-dir=build
+
 ### GitHub Releases:
 
 #### Options:
@@ -675,6 +693,9 @@ c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts`
 
 #### Options:
 
+ * **access_key_id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **secret_access_key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **region**: AWS Region the Lambda function is running in. Defaults to 'us-east-1'.
  * **function_name**: Required. The name of the Lambda being created / updated.
  * **role**: Required. The ARN of the IAM role to assign to this Lambda function.
  * **handler_name**: Required. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module.

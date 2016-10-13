@@ -98,7 +98,7 @@ describe DPL::Provider::Deis do
   describe "#push_app" do
     example do
       expect(provider.context).to receive(:shell).with(
-        "git push  deis HEAD:refs/heads/master -f 2>&1 | tr -dc '[:alnum:][:space:][:punct:]' | sed -E 's/remote: (\\[1G)+//' | sed 's/\\[K$//'; exit ${PIPESTATUS[1]}"
+        "bash -c 'git push  deis HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'"
       ).and_return(true)
       provider.push_app
     end

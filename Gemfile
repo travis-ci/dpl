@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 gemspec
 
+gem 'term-ansicolor', '~> 1.3.2'
+
 platforms :mri_19 do
   gem 'slop', '~> 3.6.0'
   gem 'ohai', '~> 7.4.0'
@@ -45,6 +47,7 @@ end
 
 group :cloud_files do
   gem 'fog-google', '< 0.1.1', platforms: :mri_19
+  gem 'fog-profitbricks', '< 2.0', platforms: :mri_19
   gem 'fog'
 end
 
