@@ -102,7 +102,7 @@ module DPL
       end
 
       def run(command)
-        unless context.shell "deis run -- #{command}"
+        unless context.shell "./deis run -- #{command}"
           error 'Running command failed.'
         end
       end
