@@ -24,7 +24,9 @@ Dpl supports the following providers:
 * [Deis](#deis)
 * [Divshot.io](#divshotio)
 * [Engine Yard](#engine-yard)
+* [ExoScale](#exoscale)
 * [Firebase](#firebase)
+* [Github Pages](#github-pages)
 * [Github Releases](#github-releases)
 * [Google App Engine (experimental)](#google-app-engine)
 * [Google Cloud Storage](#google-cloud-storage)
@@ -51,7 +53,7 @@ Dpl supports the following providers:
 
 Dpl is published to rubygems.
 
-* Dpl requires ruby with a version greater than 1.8.7
+* Dpl requires ruby with a version greater than 1.9.3
 * To install: `gem install dpl`
 
 ## Usage:
@@ -68,17 +70,17 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 
 #### Options:
 * **api-key**: Heroku API Key
-* **strategy[git/anvil]**: Deployment strategy for Dpl. Defaults to anvil.
+* **strategy**: Deployment strategy for Dpl. Defaults to `api`. Other options are `git`, `git ssh`, and `git deploykey`.
 * **app**: Heroku app name. Defaults to the name of your git repo.
 * **username**: heroku username. Not necessary if api-key is used. Requires git strategy.
 * **password**: heroku password. Not necessary if api-key is used. Requires git strategy.
 
-#### Git vs Anvil Deploy:
-* Anvil will run the [buildpack](https://devcenter.heroku.com/articles/buildpacks) compilation step on the Travis CI VM, whereas the Git strategy will run it on a Heroku dyno, which provides the same environment the application will then run under and might be slightly faster.
+#### API vs Git vs Anvil Deploy:
+* API deploy will tar up the current directory (minus the git repo) and send it to Heroku.
+* Git deploy will send the contents of the git repo only, so may not contain any local changes.
+* Anvil deploys are no longer supported since Heroku shut down the Anvil service.
 * The Git strategy allows using *user* and *password* instead of *api-key*.
 * When using Git, Heroku might send you an email for every deploy, as it adds a temporary SSH key to your account.
-
-As a rule of thumb, you should switch to the Git strategy if you run into issues with Anvil or if you're using the [user-env-compile](https://devcenter.heroku.com/articles/labs-user-env-compile) plugin.
 
 #### Examples:
 
@@ -315,6 +317,7 @@ For authentication you can also use Travis CI secure environment variable:
 * **bucket**: S3 Bucket.
 * **region**: S3 Region. Defaults to us-east-1.
 * **upload-dir**: S3 directory to upload to. Defaults to root directory.
+* **storage-class**: S3 storage class to upload as. Defaults to "STANDARD". Other values are "STANDARD_IA" or "REDUCED_REDUNDANCY". Details can be found [here](https://aws.amazon.com/s3/storage-classes/).
 * **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
 * **detect-encoding**: Set HTTP header `Content-Encoding` for files compressed with `gzip` and `compress` utilities. Defaults to not set.
 * **cache_control**: Set HTTP header `Cache-Control` to suggest that the browser cache the file. Defaults to `no-cache`. Valid options are `no-cache`, `no-store`, `max-age=<seconds>`,`s-maxage=<seconds>` `no-transform`, `public`, `private`.
@@ -504,6 +507,23 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 
     dpl --provider=cloudfiles --username=<username> --api-key=<api-key> --region=<region> --container=<container>
 
+### GitHub Pages:
+
+#### Options:
+
+* **github-token**: GitHub oauth token with `repo` permission.
+* **repo**: Repo slug, defaults to current one.
+* **target-branch**: Branch to push force to, defaults to gh-pages.
+* **local-dir**: Directory to push to GitHub Pages, defaults to current.
+* **fqdn**: Optional, no default, sets a main domain for your website.
+* **project-name**: Defaults to fqdn or repo slug, used for metadata.
+* **email**: Optional, comitter info, defaults to deploy@travis-ci.org.
+* **name**: Optional, comitter, defaults to Deployment Bot.
+
+#### Examples:
+
+    dpl --provider=pages --github-token=<api-key> --local-dir=build
+
 ### GitHub Releases:
 
 #### Options:
@@ -631,7 +651,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Options:
 
  * **target**: Required. The git remote repository to deploy to.
- * **path**: Optional. If using the skip_cleanup option to deploy from current file state, you can optionally specify the pathspec for the files to deploy. If not specified then all files are deployed. 
+ * **path**: Optional. If using the skip_cleanup option to deploy from current file state, you can optionally specify the pathspec for the files to deploy. If not specified then all files are deployed.
 
 #### Examples:
 
@@ -642,17 +662,17 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
 #### Setup:
 
-1. Get the deployment target for Catalyze:  
-a. Make sure your catalyze environment is [associated](https://resources.catalyze.io/paas/paas-cli-reference/#associate).  
-b. Get the git remote by running ```git remote -v``` from within the associated repo.  
-2. Setup a deployment key to Catalyze for Travis CI:  
-a. Install the travis-ci cli.  
-b. Get the public SSH key for your travis project and save it to a file by running ```travis pubkey > travis.pub```  
-c. Add the key as a deploy key using the catalyze cli within the associated repo. For example:  ```catalyze deploy-keys add travisci ./travis.pub code-1```  
-3. Setup Catalyze as a known host for Travis CI:  
-a. List your known hosts by running ```cat ~/.ssh/known_hosts```  
-b. Find and copy the line from known_hosts that includes the git remote found in step #1. It'll look something like "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..."  
-c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts` file:    
+1. Get the deployment target for Catalyze:
+a. Make sure your catalyze environment is [associated](https://resources.catalyze.io/paas/paas-cli-reference/#associate).
+b. Get the git remote by running ```git remote -v``` from within the associated repo.
+2. Setup a deployment key to Catalyze for Travis CI:
+a. Install the travis-ci cli.
+b. Get the public SSH key for your travis project and save it to a file by running ```travis pubkey > travis.pub```
+c. Add the key as a deploy key using the catalyze cli within the associated repo. For example:  ```catalyze deploy-keys add travisci ./travis.pub code-1```
+3. Setup Catalyze as a known host for Travis CI:
+a. List your known hosts by running ```cat ~/.ssh/known_hosts```
+b. Find and copy the line from known_hosts that includes the git remote found in step #1. It'll look something like "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..."
+c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts` file:
 ```
     before_deploy:  echo "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..." >> ~/.ssh/known_hosts
 ```
@@ -673,6 +693,9 @@ c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts`
 
 #### Options:
 
+ * **access_key_id**: AWS Access Key ID. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **secret_access_key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
+ * **region**: AWS Region the Lambda function is running in. Defaults to 'us-east-1'.
  * **function_name**: Required. The name of the Lambda being created / updated.
  * **role**: Required. The ARN of the IAM role to assign to this Lambda function.
  * **handler_name**: Required. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module.
@@ -775,6 +798,18 @@ and your testers can start testing your app.
 #### Examples:
 
     dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>
+
+### ExoScale:
+
+#### Options:
+
+* **email**: ExoScale email or Organization ID.
+* **password**: ExoScale password.
+* **deployment**: ExoScale Deployment. Follows the format "APP_NAME/DEP_NAME".
+
+#### Examples:
+
+    dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
 
 ### Scalingo:
 

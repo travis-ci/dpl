@@ -38,9 +38,9 @@ module DPL
         end
 
         if !!options[:verbose]
-          context.shell "git push --force --quiet #{git_target} HEAD:master"
+          context.shell "git push --force --quiet #{git_target} HEAD:refs/heads/master"
         else
-          context.shell "git push --force --quiet #{git_target} HEAD:master > /dev/null 2>&1"
+          context.shell "git push --force --quiet #{git_target} HEAD:refs/heads/master > /dev/null 2>&1"
         end
       end
     end

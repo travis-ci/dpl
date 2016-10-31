@@ -15,7 +15,7 @@ describe DPL::Provider::CloudFoundry do
     example do
       expect(provider.context).to receive(:shell).with('wget \'https://cli.run.pivotal.io/stable?release=linux64-binary&source=github\' -qO cf-linux-amd64.tgz && tar -zxvf cf-linux-amd64.tgz && rm cf-linux-amd64.tgz')
       expect(provider.context).to receive(:shell).with('./cf api api.run.awesome.io --skip-ssl-validation')
-      expect(provider.context).to receive(:shell).with('./cf login --u mallomar --p myreallyawesomepassword --o myorg --s outer')
+      expect(provider.context).to receive(:shell).with('./cf login -u mallomar -p myreallyawesomepassword -o myorg -s outer')
       provider.check_auth
     end
   end
