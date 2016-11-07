@@ -5,7 +5,22 @@ module DPL
       requires 'git'
 
       def install_deploy_dependencies
-        context.shell "curl -sSL http://deis.io/deis-cli/install.sh | sh -s #{option(:cli_version)}"
+        install_url = determine_install_url
+        context.shell "curl -sSL #{install_url} | bash -x -s #{option(:cli_version)}"
+      end
+
+      #Default to installing the default v1 client. Otherwise determine if this is a v2 client
+      def determine_install_url
+         if option(:cli_version).nil?
+           return "http://deis.io/deis-cli/install.sh"
+         else
+           version_arg = Gem::Version.new(option(:cli_version).gsub(/^v?V?/,''))
+           if version_arg >= Gem::Version.new('2.0.0')
+             return "http://deis.io/deis-cli/install-v2.sh"
+           else
+             return "http://deis.io/deis-cli/install.sh"
+           end
+         end
       end
 
       def needs_key?
@@ -87,7 +102,7 @@ module DPL
       end
 
       def run(command)
-        unless context.shell "deis run -- #{command}"
+        unless context.shell "./deis run -- #{command}"
           error 'Running command failed.'
         end
       end
