@@ -107,7 +107,7 @@ describe DPL::Provider::Deis do
   describe "#run" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'deis run -- shell command'
+        './deis run -- shell command'
       ).and_return(true)
       provider.run('shell command')
     end
