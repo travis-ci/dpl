@@ -282,6 +282,7 @@ For authentication you can also use Travis CI secure environment variable:
 * **password**: PyPI Password.
 * **server**: Optional. Only required if you want to release to a different index. Follows the form of 'https://mypackageindex.com/index'. Defaults to 'https://pypi.python.org/pypi'.
 * **distributions**: Optional. A space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
+* **skip_upload_docs**: Optional. When set to `true`, documentation is not uploaded. Defaults to `false`.
 * **docs_dir**: Optional. A path to the directory to upload documentation from. Defaults to 'build/docs'
 
 #### Environment variables:
