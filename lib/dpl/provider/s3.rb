@@ -84,7 +84,7 @@ module DPL
       def content_data_for(path)
         content_data = {}
         content_type = MIME::Types.type_for(path).first
-        content_data[:content_type] = content_type.to_s
+        content_data[:content_type] = content_type.to_s if content_type
 
         encoding = encoding_for(path)
         if detect_encoding?
