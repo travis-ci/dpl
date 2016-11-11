@@ -9,7 +9,7 @@ module DPL
       requires 'rubyzip', load: 'zip'
 
       def lambda
-        @lambda ||= ::Aws::LambdaPreview::Client.new(lambda_options)
+        @lambda ||= ::Aws::Lambda::Client.new(lambda_options)
       end
 
       def lambda_options
@@ -20,27 +20,64 @@ module DPL
       end
 
       def push_app
-        # Options defined at
-        #   https://docs.aws.amazon.com/sdkforruby/api/Aws/LambdaPreview/Client.html
-        #   https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html
-        response = lambda.upload_function({
-          function_name:  options[:name]           || option(:function_name),
-          description:    options[:description]    || default_description,
-          timeout:        options[:timeout]        || default_timeout,
-          memory_size:    options[:memory_size]    || deafult_memory_size,
-          role:           option(:role),
-          handler:        handler,
-          function_zip:   function_zip,
-          runtime:        options[:runtime]        || default_runtime,
-          mode:           default_mode,
-        })
 
-        log "Uploaded lambda: #{response.function_name}."
-      rescue ::Aws::LambdaPreview::Errors::ServiceException => exception
+        # The original LambdaPreview client supported create/update in one call
+        # To keep compatibility we try to fetch the function and then decide
+        # whether to update the code or create a new function
+
+        begin
+          function_name = options[:name] || option(:function_name)
+
+          response = lambda.get_function({
+            function_name: function_name
+          })
+
+          log "Function #{function_name} already exists, updating."
+
+          # Options defined at
+          #   https://docs.aws.amazon.com/sdkforruby/api/Aws/Lambda/Client.html#update_function_configuration-instance_method
+          response = lambda.update_function_configuration({
+            function_name:  function_name,
+            description:    options[:description]    || default_description,
+            timeout:        options[:timeout]        || default_timeout,
+            memory_size:    options[:memory_size]    || default_memory_size,
+            role:           option(:role),
+            handler:        handler,
+            runtime:        options[:runtime]        || default_runtime,
+          })
+          log "Updated configuration of function: #{response.function_name}."
+
+          # Options defined at
+          #   https://docs.aws.amazon.com/sdkforruby/api/Aws/Lambda/Client.html#update_function_code-instance_method
+          response = lambda.update_function_code({
+             function_name:  options[:name] || option(:function_name),
+             zip_file:   function_zip,
+          })
+
+          log "Updated code of function: #{response.function_name}."
+        rescue ::Aws::Lambda::Errors::ResourceNotFoundException
+          # Options defined at
+          #   https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html
+          response = lambda.create_function({
+            function_name:  options[:name]           || option(:function_name),
+            description:    options[:description]    || default_description,
+            timeout:        options[:timeout]        || default_timeout,
+            memory_size:    options[:memory_size]    || default_memory_size,
+            role:           option(:role),
+            handler:        handler,
+            code: {
+              zip_file:     function_zip,
+            },
+            runtime:        options[:runtime]        || default_runtime,
+          })
+
+          log "Created lambda: #{response.function_name}."
+        end
+      rescue ::Aws::Lambda::Errors::ServiceException => exception
         error(exception.message)
-      rescue ::Aws::LambdaPreview::Errors::InvalidParameterValueException => exception
+      rescue ::Aws::Lambda::Errors::InvalidParameterValueException => exception
         error(exception.message)
-      rescue ::Aws::LambdaPreview::Errors::ResourceNotFoundException => exception
+      rescue ::Aws::Lambda::Errors::ResourceNotFoundException => exception
         error(exception.message)
       end
 
@@ -111,10 +148,6 @@ module DPL
         'nodejs'
       end
 
-      def default_mode
-        'event'
-      end
-
       def default_timeout
         3 # seconds
       end
@@ -123,7 +156,7 @@ module DPL
         "Deploy build #{context.env['TRAVIS_BUILD_NUMBER']} to AWS Lambda via Travis CI"
       end
 
-      def deafult_memory_size
+      def default_memory_size
         128
       end
 
