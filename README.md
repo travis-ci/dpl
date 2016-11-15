@@ -707,6 +707,7 @@ c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts`
  * **timeout**: Optional. The function execution time at which Lambda should terminate the function. Defaults to 3 (seconds).
  * **memory_size**: Optional. The amount of memory in MB to allocate to this Lambda. Defaults to 128.
  * **runtime**: Optional. The Lambda runtime to use. Defaults to `node`.
+ * **publish**: If `true`, a [new version](http://docs.aws.amazon.com/lambda/latest/dg/versioning-intro.html#versioning-intro-publish-version) of the Lambda function will be created instead of replacing the code of the existing one.
 
 #### Examples:
 
