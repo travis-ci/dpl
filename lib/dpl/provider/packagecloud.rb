@@ -2,7 +2,7 @@ module DPL
   class Provider
     class Packagecloud < Provider
       requires 'json_pure', :version => '< 2.0', :load => 'json/pure'
-      requires 'packagecloud-ruby', :version => "1.0.4", :load => 'packagecloud'
+      requires 'packagecloud-ruby', :version => "1.0.5", :load => 'packagecloud'
 
       def check_auth
         setup_auth
@@ -65,9 +65,6 @@ module DPL
         source_files = {}
         glob_args = ["**/*"]
         package = ::Packagecloud::Package.new(file: orig_filename)
-        puts "debug: calling content for #{orig_filename}"
-        puts package.file.read
-        package.file.rewind
         result = @client.package_contents(@repo, package)
         if result.succeeded
           package_contents_files = result.response["files"].map { |x| x["filename"] }
