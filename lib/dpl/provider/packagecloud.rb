@@ -66,7 +66,8 @@ module DPL
         glob_args = ["**/*"]
         package = ::Packagecloud::Package.new(file: orig_filename)
         puts "debug: calling content for #{orig_filename}"
-        puts package.inspect
+        puts package.file.read
+        package.file.rewind
         result = @client.package_contents(@repo, package)
         if result.succeeded
           package_contents_files = result.response["files"].map { |x| x["filename"] }
