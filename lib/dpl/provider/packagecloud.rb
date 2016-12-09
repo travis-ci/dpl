@@ -65,7 +65,7 @@ module DPL
         source_files = {}
         glob_args = ["**/*"]
         package = ::Packagecloud::Package.new(file: orig_filename)
-        result = @client.package_contents(@repo, package)
+        result = @client.package_contents(@repo, package, get_distro(@dist))
         if result.succeeded
           package_contents_files = result.response["files"].map { |x| x["filename"] }
           Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
