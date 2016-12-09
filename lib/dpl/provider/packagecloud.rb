@@ -2,7 +2,7 @@ module DPL
   class Provider
     class Packagecloud < Provider
       requires 'json_pure', :version => '< 2.0', :load => 'json/pure'
-      requires 'packagecloud-ruby', :version => "0.2.17", :load => 'packagecloud'
+      requires 'packagecloud-ruby', :version => "1.0.4", :load => 'packagecloud'
 
       def check_auth
         setup_auth
@@ -64,7 +64,7 @@ module DPL
       def get_source_files_for(orig_filename)
         source_files = {}
         glob_args = ["**/*"]
-        package = ::Packagecloud::Package.new(open(orig_filename))
+        package = ::Packagecloud::Package.new(file: orig_filename)
         result = @client.package_contents(@repo, package)
         if result.succeeded
           package_contents_files = result.response["files"].map { |x| x["filename"] }
@@ -98,12 +98,12 @@ module DPL
                   if is_source_package?(filename)
                     log "Processing source package: #{filename}"
                     source_files = get_source_files_for(filename)
-                    packages << ::Packagecloud::Package.new(open(filename), get_distro(@dist), source_files, filename)
+                    packages << ::Packagecloud::Package.new(file: filename, source_files: source_files)
                   else
-                    packages << ::Packagecloud::Package.new(open(filename), get_distro(@dist), {}, filename)
+                    packages << ::Packagecloud::Package.new(file: filename)
                   end
                 else
-                  packages << ::Packagecloud::Package.new(open(filename), nil, {}, filename)
+                  packages << ::Packagecloud::Package.new(file: filename)
                 end
               end
             end
@@ -111,7 +111,7 @@ module DPL
         end
 
         packages.each do |package|
-          result = @client.put_package(@repo, package)
+          result = @client.put_package(@repo, package, get_distro(@dist))
           if result.succeeded
             log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
           else
