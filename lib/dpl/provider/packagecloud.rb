@@ -64,7 +64,7 @@ module DPL
       def get_source_files_for(orig_filename)
         source_files = {}
         glob_args = ["**/*"]
-        package = ::Packagecloud::Package.new(file: orig_filename)
+        package = ::Packagecloud::Package.new(:file => orig_filename)
         result = @client.package_contents(@repo, package, get_distro(@dist))
         if result.succeeded
           package_contents_files = result.response["files"].map { |x| x["filename"] }
@@ -98,12 +98,12 @@ module DPL
                   if is_source_package?(filename)
                     log "Processing source package: #{filename}"
                     source_files = get_source_files_for(filename)
-                    packages << ::Packagecloud::Package.new(file: filename, source_files: source_files)
+                    packages << ::Packagecloud::Package.new(:file => filename, :source_files => source_files)
                   else
-                    packages << ::Packagecloud::Package.new(file: filename)
+                    packages << ::Packagecloud::Package.new(:file => filename)
                   end
                 else
-                  packages << ::Packagecloud::Package.new(file: filename)
+                  packages << ::Packagecloud::Package.new(:file => filename)
                 end
               end
             end
