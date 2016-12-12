@@ -96,7 +96,10 @@ module DPL
         context.shell "python setup.py #{pypi_distributions}"
         context.shell "twine upload -r pypi dist/*"
         context.shell "rm -rf dist/*"
-        context.shell "python setup.py upload_docs #{pypi_docs_dir_option} -r #{pypi_server}"
+        unless options[:skip_upload_docs]
+          log "Uploading documentation (skip with \"skip_upload_docs: true\")"
+          context.shell "python setup.py upload_docs #{pypi_docs_dir_option} -r #{pypi_server}"
+        end
       end
     end
   end

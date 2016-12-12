@@ -3,7 +3,7 @@ require 'json'
 module DPL
   class Provider
     class CodeDeploy < Provider
-      requires 'aws-sdk', pre: true
+      requires 'aws-sdk', pre: true, version: '~> 2.6.32'
 
       def code_deploy
         @code_deploy ||= Aws::CodeDeploy::Client.new(code_deploy_options)
