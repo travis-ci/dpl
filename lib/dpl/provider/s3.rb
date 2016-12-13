@@ -46,11 +46,12 @@ module DPL
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           Dir.glob(*glob_args) do |filename|
-            opts                 = content_data_for(filename)
-            opts[:cache_control] = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]
-            opts[:acl]           = options[:acl].gsub(/_/, '-') if options[:acl]
-            opts[:expires]       = get_option_value_by_filename(options[:expires], filename) if options[:expires]
-            opts[:storage_class] = options[:storage_class] if options[:storage_class]
+            opts                          = content_data_for(filename)
+            opts[:cache_control]          = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]
+            opts[:acl]                    = options[:acl].gsub(/_/, '-') if options[:acl]
+            opts[:expires]                = get_option_value_by_filename(options[:expires], filename) if options[:expires]
+            opts[:storage_class]          = options[:storage_class] if options[:storage_class]
+            opts[:server_side_encryption] = "aes256" if options[:server_side_encryption]
             unless File.directory?(filename)
               log "uploading #{filename.inspect} with #{opts.inspect}"
               result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
