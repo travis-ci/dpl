@@ -16,12 +16,12 @@ Gem::Specification.new do |s|
   s.require_path          = 'lib'
   s.required_ruby_version = '>= 1.9.3'
 
-  s.add_development_dependency 'rspec', '~> 3.0.0'
-  s.add_development_dependency 'rspec-its'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'json', '1.8.1'
-  s.add_development_dependency 'tins', '~> 1.6.0', '>= 1.6.0'
-  s.add_development_dependency 'coveralls'
+  s.add_development_dependency 'rspec', '~> 3.0', '>= 3.0.0'
+  s.add_development_dependency 'rspec-its', '~> 1.2', '>= 1.2.0'
+  s.add_development_dependency 'rake', '~> 12.0', '>= 12.0.0'
+  s.add_development_dependency 'json', '~> 1.8', '>= 1.8.1'
+  s.add_development_dependency 'tins', '~> 1.6', '>= 1.6.0'
+  s.add_development_dependency 'coveralls', '~> 0.8', '>= 0.8.17'
 
   # prereleases from Travis CI
   if ENV['CI']
