@@ -51,15 +51,7 @@ module DPL
             opts[:acl]                    = options[:acl].gsub(/_/, '-') if options[:acl]
             opts[:expires]                = get_option_value_by_filename(options[:expires], filename) if options[:expires]
             opts[:storage_class]          = options[:storage_class] if options[:storage_class]
-<<<<<<< cdc47f8152a026d2634aff63e51be4d3260c0023
-<<<<<<< 0f898c1e14e5e0590bd19c23f73f91c2bc6a8d27
             opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
-=======
-            opts[:server_side_encryption] = "aes256" if options[:server_side_encryption]
->>>>>>> Add support for S3 SSE
-=======
-            opts[:server_side_encryption] = "aes256" if options[:server_side_encryption]
->>>>>>> Add support for S3 SSE
             unless File.directory?(filename)
               log "uploading #{filename.inspect} with #{opts.inspect}"
               result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
