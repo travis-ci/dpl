@@ -22,6 +22,7 @@ module DPL
         @token = option(:token)
         @repo = option(:repository)
         @dist = option(:dist) if options[:dist]
+        @release = option(:release) if options[:release]
         @creds = ::Packagecloud::Credentials.new(@username, @token)
         log "Logging into https://packagecloud.io with #{@username}:#{@token[-4..-1].rjust(20, '*')}"
       end
@@ -110,7 +111,14 @@ module DPL
           end
         end
 
+        force = options.fetch(:package_glob) || false
         packages.each do |package|
+          result = @client.delete_package(@repo, @dist, @release, package.filename) if force
+          if result.succeeded
+            log "Successfully delete #{package.filename} on #{@username}/#{@repo}"
+          else
+            error "Error #{result.response}"
+          end
           result = @client.put_package(@repo, package, get_distro(@dist))
           if result.succeeded
             log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
