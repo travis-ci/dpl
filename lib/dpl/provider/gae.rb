@@ -47,7 +47,7 @@ module DPL
       end
 
       def version
-        options[:version] || ''
+        options[:version]
       end
 
       def config
@@ -72,7 +72,7 @@ module DPL
         command << " --verbosity \"#{verbosity}\""
         command << " --project \"#{project}\""
         command << " app deploy \"#{config}\""
-        command << " --version \"#{version}\""
+        command << (version ? " --version \"#{version}\"" : '')
         command << " --#{no_promote ? 'no-' : ''}promote"
         command << (no_stop_previous_version ? ' --no-stop-previous-version' : '')
         unless context.shell(command)
