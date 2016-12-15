@@ -20,12 +20,8 @@ module DPL
       def setup_auth
         @username = option(:username)
         @token = option(:token)
-        if @token.nil?
-          error "Token required!"
-        end
         @repo = option(:repository)
         @dist = option(:dist) if options[:dist]
-        @release = option(:release) if options[:release]
         @creds = ::Packagecloud::Credentials.new(@username, @token)
         log "Logging into https://packagecloud.io with #{@username}:#{@token[-4..-1].rjust(20, '*')}"
       end
@@ -112,18 +108,7 @@ module DPL
           end
         end
 
-        force = options.fetch(:force, false)
         packages.each do |package|
-          if force
-            log "Delete package: #{package.filename}"
-            result = @client.delete_package(@repo, @dist, @release, package.filename)
-            if result.succeeded
-              log "Successfully delete #{package.filename} on #{@username}/#{@repo}"
-            else
-              error "Error #{result.response}"
-            end
-          end
-
           log "Pushing package: #{package.filename}"
           if dist_required?(package.filename)
             result = @client.put_package(@repo, package, get_distro(@dist))
@@ -134,7 +119,7 @@ module DPL
           if result.succeeded
             log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
           else
-            result = @client.put_package(@repo, package)
+            error "Error #{result.response}"
           end
         end
         if packages.empty?
