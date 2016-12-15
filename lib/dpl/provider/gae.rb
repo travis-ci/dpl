@@ -72,9 +72,9 @@ module DPL
         command << " --verbosity \"#{verbosity}\""
         command << " --project \"#{project}\""
         command << " app deploy \"#{config}\""
-        command << " --version \"#{version}\"" unless version.empty?
+        command << " --version \"#{version}\"" unless version.to_s.empty?
         command << " --#{no_promote ? 'no-' : ''}promote"
-        command << ' --no-stop-previous-version' unless no_stop_previous_version.empty?
+        command << ' --no-stop-previous-version' unless no_stop_previous_version.to_s.empty?
         unless context.shell(command)
           log 'Deployment failed.'
           context.shell('find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;')
