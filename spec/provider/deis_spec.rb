@@ -65,16 +65,6 @@ describe DPL::Provider::Deis do
   describe "#setup_git_ssh" do
     example do
       expect(provider.context).to receive(:shell).with(
-        './deis git:remote --app=example'
-      ).and_return(true)
-
-      git_conf = double
-      git_remote = double
-      allow(Git).to receive(:open).and_return(git_conf)
-      allow(git_conf).to receive(:remote).and_return(git_remote)
-      allow(git_remote).to receive(:url).and_return("ssh://git@fake-git-repo.travis-ci.com:2222/dpl-test.git")
-
-      expect(provider.context).to receive(:shell).with(
         /grep -c 'PTY allocation request failed'/
       ).and_return(false)
 
@@ -98,7 +88,7 @@ describe DPL::Provider::Deis do
   describe "#push_app" do
     example do
       expect(provider.context).to receive(:shell).with(
-        "bash -c 'git push  deis HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'"
+        "bash -c 'git push  ssh://git@deis-builder.deisapps.com:2222/example.git HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'"
       ).and_return(true)
       provider.push_app
     end
@@ -107,7 +97,7 @@ describe DPL::Provider::Deis do
   describe "#run" do
     example do
       expect(provider.context).to receive(:shell).with(
-        './deis run -- shell command'
+        './deis run -a example -- shell command'
       ).and_return(true)
       provider.run('shell command')
     end
