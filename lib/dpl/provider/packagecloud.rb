@@ -20,6 +20,9 @@ module DPL
       def setup_auth
         @username = option(:username)
         @token = option(:token)
+        if @token.nil?
+          error "Token required!"
+        end
         @repo = option(:repository)
         @dist = option(:dist) if options[:dist]
         @release = option(:release) if options[:release]
