@@ -101,7 +101,11 @@ module DPL
                 log "Detected supported package: #{filename}"
 <<<<<<< 487ad280555ba444ac3ed5be198386bbd2bc98c5
                 error_if_dist_required(filename)
+<<<<<<< a7f6ce9647e7bd3ef4e02f24642819b7e8b4d0bc
 =======
+>>>>>>> fix rubygems handling
+=======
+
 >>>>>>> fix rubygems handling
                 if is_source_package?(filename)
                   log "Processing source package: #{filename}"
