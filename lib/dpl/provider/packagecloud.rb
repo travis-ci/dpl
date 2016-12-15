@@ -131,13 +131,20 @@ module DPL
             result = @client.put_package(@repo, package)
           end
 
-          result = @client.delete_package(@repo, @dist, @release, package.filename) if force
-          if result.succeeded
-            log "Successfully delete #{package.filename} on #{@username}/#{@repo}"
-          else
-            error "Error #{result.response}"
+          if force
+            result = @client.delete_package(@repo, @dist, @release, package.filename)
+            if result.succeeded
+              log "Successfully delete #{package.filename} on #{@username}/#{@repo}"
+            else
+              error "Error #{result.response}"
+            end
           end
-          result = @client.put_package(@repo, package, get_distro(@dist))
+
+          if dist_required?(package.filename)
+            result = @client.put_package(@repo, package, get_distro(@dist))
+          else
+            result = @client.put_package(@repo, package)
+          end
           if result.succeeded
             log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
           else
