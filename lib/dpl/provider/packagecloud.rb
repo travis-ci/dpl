@@ -96,10 +96,7 @@ module DPL
             unless File.directory?(filename)
               if is_supported_package?(filename)
                 log "Detected supported package: #{filename}"
-<<<<<<< fd50f262ee354621ece00c2969dbf8a26986f2a4
                 error_if_dist_required(filename)
-=======
->>>>>>> fix rubygems handling
                 if is_source_package?(filename)
                   log "Processing source package: #{filename}"
                   source_files = get_source_files_for(filename)
@@ -114,20 +111,10 @@ module DPL
 
         force = options.fetch(:package_glob) || false
         packages.each do |package|
-<<<<<<< fd50f262ee354621ece00c2969dbf8a26986f2a4
-<<<<<<< 4dc9b090e7257691883f5d218531d5d792ee9ff8
-          log "Pushing package: #{package.filename}"
-          if dist_required?(package.filename)
-            result = @client.put_package(@repo, package, get_distro(@dist))
-          else
-            result = @client.put_package(@repo, package)
-          end
-
-=======
+          log "Deleting package: #{package.filename}"
           result = @client.delete_package(@repo, @dist, @release, package.filename) if force
           if result.succeeded
             log "Successfully delete #{package.filename} on #{@username}/#{@repo}"
-=======
           if force
             result = @client.delete_package(@repo, @dist, @release, package.filename)
             if result.succeeded
@@ -137,17 +124,13 @@ module DPL
             end
           end
 
+          log "Pushing package: #{package.filename}"
           if dist_required?(package.filename)
             result = @client.put_package(@repo, package, get_distro(@dist))
->>>>>>> fix rubygems handling
           else
             result = @client.put_package(@repo, package)
           end
-<<<<<<< fd50f262ee354621ece00c2969dbf8a26986f2a4
-          result = @client.put_package(@repo, package, get_distro(@dist))
->>>>>>> delete package before upload on packagecloud
-=======
->>>>>>> fix rubygems handling
+
           if result.succeeded
             log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
           else
