@@ -96,7 +96,10 @@ module DPL
             unless File.directory?(filename)
               if is_supported_package?(filename)
                 log "Detected supported package: #{filename}"
+<<<<<<< 487ad280555ba444ac3ed5be198386bbd2bc98c5
                 error_if_dist_required(filename)
+=======
+>>>>>>> fix rubygems handling
                 if is_source_package?(filename)
                   log "Processing source package: #{filename}"
                   source_files = get_source_files_for(filename)
@@ -124,6 +127,11 @@ module DPL
           log "Pushing package: #{package.filename}"
           if dist_required?(package.filename)
             result = @client.put_package(@repo, package, get_distro(@dist))
+          else
+            result = @client.put_package(@repo, package)
+          end
+          if result.succeeded
+            log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
           else
             result = @client.put_package(@repo, package)
           end
