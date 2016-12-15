@@ -71,7 +71,7 @@ module DPL
         command << ' --quiet'
         command << " --verbosity \"#{verbosity}\""
         command << " --project \"#{project}\""
-        command << " preview app deploy \"#{config}\""
+        command << " app deploy \"#{config}\""
         command << " --version \"#{version}\""
         command << " --#{no_promote ? 'no-' : ''}promote"
         command << (no_stop_previous_version ? ' --no-stop-previous-version' : '')

@@ -8,7 +8,7 @@ describe DPL::Provider::GAE do
 
   describe '#push_app' do
     example 'with defaults' do
-      allow(provider.context).to receive(:shell).with("#{DPL::Provider::GAE::GCLOUD} --quiet --verbosity \"warning\" --project \"test\" preview app deploy \"app.yaml\" --version \"\" --promote").and_return(true)
+      allow(provider.context).to receive(:shell).with("#{DPL::Provider::GAE::GCLOUD} --quiet --verbosity \"warning\" --project \"test\" app deploy \"app.yaml\" --version \"\" --promote").and_return(true)
       provider.push_app
     end
   end
