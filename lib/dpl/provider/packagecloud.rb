@@ -95,14 +95,10 @@ module DPL
               if is_supported_package?(filename)
                 error_if_dist_required(filename)
                 log "Detected supported package: #{filename}"
-                if dist_required?(filename)
-                  if is_source_package?(filename)
-                    log "Processing source package: #{filename}"
-                    source_files = get_source_files_for(filename)
-                    packages << ::Packagecloud::Package.new(:file => filename, :source_files => source_files)
-                  else
-                    packages << ::Packagecloud::Package.new(:file => filename)
-                  end
+                if is_source_package?(filename)
+                  log "Processing source package: #{filename}"
+                  source_files = get_source_files_for(filename)
+                  packages << ::Packagecloud::Package.new(:file => filename, :source_files => source_files)
                 else
                   packages << ::Packagecloud::Package.new(:file => filename)
                 end
@@ -113,13 +109,20 @@ module DPL
 
         force = options.fetch(:package_glob) || false
         packages.each do |package|
-          result = @client.delete_package(@repo, @dist, @release, package.filename) if force
-          if result.succeeded
-            log "Successfully delete #{package.filename} on #{@username}/#{@repo}"
-          else
-            error "Error #{result.response}"
+          if force
+            result = @client.delete_package(@repo, @dist, @release, package.filename)
+            if result.succeeded
+              log "Successfully delete #{package.filename} on #{@username}/#{@repo}"
+            else
+              error "Error #{result.response}"
+            end
           end
-          result = @client.put_package(@repo, package, get_distro(@dist))
+
+          if dist_required?(package.filename)
+            result = @client.put_package(@repo, package, get_distro(@dist))
+          else
+            result = @client.put_package(@repo, package)
+          end
           if result.succeeded
             log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
           else
