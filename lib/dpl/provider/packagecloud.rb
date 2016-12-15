@@ -19,9 +19,11 @@ module DPL
 
       def setup_auth
         @username = option(:username)
+        if options[:token].nil?
+          error "PACKAGECLOUD_TOKEN not found! Please set ENV var before continuing."
+        end
         @token = option(:token)
         if @token.nil?
-          error "Token required!"
         end
         @repo = option(:repository)
         @dist = option(:dist) if options[:dist]
