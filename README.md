@@ -924,4 +924,4 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 
 #### Examples:
 
-    dpl --provider=bluemixcf --username=<username> --password=<password> --organization=<organization> --region=<eu-gb> --space=<space> --skip-ssl-validation
+    dpl --provider=bluemixcf --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
