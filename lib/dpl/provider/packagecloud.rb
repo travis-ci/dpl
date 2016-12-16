@@ -54,8 +54,7 @@ module DPL
       end
 
       def error_if_dist_required(filename)
-        ext = File.extname(filename).gsub!('.','')
-        if dist_required?(ext) && @dist.nil?
+        if dist_required?(filename) && @dist.nil?
           error "Distribution needed for rpm, deb, python, and dsc packages, example --dist='ubuntu/breezy'"
         end
       end
