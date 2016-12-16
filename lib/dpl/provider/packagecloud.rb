@@ -133,6 +133,7 @@ module DPL
           else
             result = @client.put_package(@repo, package)
           end
+
           if result.succeeded
             log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
           else
