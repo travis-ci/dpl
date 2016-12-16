@@ -99,17 +99,7 @@ module DPL
             unless File.directory?(filename)
               if is_supported_package?(filename)
                 log "Detected supported package: #{filename}"
-<<<<<<< 8bedbb4edce03257a41c604e14488449465f0f9d
-<<<<<<< 487ad280555ba444ac3ed5be198386bbd2bc98c5
                 error_if_dist_required(filename)
-<<<<<<< a7f6ce9647e7bd3ef4e02f24642819b7e8b4d0bc
-=======
->>>>>>> fix rubygems handling
-=======
-
->>>>>>> fix rubygems handling
-=======
->>>>>>> fix rubygems handling
                 if is_source_package?(filename)
                   log "Processing source package: #{filename}"
                   source_files = get_source_files_for(filename)
@@ -124,7 +114,6 @@ module DPL
 
         force = options.fetch(:force, false)
         packages.each do |package|
-<<<<<<< 8bedbb4edce03257a41c604e14488449465f0f9d
           if force
             log "Delete package: #{package.filename}"
             result = @client.delete_package(@repo, @dist, @release, package.filename)
@@ -136,17 +125,12 @@ module DPL
           end
 
           log "Pushing package: #{package.filename}"
-=======
->>>>>>> fix rubygems handling
           if dist_required?(package.filename)
             result = @client.put_package(@repo, package, get_distro(@dist))
           else
             result = @client.put_package(@repo, package)
           end
-<<<<<<< 8bedbb4edce03257a41c604e14488449465f0f9d
 
-=======
->>>>>>> fix rubygems handling
           if result.succeeded
             log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
           else
