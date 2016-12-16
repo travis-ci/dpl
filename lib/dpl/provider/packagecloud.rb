@@ -46,13 +46,15 @@ module DPL
 
       def dist_required?(filename)
         ext = File.extname(filename).gsub!('.','')
-        ["rpm", "deb", "dsc"].include?(ext)
+        if ext.nil?
+          error "filename: #{filename} has no extension!"
+        end
+        ["rpm", "deb", "dsc", "whl", "egg", "egg-info", "gz", "zip", "tar", "bz2", "z"].include?(ext.downcase)
       end
 
       def error_if_dist_required(filename)
-        ext = File.extname(filename).gsub!('.','')
-        if dist_required?(ext) && @dist.nil?
-          error "Distribution needed for rpm, deb, and dsc packages, example --dist='ubuntu/breezy'"
+        if dist_required?(filename) && @dist.nil?
+          error "Distribution needed for rpm, deb, python, and dsc packages, example --dist='ubuntu/breezy'"
         end
       end
 
@@ -92,16 +94,12 @@ module DPL
           Dir.glob(*glob_args) do |filename|
             unless File.directory?(filename)
               if is_supported_package?(filename)
-                error_if_dist_required(filename)
                 log "Detected supported package: #{filename}"
-                if dist_required?(filename)
-                  if is_source_package?(filename)
-                    log "Processing source package: #{filename}"
-                    source_files = get_source_files_for(filename)
-                    packages << ::Packagecloud::Package.new(:file => filename, :source_files => source_files)
-                  else
-                    packages << ::Packagecloud::Package.new(:file => filename)
-                  end
+                error_if_dist_required(filename)
+                if is_source_package?(filename)
+                  log "Processing source package: #{filename}"
+                  source_files = get_source_files_for(filename)
+                  packages << ::Packagecloud::Package.new(:file => filename, :source_files => source_files)
                 else
                   packages << ::Packagecloud::Package.new(:file => filename)
                 end
@@ -111,7 +109,13 @@ module DPL
         end
 
         packages.each do |package|
-          result = @client.put_package(@repo, package, get_distro(@dist))
+          log "Pushing package: #{package.filename}"
+          if dist_required?(package.filename)
+            result = @client.put_package(@repo, package, get_distro(@dist))
+          else
+            result = @client.put_package(@repo, package)
+          end
+
           if result.succeeded
             log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
           else
