@@ -47,6 +47,9 @@ module DPL
 
       def dist_required?(filename)
         ext = File.extname(filename).gsub!('.','')
+        if ext.nil?
+          error "filename: #{filename} has no extension!"
+        end
         ["rpm", "deb", "dsc", "whl", "egg", "egg-info", "gz", "zip", "tar", "bz2", "z"].include?(ext.downcase)
       end
 
@@ -118,11 +121,13 @@ module DPL
             end
           end
 
+          log "Pushing package: #{package.filename}"
           if dist_required?(package.filename)
             result = @client.put_package(@repo, package, get_distro(@dist))
           else
             result = @client.put_package(@repo, package)
           end
+
           if result.succeeded
             log "Successfully pushed #{package.filename} to #{@username}/#{@repo}"
           else
