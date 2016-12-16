@@ -92,8 +92,8 @@ module DPL
           Dir.glob(*glob_args) do |filename|
             unless File.directory?(filename)
               if is_supported_package?(filename)
-                error_if_dist_required(filename)
                 log "Detected supported package: #{filename}"
+                error_if_dist_required(filename)
                 if is_source_package?(filename)
                   log "Processing source package: #{filename}"
                   source_files = get_source_files_for(filename)
