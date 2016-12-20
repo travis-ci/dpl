@@ -66,14 +66,14 @@ describe DPL::Provider::Lambda do
       handler_name: 'handler'
     }
 
-    example_get_function_response = {
-      code: {
-        location: 'location',
-        repository_type: 's3',
-      },
-      configuration: {
-        function_name: 'test-function'
-      }
+    list_functions_response = {
+      functions: [
+        { function_name: 'test-function' }
+      ]
+    }
+
+    empty_list_functions_response = {
+        functions: [ ]
     }
 
     example_response = {
@@ -89,7 +89,7 @@ describe DPL::Provider::Lambda do
 
     context 'by creating a new function' do
       before do
-        provider.lambda.stub_responses(:get_function, 'ResourceNotFoundException')
+        provider.lambda.stub_responses(:list_functions, empty_list_functions_response)
         provider.lambda.stub_responses(:create_function, example_response)
       end
 
@@ -101,7 +101,7 @@ describe DPL::Provider::Lambda do
 
     context 'by updating an existing function' do
       before do
-        provider.lambda.stub_responses(:get_function, example_get_function_response)
+        provider.lambda.stub_responses(:list_functions, list_functions_response)
         provider.lambda.stub_responses(:update_function_configuration, example_response)
         provider.lambda.stub_responses(:update_function_code, example_response)
       end
@@ -116,7 +116,7 @@ describe DPL::Provider::Lambda do
 
     context 'with a ServiceException response' do
       before do
-        provider.lambda.stub_responses(:get_function, 'ResourceNotFoundException')
+        provider.lambda.stub_responses(:list_functions, 'ResourceNotFoundException')
         provider.lambda.stub_responses(:create_function, 'ServiceException')
       end
 
@@ -128,7 +128,7 @@ describe DPL::Provider::Lambda do
 
     context 'with a InvalidParameterValueException response' do
       before do
-        provider.lambda.stub_responses(:get_function, 'InvalidParameterValueException')
+        provider.lambda.stub_responses(:list_functions, 'InvalidParameterValueException')
       end
 
       example do
@@ -139,7 +139,7 @@ describe DPL::Provider::Lambda do
 
     context 'with a ResourceNotFoundException response' do
       before do
-        provider.lambda.stub_responses(:get_function, 'ResourceNotFoundException')
+        provider.lambda.stub_responses(:list_functions, 'ResourceNotFoundException')
         provider.lambda.stub_responses(:create_function, 'ResourceNotFoundException')
       end
 
