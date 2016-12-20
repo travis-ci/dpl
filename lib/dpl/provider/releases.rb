@@ -3,7 +3,12 @@ module DPL
     class Releases < Provider
       require 'pathname'
 
-      requires 'octokit', version: '~> 4.3.0' # later versions require Ruby 2.x
+      if RUBY_VERSION >= "2.0.0"
+        requires 'octokit', version: '~> 4.6.2'
+      else
+        requires 'octokit', version: '~> 4.3.1'
+      end
+
       requires 'mime-types', version: '~> 2.0'
 
       def travis_tag
