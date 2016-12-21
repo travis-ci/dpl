@@ -6,7 +6,7 @@ module DPL
       if RUBY_VERSION >= "2.0.0"
         requires 'octokit', version: '~> 4.6.2'
       else
-        requires 'octokit', version: '~> 4.3.1'
+        requires 'octokit', version: '~> 4.3.0'
       end
 
       requires 'mime-types', version: '~> 2.0'
