@@ -2,8 +2,6 @@ module DPL
   class Provider
     class Deis < Provider
       
-      requires 'git'
-
       def install_deploy_dependencies
         install_url = determine_install_url
         context.shell "curl -sSL #{install_url} | bash -x -s #{option(:cli_version)}"
@@ -59,10 +57,6 @@ module DPL
         chmod(0740, path)
         context.env['GIT_SSH'] = path
 
-        unless context.shell "./deis git:remote --app=#{option(:app)}"
-          error 'Adding git remote failed.'
-        end
-
         wait_for_git_access
       end
 
@@ -71,9 +65,7 @@ module DPL
         max_retries=30
 
         #Get the deis git remote host and port
-        git=Git.open("./")
-        git_remote=git.remote("deis").url
-        remote_uri=git_remote.split("ssh://")[1].split("/")[0]
+        remote_uri=repository_url.split("ssh://")[1].split("/")[0]
         remote_host, remote_port = remote_uri.split(":")
         puts "Git remote is #{remote_host} at port #{remote_port}"
 
@@ -95,14 +87,28 @@ module DPL
         end
       end
 
+      def repository_url
+        "ssh://git@#{builder_hostname}:2222/#{option(:app)}.git"
+      end
+
+      def builder_hostname
+        host_tokens = controller_host.split(".")
+        host_tokens[0] = [host_tokens[0], "builder"].join("-")
+        host_tokens.join(".")
+      end
+
+      def controller_host
+        option(:controller).gsub(/https?:\/\//, "").split(":")[0]
+      end
+
       def push_app
-        unless context.shell "bash -c 'git push #{verbose_flag} deis HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'"
+        unless context.shell "bash -c 'git push #{verbose_flag} #{repository_url} HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'"
           error 'Deploying application failed.'
         end
       end
 
       def run(command)
-        unless context.shell "./deis run -- #{command}"
+        unless context.shell "./deis run -a #{option(:app)} -- #{command}"
           error 'Running command failed.'
         end
       end

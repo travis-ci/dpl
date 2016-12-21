@@ -47,7 +47,7 @@ module DPL
       end
 
       def version
-        options[:version] || ''
+        options[:version]
       end
 
       def config
@@ -71,10 +71,10 @@ module DPL
         command << ' --quiet'
         command << " --verbosity \"#{verbosity}\""
         command << " --project \"#{project}\""
-        command << " preview app deploy \"#{config}\""
-        command << " --version \"#{version}\""
+        command << " app deploy \"#{config}\""
+        command << " --version \"#{version}\"" unless version.to_s.empty?
         command << " --#{no_promote ? 'no-' : ''}promote"
-        command << (no_stop_previous_version ? ' --no-stop-previous-version' : '')
+        command << ' --no-stop-previous-version' unless no_stop_previous_version.to_s.empty?
         unless context.shell(command)
           log 'Deployment failed.'
           context.shell('find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;')
