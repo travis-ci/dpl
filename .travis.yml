@@ -1,15 +1,19 @@
 language: ruby
 
-rvm:
-  - 1.9.3
-  - 2.0.0
-  - 2.1.5
-  - 2.2.5
-  - 2.3.1
+rvm: 2.3.1
 
 sudo: false
 
 cache: bundler
 
-script:
-  - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'
+script: bundle exec rake
+
+deploy:
+  provider: releases
+  user: waghanza
+  password: "${GITHUB_PASSWORD}"
+  repo: dpl
+  skip_cleanup: true
+  edge:
+    source: waghanza/dpl
+    branch: conditional_require
