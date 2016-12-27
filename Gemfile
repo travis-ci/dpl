@@ -62,7 +62,6 @@ end
 
 group :elastic_beanstalk do
   gem 'rubyzip', '~> 1.1'
-  gem 'nokogiri', '~> 1.6.8'
   gem 'aws-sdk-v1'
 end
 
