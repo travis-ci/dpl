@@ -5,6 +5,7 @@ module DPL
     class ElasticBeanstalk < Provider
       experimental 'AWS Elastic Beanstalk'
 
+      requires 'nokogiri', version: '1.6.8.1'
       requires 'aws-sdk-v1'
       requires 'rubyzip', :load => 'zip'
 
