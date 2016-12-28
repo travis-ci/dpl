@@ -109,7 +109,7 @@ module DPL
           end
         end
 
-        force = options.fetch(:package_glob) || false
+        force = options.fetch(:force) || false
         packages.each do |package|
           if force
             log "Delete package: #{package.filename}"
