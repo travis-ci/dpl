@@ -109,7 +109,7 @@ module DPL
           end
         end
 
-        force = options.fetch(:force) || false
+        force = options.fetch(:force, false)
         packages.each do |package|
           log "Deleting package: #{package.filename}"
           result = @client.delete_package(@repo, @dist, @release, package.filename) if force
