@@ -11,6 +11,9 @@ module DPL
       GCLOUD="#{INSTALL}/#{NAME}/bin/gcloud"
 
       def install_deploy_dependencies
+        $stderr.puts 'Switching to Python 2.7 ...'
+        context.shell("source ~/virtualenv/python2.7/bin/activate")
+
         if File.exists? GCLOUD
           return
         end
