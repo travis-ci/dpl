@@ -11,7 +11,7 @@ module DPL
       GCLOUD="#{INSTALL}/#{NAME}/bin/gcloud"
 
       def with_python_2_7(cmd)
-        "source #{context.env['HOME']}/virtualenv/python2.7/bin/activate; #{cmd}"
+        context.shell("bash -c 'source #{context.env['HOME']}/virtualenv/python2.7/bin/activate; #{cmd}'")
       end
 
       def install_deploy_dependencies
@@ -27,7 +27,7 @@ module DPL
 
         $stderr.puts 'Bootstrapping Google Cloud SDK ...'
 
-        unless context.shell(with_python_2_7("#{BOOTSTRAP} --usage-reporting=false --command-completion=false --path-update=false"))
+        unless with_python_2_7("#{BOOTSTRAP} --usage-reporting=false --command-completion=false --path-update=false")
           error 'Could not bootstrap Google Cloud SDK.'
         end
       end
@@ -37,7 +37,7 @@ module DPL
       end
 
       def check_auth
-        unless context.shell(with_python_2_7("#{GCLOUD} -q --verbosity debug auth activate-service-account --key-file #{keyfile}"))
+        unless with_python_2_7("#{GCLOUD} -q --verbosity debug auth activate-service-account --key-file #{keyfile}")
           error 'Authentication failed.'
         end
       end
@@ -79,7 +79,7 @@ module DPL
         command << " --version \"#{version}\"" unless version.to_s.empty?
         command << " --#{no_promote ? 'no-' : ''}promote"
         command << ' --no-stop-previous-version' unless no_stop_previous_version.to_s.empty?
-        unless context.shell(with_python_2_7(command))
+        unless with_python_2_7(command)
           log 'Deployment failed.'
           context.shell('find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;')
           error ''
