@@ -376,6 +376,23 @@ describe DPL::Provider::Lambda do
     end
   end
 
+  describe '#publish' do
+    context 'is default turned off' do
+      example do
+        expect(provider.publish).to eq(false)
+      end
+    end
+    context 'can be turned on' do
+      before do
+        expect(provider.options).to receive(:[]).with(:publish).and_return(true)
+      end
+
+      example do
+        expect(provider.publish).to eq(true)
+      end
+    end
+  end
+
   describe '#random_chars' do
     context 'without specifying count' do
       example do

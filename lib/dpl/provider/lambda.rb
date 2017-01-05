@@ -51,7 +51,8 @@ module DPL
           #   https://docs.aws.amazon.com/sdkforruby/api/Aws/Lambda/Client.html#update_function_code-instance_method
           response = lambda.update_function_code({
              function_name:  options[:name] || option(:function_name),
-             zip_file:   function_zip,
+             zip_file:       function_zip,
+             publish:        publish,
           })
 
           log "Updated code of function: #{response.function_name}."
@@ -69,6 +70,7 @@ module DPL
               zip_file:     function_zip,
             },
             runtime:        options[:runtime]        || default_runtime,
+            publish:        publish,
           })
 
           log "Created lambda: #{response.function_name}."
@@ -162,6 +164,10 @@ module DPL
 
       def default_module_name
         'index'
+      end
+
+      def publish
+        !!options[:publish]
       end
 
       def random_chars(count=8)
