@@ -11,12 +11,19 @@ module DPL
       GCLOUD="#{INSTALL}/#{NAME}/bin/gcloud"
 
       def with_python_2_7(cmd)
+        cmd.gsub!(/'/, "'\\\\''")
         context.shell("bash -c 'source #{context.env['HOME']}/virtualenv/python2.7/bin/activate; #{cmd}'")
       end
 
       def install_deploy_dependencies
         if File.exists? GCLOUD
           return
+        end
+
+        $stderr.puts 'Python 2.7 Version'
+
+        unless with_python_2_7("python -c 'import sys; print(sys.version)'")
+          error 'Could not use python2.7'
         end
 
         $stderr.puts 'Downloading Google Cloud SDK ...'
