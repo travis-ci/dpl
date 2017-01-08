@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'dpl/provider/bluemix_cloudfoundry'
+require 'dpl/provider/bluemix_cloud_foundry'
 
-describe DPL::Provider::BluemixCF do
+describe DPL::Provider::BluemixCloudFoundry do
   subject :provider do
     described_class.new(DummyContext.new, region: 'eu-gb', username: 'Moonpie',
                         password: 'myexceptionallyaveragepassword',
