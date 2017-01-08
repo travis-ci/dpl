@@ -12,7 +12,7 @@ module DPL
     autoload :AzureWebApps,     'dpl/provider/azure_webapps'
     autoload :Bintray,          'dpl/provider/bintray'
     autoload :BitBalloon,       'dpl/provider/bitballoon'
-    autoload :BluemixCF,        'dpl/provider/bluemix_cloudfoundry'
+    autoload :BluemixCloudFoundry, 'dpl/provider/bluemix_cloud_foundry'
     autoload :Boxfuse,          'dpl/provider/boxfuse'
     autoload :Catalyze,         'dpl/provider/catalyze'
     autoload :ChefSupermarket,  'dpl/provider/chef_supermarket'
