@@ -14,4 +14,13 @@ describe DPL::Provider::GAE do
       provider.push_app
     end
   end
+
+
+  describe '#with_python_2_7' do
+    example 'with apostrophe' do
+      expect(provider.context.env).to receive(:[]).with('HOME').and_return('/home/travis')
+      allow(provider.context).to receive(:shell).with("bash -c 'source /home/travis/virtualenv/python2.7/bin/activate; python -c '\\''import sys; print(sys.version)'\\'''").and_return(true)
+      provider.with_python_2_7("python -c 'import sys; print(sys.version)'")
+    end
+  end
 end
