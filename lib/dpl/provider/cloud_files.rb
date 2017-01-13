@@ -7,7 +7,6 @@ module DPL
       requires 'mime-types', load: 'mime/types', version: '~> 2.6.2' # Anything higher requires Ruby 2.x
       requires 'nokogiri', version: '~> 1.6.8.1' # 1.7.0 and up requires Ruby 2.1.0 (via fog-xml)
       requires 'fog-rackspace', load: 'fog/rackspace'
-      experimental 'Rackspace Cloud Files'
 
       def needs_key?
         false

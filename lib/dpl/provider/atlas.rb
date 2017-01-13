@@ -28,8 +28,6 @@ module DPL
         fi
       EOF
 
-      experimental 'Atlas'
-
       def deploy
         assert_app_present!
         install_atlas_upload

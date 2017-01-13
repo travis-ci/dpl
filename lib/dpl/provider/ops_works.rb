@@ -4,7 +4,6 @@ module DPL
   class Provider
     class OpsWorks < Provider
       requires 'aws-sdk', version: '~> 2'
-      experimental 'AWS OpsWorks'
 
       def opsworks
         @opsworks ||= Aws::OpsWorks::Client.new(opsworks_options)

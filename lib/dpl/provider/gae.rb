@@ -1,7 +1,6 @@
 module DPL
   class Provider
     class GAE < Provider
-      experimental 'Google App Engine'
 
       BASE='https://dl.google.com/dl/cloudsdk/channels/rapid/'
       NAME='google-cloud-sdk'

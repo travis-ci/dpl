@@ -2,8 +2,6 @@ module DPL
   class Provider
     class Script < Provider
 
-      experimental 'Script'
-
       def check_auth
       end
 

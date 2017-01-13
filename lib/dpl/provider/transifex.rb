@@ -1,7 +1,6 @@
 module DPL
   class Provider
     class Transifex < Provider
-      experimental 'Transifex'
 
       DEFAULT_CLIENT_VERSION = '>=0.11'
       DEFAULT_HOSTNAME = 'https://www.transifex.com'
