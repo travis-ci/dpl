@@ -52,7 +52,7 @@ group :cloud_files do
 end
 
 group :releases do
-  gem 'octokit', '~> 4.3.0'
+  gem 'octokit', '~> 4.6.0'
 end
 
 group :gcs do
