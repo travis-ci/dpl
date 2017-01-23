@@ -665,8 +665,8 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Setup:
 
 1. Get the deployment target for Catalyze:
-  a. Make sure your catalyze environment is [associated](https://resources.catalyze.io/paas/paas-cli-reference/#associate).
-  b. Get the git remote by running ```git remote -v``` from within the associated repo.
+  1. Make sure your catalyze environment is [associated](https://resources.catalyze.io/paas/paas-cli-reference/#associate).
+  2. Get the git remote by running ```git remote -v``` from within the associated repo.
 2. Setup a deployment key to Catalyze for Travis CI:
   a. Install the travis-ci cli.
   b. Get the public SSH key for your travis project and save it to a file by running ```travis pubkey > travis.pub```
