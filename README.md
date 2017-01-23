@@ -668,13 +668,13 @@ For accounts using two factor authentication, you have to use an oauth token as 
   1. Make sure your catalyze environment is [associated](https://resources.catalyze.io/paas/paas-cli-reference/#associate).
   2. Get the git remote by running ```git remote -v``` from within the associated repo.
 2. Setup a deployment key to Catalyze for Travis CI:
-  a. Install the travis-ci cli.
-  b. Get the public SSH key for your travis project and save it to a file by running ```travis pubkey > travis.pub```
-  c. Add the key as a deploy key using the catalyze cli within the associated repo. For example:  ```catalyze deploy-keys add travisci ./travis.pub code-1```
+  1. Install the travis-ci cli.
+  2. Get the public SSH key for your travis project and save it to a file by running ```travis pubkey > travis.pub```
+  3. Add the key as a deploy key using the catalyze cli within the associated repo. For example:  ```catalyze deploy-keys add travisci ./travis.pub code-1```
 3. Setup Catalyze as a known host for Travis CI:
-  a. List your known hosts by running ```cat ~/.ssh/known_hosts```
-  b. Find and copy the line from known_hosts that includes the git remote found in step #1. It'll look something like "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..."
-  c. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts` file:
+  1. List your known hosts by running ```cat ~/.ssh/known_hosts```
+  2. Find and copy the line from known_hosts that includes the git remote found in step #1. It'll look something like "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..."
+  3. Update your `before_deploy` step in `.travis.yml` to update the `known_hosts` file:
 
   ```
   before_deploy:  echo "[git.catalyzeapps.com]:2222 ecdsa-sha2-nistp256 BBBB12abZmKlLXNo..." >> ~/.ssh/known_hosts
