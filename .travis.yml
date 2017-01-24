@@ -8,7 +8,6 @@ rvm:
 
 matrix:
   allow_failures:
-    - rvm: "2.2.5"
     - rvm: "2.3.1"
 
 sudo: false
