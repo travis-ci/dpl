@@ -7,6 +7,7 @@ See [TESTING.md](TESTING.md).
 ## Supported Providers:
 Dpl supports the following providers:
 
+* [Ansible](#ansible)
 * [Anynines](#anynines)
 * [AppFog](#appfog)
 * [Atlas by HashiCorp](#atlas)
@@ -928,3 +929,43 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Examples:
 
     dpl --provider=bluemixcf --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
+
+### Ansible:
+
+#### Options:
+
+* **playbook**: Optional. Ansible playbook to execute. Default ```.playbook.yml```.
+* **debug**: Optional Boolean. When set to true, print the Ansible command line before executing.
+* **become**: Optional Boolean. When true, run operations with become (nopasswd implied).
+* **check**: Optional Boolean. When true, try to predict some of the chnges that will occur without making any changes.
+* **flush-cache**: Optional Boolean. When true, clear the fact cache.
+* **force-handlers**: Optional Boolean. When true, run handlers even if a task fails.
+* **syntax-check**: Optional Boolean. When true, performs a syntax check on the playbook, but does not execute it.
+* **verbose**: Optional Boolean. When true, enable verbose mode.
+* **version**: Optional Boolean. When true, show program's version number and exit.
+* **list-hosts**: Optional Boolean. When true, outputs a list of matching hosts; does not execute anything else.
+* **list-tags**: Optional Boolean. When true, list all available tags.
+* **list-tasks**: Optional Boolean. When true, list all tasks that would be executed.
+* **connection**: Optional. The connection type to use (default=smart).
+* **extra-vars**: Optional. Set additional variables as key=value or YAML/JSON.
+* **forks**: Optional. Specify number of parallel processes to use (default 5).
+* **inventory**: Optional. Specify inventory host path (default=/etc/ansible/hosts) or comma separated host list.
+* **limit**: Optional.
+* **module-path**: Optional. Specify path(s) to module library (default=None).
+* **private-key**: Optional. Private key file used to authenticate the connection.
+* **start-at-task**: Optional. Start the playbook at the task matching this name.
+* **ssh-common-args**: Optional. Specify common arguments to pass to sftp/scp/ssh (e.g.ProxyCommand).
+* **sftp-extra-args**: Optional. Specify extra arguments to pass to sftp only (e.g. -f, -l).
+* **scp-extra-args**: Optional. Specify extra arguments to pass to scp only (e.g. -l).
+* **ssh-extra-args**: Optional. Specify extra arguments to pass to ssh only (e.g. -R).
+* **skip-tags**: Optional. Only run plays and tasks whose tags do not match these values.
+* **tags**: Optional. Only run plays and tasks tagged with these values.
+* **timeout**: Optional. Override the connection timeout in seconds (default=10).
+* **user**: Optional. Connect as this user (default=None).
+* **vault-password**: Optional. Vault password file.
+* **extra-args**: Optional. Additional string of arguments to append to the ansible-playbook command.
+
+
+#### Examples:
+
+    dpl --provider=ansible
