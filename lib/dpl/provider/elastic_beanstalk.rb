@@ -42,7 +42,7 @@ module DPL
         create_bucket unless bucket_exists?
 
         if options[:zip_file]
-          zip_file = File.join(Dir.pwd, options[:zip_file])
+          zip_file = File.expand_path(options[:zip_file])
         else
           zip_file = create_zip
         end

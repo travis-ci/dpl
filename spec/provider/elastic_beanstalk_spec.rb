@@ -87,6 +87,58 @@ describe DPL::Provider::ElasticBeanstalk do
       provider.push_app
     end
 
+    example 'zip_file is an absolute path' do
+      provider.options.update(:zip_file => '/absolute/path/to/file.zip')
+      expect(provider).to receive(:s3).and_return(s3_mock).twice
+      expect(provider).to receive(:create_bucket)
+      expect(provider).to receive(:archive_name).and_return('file.zip')
+      expect(provider).to receive(:upload).with('file.zip', '/absolute/path/to/file.zip').and_call_original
+      expect(provider).to receive(:sleep).with(5)
+      expect(provider).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+      expect(provider).to receive(:update_app).with(app_version)
+
+      provider.push_app
+    end
+
+    example 'zip_file is an relative path' do
+      provider.options.update(:zip_file => 'relative/path/to/file.zip')
+      expect(provider).to receive(:s3).and_return(s3_mock).twice
+      expect(provider).to receive(:create_bucket)
+      expect(provider).to receive(:archive_name).and_return('file.zip')
+      expect(provider).to receive(:upload).with('file.zip', File.join(Dir.pwd, 'relative/path/to/file.zip')).and_call_original
+      expect(provider).to receive(:sleep).with(5)
+      expect(provider).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+      expect(provider).to receive(:update_app).with(app_version)
+
+      provider.push_app
+    end
+
+    example 'zip_file is a path with ~/' do
+      provider.options.update(:zip_file => '~/file.zip')
+      expect(provider).to receive(:s3).and_return(s3_mock).twice
+      expect(provider).to receive(:create_bucket)
+      expect(provider).to receive(:archive_name).and_return('file.zip')
+      expect(provider).to receive(:upload).with('file.zip', File.join(ENV['HOME'], 'file.zip')).and_call_original
+      expect(provider).to receive(:sleep).with(5)
+      expect(provider).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+      expect(provider).to receive(:update_app).with(app_version)
+
+      provider.push_app
+    end
+
+    example 'zip_file is has no path' do
+      provider.options.update(:zip_file => 'file.zip')
+      expect(provider).to receive(:s3).and_return(s3_mock).twice
+      expect(provider).to receive(:create_bucket)
+      expect(provider).to receive(:archive_name).and_return('file.zip')
+      expect(provider).to receive(:upload).with('file.zip', File.join(Dir.pwd, 'file.zip')).and_call_original
+      expect(provider).to receive(:sleep).with(5)
+      expect(provider).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+      expect(provider).to receive(:update_app).with(app_version)
+
+      provider.push_app
+    end
+
     context 'only creates app version' do
       let(:only_create_app_version) { true }
 
