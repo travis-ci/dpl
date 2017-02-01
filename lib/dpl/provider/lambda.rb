@@ -37,12 +37,13 @@ module DPL
           #   https://docs.aws.amazon.com/sdkforruby/api/Aws/Lambda/Client.html#update_function_configuration-instance_method
           response = lambda.update_function_configuration({
               function_name:  function_name,
-              description:    options[:description]    || default_description,
-              timeout:        options[:timeout]        || default_timeout,
-              memory_size:    options[:memory_size]    || default_memory_size,
+              description:    options[:description]                             || default_description,
+              timeout:        options[:timeout]                                 || default_timeout,
+              memory_size:    options[:memory_size]                             || default_memory_size,
               role:           option(:role),
               handler:        handler,
-              runtime:        options[:runtime]        || default_runtime,
+              runtime:        options[:runtime]                                 || default_runtime,
+              environment:    { variables: options[:environment_variables] }    || default_environment_variables
           })
 
 
@@ -72,6 +73,7 @@ module DPL
             },
             runtime:        options[:runtime]        || default_runtime,
             publish:        publish,
+            environment:    { variables: options[:environment_variables] }    || default_environment_variables
           })
 
           log "Created lambda: #{response.function_name}."
@@ -149,6 +151,12 @@ module DPL
 
       def default_runtime
         'nodejs'
+      end
+
+      def default_environment_variables
+        {
+          variables: {}
+        }
       end
 
       def default_timeout
