@@ -28,6 +28,10 @@ module DPL
         begin
           function_name = options[:name] || option(:function_name)
 
+          env_vars = options[:environment_variables] ? { variables: options[:environment_variables] } : default_environment_variables
+
+          log "Using environment variables: #{env_vars}"
+
           response = lambda.get_function({
                                              function_name: function_name
                                          })
@@ -44,7 +48,7 @@ module DPL
                                                               role:           option(:role),
                                                               handler:        handler,
                                                               runtime:        options[:runtime]        || default_runtime,
-                                                              environment:    { variables: options[:environment_variables] }    || default_environment_variables
+                                                              environment:    env_vars
                                                           })
           log "Updated configuration of function: #{response.function_name}."
 
@@ -72,7 +76,7 @@ module DPL
                                                 },
                                                 runtime:        options[:runtime]        || default_runtime,
                                                 publish:        publish,
-                                                environment:    { variables: options[:environment_variables] }    || default_environment_variables
+                                                environment:    env_vars
                                             })
 
           log "Created lambda: #{response.function_name}."
