@@ -28,6 +28,7 @@ module DPL
         begin
           function_name = options[:name] || option(:function_name)
 
+          log "Raw Options #{options}"
           log "Raw Environment Variables #{options[:environment_variables]}"
           env_vars = options[:environment_variables] ? { variables: options[:environment_variables] } : default_environment_variables
 
