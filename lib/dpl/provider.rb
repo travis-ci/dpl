@@ -30,6 +30,7 @@ module DPL
     autoload :Hackage,             'dpl/provider/hackage'
     autoload :Heroku,              'dpl/provider/heroku'
     autoload :Lambda,              'dpl/provider/lambda'
+    autoload :LambdaEnv,           'dpl/provider/lambda_env'
     autoload :Launchpad,           'dpl/provider/launchpad'
     autoload :Modulus,             'dpl/provider/modulus'
     autoload :Nodejitsu,           'dpl/provider/nodejitsu'
