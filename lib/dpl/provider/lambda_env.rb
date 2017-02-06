@@ -4,7 +4,9 @@ require 'fileutils'
 
 module DPL
   class Provider
-    class Lambda < Provider
+    class LambdaEnv < Provider
+      experimental 'Lambda Environment Variables'
+
       requires 'aws-sdk'
       requires 'rubyzip', load: 'zip'
 
@@ -28,6 +30,12 @@ module DPL
         begin
           function_name = options[:name] || option(:function_name)
 
+          log "Raw Options #{options}"
+          log "Raw Environment Variables #{options[:env]}"
+          env_vars = options[:env] ? { variables: options[:env] } : default_environment_variables
+
+          log "Using environment variables: #{env_vars}"
+
           response = lambda.get_function({function_name: function_name})
 
           log "Function #{function_name} already exists, updating."
@@ -42,6 +50,7 @@ module DPL
                                                               role:           option(:role),
                                                               handler:        handler,
                                                               runtime:        options[:runtime]        || default_runtime,
+                                                              environment:    env_vars
                                                           })
           log "Updated configuration of function: #{response.function_name}."
 
@@ -69,6 +78,7 @@ module DPL
                                                 },
                                                 runtime:        options[:runtime]        || default_runtime,
                                                 publish:        publish,
+                                                environment:    env_vars
                                             })
 
           log "Created lambda: #{response.function_name}."
@@ -162,6 +172,12 @@ module DPL
 
       def default_module_name
         'index'
+      end
+
+      def default_environment_variables
+        {
+            variables: {}
+        }
       end
 
       def publish
