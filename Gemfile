@@ -45,11 +45,6 @@ group :lambda do
   gem 'rubyzip', '~> 1.1'
 end
 
-group :lambda_env do
-  gem 'aws-sdk', '~> 2.6.32'
-  gem 'rubyzip', '~> 1.1'
-end
-
 group :cloud_files do
   gem 'fog-google', '< 0.1.1', platforms: :mri_19
   gem 'fog-profitbricks', '< 2.0', platforms: :mri_19
