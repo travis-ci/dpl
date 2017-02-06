@@ -34,9 +34,7 @@ module DPL
 
           log "Using environment variables: #{env_vars}"
 
-          response = lambda.get_function({
-                                             function_name: function_name
-                                         })
+          response = lambda.get_function({function_name: function_name})
 
           log "Function #{function_name} already exists, updating."
 
