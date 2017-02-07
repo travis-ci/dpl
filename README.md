@@ -666,7 +666,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Setup:
 
 1. Get the deployment target for Catalyze:
-  1. Make sure your catalyze environment is [associated](https://resources.catalyze.io/paas/paas-cli-reference/#associate).
+  1. Make sure your catalyze environment is [associated](https://resources.datica.com/compliant-cloud/articles/initial-setup/#sts=4. Associate to Your Environment).
   2. Get the git remote by running ```git remote -v``` from within the associated repo.
 2. Setup a deployment key to Catalyze for Travis CI:
   1. Install the travis-ci cli.
