@@ -148,7 +148,7 @@ module DPL
       end
 
       def default_runtime
-        'nodejs'
+        'nodejs4.3'
       end
 
       def default_timeout

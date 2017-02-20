@@ -708,7 +708,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **description**: Optional. The description of the Lambda being created / updated. Defaults to "Deploy build #{context.env['TRAVIS_BUILD_NUMBER']} to AWS Lambda via Travis CI"
  * **timeout**: Optional. The function execution time at which Lambda should terminate the function. Defaults to 3 (seconds).
  * **memory_size**: Optional. The amount of memory in MB to allocate to this Lambda. Defaults to 128.
- * **runtime**: Optional. The Lambda runtime to use. Defaults to `node`.
+ * **runtime**: Optional. The Lambda runtime to use. Defaults to `nodejs4.3`.
  * **publish**: If `true`, a [new version](http://docs.aws.amazon.com/lambda/latest/dg/versioning-intro.html#versioning-intro-publish-version) of the Lambda function will be created instead of replacing the code of the existing one.
 
 #### Examples:
