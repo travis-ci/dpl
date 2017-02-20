@@ -344,7 +344,7 @@ describe DPL::Provider::Lambda do
 
   describe '#default_runtime' do
     example do
-      expect(provider.default_runtime).to eq('nodejs')
+      expect(provider.default_runtime).to eq('nodejs4.3')
     end
   end
 
