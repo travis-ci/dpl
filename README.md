@@ -519,6 +519,8 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **github-token**: GitHub oauth token with `repo` permission.
 * **repo**: Repo slug, defaults to current one.
 * **target-branch**: Branch to push force to, defaults to gh-pages.
+* **keep-history**: Optional, create incremental commit instead of doing push force, defaults to false.
+* **verbose**: Optional, be verbose about internal steps, defaults to false.
 * **local-dir**: Directory to push to GitHub Pages, defaults to current.
 * **fqdn**: Optional, no default, sets a main domain for your website.
 * **project-name**: Defaults to fqdn or repo slug, used for metadata.
