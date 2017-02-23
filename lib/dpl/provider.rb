@@ -6,45 +6,48 @@ module DPL
   class Provider
     include FileUtils
 
-    autoload :Anynines,         'dpl/provider/anynines'
-    autoload :Appfog,           'dpl/provider/appfog'
-    autoload :Atlas,            'dpl/provider/atlas'
-    autoload :AzureWebApps,     'dpl/provider/azure_webapps'
-    autoload :Biicode,          'dpl/provider/biicode'
-    autoload :Bintray,          'dpl/provider/bintray'
-    autoload :BitBalloon,       'dpl/provider/bitballoon'
-    autoload :Boxfuse,          'dpl/provider/boxfuse'
-    autoload :ChefSupermarket,  'dpl/provider/chef_supermarket'
-    autoload :Cloud66,          'dpl/provider/cloud66'
-    autoload :CloudControl,     'dpl/provider/cloudcontrol'
-    autoload :CloudFiles,       'dpl/provider/cloud_files'
-    autoload :CloudFoundry,     'dpl/provider/cloud_foundry'
-    autoload :CodeDeploy,       'dpl/provider/code_deploy'
-    autoload :Deis,             'dpl/provider/deis'
-    autoload :Divshot,          'dpl/provider/divshot'
-    autoload :DotCloud,         'dpl/provider/dot_cloud'
-    autoload :ElasticBeanstalk, 'dpl/provider/elastic_beanstalk'
-    autoload :EngineYard,       'dpl/provider/engine_yard'
-    autoload :ExoScale,         'dpl/provider/exoscale'
-    autoload :GAE,              'dpl/provider/gae'
-    autoload :GCS,              'dpl/provider/gcs'
-    autoload :Hackage,          'dpl/provider/hackage'
-    autoload :Heroku,           'dpl/provider/heroku'
-    autoload :Lambda,           'dpl/provider/lambda'
-    autoload :Modulus,          'dpl/provider/modulus'
-    autoload :Nodejitsu,        'dpl/provider/nodejitsu'
-    autoload :NPM,              'dpl/provider/npm'
-    autoload :Openshift,        'dpl/provider/openshift'
-    autoload :OpsWorks,         'dpl/provider/ops_works'
-    autoload :Packagecloud,     'dpl/provider/packagecloud'
-    autoload :PuppetForge,      'dpl/provider/puppet_forge'
-    autoload :PyPI,             'dpl/provider/pypi'
-    autoload :Releases,         'dpl/provider/releases'
-    autoload :RubyGems,         'dpl/provider/rubygems'
-    autoload :S3,               'dpl/provider/s3'
-    autoload :Script,           'dpl/provider/script'
-    autoload :TestFairy,        'dpl/provider/testfairy'
-    autoload :Transifex,        'dpl/provider/transifex'
+    autoload :Anynines,            'dpl/provider/anynines'
+    autoload :Appfog,              'dpl/provider/appfog'
+    autoload :Atlas,               'dpl/provider/atlas'
+    autoload :AzureWebApps,        'dpl/provider/azure_webapps'
+    autoload :Bintray,             'dpl/provider/bintray'
+    autoload :BitBalloon,          'dpl/provider/bitballoon'
+    autoload :BluemixCloudFoundry, 'dpl/provider/bluemix_cloud_foundry'
+    autoload :Boxfuse,             'dpl/provider/boxfuse'
+    autoload :Catalyze,            'dpl/provider/catalyze'
+    autoload :ChefSupermarket,     'dpl/provider/chef_supermarket'
+    autoload :Cloud66,             'dpl/provider/cloud66'
+    autoload :CloudFiles,          'dpl/provider/cloud_files'
+    autoload :CloudFoundry,        'dpl/provider/cloud_foundry'
+    autoload :CodeDeploy,          'dpl/provider/code_deploy'
+    autoload :Deis,                'dpl/provider/deis'
+    autoload :Divshot,             'dpl/provider/divshot'
+    autoload :ElasticBeanstalk,    'dpl/provider/elastic_beanstalk'
+    autoload :EngineYard,          'dpl/provider/engine_yard'
+    autoload :Firebase,            'dpl/provider/firebase'
+    autoload :GAE,                 'dpl/provider/gae'
+    autoload :GCS,                 'dpl/provider/gcs'
+    autoload :Hackage,             'dpl/provider/hackage'
+    autoload :Heroku,              'dpl/provider/heroku'
+    autoload :Lambda,              'dpl/provider/lambda'
+    autoload :Launchpad,           'dpl/provider/launchpad'
+    autoload :Modulus,             'dpl/provider/modulus'
+    autoload :Nodejitsu,           'dpl/provider/nodejitsu'
+    autoload :NPM,                 'dpl/provider/npm'
+    autoload :Openshift,           'dpl/provider/openshift'
+    autoload :OpsWorks,            'dpl/provider/ops_works'
+    autoload :Packagecloud,        'dpl/provider/packagecloud'
+    autoload :Pages,               'dpl/provider/pages'
+    autoload :PuppetForge,         'dpl/provider/puppet_forge'
+    autoload :PyPI,                'dpl/provider/pypi'
+    autoload :Releases,            'dpl/provider/releases'
+    autoload :RubyGems,            'dpl/provider/rubygems'
+    autoload :S3,                  'dpl/provider/s3'
+    autoload :Scalingo,            'dpl/provider/scalingo'
+    autoload :Script,              'dpl/provider/script'
+    autoload :Surge,               'dpl/provider/surge'
+    autoload :TestFairy,           'dpl/provider/testfairy'
+    autoload :Transifex,           'dpl/provider/transifex'
 
 
     def self.new(context, options)
@@ -167,6 +170,9 @@ module DPL
     def cleanup
       return if options[:skip_cleanup]
       context.shell "mv .dpl ~/dpl"
+      log "Cleaning up git repository with `git stash --all`. " \
+        "If you need build artifacts for deployment, set `deploy.skip_cleanup: true`. " \
+        "See https://docs.travis-ci.com/user/deployment/#Uploading-Files."
       context.shell "git stash --all"
       context.shell "mv ~/dpl .dpl"
     end
@@ -209,6 +215,14 @@ module DPL
       options[:detect_encoding]
     end
 
+    def default_text_charset?
+      options[:default_text_charset]
+    end
+
+    def default_text_charset
+      options[:default_text_charset].downcase
+    end
+
     def encoding_for(path)
       file_cmd_output = `file '#{path}'`
       case file_cmd_output
@@ -216,6 +230,10 @@ module DPL
         'gzip'
       when /compress'd/
         'compress'
+      when /text/
+        'text'
+      when /data/
+        # Shrugs?
       end
     end
 

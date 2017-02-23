@@ -9,7 +9,7 @@ describe DPL::Provider::Deis do
       :controller => 'https://deis.deisapps.com',
       :username => 'travis',
       :password => 'secret',
-      :cli_version => '1.0'
+      :cli_version => 'v2.0.0'
     }
   end
 
@@ -20,7 +20,7 @@ describe DPL::Provider::Deis do
   describe "#install_deploy_dependencies" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'curl -sSL http://deis.io/deis-cli/install.sh | sh -s 1.0'
+        'curl -sSL http://deis.io/deis-cli/install-v2.sh | bash -x -s v2.0.0'
       ).and_return(true)
       provider.install_deploy_dependencies
     end
@@ -65,8 +65,13 @@ describe DPL::Provider::Deis do
   describe "#setup_git_ssh" do
     example do
       expect(provider.context).to receive(:shell).with(
-        './deis git:remote --app=example'
+        /grep -c 'PTY allocation request failed'/
+      ).and_return(false)
+
+      expect(provider.context).to receive(:shell).with(
+        /grep -c 'PTY allocation request failed'/
       ).and_return(true)
+
       provider.setup_git_ssh('foo', 'key_file')
     end
   end
@@ -83,7 +88,7 @@ describe DPL::Provider::Deis do
   describe "#push_app" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'git push deis HEAD:refs/heads/master -f'
+        "bash -c 'git push  ssh://git@deis-builder.deisapps.com:2222/example.git HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'"
       ).and_return(true)
       provider.push_app
     end
@@ -92,7 +97,7 @@ describe DPL::Provider::Deis do
   describe "#run" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'deis run -- shell command'
+        './deis run -a example -- shell command'
       ).and_return(true)
       provider.run('shell command')
     end

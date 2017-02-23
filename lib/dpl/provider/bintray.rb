@@ -88,7 +88,8 @@ module DPL
       def put_file_request(local_file_path, upload_path, matrix_params)
         url = URI.parse(self.url)
 
-        data = File.read(local_file_path)
+        file = File.open(local_file_path, 'rb')
+        data = file.read()
         http = Net::HTTP.new(url.host, url.port)
         http.use_ssl = true
 
@@ -368,7 +369,7 @@ module DPL
       def root_path(str)
         index = str.index('(')
         path = nil
-        if index.nil?
+        if index.nil? || str.start_with?('(')
           path = str
         else
           path = str[0, index]
