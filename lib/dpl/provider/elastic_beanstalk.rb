@@ -104,7 +104,7 @@ module DPL
       end
 
       def files_to_pack
-        `git ls-files -z`.split("\x0")
+        `git ls-files --recurse-submodules -z`.split("\x0")
       end
 
       def create_zip
