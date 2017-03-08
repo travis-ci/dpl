@@ -965,7 +965,6 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 * **vault-password**: Optional. Vault password file.
 * **extra-args**: Optional. Additional string of arguments to append to the ansible-playbook command.
 
-
 #### Examples:
 
     dpl --provider=ansible
