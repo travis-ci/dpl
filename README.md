@@ -540,6 +540,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **overwrite**: If files with the same name should be overwritten. Defaults to false.
 * **release-number**: Overide automatic release detection, set a release manually.
 * **prerelease**: Identify the release as a prerelease.
+* **prerelease_on_branch**: Explicitly specify branches to identify as prerelease.
 
 Additionally, options can be passed to [Octokit](https://github.com/octokit/octokit.rb) client.
 These are documented in https://github.com/octokit/octokit.rb/blob/master/lib/octokit/client/releases.rb.

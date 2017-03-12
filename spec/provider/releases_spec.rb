@@ -27,6 +27,26 @@ describe DPL::Provider::Releases do
     end
   end
 
+  describe "#travis_branch" do
+    example "When $TRAVIS_BRANCH is nil" do
+      provider.context.env['TRAVIS_BRANCH'] = nil
+
+      expect(provider.travis_branch).to eq(nil)
+    end
+
+    example "When $TRAVIS_BRANCH is set but empty" do
+      provider.context.env['TRAVIS_BRANCH'] = ""
+
+      expect(provider.travis_branch).to eq(nil)
+    end
+
+    example "When $TRAVIS_BRANCH is set" do
+      provider.context.env['TRAVIS_BRANCH'] = "foo"
+
+      expect(provider.travis_branch).to eq("foo")
+    end
+  end
+
   describe "#api" do
     example "With API key" do
       api = double(:api)
@@ -129,6 +149,21 @@ describe DPL::Provider::Releases do
       allow(provider).to receive(:travis_tag).and_return("foo")
 
       expect(provider.get_tag).to eq("foo")
+    end
+  end
+
+  describe "#get_branch" do
+    example "Without $TRAVIS_BRANCH" do
+      allow(provider).to receive(:travis_branch).and_return(nil)
+      allow(provider).to receive(:`).and_return("bar")
+
+      expect(provider.get_branch).to eq("bar")
+    end
+
+    example "With $TRAVIS_BRANCH" do
+      allow(provider).to receive(:travis_branch).and_return("foo")
+
+      expect(provider.get_branch).to eq("foo")
     end
   end
 
@@ -296,6 +331,71 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
       expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => true))
+
+      provider.push_app
+    end
+
+    example "When prerelease is true" do
+      allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["bar.txt"])
+      provider.options.update(:release_number => "1234")
+      provider.options.update(:prerelease => true)
+
+      allow(provider).to receive(:slug).and_return("foo/bar")
+
+      allow(provider.api).to receive(:release)
+      allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
+      allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => nil})
+      allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
+
+      expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:prerelease => true))
+
+      provider.push_app
+    end
+
+    example "When prerelease is true and prerelease_on_branch is not matching branch" do
+      allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["bar.txt"])
+      provider.options.update(:release_number => "1234")
+      provider.options.update(:prerelease => true)
+      provider.options.update(:prerelease_on_branch => ["my", "branches"])
+
+
+      allow(provider).to receive(:slug).and_return("foo/bar")
+      allow(provider).to receive(:travis_branch).and_return("foo")
+
+      allow(provider.api).to receive(:release)
+      allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
+      allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => nil})
+      allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
+
+      expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:prerelease => false))
+
+      provider.push_app
+    end
+    example "When prerelease is true and prerelease_on_branch is matching branch" do
+      allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["bar.txt"])
+      provider.options.update(:release_number => "1234")
+      provider.options.update(:prerelease => true)
+      provider.options.update(:prerelease_on_branch => ["my", "branches"])
+
+
+      allow(provider).to receive(:slug).and_return("foo/bar")
+      allow(provider).to receive(:travis_branch).and_return("branches")
+
+      allow(provider.api).to receive(:release)
+      allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
+      allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => nil})
+      allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
+
+      expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:prerelease => true))
 
       provider.push_app
     end

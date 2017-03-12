@@ -20,11 +20,27 @@ module DPL
         end
       end
 
+      def travis_branch
+        if context.env.fetch('TRAVIS_BRANCH', '') == ''
+          nil
+        else
+          context.env['TRAVIS_BRANCH']
+        end
+      end
+
       def get_tag
         if travis_tag.nil?
           @tag ||= `git describe --tags --exact-match 2>/dev/null`.chomp
         else
           @tag ||= travis_tag
+        end
+      end
+
+      def get_branch
+        if travis_branch.nil?
+          @branch ||= `git symbolic-ref --short HEAD 2>/dev/null`.chomp
+        else
+          @branch ||= travis_branch
         end
       end
 
@@ -55,6 +71,18 @@ module DPL
           end.flatten
         else
           Array(options[:file])
+        end
+      end
+
+      def prerelease
+        if options[:prerelease]
+          if options[:prerelease_on_branch]
+            options[:prerelease_on_branch].include? get_branch
+          else
+            true
+          end
+        else
+          false
         end
       end
 
@@ -103,6 +131,8 @@ module DPL
         if tag_matched == false
           release_url = api.create_release(slug, get_tag, options.merge({:draft => true})).rels[:self].href
         end
+
+        options[:prerelease] = prerelease
 
         files.each do |file|
           existing_url = nil
