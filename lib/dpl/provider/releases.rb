@@ -74,10 +74,15 @@ module DPL
         end
       end
 
-      def prerelease
+      def prerelease(release_url)
+        if api.release(release_url).rels[:self].get.data.respond_to? (:target_commitish)
+          branch = api.release(release_url).rels[:self].get.data.target_commitish
+        else
+          branch = get_branch
+        end
         if options[:prerelease]
           if options[:prerelease_on_branch]
-            options[:prerelease_on_branch].include? get_branch
+            options[:prerelease_on_branch].include? branch
           else
             true
           end
@@ -132,7 +137,7 @@ module DPL
           release_url = api.create_release(slug, get_tag, options.merge({:draft => true})).rels[:self].href
         end
 
-        options[:prerelease] = prerelease
+        options[:prerelease] = prerelease(release_url)
 
         files.each do |file|
           existing_url = nil
