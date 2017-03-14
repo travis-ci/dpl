@@ -71,7 +71,8 @@ module DPL
       end
 
       def version_description
-        context.env['ELASTIC_BEANSTALK_DESCRIPTION'] || commit_msg
+        description = context.env['ELASTIC_BEANSTALK_DESCRIPTION'] || commit_msg
+        description.gsub(/^[\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]/, "").strip
       end
 
       def archive_name
