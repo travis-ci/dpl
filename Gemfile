@@ -49,6 +49,7 @@ group :cloud_files do
   gem 'fog-google', '< 0.1.1', platforms: :mri_19
   gem 'fog-profitbricks', '< 2.0', platforms: :mri_19
   gem 'fog'
+  gem 'nokogiri', '~> 1.6.8.1'
 end
 
 group :releases do
