@@ -12,7 +12,7 @@ module DPL
 
       VERSION = "0.1"
       TAG = "-TestFairy-"
-      SERVER = "http://api.testfairy.com"
+      SERVER = "https://upload.testfairy.com"
       UPLOAD_URL_PATH = "/api/upload";
       UPLOAD_SIGNED_URL_PATH = "/api/upload-signed";
 
