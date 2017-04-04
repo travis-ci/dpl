@@ -11,8 +11,9 @@ module DPL
         if options[:manifest]
           error 'Application must have a manifest.yml for unattended deployment' unless File.exists? options[:manifest]
         end
-        if options[:zero_downtime] && !app_name
-          error 'Application name must be specified for zero-downtime deployment'
+        if options[:zero_downtime]
+          error 'Application name must be specified for zero-downtime deployment' if !app_name
+          check_manifest_up_to_date
         end
       end
 
@@ -44,6 +45,15 @@ module DPL
 
       def manifest
         options[:manifest].nil? ? "" : " -f #{options[:manifest]}"
+      end
+
+      def install_antifreeze
+        context.shell "./cf install-plugin https://github.com/odlp/antifreeze/releases/download/v0.3.0/antifreeze-linux"
+      end
+
+      def check_manifest_up_to_date
+        install_antifreeze
+        context.shell "./cf check-manifest #{app_name}#{manifest}"
       end
 
       def install_autopilot
