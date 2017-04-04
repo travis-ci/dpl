@@ -11,6 +11,9 @@ module DPL
         if options[:manifest]
           error 'Application must have a manifest.yml for unattended deployment' unless File.exists? options[:manifest]
         end
+        if options[:zero_downtime] && !app_name
+          error 'Application name must be specified for zero-downtime deployment'
+        end
       end
 
       def needs_key?
@@ -18,7 +21,12 @@ module DPL
       end
 
       def push_app
-        context.shell "./cf push#{manifest}"
+        if options[:zero_downtime]
+          install_autopilot
+          context.shell "./cf zero-downtime-push #{app_name}#{manifest}"
+        else
+          context.shell "./cf push#{manifest}"
+        end
         context.shell "./cf logout"
       end
 
@@ -36,6 +44,14 @@ module DPL
 
       def manifest
         options[:manifest].nil? ? "" : " -f #{options[:manifest]}"
+      end
+
+      def install_autopilot
+        context.shell "./cf install-plugin https://github.com/contraband/autopilot/releases/download/0.0.3/autopilot-linux"
+      end
+
+      def app_name
+        options[:app_name]
       end
     end
   end
