@@ -1,11 +1,6 @@
 module DPL
   class Provider
     class CloudFoundry < Provider
-
-      def initial_go_tools_install
-        context.shell 'wget \'https://cli.run.pivotal.io/stable?release=linux64-binary&source=github\' -qO cf-linux-amd64.tgz && tar -zxvf cf-linux-amd64.tgz && rm cf-linux-amd64.tgz'
-      end
-
       def check_auth
         initial_go_tools_install
         context.shell "./cf api #{option(:api)} #{'--skip-ssl-validation' if options[:skip_ssl_validation]}"
@@ -31,6 +26,12 @@ module DPL
       end
 
       def uncleanup
+      end
+
+      private
+
+      def initial_go_tools_install
+        context.shell "wget 'https://cli.run.pivotal.io/stable?release=linux64-binary&source=github' -qO cf-linux-amd64.tgz && tar -zxvf cf-linux-amd64.tgz && rm cf-linux-amd64.tgz"
       end
 
       def manifest
