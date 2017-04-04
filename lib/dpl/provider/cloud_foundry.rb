@@ -48,7 +48,7 @@ module DPL
       end
 
       def install_antifreeze
-        context.shell "./cf install-plugin https://github.com/odlp/antifreeze/releases/download/v0.3.0/antifreeze-linux"
+        context.shell "./cf install-plugin -f https://github.com/odlp/antifreeze/releases/download/v0.3.0/antifreeze-linux"
       end
 
       def check_manifest_up_to_date
@@ -57,7 +57,7 @@ module DPL
       end
 
       def install_autopilot
-        context.shell "./cf install-plugin https://github.com/contraband/autopilot/releases/download/0.0.3/autopilot-linux"
+        context.shell "./cf install-plugin -f https://github.com/contraband/autopilot/releases/download/0.0.3/autopilot-linux"
       end
 
       def app_name

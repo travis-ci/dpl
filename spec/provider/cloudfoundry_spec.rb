@@ -47,7 +47,7 @@ describe DPL::Provider::CloudFoundry do
       example do
         provider.options.update(:app_name => 'foo', :zero_downtime => true)
         File.stub(:exists?).with('worker-manifest.yml').and_return(true)
-        expect(provider.context).to receive(:shell).with('./cf install-plugin https://github.com/odlp/antifreeze/releases/download/v0.3.0/antifreeze-linux')
+        expect(provider.context).to receive(:shell).with('./cf install-plugin -f https://github.com/odlp/antifreeze/releases/download/v0.3.0/antifreeze-linux')
         expect(provider.context).to receive(:shell).with('./cf check-manifest foo -f worker-manifest.yml')
         expect{provider.check_app}.not_to raise_error
       end
@@ -76,7 +76,7 @@ describe DPL::Provider::CloudFoundry do
 
     example "Zero-downtime" do
       provider.options.update(:app_name => 'foo', :zero_downtime => true)
-      expect(provider.context).to receive(:shell).with('./cf install-plugin https://github.com/contraband/autopilot/releases/download/0.0.3/autopilot-linux')
+      expect(provider.context).to receive(:shell).with('./cf install-plugin -f https://github.com/contraband/autopilot/releases/download/0.0.3/autopilot-linux')
       expect(provider.context).to receive(:shell).with('./cf zero-downtime-push foo -f worker-manifest.yml')
       expect(provider.context).to receive(:shell).with('./cf logout')
       provider.push_app
