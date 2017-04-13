@@ -1,13 +1,9 @@
 require 'spec_helper'
-require 'aws-sdk-v1'
+require 'aws-sdk'
 require 'dpl/provider'
 require 'dpl/provider/elastic_beanstalk'
 
 describe DPL::Provider::ElasticBeanstalk do
-
-  before (:each) do
-    AWS.stub!
-  end
 
   let(:access_key_id) { 'qwertyuiopasdfghjklz' }
   let(:secret_access_key) { 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz' }
@@ -48,7 +44,7 @@ describe DPL::Provider::ElasticBeanstalk do
 
   describe "#check_auth" do
     example do
-      expect(AWS).to receive(:config).with(access_key_id: access_key_id, secret_access_key: secret_access_key, region: region)
+      expect(::Aws::ElasticBeanstalk::Client).to receive(:config).with(access_key_id: access_key_id, secret_access_key: secret_access_key, region: region)
       provider.check_auth
     end
   end
