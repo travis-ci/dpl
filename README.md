@@ -920,11 +920,11 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 * **password**: Bluemix password.
 * **organization**: Bluemix target organization.
 * **space**: Bluemix target space
-* **region**: Bluemix region [ng, eu-gb, au-syd]. Optional, default US region (ng).
+* **region**: Bluemix region [ng, eu-gb, eu-de, au-syd]. Optional, default US region (ng).
 * **api**: Bluemix api URL. Optional for Bluemix dedicated. Explicit **api** setting precedence over **region** setting.
 * **manifest**: Path to manifest file. Optional.
 * **skip_ssl_validation**: Skip ssl validation. Optional.
 
 #### Examples:
 
-    dpl --provider=bluemixcf --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
+    dpl --provider=bluemixcloudfoundry --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
