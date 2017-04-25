@@ -59,11 +59,11 @@ Dpl is published to rubygems.
 
 ## Usage:
 
-###Security Warning:
+### Security Warning:
 
 Running dpl in a terminal that saves history is insecure as your password/api key will be saved as plain text by it.
 
-###Global Flags
+### Global Flags
 * `--provider=<provider>` sets the provider you want to deploy to. Every provider has slightly different flags, which are documented in the section about your provider following.
 *  Dpl will deploy by default from the latest commit. Use the `--skip_cleanup`  flag to deploy from the current file state. Note that many providers deploy by git and could ignore this option.
 
@@ -260,7 +260,7 @@ For authentication you can also use Travis CI secure environment variable:
 * **domain**: Openshift Application Domain.
 * **app**: Openshift Application. Defaults to git repo's name.
 
-####Examples:
+#### Examples:
 
     dpl --provider=openshift --user=<username> --password=<password> --domain=<domain>
     dpl --provider=openshift --user=<username> --password=<password> --domain=<domain> --app=<app>
