@@ -6,6 +6,7 @@ module DPL
   class Provider
     include FileUtils
 
+    autoload :Ansible,             'dpl/provider/ansible'
     autoload :Anynines,            'dpl/provider/anynines'
     autoload :Appfog,              'dpl/provider/appfog'
     autoload :Atlas,               'dpl/provider/atlas'
@@ -91,12 +92,12 @@ module DPL
 
     def self.pip(name, command = name, version = nil)
       if version
-        puts "pip install --user #{name}==#{version}"
-        context.shell("pip uninstall --user -y #{name}") unless `which #{command}`.chop.empty?
-        context.shell("pip install --user #{name}==#{version}", retry: true)
+        puts "pip install --quiet --user #{name}==#{version}"
+        context.shell("pip uninstall --quiet --user -y #{name}") unless `which #{command}`.chop.empty?
+        context.shell("pip install --quiet --user #{name}==#{version}", retry: true)
       else
-        puts "pip install --user #{name}"
-        context.shell("pip install --user #{name}", retry: true) if `which #{command}`.chop.empty?
+        puts "pip install --quiet --user #{name}"
+        context.shell("pip install --quiet --user #{name}", retry: true) if `which #{command}`.chop.empty?
       end
       context.shell("export PATH=$PATH:$HOME/.local/bin")
     end

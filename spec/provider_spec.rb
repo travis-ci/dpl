@@ -60,14 +60,14 @@ describe DPL::Provider do
 
     example "missing" do
       expect(example_provider).to receive(:`).with("which foo").and_return("")
-      expect(example_provider.context).to receive(:shell).with("pip install --user foo", retry: true)
+      expect(example_provider.context).to receive(:shell).with("pip install --quiet --user foo", retry: true)
       expect(example_provider.context).to receive(:shell).with("export PATH=$PATH:$HOME/.local/bin")
       example_provider.pip("foo")
     end
 
     example "specific version" do
       expect(example_provider).to receive(:`).with("which foo").and_return("")
-      expect(example_provider.context).to receive(:shell).with("pip install --user foo==1.0", retry: true)
+      expect(example_provider.context).to receive(:shell).with("pip install --quiet --user foo==1.0", retry: true)
       expect(example_provider.context).to receive(:shell).with("export PATH=$PATH:$HOME/.local/bin")
       example_provider.pip("foo", "foo", "1.0")
     end
