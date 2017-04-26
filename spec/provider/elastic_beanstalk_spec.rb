@@ -23,7 +23,15 @@ describe DPL::Provider::ElasticBeanstalk do
 
   let(:s3_mock) do
     hash_dbl = double("Hash", :[] => bucket_mock, :map => [])
-    double("AWS::S3", buckets: hash_dbl)
+    double("Aws::S3", buckets: hash_dbl, config: hash_dbl)
+  end
+
+  let(:io_double) do
+    double('IO', open: Object.new)
+  end
+
+  let(:s3_obj_double) do
+    double("Aws::S3::Object", put: Object.new)
   end
 
   subject :provider do
@@ -44,40 +52,49 @@ describe DPL::Provider::ElasticBeanstalk do
 
   describe "#check_auth" do
     example do
-      expect(::Aws::ElasticBeanstalk::Client).to receive(:config).with(access_key_id: access_key_id, secret_access_key: secret_access_key, region: region)
+      expect(Aws.config).to receive(:update)
       provider.check_auth
     end
   end
 
   describe "#push_app" do
 
-    let(:bucket_name) { "travis-elasticbeanstalk-test-builds-#{region}" }
     let(:app_version) { Object.new }
+
+    before :each do
+      allow(io_double).to receive(:open)
+      allow(s3_obj_double).to receive(:put).with(anything).and_return(Object.new)
+      allow(s3_mock).to receive(:bucket).with(bucket_name).and_return(bucket_mock)
+      expect(Pathname).to receive(:new).with('/path/to/file.zip').and_return(io_double)
+    end
 
     example 'bucket exists already' do
       allow(s3_mock.buckets).to receive(:map).and_return([bucket_name])
+      allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
 
       expect(provider).to receive(:s3).and_return(s3_mock).twice
       expect(provider).not_to receive(:create_bucket)
       expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
       expect(provider).to receive(:archive_name).and_return('file.zip')
-      expect(bucket_mock.objects).to receive(:[]).with("#{bucket_path}/file.zip").and_return(bucket_mock)
       expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
       expect(provider).to receive(:sleep).with(5)
-      expect(provider).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+      expect(provider).to receive(:create_app_version).with(s3_obj_double).and_return(app_version)
       expect(provider).to receive(:update_app).with(app_version)
 
       provider.push_app
     end
 
     example 'bucket doesnt exist yet' do
+      allow(s3_mock.buckets).to receive(:map).and_return([])
+      allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
+
       expect(provider).to receive(:s3).and_return(s3_mock).twice
       expect(provider).to receive(:create_bucket)
       expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
       expect(provider).to receive(:archive_name).and_return('file.zip')
       expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
       expect(provider).to receive(:sleep).with(5)
-      expect(provider).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+      expect(provider).to receive(:create_app_version).with(s3_obj_double).and_return(app_version)
       expect(provider).to receive(:update_app).with(app_version)
 
       provider.push_app
@@ -87,6 +104,8 @@ describe DPL::Provider::ElasticBeanstalk do
       let(:only_create_app_version) { true }
 
       example 'verify the app is not updated' do
+        allow(s3_mock.buckets).to receive(:map).and_return([])
+        allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
 
         expect(provider).to receive(:s3).and_return(s3_mock).twice
         expect(provider).to receive(:create_bucket)
@@ -94,7 +113,7 @@ describe DPL::Provider::ElasticBeanstalk do
         expect(provider).to receive(:archive_name).and_return('file.zip')
         expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
         expect(provider).to receive(:sleep).with(5)
-        expect(provider).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+        expect(provider).to receive(:create_app_version).with(s3_obj_double).and_return(app_version)
         expect(provider).not_to receive(:update_app).with(app_version)
 
         provider.push_app
@@ -103,6 +122,7 @@ describe DPL::Provider::ElasticBeanstalk do
 
     context 'When the bucket_path option is not set' do
       example 'Does not prepend bucket_path to the s3 bucket' do
+        allow(bucket_mock).to receive(:object).with("file.zip").and_return(s3_obj_double)
         allow(s3_mock.buckets).to receive(:map).and_return([bucket_name])
 
         expect(provider_without_bucket_path).to receive(:s3).and_return(s3_mock).twice
@@ -110,10 +130,9 @@ describe DPL::Provider::ElasticBeanstalk do
         expect(provider_without_bucket_path).to receive(:create_zip).and_return('/path/to/file.zip')
         expect(provider_without_bucket_path).to receive(:archive_name).and_return('file.zip')
         expect(provider_without_bucket_path).to receive(:bucket_path).and_return(nil)
-        expect(bucket_mock.objects).to receive(:[]).with("file.zip").and_return(bucket_mock)
         expect(provider_without_bucket_path).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
         expect(provider_without_bucket_path).to receive(:sleep).with(5)
-        expect(provider_without_bucket_path).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+        expect(provider_without_bucket_path).to receive(:create_app_version).with(s3_obj_double).and_return(app_version)
         expect(provider_without_bucket_path).to receive(:update_app).with(app_version)
 
         provider_without_bucket_path.push_app
@@ -124,13 +143,15 @@ describe DPL::Provider::ElasticBeanstalk do
       let(:wait_until_deployed) { true }
 
       example 'Waits until deployment completes' do
+        allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
+
         expect(provider).to receive(:s3).and_return(s3_mock).twice
         expect(provider).to receive(:create_bucket)
         expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
         expect(provider).to receive(:archive_name).and_return('file.zip')
         expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
         expect(provider).to receive(:sleep).with(5)
-        expect(provider).to receive(:create_app_version).with(bucket_mock).and_return(app_version)
+        expect(provider).to receive(:create_app_version).with(s3_obj_double).and_return(app_version)
         expect(provider).to receive(:update_app).with(app_version)
         expect(provider).to receive(:wait_until_deployed)
 

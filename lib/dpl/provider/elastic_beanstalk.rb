@@ -27,7 +27,7 @@ module DPL
           :region      => region,
           :credentials => Aws::Credentials.new(access_key_id, secret_access_key)
         }
-        Aws.config.update(options);
+        Aws.config.update(options)
       end
 
       def check_app
