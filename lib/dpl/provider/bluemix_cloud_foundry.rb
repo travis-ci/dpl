@@ -4,6 +4,7 @@ module DPL
 
       REGIONS = Hash.new {"api.ng.bluemix.net"}.update(
         "eu-gb" => "api.eu-gb.bluemix.net",
+        "eu-de" => "api.eu-de.bluemix.net",
         "au-syd" => "api.au-syd.bluemix.net"
       )
 

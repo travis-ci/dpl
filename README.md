@@ -59,11 +59,11 @@ Dpl is published to rubygems.
 
 ## Usage:
 
-###Security Warning:
+### Security Warning:
 
 Running dpl in a terminal that saves history is insecure as your password/api key will be saved as plain text by it.
 
-###Global Flags
+### Global Flags
 * `--provider=<provider>` sets the provider you want to deploy to. Every provider has slightly different flags, which are documented in the section about your provider following.
 *  Dpl will deploy by default from the latest commit. Use the `--skip_cleanup`  flag to deploy from the current file state. Note that many providers deploy by git and could ignore this option.
 
@@ -260,7 +260,7 @@ For authentication you can also use Travis CI secure environment variable:
 * **domain**: Openshift Application Domain.
 * **app**: Openshift Application. Defaults to git repo's name.
 
-####Examples:
+#### Examples:
 
     dpl --provider=openshift --user=<username> --password=<password> --domain=<domain>
     dpl --provider=openshift --user=<username> --password=<password> --domain=<domain> --app=<app>
@@ -539,6 +539,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **file_glob**: If files should be interpreted as globs (\* and \*\* wildcards). Defaults to false.
 * **overwrite**: If files with the same name should be overwritten. Defaults to false.
 * **release-number**: Overide automatic release detection, set a release manually.
+* **prerelease**: Identify the release as a prerelease.
 
 Additionally, options can be passed to [Octokit](https://github.com/octokit/octokit.rb) client.
 These are documented in https://github.com/octokit/octokit.rb/blob/master/lib/octokit/client/releases.rb.
@@ -920,11 +921,11 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 * **password**: Bluemix password.
 * **organization**: Bluemix target organization.
 * **space**: Bluemix target space
-* **region**: Bluemix region [ng, eu-gb, au-syd]. Optional, default US region (ng).
+* **region**: Bluemix region [ng, eu-gb, eu-de, au-syd]. Optional, default US region (ng).
 * **api**: Bluemix api URL. Optional for Bluemix dedicated. Explicit **api** setting precedence over **region** setting.
 * **manifest**: Path to manifest file. Optional.
 * **skip_ssl_validation**: Skip ssl validation. Optional.
 
 #### Examples:
 
-    dpl --provider=bluemixcf --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
+    dpl --provider=bluemixcloudfoundry --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation

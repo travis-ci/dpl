@@ -167,7 +167,7 @@ module DPL
       end
 
       def add_boolean_param params, paramName, param
-        if (!param.nil? && !param.empty?)
+        if (!param.nil?)
           params[paramName] = (param == true) ? "on" : "off"
         end
       end
