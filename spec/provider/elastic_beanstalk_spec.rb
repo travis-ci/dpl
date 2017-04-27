@@ -34,6 +34,10 @@ describe DPL::Provider::ElasticBeanstalk do
     double("Aws::S3::Object", put: Object.new)
   end
 
+  let(:eb_client_double) do
+    double("Aws::ElasticBeanstalk::Client", create_application_version: Object.new)
+  end
+
   subject :provider do
     described_class.new(
       DummyContext.new, :access_key_id => access_key_id, :secret_access_key => secret_access_key,
@@ -199,5 +203,84 @@ describe DPL::Provider::ElasticBeanstalk do
       end
 
     end
+
+    context "when version_info contains ascii only" do
+      around :each do
+        ENV['ELASTIC_BEANSTALK_DESCRIPTION'] = "abc def"
+      end
+
+      example "do not change when ascii" do
+        receive(:create_app_version).with(s3_obj_double).and_return(app_version)
+        allow(s3_mock.buckets).to receive(:map).and_return([bucket_name])
+        allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
+        allow(s3_obj_double).to receive(:key)
+        expect(provider).to receive(:eb).and_return(eb_client_double)
+        allow(eb_client_double).to receive(:create_application_version)
+
+        expect(provider).to receive(:s3).and_return(s3_mock).twice
+        expect(provider).not_to receive(:create_bucket)
+        expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
+        expect(provider).to receive(:archive_name).and_return('file.zip')
+        expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
+        expect(provider).to receive(:sleep).with(5)
+        expect(provider).to receive(:update_app)
+        expect(provider).to receive(:version_description).and_return('abc def')
+
+        provider.push_app
+      end
+    end
+
+    context "when version_info contains non-XML char" do
+      around :each do
+        ENV['ELASTIC_BEANSTALK_DESCRIPTION'] = "abc ✌ def"
+      end
+
+      example "do not change when ascii" do
+        receive(:create_app_version).with(s3_obj_double).and_return(app_version)
+        allow(s3_mock.buckets).to receive(:map).and_return([bucket_name])
+        allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
+        allow(s3_obj_double).to receive(:key)
+        expect(provider).to receive(:eb).and_return(eb_client_double)
+        allow(eb_client_double).to receive(:create_application_version)
+
+        expect(provider).to receive(:s3).and_return(s3_mock).twice
+        expect(provider).not_to receive(:create_bucket)
+        expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
+        expect(provider).to receive(:archive_name).and_return('file.zip')
+        expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
+        expect(provider).to receive(:sleep).with(5)
+        expect(provider).to receive(:update_app)
+        expect(provider).to receive(:version_description).and_return('abc  def')
+
+        provider.push_app
+      end
+    end
+
+    context "when version_info contains non-XML char" do
+      around :each do
+        ENV['ELASTIC_BEANSTALK_DESCRIPTION'] = "aaa"
+      end
+
+      example "expect this to fail" do
+        receive(:create_app_version).with(s3_obj_double).and_return(app_version)
+        allow(s3_mock.buckets).to receive(:map).and_return([bucket_name])
+        allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
+        allow(s3_obj_double).to receive(:key)
+        expect(provider).to receive(:eb).and_return(eb_client_double)
+        allow(eb_client_double).to receive(:create_application_version)
+
+        expect(provider).to receive(:s3).and_return(s3_mock).twice
+        expect(provider).not_to receive(:create_bucket)
+        expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
+        expect(provider).to receive(:archive_name).and_return('file.zip')
+        expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
+        expect(provider).to receive(:sleep).with(5)
+        expect(provider).to receive(:update_app)
+        expect(provider).to receive(:version_description).and_return('bbb')
+
+        provider.push_app
+      end
+    end
+
   end
 end
