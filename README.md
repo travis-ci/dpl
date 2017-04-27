@@ -49,6 +49,7 @@ Dpl supports the following providers:
 * [Script](#script)
 * [Surge.sh](#surgesh)
 * [TestFairy](#testfairy)
+* [Tsuru](#tsuru)
 
 ## Installation:
 
@@ -781,6 +782,20 @@ and your testers can start testing your app.
 #### Examples:
 
     dpl --provider=testfairy --api-key=<api-key> --app-file="out/Sample.apk" --keystore-file="out/keystore" --storepass=<storepass> --alias=<alias>
+
+### Tsuru:
+
+#### Options:
+
+* **email**: Tsuru Email.
+* **password**: Tsuru Password.
+* **server**: The address of the Tsuru server.
+* **app**: Tsuru app name. Defaults to the name of your git repo.
+
+#### Examples:
+
+    dpl --provider=tsuru --email=<email> --password=<password> --server=<server> --app=<app>
+    dpl --provider=tsuru --email=admin@example.com --password=admin123 --server=http://192.168.50.4:8080 --app=tsuru-dashboard
 
 ### AWS CodeDeploy:
 

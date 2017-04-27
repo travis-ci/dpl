@@ -48,6 +48,7 @@ module DPL
     autoload :Surge,               'dpl/provider/surge'
     autoload :TestFairy,           'dpl/provider/testfairy'
     autoload :Transifex,           'dpl/provider/transifex'
+    autoload :Tsuru,               'dpl/provider/tsuru'
 
 
     def self.new(context, options)
