@@ -222,6 +222,7 @@ describe DPL::Provider::ElasticBeanstalk do
         expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
         expect(provider).to receive(:sleep).with(5)
         expect(provider).to receive(:update_app)
+        expect(provider).not_to receive(:log).with("Removed non-printable characters from the version description.")
         expect(eb_client_double).to receive(:create_application_version).with(hash_including(description: 'abc def'))
 
         provider.push_app
@@ -245,31 +246,8 @@ describe DPL::Provider::ElasticBeanstalk do
         expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
         expect(provider).to receive(:sleep).with(5)
         expect(provider).to receive(:update_app)
+        expect(provider).to receive(:log).with("Removed non-printable characters from the version description.")
         expect(eb_client_double).to receive(:create_application_version).with(hash_including(description: 'abc  def'))
-
-        provider.push_app
-      end
-    end
-
-    context "when version_info contains non-XML char" do
-      let(:env) { {'ELASTIC_BEANSTALK_DESCRIPTION' => 'aaa'} }
-
-      example "expect this to fail" do
-        receive(:create_app_version).with(s3_obj_double).and_return(app_version)
-        allow(s3_mock.buckets).to receive(:map).and_return([bucket_name])
-        allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
-        allow(s3_obj_double).to receive(:key)
-        expect(provider).to receive(:eb).and_return(eb_client_double)
-        allow(eb_client_double).to receive(:create_application_version)
-
-        expect(provider).to receive(:s3).and_return(s3_mock).twice
-        expect(provider).not_to receive(:create_bucket)
-        expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
-        expect(provider).to receive(:archive_name).and_return('file.zip')
-        expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
-        expect(provider).to receive(:sleep).with(5)
-        expect(provider).to receive(:update_app)
-        expect(eb_client_double).not_to receive(:create_application_version).with(hash_including(description: 'bbb'))
 
         provider.push_app
       end

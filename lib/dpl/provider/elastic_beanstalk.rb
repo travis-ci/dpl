@@ -72,7 +72,9 @@ module DPL
 
       def version_description
         description = context.env['ELASTIC_BEANSTALK_DESCRIPTION'] || commit_msg
-        description.gsub(/[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]/, "").strip
+        description.gsub!(/[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF]/, "") and
+          log "Removed non-printable characters from the version description."
+        description
       end
 
       def archive_name
