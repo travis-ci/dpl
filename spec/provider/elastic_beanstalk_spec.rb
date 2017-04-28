@@ -9,7 +9,7 @@ describe DPL::Provider::ElasticBeanstalk do
   let(:secret_access_key) { 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz' }
   let(:region) { 'us-west-2' }
   let(:app) { 'example-app' }
-  let(:env) { 'live' }
+  let(:env) { {} }
   let(:bucket_name) { "travis-elasticbeanstalk-test-builds-#{region}" }
   let(:bucket_path) { "some/app"}
   let(:only_create_app_version) { nil }
@@ -40,7 +40,7 @@ describe DPL::Provider::ElasticBeanstalk do
 
   subject :provider do
     described_class.new(
-      DummyContext.new, :access_key_id => access_key_id, :secret_access_key => secret_access_key,
+      DummyContext.new(env: env), :access_key_id => access_key_id, :secret_access_key => secret_access_key,
       :region => region, :app => app, :env => env, :bucket_name => bucket_name, :bucket_path => bucket_path,
       :only_create_app_version => only_create_app_version,
       :wait_until_deployed => wait_until_deployed
@@ -49,7 +49,7 @@ describe DPL::Provider::ElasticBeanstalk do
 
   subject :provider_without_bucket_path do
     described_class.new(
-      DummyContext.new, :access_key_id => access_key_id, :secret_access_key => secret_access_key,
+      DummyContext.new(env: env), :access_key_id => access_key_id, :secret_access_key => secret_access_key,
       :region => region, :app => app, :env => env, :bucket_name => bucket_name
     )
   end
@@ -204,10 +204,8 @@ describe DPL::Provider::ElasticBeanstalk do
 
     end
 
-    context "when version_info contains ascii only" do
-      around :each do
-        ENV['ELASTIC_BEANSTALK_DESCRIPTION'] = "abc def"
-      end
+    context "when version_info contains only printable characters" do
+      let(:env) { { 'ELASTIC_BEANSTALK_DESCRIPTION' => "abc def" } }
 
       example "do not change when ascii" do
         receive(:create_app_version).with(s3_obj_double).and_return(app_version)
@@ -224,16 +222,14 @@ describe DPL::Provider::ElasticBeanstalk do
         expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
         expect(provider).to receive(:sleep).with(5)
         expect(provider).to receive(:update_app)
-        expect(provider).to receive(:version_description).and_return('abc def')
+        expect(eb_client_double).to receive(:create_application_version).with(hash_including(description: 'abc def'))
 
         provider.push_app
       end
     end
 
-    context "when version_info contains non-XML char" do
-      around :each do
-        ENV['ELASTIC_BEANSTALK_DESCRIPTION'] = "abc ✌ def"
-      end
+    context "when version_info contains non-printable XML character" do
+      let(:env) { {'ELASTIC_BEANSTALK_DESCRIPTION' => "abc \a def" } }
 
       example "do not change when ascii" do
         receive(:create_app_version).with(s3_obj_double).and_return(app_version)
@@ -241,7 +237,6 @@ describe DPL::Provider::ElasticBeanstalk do
         allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
         allow(s3_obj_double).to receive(:key)
         expect(provider).to receive(:eb).and_return(eb_client_double)
-        allow(eb_client_double).to receive(:create_application_version)
 
         expect(provider).to receive(:s3).and_return(s3_mock).twice
         expect(provider).not_to receive(:create_bucket)
@@ -250,16 +245,14 @@ describe DPL::Provider::ElasticBeanstalk do
         expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
         expect(provider).to receive(:sleep).with(5)
         expect(provider).to receive(:update_app)
-        expect(provider).to receive(:version_description).and_return('abc  def')
+        expect(eb_client_double).to receive(:create_application_version).with(hash_including(description: 'abc  def'))
 
         provider.push_app
       end
     end
 
     context "when version_info contains non-XML char" do
-      around :each do
-        ENV['ELASTIC_BEANSTALK_DESCRIPTION'] = "aaa"
-      end
+      let(:env) { {'ELASTIC_BEANSTALK_DESCRIPTION' => 'aaa'} }
 
       example "expect this to fail" do
         receive(:create_app_version).with(s3_obj_double).and_return(app_version)
@@ -276,7 +269,7 @@ describe DPL::Provider::ElasticBeanstalk do
         expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
         expect(provider).to receive(:sleep).with(5)
         expect(provider).to receive(:update_app)
-        expect(provider).to receive(:version_description).and_return('bbb')
+        expect(eb_client_double).not_to receive(:create_application_version).with(hash_including(description: 'bbb'))
 
         provider.push_app
       end

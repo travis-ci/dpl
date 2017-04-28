@@ -7,6 +7,10 @@ require 'coveralls'
 Coveralls.wear!
 
 class DummyContext
+  def initialize(opts = {})
+    @env = opts[:env]
+  end
+
   def shell(command)
   end
 
