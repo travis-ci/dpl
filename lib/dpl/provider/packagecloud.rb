@@ -88,7 +88,7 @@ module DPL
       end
 
       def push_app
-        forced = options.fetch(:force) { nil }
+        forced = options.fetch(:force, nil)
         packages = []
         glob_args = Array(options.fetch(:package_glob, '**/*'))
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
