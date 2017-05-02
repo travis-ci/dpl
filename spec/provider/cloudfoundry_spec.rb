@@ -34,6 +34,24 @@ describe DPL::Provider::CloudFoundry do
         expect{provider.check_app}.to raise_error('Application must have a manifest.yml for unattended deployment')
       end
     end
+
+    context 'when zero-downtime is specified without an app name' do
+      example do
+        provider.options.update(:zero_downtime => true)
+        File.stub(:exists?).with('worker-manifest.yml').and_return(true)
+        expect{provider.check_app}.to raise_error('Application name must be specified for zero-downtime deployment')
+      end
+    end
+
+    context 'when zero-downtime is specified with an app name' do
+      example do
+        provider.options.update(:app_name => 'foo', :zero_downtime => true)
+        File.stub(:exists?).with('worker-manifest.yml').and_return(true)
+        expect(provider.context).to receive(:shell).with('./cf install-plugin -f https://github.com/odlp/antifreeze/releases/download/v0.3.0/antifreeze-linux')
+        expect(provider.context).to receive(:shell).with('./cf check-manifest foo -f worker-manifest.yml')
+        expect{provider.check_app}.not_to raise_error
+      end
+    end
   end
 
   describe "#needs_key?" do
@@ -52,6 +70,14 @@ describe DPL::Provider::CloudFoundry do
     example "Without manifest" do
       provider.options.update(:manifest => nil)
       expect(provider.context).to receive(:shell).with('./cf push')
+      expect(provider.context).to receive(:shell).with('./cf logout')
+      provider.push_app
+    end
+
+    example "Zero-downtime" do
+      provider.options.update(:app_name => 'foo', :zero_downtime => true)
+      expect(provider.context).to receive(:shell).with('./cf install-plugin -f https://github.com/contraband/autopilot/releases/download/0.0.3/autopilot-linux')
+      expect(provider.context).to receive(:shell).with('./cf zero-downtime-push foo -f worker-manifest.yml')
       expect(provider.context).to receive(:shell).with('./cf logout')
       provider.push_app
     end
