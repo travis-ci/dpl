@@ -113,7 +113,12 @@ module DPL
           if forced
             log "Deleting package: #{package.filename}"
             distro, distro_release = @dist.split("/")
-            @client.delete_package(@repo, distro, distro_release, package.filename)
+            result = @client.delete_package(@repo, distro, distro_release, package.filename)
+            if result.succeeded
+              log "Successfully deleted #{package.filename} on #{@dist}"
+            else
+              error "Error #{result.response}"
+            end
           end
           log "Pushing package: #{package.filename}"
           if dist_required?(package.filename)
