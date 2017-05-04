@@ -9,6 +9,7 @@ module DPL
         - github-url [optional, defaults to github.com]
         - target-branch [optional, defaults to gh-pages]
         - keep-history [optional, defaults to false]
+        - allow-empty-commit [optional, defaults to false]
         - verbose [optional, defaults to false]
         - local-dir [optional, defaults to `pwd`]
         - fqdn [optional]
@@ -32,6 +33,7 @@ module DPL
         @gh_url = options[:github_url] || 'github.com'
         @gh_token = option(:github_token)
         @keep_history = !!keep_history
+        @allow_empty_commit = !!allow_empty_commit
         @verbose = !!verbose
 
         @gh_email = options[:email] || 'deploy@travis-ci.org'
@@ -40,6 +42,7 @@ module DPL
         @gh_ref = "#{@gh_url}/#{slug}.git"
         @gh_remote_url = "https://#{@gh_token}@#{@gh_ref}"
         @git_push_opts = @keep_history ? '' : ' --force'
+        @git_commit_opts = (@allow_empty_commit and @keep_history) ? ' --allow-empty' : ''
       end
 
       def fqdn
@@ -52,6 +55,10 @@ module DPL
 
       def keep_history
         options.fetch(:keep_history, false)
+      end
+
+      def allow_empty_commit
+        options.fetch(:allow_empty_commit, false)
       end
 
       def verbose
@@ -111,7 +118,7 @@ module DPL
         context.shell "touch \"deployed at `date` by #{@gh_name}\""
         context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
         context.shell 'git add -A .'
-        context.shell "FILES=\"`git commit -m 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}' | tail`\"; echo \"$FILES\"; echo \"$FILES\" | [ `wc -l` -lt 10 ] || echo '...'"
+        context.shell "FILES=\"`git commit#{@git_commit_opts} -m 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}' | tail`\"; echo \"$FILES\"; echo \"$FILES\" | [ `wc -l` -lt 10 ] || echo '...'"
       end
 
       def github_deploy
