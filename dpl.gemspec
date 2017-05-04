@@ -24,9 +24,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'coveralls'
 
   # prereleases from Travis CI
-  if ENV['CI']
-    digits = s.version.to_s.split '.'
-    digits[-1] = digits[-1].to_s.succ
-    s.version = digits.join('.') + ".travis.#{ENV['TRAVIS_JOB_NUMBER']}"
-  end
+  #if ENV['CI']
+  #  digits = s.version.to_s.split '.'
+  #  digits[-1] = digits[-1].to_s.succ
+  #  s.version = digits.join('.') + ".travis.#{ENV['TRAVIS_JOB_NUMBER']}"
+  #end
 end
