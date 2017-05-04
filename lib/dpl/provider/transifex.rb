@@ -40,7 +40,7 @@ module DPL
       end
 
       def source_push
-        context.shell 'tx push --source --no-interactive', retry: true
+        context.shell 'tx push --source --no-interactive'
       end
     end
   end
