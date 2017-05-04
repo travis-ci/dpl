@@ -27,12 +27,12 @@ describe DPL::Provider::Transifex do
 
     context 'with version specified' do
       before do
-        options[:cli_version] = '==0.12'
+        options[:cli_version] = '0.12'
       end
 
       example 'installs custom version' do
         expect(provider.class).to(
-          receive(:pip).with('transifex', 'transifex', '==0.12')
+          receive(:pip).with('transifex', 'transifex', '0.12')
         )
         provider.install_deploy_dependencies
       end

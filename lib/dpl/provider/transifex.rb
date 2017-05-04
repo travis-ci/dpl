@@ -3,12 +3,14 @@ module DPL
     class Transifex < Provider
       experimental 'Transifex'
 
-      DEFAULT_CLIENT_VERSION = '>=0.11'
       DEFAULT_HOSTNAME = 'https://www.transifex.com'
 
       def install_deploy_dependencies
-        cli_version = options[:cli_version] || DEFAULT_CLIENT_VERSION
-        self.class.pip 'transifex', 'transifex', cli_version
+        if options[:cli_version]
+          self.class.pip 'transifex-client', 'tx', cli_version
+        else
+          self.class.pip 'transifex-client', 'tx'
+        end
       end
 
       def needs_key?
