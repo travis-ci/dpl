@@ -25,7 +25,6 @@ Dpl supports the following providers:
 * [Deis](#deis)
 * [Divshot.io](#divshotio)
 * [Engine Yard](#engine-yard)
-* [ExoScale](#exoscale)
 * [Firebase](#firebase)
 * [Github Pages](#github-pages)
 * [Github Releases](#github-releases)
@@ -804,18 +803,6 @@ and your testers can start testing your app.
 #### Examples:
 
     dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>
-
-### ExoScale:
-
-#### Options:
-
-* **email**: ExoScale email or Organization ID.
-* **password**: ExoScale password.
-* **deployment**: ExoScale Deployment. Follows the format "APP_NAME/DEP_NAME".
-
-#### Examples:
-
-    dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
 
 ### Scalingo:
 
