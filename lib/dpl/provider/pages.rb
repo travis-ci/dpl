@@ -123,7 +123,9 @@ module DPL
 
       def github_deploy
         print_step "Doing the git push..."
-        context.shell "git push#{@git_push_opts} --quiet '#{@gh_remote_url}' '#{@target_branch}':'#{@target_branch}' &>/dev/null"
+        unless context.shell "git push#{@git_push_opts} --quiet '#{@gh_remote_url}' '#{@target_branch}':'#{@target_branch}' &>/dev/null"
+          error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
+        end
       end
 
       def prepare_dir_tree(dir)
@@ -175,9 +177,7 @@ module DPL
               end
               github_configure
               github_commit
-              unless github_deploy
-                error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
-              end
+              github_deploy
               context.shell "git status" if @verbose
             end
         end
