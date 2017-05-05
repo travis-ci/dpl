@@ -76,5 +76,11 @@ describe DPL::Provider::TestFairy do
       provider.options.update(:app_file => @local_ios_app)
       provider.push_app
     end
+
+    example "push_app with notifify param" do
+      provider.options.update(:app_file => @local_ios_app)
+      provider.options.update(:notify => true)
+      provider.push_app
+    end
   end
 end
