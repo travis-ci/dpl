@@ -48,6 +48,7 @@ Dpl supports the following providers:
 * [Script](#script)
 * [Surge.sh](#surgesh)
 * [TestFairy](#testfairy)
+* [WordPress Plugin](#wordpress-plugin)
 
 ## Installation:
 
@@ -935,3 +936,21 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Examples:
 
     dpl --provider=bluemixcloudfoundry --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
+
+### WordPress Plugin:
+
+#### Options:
+
+* **slug**: Your plugin's slug as indicated by its repository url: `https://wordpress.org/plugins/{{slug}}`
+* **username**: [WordPress.org](https://wordpress.org) username. Case sensitive!
+* **password**: [WordPress.org](https://wordpress.org) password
+* **build_dir**: The directory where the plugin source code located as you want it on the repo
+* **assets_dir**: [Optional] The directory where the plugin assets. Assets are for screenshots, plugin headers, and plugin icons. For more details see: [https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/](https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/)
+
+#### Examples:
+
+* Without assets deploy:
+      dpl --provider=wordpress-plugin --slug=<slug> --username=<username> --password=<password> --build_dir=<path/to/build/dir>
+
+* With assets deploy:
+      dpl --provider=wordpress-plugin --slug=<slug> --username=<username> --password=<password> --build_dir=<path/to/build/dir> --assets_dir=<path/to/assets/dir>
