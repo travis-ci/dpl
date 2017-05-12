@@ -27,9 +27,7 @@ module DPL
 
         function_name = options[:name] || option(:function_name)
 
-        response = lambda.list_functions
-
-        if response.functions.any? { |function| function.function_name == function_name }
+        if function_exists?(function_name)
 
           log "Function #{function_name} already exists, updating."
 
@@ -43,6 +41,7 @@ module DPL
               role:           option(:role),
               handler:        handler,
               runtime:        options[:runtime]        || default_runtime,
+              vpc_config:     vpc_config,
           })
 
 
@@ -71,6 +70,7 @@ module DPL
               zip_file:     function_zip,
             },
             runtime:        options[:runtime]        || default_runtime,
+            vpc_config:     vpc_config,
             publish:        publish,
           })
 
@@ -82,6 +82,13 @@ module DPL
         error(exception.message)
       rescue ::Aws::Lambda::Errors::ResourceNotFoundException => exception
         error(exception.message)
+      end
+
+      def function_exists?(function_name)
+        lambda.get_function_configuration({function_name: function_name})
+        true
+      rescue Aws::Lambda::Errors::ResourceNotFoundException
+        false
       end
 
       def handler
@@ -133,6 +140,21 @@ module DPL
         end
 
         dest_file_path
+      end
+
+      def vpc_config
+        default = {}
+        if options[:subnet_ids].is_a? Array
+          default[:subnet_ids] = options[:subnet_ids]
+        elsif options[:subnet_ids].is_a? String
+          default[:subnet_ids] = [options[:subnet_ids]]
+        end
+        if options[:security_group_ids].is_a? Array
+          default[:security_group_ids] = options[:security_group_ids]
+        elsif options[:security_group_ids].is_a? String
+          default[:security_group_ids] = [options[:security_group_ids]]
+        end
+        default
       end
 
       def needs_key?
