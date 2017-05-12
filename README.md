@@ -711,6 +711,8 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **memory_size**: Optional. The amount of memory in MB to allocate to this Lambda. Defaults to 128.
  * **runtime**: Optional. The Lambda runtime to use. Defaults to `node`.
  * **publish**: If `true`, a [new version](http://docs.aws.amazon.com/lambda/latest/dg/versioning-intro.html#versioning-intro-publish-version) of the Lambda function will be created instead of replacing the code of the existing one.
+ * **subnet_ids**: Optional. To create a function in VPC, use this array of strings to specify the subnet ids.
+ * **security_group_ids**: Optional. When creating a function in VPC, use this array of strings to specify the security group ids.
 
 #### Examples:
 
