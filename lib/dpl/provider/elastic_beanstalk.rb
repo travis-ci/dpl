@@ -103,7 +103,7 @@ module DPL
       end
 
       def create_bucket
-        s3.buckets.create(bucket_name)
+        s3.create_bucket(bucket: bucket_name)
       end
 
       def files_to_pack

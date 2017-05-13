@@ -88,8 +88,9 @@ describe DPL::Provider::ElasticBeanstalk do
       allow(s3_mock.buckets).to receive(:map).and_return([])
       allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
 
-      expect(provider).to receive(:s3).and_return(s3_mock).twice
-      expect(provider).to receive(:create_bucket)
+      allow(provider).to receive(:s3).and_return(s3_mock)
+      expect(provider).to receive(:create_bucket).and_call_original
+      expect(s3_mock).to receive(:create_bucket)
       expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
       expect(provider).to receive(:archive_name).and_return('file.zip')
       expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
