@@ -28,8 +28,7 @@ module DPL
       end
 
       def self.install_setuptools
-        shell 'wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python'
-        shell 'rm -f setuptools-*.zip'
+        shell("pip install setuptools --upgrade")
       end
 
       def self.install_twine
