@@ -2,4 +2,4 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'dpl/cli'
-DPL::CLI.run(ARGV)
+exit DPL::CLI.run(ARGV)

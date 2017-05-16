@@ -1,6 +1,8 @@
 require 'dpl/error'
 require 'dpl/version'
 require 'fileutils'
+require 'logger'
+require 'open3'
 
 module DPL
   class Provider
@@ -82,7 +84,14 @@ module DPL
     end
 
     def self.shell(command, options = {})
-      system(command)
+      stdin, stdout, stderr, wait_thr = Open3.popen3(command)
+      while wait_thr.status do
+        sleep 0.2
+      end
+
+      $stderr.puts stderr.read
+      $stdout.puts stdout.read
+      status = wait_thr.value
     end
 
     def self.apt_get(name, command = name)
@@ -105,10 +114,12 @@ module DPL
       context.shell("npm install -g #{name}", retry: true) if `which #{command}`.chop.empty?
     end
 
-    attr_reader :context, :options
+    attr_reader :context, :options, :logger
+    attr_accessor :deploy_status
 
     def initialize(context, options)
       @context, @options = context, options
+      @logger = Logger.new(STDERR)
       context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
     end
 
@@ -157,6 +168,7 @@ module DPL
         remove_key rescue nil
       end
       uncleanup
+      deploy_status
     end
 
     def sha
@@ -238,11 +250,11 @@ module DPL
     end
 
     def log(message)
-      $stderr.puts(message)
+      logger.info(message)
     end
 
     def warn(message)
-      log "\e[31;1m#{message}\e[0m"
+      logger.warn "\e[31;1m#{message}\e[0m"
     end
 
     def run(command)
