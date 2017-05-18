@@ -67,13 +67,15 @@ describe DPL::Provider::Lambda do
     }
 
     list_functions_response = {
+      next_marker: nil, # no more functions
       functions: [
         { function_name: 'test-function' }
       ]
     }
 
     empty_list_functions_response = {
-        functions: [ ]
+      next_marker: nil,
+      functions: [ ]
     }
 
     example_response = {

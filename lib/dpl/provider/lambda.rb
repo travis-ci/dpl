@@ -27,9 +27,7 @@ module DPL
 
         function_name = options[:name] || option(:function_name)
 
-        response = lambda.list_functions
-
-        if response.functions.any? { |function| function.function_name == function_name }
+        if all_lambda_functions.any? { |function| function.function_name == function_name }
 
           log "Function #{function_name} already exists, updating."
 
@@ -179,6 +177,19 @@ module DPL
       end
 
       def uncleanup
+      end
+
+      def all_lambda_functions
+        response = lambda.list_functions
+        functions = response.functions
+        marker = response.next_marker
+        until marker.to_s.empty? do
+          response = lambda.list_functions(marker: marker)
+          functions += response.functions
+          marker = response.next_marker
+        end
+
+        functions
       end
     end
   end
