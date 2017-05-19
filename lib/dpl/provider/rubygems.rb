@@ -24,6 +24,7 @@ module DPL
       def check_app
         setup_auth
         setup_gem
+        log "Looking up gem #{options[:gem]}"
         info = ::Gems.info(options[:gem])
         log "Found gem #{info['name']}"
       end
