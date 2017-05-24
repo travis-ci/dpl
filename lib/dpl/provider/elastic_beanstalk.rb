@@ -99,11 +99,11 @@ module DPL
       end
 
       def bucket_exists?
-        s3.buckets.map(&:name).include? bucket_name
+        s3.bucket(bucket_name).exists?
       end
 
       def create_bucket
-        s3.buckets.create(bucket_name)
+        s3.bucket(bucket_name).create
       end
 
       def files_to_pack
