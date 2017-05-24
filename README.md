@@ -41,6 +41,7 @@ Dpl supports the following providers:
 * [packagecloud](#packagecloud)
 * [Puppet Forge](#puppet-forge)
 * [PyPi](#pypi)
+* [QingStor Object Storage](#qingstor-object-storage)
 * [Rackspace Cloud Files](#rackspace-cloud-files)
 * [RubyGems](#rubygems)
 * [S3](#s3)
@@ -494,6 +495,23 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space> --skip-ssl-validation
+
+
+### QingStor Object Storage:
+
+#### Options:
+
+* **access-key-id**: QingCloud Access Key ID. Can be obtained from [QingCloud Console](https://console.qingcloud.com/access_keys/).
+* **secret-access-key**: QingCloud Secret Access Key. Can be obtained from [QingCloud Console](https://console.qingcloud.com/access_keys/).
+* **bucket-name**: QingStor Object Storage Bucket.
+* **upload-dir**: QingStor Object Storage directory to upload to. Defaults to root directory.
+* **local-dir**: Local directory to upload from. Defaults to project root.
+* **dot_match**: When set to `true`, upload files starting a `.`.
+
+#### Examples:
+
+    dpl --provider=qingstor --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket-name=<bucket-name> --upload-dir=<upload-dir> --local-dir=<local-dir>
+
 
 ### Rackspace Cloud Files:
 
