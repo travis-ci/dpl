@@ -14,7 +14,10 @@ module DPL
         end
 
         def api_options
-          api_options = { headers: { 'User-Agent' => user_agent(::Heroku::API::HEADERS.fetch('User-Agent')) } }
+          api_options = { headers: {
+            'User-Agent' => user_agent(::Heroku::API::HEADERS.fetch('User-Agent')),
+            "Accept" => "application/vnd.heroku+json; version=3",
+          } }
           if options[:user] and options[:password]
             api_options[:user]     = options[:user]
             api_options[:password] = options[:password]
