@@ -7,6 +7,19 @@ module DPL
       class API < Generic
         attr_reader :build_id
 
+        def check_auth
+          options = {
+            method: :get,
+            path: "/account",
+            headers: { "Accept" => "application/vnd.heroku+json; version=3" },
+            expects: [200]
+          }
+
+          response = api.request(options).body
+          user = response.fetch('email')
+          log "authenticated as #{user}"
+        end
+
         def push_app
           pack_archive
           upload_archive
