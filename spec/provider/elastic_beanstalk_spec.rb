@@ -23,7 +23,7 @@ describe DPL::Provider::ElasticBeanstalk do
 
   let(:s3_mock) do
     hash_dbl = double("Hash", :[] => bucket_mock, :map => [])
-    double("Aws::S3", buckets: hash_dbl, config: hash_dbl)
+    double("Aws::S3", bucket: hash_dbl, config: hash_dbl)
   end
 
   let(:io_double) do
@@ -69,7 +69,8 @@ describe DPL::Provider::ElasticBeanstalk do
     end
 
     example 'bucket exists already' do
-      allow(s3_mock.buckets).to receive(:map).and_return([bucket_name])
+      allow(s3_mock).to receive(:bucket).with(bucket_name).and_return(bucket_mock)
+      allow(bucket_mock).to receive(:exists?).and_return(true)
       allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
 
       expect(provider).to receive(:s3).and_return(s3_mock).twice
@@ -85,7 +86,8 @@ describe DPL::Provider::ElasticBeanstalk do
     end
 
     example 'bucket doesnt exist yet' do
-      allow(s3_mock.buckets).to receive(:map).and_return([])
+      allow(s3_mock).to receive(:bucket).with(bucket_name).and_return(bucket_mock)
+      allow(bucket_mock).to receive(:exists?).and_return(false)
       allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
 
       expect(provider).to receive(:s3).and_return(s3_mock).twice
@@ -104,11 +106,12 @@ describe DPL::Provider::ElasticBeanstalk do
       let(:only_create_app_version) { true }
 
       example 'verify the app is not updated' do
-        allow(s3_mock.buckets).to receive(:map).and_return([])
+        allow(s3_mock).to receive(:bucket).with(bucket_name).and_return(bucket_mock)
+        allow(bucket_mock).to receive(:exists?).and_return(false)
+        allow(bucket_mock).to receive(:create)
         allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
 
-        expect(provider).to receive(:s3).and_return(s3_mock).twice
-        expect(provider).to receive(:create_bucket)
+        expect(provider).to receive(:s3).and_return(s3_mock).at_least(3).times
         expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
         expect(provider).to receive(:archive_name).and_return('file.zip')
         expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
@@ -122,11 +125,12 @@ describe DPL::Provider::ElasticBeanstalk do
 
     context 'When the bucket_path option is not set' do
       example 'Does not prepend bucket_path to the s3 bucket' do
+        allow(s3_mock).to receive(:bucket).with(bucket_name).and_return(bucket_mock)
         allow(bucket_mock).to receive(:object).with("file.zip").and_return(s3_obj_double)
-        allow(s3_mock.buckets).to receive(:map).and_return([bucket_name])
+        allow(bucket_mock).to receive(:exists?).and_return(false)
+        allow(bucket_mock).to receive(:create)
 
-        expect(provider_without_bucket_path).to receive(:s3).and_return(s3_mock).twice
-        expect(provider_without_bucket_path).not_to receive(:create_bucket)
+        expect(provider_without_bucket_path).to receive(:s3).and_return(s3_mock).at_least(3).times
         expect(provider_without_bucket_path).to receive(:create_zip).and_return('/path/to/file.zip')
         expect(provider_without_bucket_path).to receive(:archive_name).and_return('file.zip')
         expect(provider_without_bucket_path).to receive(:bucket_path).and_return(nil)
@@ -143,10 +147,11 @@ describe DPL::Provider::ElasticBeanstalk do
       let(:wait_until_deployed) { true }
 
       example 'Waits until deployment completes' do
+        allow(bucket_mock).to receive(:exists?).and_return(false)
+        allow(bucket_mock).to receive(:create)
         allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
 
-        expect(provider).to receive(:s3).and_return(s3_mock).twice
-        expect(provider).to receive(:create_bucket)
+        expect(provider).to receive(:s3).and_return(s3_mock).at_least(3).times
         expect(provider).to receive(:create_zip).and_return('/path/to/file.zip')
         expect(provider).to receive(:archive_name).and_return('file.zip')
         expect(provider).to receive(:upload).with('file.zip', '/path/to/file.zip').and_call_original
@@ -162,8 +167,9 @@ describe DPL::Provider::ElasticBeanstalk do
     context "when zip_file option is given" do
       before :each do
         allow(bucket_mock).to receive(:object).with("some/app/file.zip").and_return(s3_obj_double)
-        expect(provider).to receive(:s3).and_return(s3_mock).twice
-        expect(provider).to receive(:create_bucket)
+        allow(bucket_mock).to receive(:exists?).and_return(false)
+        allow(bucket_mock).to receive(:create)
+        expect(provider).to receive(:s3).and_return(s3_mock).at_least(3).times
         expect(provider).to receive(:archive_name).and_return('file.zip')
         expect(provider).to receive(:sleep).with(5)
         expect(provider).to receive(:create_app_version).with(s3_obj_double).and_return(app_version)
