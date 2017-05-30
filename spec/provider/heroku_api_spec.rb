@@ -3,8 +3,9 @@ require 'heroku-api'
 require 'dpl/provider/heroku'
 
 describe DPL::Provider::Heroku do
+  let(:opts) { {:app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "api"} }
   subject(:provider) do
-    described_class.new(DummyContext.new, :app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "api")
+    described_class.new(DummyContext.new, opts)
   end
 
   let(:expected_headers) do
@@ -41,16 +42,51 @@ describe DPL::Provider::Heroku do
       "updated_at" => "2012-01-01T12:00:00Z",
       "user" => { "id" => "01234567-89ab-cdef-0123-456789abcdef", "email" => "username@example.com" }
     } }
-    example do
-      expect(provider).to receive(:log).with('triggering new deployment')
-      expect(provider).to receive(:get_url).and_return 'http://example.com/source.tgz'
-      expect(provider).to receive(:version).and_return 'sha'
-      expect(provider).to receive(:post).with(
-        :builds, source_blob: {url: 'http://example.com/source.tgz', version: 'sha'}
-      ).and_return(response_body)
-      expect(provider.context).to receive(:shell).with('curl http://example.com/stream')
-      provider.trigger_build
-      expect(provider.build_id).to eq('abc')
+
+    context "with no verbose option" do
+      example do
+        expect(provider).to receive(:log).with('triggering new deployment')
+        expect(provider).to receive(:get_url).and_return 'http://example.com/source.tgz'
+        expect(provider).to receive(:version).and_return 'sha'
+        expect(provider).to receive(:post).with(
+          :builds, source_blob: {url: 'http://example.com/source.tgz', version: 'sha'}
+        ).and_return(response_body)
+        expect(provider.context).to receive(:shell).with('curl    http://example.com/stream')
+        provider.trigger_build
+        expect(provider.build_id).to eq('abc')
+      end
+    end
+
+    context "with verbose option" do
+      let(:opts) { {:app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "api", :verbose => true} }
+
+      example do
+        expect(provider).to receive(:log).with('triggering new deployment')
+        expect(provider).to receive(:get_url).and_return 'http://example.com/source.tgz'
+        expect(provider).to receive(:version).and_return 'sha'
+        expect(provider).to receive(:post).with(
+          :builds, source_blob: {url: 'http://example.com/source.tgz', version: 'sha'}
+        ).and_return(response_body)
+        expect(provider.context).to receive(:shell).with('curl -vvv   http://example.com/stream')
+        provider.trigger_build
+        expect(provider.build_id).to eq('abc')
+      end
+    end
+
+    context "with ssl_protocol option" do
+      let(:opts) { {:app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "api", :verbose => true, :ssl_protocol => 'tlsv1.2'} }
+
+      example do
+        expect(provider).to receive(:log).with('triggering new deployment')
+        expect(provider).to receive(:get_url).and_return 'http://example.com/source.tgz'
+        expect(provider).to receive(:version).and_return 'sha'
+        expect(provider).to receive(:post).with(
+          :builds, source_blob: {url: 'http://example.com/source.tgz', version: 'sha'}
+        ).and_return(response_body)
+        expect(provider.context).to receive(:shell).with('curl -vvv --tlsv1.2  http://example.com/stream')
+        provider.trigger_build
+        expect(provider.build_id).to eq('abc')
+      end
     end
   end
 
