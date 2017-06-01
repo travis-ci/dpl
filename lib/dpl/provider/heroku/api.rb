@@ -1,5 +1,6 @@
 require 'json'
 require 'shellwords'
+require 'logger'
 
 module DPL
   class Provider
@@ -17,17 +18,6 @@ module DPL
           else
             handle_error_response(response)
           end
-
-          # options = {
-          #   method: :get,
-          #   path: "/account",
-          #   headers: { "Accept" => "application/vnd.heroku+json; version=3" },
-          #   expects: [200]
-          # }
-
-          # response = api.request(options).body
-          # user = response.fetch('email')
-          # log "authenticated as #{user}"
         end
 
         def faraday
@@ -38,8 +28,13 @@ module DPL
               "Accept" => "application/vnd.heroku+json; version=3"
               },
             ) do |faraday|
-            faraday.response :logger do | logger |
-              logger.filter(/#{option(:api_key)}/,'[REMOVED]')
+            if log_level = options[:log_level]
+              logger = Logger.new($stderr)
+              logger.level = Logger.const_get(log_level.upcase)
+
+              faraday.response :logger, logger do | logger |
+                logger.filter(/#{option(:api_key)}/,'[secure]')
+              end
             end
             faraday.adapter Faraday.default_adapter
           end
@@ -143,50 +138,20 @@ module DPL
           @version ||= options[:version] || context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
         end
 
-        # def get(subpath, options = {})
-        #   options = {
-        #     method: :get,
-        #     path: "/apps/#{option(:app)}/#{subpath}",
-        #     headers: { "Accept" => "application/vnd.heroku+json; version=3" },
-        #     expects: [200]
-        #   }.merge(options)
-
-        #   api.request(options).body
-        # end
-
-        # def post(subpath, body = nil, options = {})
-        #   options = {
-        #     method: :post,
-        #     path: "/apps/#{option(:app)}/#{subpath}",
-        #     headers: { "Accept" => "application/vnd.heroku+json; version=3" },
-        #     expects: [200, 201]
-        #   }.merge(options)
-
-        #   if body
-        #     options[:body]                    = JSON.dump(body)
-        #     options[:headers]['Content-Type'] = 'application/json'
-        #   end
-
-        #   response = api.request(options).body
-        # end
-
         def restart
           response = faraday.delete "/apps/#{option(:app)}/dynos"
-          # options = {
-          #   method: :delete,
-          #   path: "/apps/#{option(:app)}/dynos",
-          #   headers: { "Accept" => "application/vnd.heroku+json; version=3" },
-          #   expects: [200, 201, 202]
-          # }
-
-          # api.request(options).body
+          unless response.success?
+            handle_error_response(response)
+          end
         end
 
         def run(command)
           response = faraday.post "/apps/#{option(:app)}/dynos" do |req|
             req.body = {"command" => command, "attach" => true}.to_json
           end
-          # post("dynos", {"command" => command, "attach" => true})
+          unless response.success?
+            handle_error_response(response)
+          end
         end
       end
     end
