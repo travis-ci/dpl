@@ -8,6 +8,7 @@ module DPL
       class API < Generic
         attr_reader :build_id
         requires 'faraday'
+        requires 'rendezvous'
 
         def check_auth
           unless options[:api_key]
@@ -156,7 +157,10 @@ module DPL
             req.headers['Content-Type'] = 'application/json'
             req.body = {"command" => command, "attach" => true}.to_json
           end
-          unless response.success?
+          if response.success?
+            rendezvous_url = JSON.parse(response.body)["attach_url"]
+            Rendezvous.start(rendezvous_url)
+          else
             handle_error_response(response)
           end
         end
