@@ -105,6 +105,30 @@ module DPL
             options[:headers]['Content-Type'] = 'application/json'
           end
 
+          response = api.request(options).body
+        end
+
+        def restart
+          options = {
+            method: :delete,
+            path: "/apps/#{option(:app)}/dynos",
+            headers: { "Accept" => "application/vnd.heroku+json; version=3" },
+            expects: [200, 201, 202]
+          }.merge(options)
+
+          api.request(options).body
+        end
+
+        def run(command)
+          options = {
+            method: :post,
+            path: "/apps/#{option(:app)}/dynos",
+            headers: { "Accept" => "application/vnd.heroku+json; version=3" },
+            attach: true,
+            command: command,
+            expects: [200, 201]
+          }
+
           api.request(options).body
         end
       end
