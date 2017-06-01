@@ -42,6 +42,7 @@ describe DPL::Provider::Heroku do
 
     describe "#check_auth" do
       example do
+        expect(provider).to receive(:log).with(/You are using a Heroku deployment strategy which relies on the deprecated API\./)
         expect(provider).to receive(:log).with("authenticated as foo@bar.com")
         provider.check_auth
       end
