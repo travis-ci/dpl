@@ -11,10 +11,6 @@ module DPL
         requires 'rendezvous'
 
         def check_auth
-          unless options[:api_key]
-            error "api_key is required for Heroku API deployment"
-          end
-
           response = faraday.get('/account')
 
           if response.success?
@@ -26,19 +22,25 @@ module DPL
         end
 
         def faraday
-          @conn ||= Faraday.new(
-            url: 'https://api.heroku.com',
-            headers: {
-              "Authorization" => "Bearer #{option(:api_key)}",
-              "Accept" => "application/vnd.heroku+json; version=3"
-              },
-            ) do |faraday|
+          return @conn if @conn
+          headers = { "Accept" => "application/vnd.heroku+json; version=3" }
+
+          if options[:user] and options[:password]
+            # no-op
+          else
+            headers.merge!({ "Authorization" => "Bearer #{option(:api_key)}" })
+          end
+
+          @conn = Faraday.new( url: 'https://api.heroku.com', headers: headers ) do |faraday|
+            if options[:user] and options[:password]
+              faraday.basic_auth(options[:user], options[:password])
+            end
             if log_level = options[:log_level]
               logger = Logger.new($stderr)
               logger.level = Logger.const_get(log_level.upcase)
 
               faraday.response :logger, logger do | logger |
-                logger.filter(/#{option(:api_key)}/,'[secure]')
+                logger.filter(/(.*Authorization: ).*/,'\1[REDACTED]')
               end
             end
             faraday.adapter Faraday.default_adapter
@@ -159,7 +161,7 @@ module DPL
           end
           if response.success?
             rendezvous_url = JSON.parse(response.body)["attach_url"]
-            Rendezvous.start(rendezvous_url)
+            Rendezvous.start(url: rendezvous_url)
           else
             handle_error_response(response)
           end
