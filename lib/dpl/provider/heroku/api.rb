@@ -139,7 +139,9 @@ module DPL
         end
 
         def restart
-          response = faraday.delete "/apps/#{option(:app)}/dynos"
+          response = faraday.delete "/apps/#{option(:app)}/dynos" do |req|
+            req.headers['Content-Type'] = 'application/json'
+          end
           unless response.success?
             handle_error_response(response)
           end
@@ -147,6 +149,7 @@ module DPL
 
         def run(command)
           response = faraday.post "/apps/#{option(:app)}/dynos" do |req|
+            req.headers['Content-Type'] = 'application/json'
             req.body = {"command" => command, "attach" => true}.to_json
           end
           unless response.success?
