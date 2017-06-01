@@ -142,8 +142,12 @@ describe DPL::Provider::Heroku do
   }
 
   subject(:provider) do
-    described_class.new(DummyContext.new, :app => 'example', :key_name => 'key', :api_key => api_key, :strategy => "api")
+    described_class.new(DummyContext.new, provider_options.merge({ :api_key => api_key}))
   end
+
+  let(:provider_options) {
+    {:app => 'example', :key_name => 'key', :strategy => "api"}
+  }
 
   let(:expected_headers) do
     { "Authorization" => "Bearer #{api_key}", "Accept" => "application/vnd.heroku+json; version=3" }
@@ -159,16 +163,17 @@ describe DPL::Provider::Heroku do
 
   describe "#api" do
     it 'accepts an api key' do
-      faraday = double(:faraday)
-      expect(Faraday).to receive(:new).with(url: api_url, :headers => expected_headers).and_return(faraday)
-      expect(provider.faraday).to eq(faraday)
+      expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
+      provider.check_auth
     end
 
-    it 'accepts a user and a password' do
-      faraday = double(:faraday)
-      provider.options.update(:user => "foo", :password => "bar")
-      expect(Faraday).to receive(:new).with(url: api_url, :user => "foo", :password => "bar", :headers => expected_headers).and_return(faraday)
-      expect(provider.faraday).to eq(faraday)
+    context "when api_key is not given" do
+      let(:provider) { described_class.new(DummyContext.new, provider_options) }
+      it 'raises DPL::Error' do
+        provider.options.update(:user => "foo", :password => "bar")
+        expect(::Heroku::API).not_to receive(:new)
+        expect { provider.check_auth }.to raise_error(DPL::Error)
+      end
     end
   end
 

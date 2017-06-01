@@ -10,6 +10,10 @@ module DPL
         requires 'faraday'
 
         def check_auth
+          unless options[:api_key]
+            error "api_key is required for Heroku API deployment"
+          end
+
           response = faraday.get('/account')
 
           if response.success?
@@ -53,7 +57,7 @@ module DPL
 
         def handle_error_response(response)
           error_response = JSON.parse(response.body)
-          error "#{error_response["message"]} #{error_response["url"]}"
+          error "API request failed.\nMessage: #{error_response["message"]}\nReference: #{error_response["url"]}"
         end
 
         def push_app
