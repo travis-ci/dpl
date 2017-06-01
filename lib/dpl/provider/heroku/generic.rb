@@ -32,6 +32,7 @@ module DPL
         end
 
         def check_auth
+          warn "You are using a Heroku deployment strategy which relies on the deprecated API. It will be shut down on 2017-06-26. Please consider moving to the API strategy: https://docs.travis-ci.com/user/deployment/heroku#Deploy-Strategy."
           log "authenticated as %s" % user
         end
 
