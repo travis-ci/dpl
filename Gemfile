@@ -15,6 +15,7 @@ group :heroku do
   gem 'heroku-api', '= 0.3.16'
   gem 'anvil-cli', '~> 0.16.1'
   gem 'netrc'
+  gem 'faraday'
 end
 
 group :openshift do
