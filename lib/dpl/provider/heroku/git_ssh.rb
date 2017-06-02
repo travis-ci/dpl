@@ -2,10 +2,10 @@ module DPL
   class Provider
     module Heroku
       class GitSSH < Git
-        puts ''
-        puts "\e[31;1mgit-ssh strategy is deprecated, and will be shut down on June 26, 2017.\e[0m"
-        puts "\e[31;1mPlease consider moving to the \`api\` or \`git\` strategy.\e[0m"
-        puts ''
+        deprecated(
+          "git-ssh strategy is deprecated, and will be shut down on June 26, 2017.",
+          "Please consider moving to the \`api\` or \`git\` strategy."
+        )
 
         def git_url
           @app['git_url']
