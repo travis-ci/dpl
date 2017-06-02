@@ -3,7 +3,7 @@ module DPL
     module Heroku
       class GitSSH < Git
         def git_url
-          info['git_url']
+          @app['git_url']
         end
 
         def needs_key?

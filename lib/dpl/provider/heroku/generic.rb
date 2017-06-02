@@ -9,14 +9,35 @@ module DPL
           false
         end
 
-        def api
-          @api ||= ::Heroku::API.new(api_options)
+        def faraday
+          return @conn if @conn
+          headers = { "Accept" => "application/vnd.heroku+json; version=3" }
+
+          if options[:user] and options[:password]
+            # no-op
+          else
+            headers.merge!({ "Authorization" => "Bearer #{option(:api_key)}" })
+          end
+
+          @conn = Faraday.new( url: 'https://api.heroku.com', headers: headers ) do |faraday|
+            if options[:user] and options[:password]
+              faraday.basic_auth(options[:user], options[:password])
+            end
+            if log_level = options[:log_level]
+              logger = Logger.new($stderr)
+              logger.level = Logger.const_get(log_level.upcase)
+
+              faraday.response :logger, logger do | logger |
+                logger.filter(/(.*Authorization: ).*/,'\1[REDACTED]')
+              end
+            end
+            faraday.adapter Faraday.default_adapter
+          end
         end
 
         def api_options
           api_options = { headers: {
-            'User-Agent' => user_agent(::Heroku::API::HEADERS.fetch('User-Agent')),
-            "Accept" => "application/vnd.heroku+json; version=3",
+            'User-Agent' => user_agent
           } }
           if options[:user] and options[:password]
             api_options[:user]     = options[:user]
@@ -27,41 +48,54 @@ module DPL
           api_options
         end
 
-        def user
-          @user ||= api.get_user.body["email"]
-        end
-
         def check_auth
-          log "authenticated as %s" % user
+          response = faraday.get('/account')
+
+          if response.success?
+            email = JSON.parse(response.body)["email"]
+            @user = email
+            log "authenticated as #{email}"
+          else
+            handle_error_response(response)
+          end
         end
 
-        def info
-          @info ||= api.get_app(option(:app)).body
+        def handle_error_response(response)
+          error_response = JSON.parse(response.body)
+          error "API request failed.\nMessage: #{error_response["message"]}\nReference: #{error_response["url"]}"
         end
 
         def check_app
-          log "checking for app '#{option(:app)}'"
-          log "found app '#{info['name']}'"
-        rescue ::Heroku::API::Errors::Forbidden => error
-          raise Error, "#{error.message} (does the app '#{option(:app)}' exist and does your account have access to it?)", error.backtrace
-        end
-
-        def run(command)
-          data           = api.post_ps(option(:app), command, :attach => true).body
-          rendezvous_url = data['rendezvous_url']
-          Rendezvous.start(:url => rendezvous_url) unless rendezvous_url.nil?
+          log "checking for app #{option(:app)}"
+          response = faraday.get("/apps/#{option(:app)}")
+          if response.success?
+            @app = JSON.parse(response.body)
+            log "found app #{@app["name"]}"
+          else
+            handle_error_response(response)
+          end
         end
 
         def restart
-          api.post_ps_restart option(:app)
+          response = faraday.delete "/apps/#{option(:app)}/dynos" do |req|
+            req.headers['Content-Type'] = 'application/json'
+          end
+          unless response.success?
+            handle_error_response(response)
+          end
         end
 
-        def deploy
-          super
-        rescue ::Heroku::API::Errors::NotFound => error
-          raise Error, "#{error.message} (wrong app #{options[:app].inspect}?)", error.backtrace
-        rescue ::Heroku::API::Errors::Unauthorized => error
-          raise Error, "#{error.message} (wrong API key?)", error.backtrace
+        def run(command)
+          response = faraday.post "/apps/#{option(:app)}/dynos" do |req|
+            req.headers['Content-Type'] = 'application/json'
+            req.body = {"command" => command, "attach" => true}.to_json
+          end
+          if response.success?
+            rendezvous_url = JSON.parse(response.body)["attach_url"]
+            Rendezvous.start(url: rendezvous_url)
+          else
+            handle_error_response(response)
+          end
         end
       end
     end
