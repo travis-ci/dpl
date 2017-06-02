@@ -2,6 +2,11 @@ module DPL
   class Provider
     module Heroku
       class GitSSH < Git
+        puts ''
+        puts "\e[31;1mgit-ssh strategy is deprecated, and will be shut down on June 26, 2017.\e[0m"
+        puts "\e[31;1mPlease consider moving to the \`api\` or \`git\` strategy.\e[0m"
+        puts ''
+
         def git_url
           @app['git_url']
         end
@@ -11,10 +16,6 @@ module DPL
         end
 
         def setup_key(file)
-          warn ''
-          warn "git-ssh strategy is deprecated, and will be shut down on June 26, 2017."
-          warn "Please consider moving to the \\`api\\` or \\`git\\` strategy."
-          warn ''
           api.post_key File.read(file)
         end
 

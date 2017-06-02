@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'heroku-api'
 require 'dpl/provider/heroku'
 require 'faraday'
 
@@ -14,15 +13,65 @@ describe DPL::Provider::Heroku do
     Faraday.new do |builder|
       builder.adapter :test, stubs do |stub|
         stub.get("/account") {|env| [200, response_headers, account_response_body]}
+        stub.get("/apps/example") {|env| [200, response_headers, app_response_body]}
         stub.post("/apps/example/builds") {|env| [201, response_headers, builds_response_body]}
         stub.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef/result") {|env| [200, response_headers, build_result_response_body]}
         stub.post("/sources") {|env| [201, response_headers, source_response_body] }
+        stub.post("/apps/example/dynos") {|env| [201, response_headers, dynos_create_response_body]}
+        stub.delete("/apps/example/dynos") {|env| [202, response_headers, '{}'] }
       end
     end
   }
 
   let(:response_headers) {
     {'Content-Type' => 'application/json'}
+  }
+
+  let(:app_response_body) {
+'{
+  "acm": false,
+  "archived_at": "2012-01-01T12:00:00Z",
+  "buildpack_provided_description": "Ruby/Rack",
+  "build_stack": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "cedar-14"
+  },
+  "created_at": "2012-01-01T12:00:00Z",
+  "git_url": "https://git.heroku.com/example.git",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "maintenance": false,
+  "name": "example",
+  "owner": {
+    "email": "username@example.com",
+    "id": "01234567-89ab-cdef-0123-456789abcdef"
+  },
+  "organization": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "example"
+  },
+  "team": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "example"
+  },
+  "region": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "us"
+  },
+  "released_at": "2012-01-01T12:00:00Z",
+  "repo_size": 0,
+  "slug_size": 0,
+  "space": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "nasa",
+    "shield": true
+  },
+  "stack": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "cedar-14"
+  },
+  "updated_at": "2012-01-01T12:00:00Z",
+  "web_url": "https://example.herokuapp.com/"
+}'
   }
 
   let(:account_response_body) {
@@ -96,6 +145,27 @@ describe DPL::Provider::Heroku do
 }'
   }
 
+  let(:dynos_create_response_body) {
+'{
+  "attach_url": "rendezvous://rendezvous.runtime.heroku.com:5000/rendezvous",
+  "command": "bash",
+  "created_at": "2012-01-01T12:00:00Z",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "name": "run.1",
+  "release": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "version": 11
+  },
+  "app": {
+    "name": "example",
+    "id": "01234567-89ab-cdef-0123-456789abcdef"
+  },
+  "size": "standard-1X",
+  "state": "up",
+  "type": "run",
+  "updated_at": "2012-01-01T12:00:00Z"
+}'
+  }
   let(:build_result_response_body) {
 '{
     "build": {
@@ -155,36 +225,19 @@ describe DPL::Provider::Heroku do
 
   describe "#api" do
     it 'accepts an api key' do
-      api = double(:api)
-      expect(::Heroku::API).to receive(:new).with(:api_key => "foo", :headers => expected_headers).and_return(api)
-      expect(provider.api).to eq(api)
-    end
-
-    it 'accepts a user and a password' do
-      api = double(:api)
-      provider.options.update(:user => "foo", :password => "bar")
-      expect(::Heroku::API).to receive(:new).with(:user => "foo", :password => "bar", :headers => expected_headers).and_return(api)
-      expect(provider.api).to eq(api)
+      expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
+      provider.check_auth
     end
   end
 
-  context "with fake api" do
-    let :api do
-      double "api",
-        :get_user => double("get_user", :body => { "email" => "foo@bar.com" }),
-        :get_app  => double("get_app",  :body => { "name"  => "example", "git_url" => "GIT URL" })
+  context "with faraday" do
+    before :each do
+      expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
     end
-
-    before do
-      expect(::Heroku::API).to receive(:new).and_return(api)
-      provider.api
-    end
-
-    its(:api) { should be == api }
 
     describe "#check_auth" do
       example do
-        expect(provider).to receive(:log).with("authenticated as foo@bar.com")
+        expect(provider).to receive(:log).with("authenticated as username@example.com")
         provider.check_auth
       end
     end
@@ -196,21 +249,21 @@ describe DPL::Provider::Heroku do
       end
     end
 
-    describe "#setup_key" do
+    describe "#run" do
       example do
-        expect(File).to receive(:read).with("the file").and_return("foo")
-        expect(api).to receive(:post_key).with("foo")
-        provider.setup_key("the file")
+        expect(Rendezvous).to receive(:start).with(:url => "rendezvous://rendezvous.runtime.heroku.com:5000/rendezvous")
+        provider.run("that command")
       end
     end
 
-    describe "#remove_key" do
+    describe "#restart" do
       example do
-        expect(api).to receive(:delete_key).with("key")
-        provider.remove_key
+        provider.restart
       end
     end
+  end
 
+  context "without faraday" do
     describe "#push_app" do
       example do
         provider.options[:git] = "git://something"
@@ -218,34 +271,6 @@ describe DPL::Provider::Heroku do
         expect(provider.context).to receive(:shell).with("git push git://something HEAD:refs/heads/master -f")
         provider.push_app
         expect(provider.context.env['GIT_HTTP_USER_AGENT']).to include("dpl/#{DPL::VERSION}")
-      end
-    end
-
-    describe "#run" do
-      example do
-        data = double("data", :body => { "rendezvous_url" => "rendezvous url" })
-        expect(api).to receive(:post_ps).with("example", "that command", :attach => true).and_return(data)
-        expect(Rendezvous).to receive(:start).with(:url => "rendezvous url")
-        provider.run("that command")
-      end
-    end
-
-    describe "#restart" do
-      example do
-        expect(api).to receive(:post_ps_restart).with("example")
-        provider.restart
-      end
-    end
-
-    describe "#deploy" do
-      example "not found error" do
-        expect(provider).to receive(:api) { raise ::Heroku::API::Errors::NotFound.new("the message", nil) }.at_least(:once)
-        expect { provider.deploy }.to raise_error(DPL::Error, 'the message (wrong app "example"?)')
-      end
-
-      example "unauthorized error" do
-        expect(provider).to receive(:api) { raise ::Heroku::API::Errors::Unauthorized.new("the message", nil) }.at_least(:once)
-        expect { provider.deploy }.to raise_error(DPL::Error, 'the message (wrong API key?)')
       end
     end
   end

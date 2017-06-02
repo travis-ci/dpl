@@ -171,7 +171,6 @@ describe DPL::Provider::Heroku do
       let(:provider) { described_class.new(DummyContext.new, provider_options) }
       it 'raises DPL::Error' do
         provider.options.update(:user => "foo", :password => "bar")
-        expect(::Heroku::API).not_to receive(:new)
         expect { provider.check_auth }.to raise_error(DPL::Error)
       end
     end
@@ -180,7 +179,6 @@ describe DPL::Provider::Heroku do
   describe "#trigger_build" do
     it "does not initiate legacy API object" do
       expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
-      expect(::Heroku::API).not_to receive(:new)
       provider.trigger_build
     end
 
