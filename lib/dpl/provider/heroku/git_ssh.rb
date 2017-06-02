@@ -11,6 +11,10 @@ module DPL
         end
 
         def setup_key(file)
+          warn ''
+          warn "git-ssh strategy is deprecated, and will be shut down on June 26, 2017."
+          warn "Please consider moving to the \\`api\\` or \\`git\\` strategy."
+          warn ''
           api.post_key File.read(file)
         end
 
