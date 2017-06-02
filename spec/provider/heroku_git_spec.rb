@@ -8,7 +8,7 @@ describe DPL::Provider::Heroku do
   end
 
   let(:expected_headers) do
-    { "User-Agent" => "dpl/#{DPL::VERSION} heroku-rb/#{Heroku::API::VERSION}", "Accept" => "application/vnd.heroku+json; version=3" }
+    { "User-Agent" => "dpl/#{DPL::VERSION} heroku-rb/#{Heroku::API::VERSION}" }
   end
 
   describe "#api" do
