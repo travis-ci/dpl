@@ -4,7 +4,7 @@ require 'faraday'
 
 describe DPL::Provider::Heroku do
   subject :provider do
-    described_class.new(DummyContext.new, :app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "git-ssh")
+    described_class.new(DummyContext.new, :app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "git")
   end
 
   let(:api_key) {'foo'}
