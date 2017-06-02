@@ -7,6 +7,8 @@ module DPL
         requires 'rendezvous'
         requires 'faraday'
 
+        attr_reader :app, :user
+
         def needs_key?
           false
         end
