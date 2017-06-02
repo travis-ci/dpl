@@ -2,8 +2,8 @@ module DPL
   class Provider
     module Heroku
       class Generic < Provider
-        requires 'heroku-api'
         requires 'rendezvous'
+        requires 'faraday'
 
         def needs_key?
           false
