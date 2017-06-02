@@ -82,7 +82,7 @@ module DPL
         end
 
         def git_url
-          @app['git_url']
+          info['git_url']
         end
 
         def needs_key?
