@@ -43,6 +43,10 @@ describe DPL::Provider::CloudFoundry do
   end
 
   describe "#push_app" do
+    before do
+      allow(provider.context).to receive(:shell).and_return(true)
+    end
+
     example "With manifest" do
       expect(provider.context).to receive(:shell).with('./cf push -f worker-manifest.yml')
       expect(provider.context).to receive(:shell).with('./cf logout')
@@ -54,6 +58,14 @@ describe DPL::Provider::CloudFoundry do
       expect(provider.context).to receive(:shell).with('./cf push')
       expect(provider.context).to receive(:shell).with('./cf logout')
       provider.push_app
+    end
+
+    example 'Failed to push' do
+      allow(provider.context).to receive(:shell).and_return(false)
+
+      expect(provider.context).to receive(:shell).with('./cf push -f worker-manifest.yml')
+      expect(provider.context).to receive(:shell).with('./cf logout')
+      expect{provider.push_app}.to raise_error(DPL::Error, 'Failed to push app')
     end
   end
 end

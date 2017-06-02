@@ -35,6 +35,7 @@ describe DPL::Provider::RubyGems do
   describe "#check_app" do
     example do
       expect(::Gems).to receive(:info).with('example').and_return({'name' => 'example'})
+      expect(provider).to receive(:log).with("Looking up gem example")
       expect(provider).to receive(:log).with("Found gem example")
       provider.check_app
     end

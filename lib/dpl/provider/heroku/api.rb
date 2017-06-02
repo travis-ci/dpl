@@ -1,11 +1,67 @@
 require 'json'
 require 'shellwords'
+require 'logger'
 
 module DPL
   class Provider
     module Heroku
       class API < Generic
         attr_reader :build_id
+        requires 'faraday'
+        requires 'rendezvous'
+
+        def check_auth
+          response = faraday.get('/account')
+
+          if response.success?
+            email = JSON.parse(response.body)["email"]
+            log "authenticated as #{email}"
+          else
+            handle_error_response(response)
+          end
+        end
+
+        def faraday
+          return @conn if @conn
+          headers = { "Accept" => "application/vnd.heroku+json; version=3" }
+
+          if options[:user] and options[:password]
+            # no-op
+          else
+            headers.merge!({ "Authorization" => "Bearer #{option(:api_key)}" })
+          end
+
+          @conn = Faraday.new( url: 'https://api.heroku.com', headers: headers ) do |faraday|
+            if options[:user] and options[:password]
+              faraday.basic_auth(options[:user], options[:password])
+            end
+            if log_level = options[:log_level]
+              logger = Logger.new($stderr)
+              logger.level = Logger.const_get(log_level.upcase)
+
+              faraday.response :logger, logger do | logger |
+                logger.filter(/(.*Authorization: ).*/,'\1[REDACTED]')
+              end
+            end
+            faraday.adapter Faraday.default_adapter
+          end
+        end
+
+        def check_app
+          log "checking for app #{option(:app)}"
+          response = faraday.get("/apps/#{option(:app)}")
+          if response.success?
+            name = JSON.parse(response.body)["name"]
+            log "found app #{name}"
+          else
+            handle_error_response(response)
+          end
+        end
+
+        def handle_error_response(response)
+          error_response = JSON.parse(response.body)
+          error "API request failed.\nMessage: #{error_response["message"]}\nReference: #{error_response["url"]}"
+        end
 
         def push_app
           pack_archive
@@ -25,21 +81,34 @@ module DPL
 
         def upload_archive
           log "uploading application archive"
-          context.shell "curl #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' --data-binary @#{archive_file}"
+          context.shell "curl #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' -H 'Accept: application/vnd.heroku+json; version=3' --data-binary @#{archive_file}"
         end
 
         def trigger_build
           log "triggering new deployment"
-          response   = post(:builds, source_blob: { url: get_url, version: version })
-          @build_id  = response.fetch('id')
-          output_stream_url = response.fetch('output_stream_url')
-          context.shell "curl #{Shellwords.escape(output_stream_url)}"
+          response = faraday.post("/apps/#{option(:app)}/builds") do |req|
+            req.headers['Content-Type'] = 'application/json'
+            req.body = {
+              "source_blob" => {
+                "url" => get_url,
+                "version" => version
+              }
+              }.to_json
+          end
+
+          if response.success?
+            @build_id  = JSON.parse(response.body)['id']
+            output_stream_url = JSON.parse(response.body)['output_stream_url']
+            context.shell "curl #{Shellwords.escape(output_stream_url)} -H 'Accept: application/vnd.heroku+json; version=3'"
+          else
+            handle_error_response(response)
+          end
         end
 
         def verify_build
           loop do
-            response = get("builds/#{build_id}/result")
-            exit_code = response.fetch('exit_code')
+            response = faraday.get("/apps/#{option(:app)}/builds/#{build_id}/result")
+            exit_code = JSON.parse(response.body)['exit_code']
             if exit_code.nil?
               log "heroku build still pending"
               sleep 5
@@ -61,38 +130,41 @@ module DPL
         end
 
         def source_blob
-          @source_blob ||= post(:sources).fetch("source_blob")
+          return @source_blob if @source_blob
+
+          response = faraday.post('/sources')
+
+          if response.success?
+            @source_blob = JSON.parse(response.body)["source_blob"]
+          else
+            handle_error_response(response)
+          end
         end
 
         def version
           @version ||= options[:version] || context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
         end
 
-        def get(subpath, options = {})
-          options = {
-            method: :get,
-            path: "/apps/#{option(:app)}/#{subpath}",
-            headers: { "Accept" => "application/vnd.heroku+json; version=3" },
-            expects: [200]
-          }.merge(options)
-
-          api.request(options).body
+        def restart
+          response = faraday.delete "/apps/#{option(:app)}/dynos" do |req|
+            req.headers['Content-Type'] = 'application/json'
+          end
+          unless response.success?
+            handle_error_response(response)
+          end
         end
 
-        def post(subpath, body = nil, options = {})
-          options = {
-            method: :post,
-            path: "/apps/#{option(:app)}/#{subpath}",
-            headers: { "Accept" => "application/vnd.heroku+json; version=3" },
-            expects: [200, 201]
-          }.merge(options)
-
-          if body
-            options[:body]                    = JSON.dump(body)
-            options[:headers]['Content-Type'] = 'application/json'
+        def run(command)
+          response = faraday.post "/apps/#{option(:app)}/dynos" do |req|
+            req.headers['Content-Type'] = 'application/json'
+            req.body = {"command" => command, "attach" => true}.to_json
           end
-
-          api.request(options).body
+          if response.success?
+            rendezvous_url = JSON.parse(response.body)["attach_url"]
+            Rendezvous.start(url: rendezvous_url)
+          else
+            handle_error_response(response)
+          end
         end
       end
     end
