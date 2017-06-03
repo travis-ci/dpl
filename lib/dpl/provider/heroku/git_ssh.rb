@@ -9,6 +9,7 @@ module DPL
 
         requires 'heroku-api'
         requires 'rendezvous'
+        requires 'netrc'
 
         def needs_key?
           false
