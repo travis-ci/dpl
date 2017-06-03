@@ -1,7 +1,7 @@
 module DPL
   class Provider
     module Heroku
-      class GitSSH < Git
+      class GitSSH < Provider
         deprecated(
           "git-ssh strategy is deprecated, and will be shut down on June 26, 2017.",
           "Please consider moving to the \`api\` or \`git\` strategy."
