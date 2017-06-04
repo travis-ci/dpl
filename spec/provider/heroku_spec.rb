@@ -2,22 +2,72 @@ require 'spec_helper'
 require 'dpl/provider/heroku'
 require 'faraday'
 
-describe DPL::Provider::Heroku do
-  let(:api_key) { 'foo' }
+RSpec.shared_context 'with faraday' do
+  let(:api_key) {'foo'}
   let(:stubs) { Faraday::Adapter::Test::Stubs.new }
   let(:faraday) {
     Faraday.new do |builder|
       builder.adapter :test, stubs do |stub|
         stub.get("/account") {|env| [200, response_headers, account_response_body]}
+        stub.get("/apps/example") {|env| [200, response_headers, app_response_body]}
         stub.post("/apps/example/builds") {|env| [201, response_headers, builds_response_body]}
         stub.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef/result") {|env| [200, response_headers, build_result_response_body]}
         stub.post("/sources") {|env| [201, response_headers, source_response_body] }
+        stub.post("/apps/example/dynos") {|env| [201, response_headers, dynos_create_response_body]}
+        stub.delete("/apps/example/dynos") {|env| [202, response_headers, '{}'] }
       end
     end
   }
 
   let(:response_headers) {
     {'Content-Type' => 'application/json'}
+  }
+
+  let(:app_response_body) {
+'{
+  "acm": false,
+  "archived_at": "2012-01-01T12:00:00Z",
+  "buildpack_provided_description": "Ruby/Rack",
+  "build_stack": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "cedar-14"
+  },
+  "created_at": "2012-01-01T12:00:00Z",
+  "git_url": "https://git.heroku.com/example.git",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "maintenance": false,
+  "name": "example",
+  "owner": {
+    "email": "username@example.com",
+    "id": "01234567-89ab-cdef-0123-456789abcdef"
+  },
+  "organization": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "example"
+  },
+  "team": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "example"
+  },
+  "region": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "us"
+  },
+  "released_at": "2012-01-01T12:00:00Z",
+  "repo_size": 0,
+  "slug_size": 0,
+  "space": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "nasa",
+    "shield": true
+  },
+  "stack": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "cedar-14"
+  },
+  "updated_at": "2012-01-01T12:00:00Z",
+  "web_url": "https://example.herokuapp.com/"
+}'
   }
 
   let(:account_response_body) {
@@ -91,6 +141,27 @@ describe DPL::Provider::Heroku do
 }'
   }
 
+  let(:dynos_create_response_body) {
+'{
+  "attach_url": "rendezvous://rendezvous.runtime.heroku.com:5000/rendezvous",
+  "command": "bash",
+  "created_at": "2012-01-01T12:00:00Z",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "name": "run.1",
+  "release": {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "version": 11
+  },
+  "app": {
+    "name": "example",
+    "id": "01234567-89ab-cdef-0123-456789abcdef"
+  },
+  "size": "standard-1X",
+  "state": "up",
+  "type": "run",
+  "updated_at": "2012-01-01T12:00:00Z"
+}'
+  }
   let(:build_result_response_body) {
 '{
     "build": {
@@ -140,6 +211,16 @@ describe DPL::Provider::Heroku do
   ]
 }'
   }
+
+  let(:expected_headers) do
+    { "Authorization" => "Bearer #{api_key}", "Accept" => "application/vnd.heroku+json; version=3" }
+  end
+
+  let(:api_url) { 'https://api.heroku.com' }
+end
+
+describe DPL::Provider::Heroku, :api do
+  include_context 'with faraday'
 
   subject(:provider) do
     described_class.new(DummyContext.new, provider_options.merge({ :api_key => api_key}))
@@ -223,4 +304,65 @@ describe DPL::Provider::Heroku do
 
   end
 
+end
+
+
+describe DPL::Provider::Heroku, :git do
+  include_context "with faraday"
+
+  subject :provider do
+    described_class.new(DummyContext.new, :app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "git")
+  end
+
+  describe "#api" do
+    it 'accepts an api key' do
+      expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
+      provider.check_auth
+    end
+  end
+
+  context "with faraday" do
+    before :each do
+      expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
+    end
+
+    describe "#check_auth" do
+      example do
+        expect(provider).to receive(:log).with("authenticated as username@example.com")
+        provider.check_auth
+      end
+    end
+
+    describe "#check_app" do
+      example do
+        expect(provider).to receive(:log).at_least(1).times.with(/example/)
+        provider.check_app
+      end
+    end
+
+    describe "#run" do
+      example do
+        expect(Rendezvous).to receive(:start).with(:url => "rendezvous://rendezvous.runtime.heroku.com:5000/rendezvous")
+        provider.run("that command")
+      end
+    end
+
+    describe "#restart" do
+      example do
+        provider.restart
+      end
+    end
+  end
+
+  context "without faraday" do
+    describe "#push_app" do
+      example do
+        provider.options[:git] = "git://something"
+        expect(provider.context).to receive(:shell).with("git fetch origin $TRAVIS_BRANCH --unshallow")
+        expect(provider.context).to receive(:shell).with("git push git://something HEAD:refs/heads/master -f")
+        provider.push_app
+        expect(provider.context.env['GIT_HTTP_USER_AGENT']).to include("dpl/#{DPL::VERSION}")
+      end
+    end
+  end
 end
