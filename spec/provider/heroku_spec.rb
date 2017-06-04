@@ -3,7 +3,7 @@ require 'dpl/provider/heroku'
 require 'faraday'
 
 RSpec.shared_context 'with faraday' do
-  let(:api_key) {'foo'}
+  let(:api_key) { 'foo' }
   let(:stubs) { Faraday::Adapter::Test::Stubs.new }
   let(:faraday) {
     Faraday.new do |builder|
@@ -24,199 +24,194 @@ RSpec.shared_context 'with faraday' do
   }
 
   let(:app_response_body) {
-'{
-  "acm": false,
-  "archived_at": "2012-01-01T12:00:00Z",
-  "buildpack_provided_description": "Ruby/Rack",
-  "build_stack": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "cedar-14"
-  },
-  "created_at": "2012-01-01T12:00:00Z",
-  "git_url": "https://git.heroku.com/example.git",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "maintenance": false,
-  "name": "example",
-  "owner": {
-    "email": "username@example.com",
-    "id": "01234567-89ab-cdef-0123-456789abcdef"
-  },
-  "organization": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "example"
-  },
-  "team": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "example"
-  },
-  "region": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "us"
-  },
-  "released_at": "2012-01-01T12:00:00Z",
-  "repo_size": 0,
-  "slug_size": 0,
-  "space": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "nasa",
-    "shield": true
-  },
-  "stack": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "cedar-14"
-  },
-  "updated_at": "2012-01-01T12:00:00Z",
-  "web_url": "https://example.herokuapp.com/"
-}'
+    '{
+      "acm": false,
+      "archived_at": "2012-01-01T12:00:00Z",
+      "buildpack_provided_description": "Ruby/Rack",
+      "build_stack": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "name": "cedar-14"
+      },
+      "created_at": "2012-01-01T12:00:00Z",
+      "git_url": "https://git.heroku.com/example.git",
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "maintenance": false,
+      "name": "example",
+      "owner": {
+        "email": "username@example.com",
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "organization": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "name": "example"
+      },
+      "team": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "name": "example"
+      },
+      "region": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "name": "us"
+      },
+      "released_at": "2012-01-01T12:00:00Z",
+      "repo_size": 0,
+      "slug_size": 0,
+      "space": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "name": "nasa",
+        "shield": true
+      },
+      "stack": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "name": "cedar-14"
+      },
+      "updated_at": "2012-01-01T12:00:00Z",
+      "web_url": "https://example.herokuapp.com/"
+    }'
   }
 
   let(:account_response_body) {
-'{
-  "allow_tracking": true,
-  "beta": false,
-  "created_at": "2012-01-01T12:00:00Z",
-  "email": "username@example.com",
-  "federated": false,
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "identity_provider": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "organization": {
-      "name": "example"
-    }
-  },
-  "last_login": "2012-01-01T12:00:00Z",
-  "name": "Tina Edmonds",
-  "sms_number": "+1 ***-***-1234",
-  "suspended_at": "2012-01-01T12:00:00Z",
-  "delinquent_at": "2012-01-01T12:00:00Z",
-  "two_factor_authentication": false,
-  "updated_at": "2012-01-01T12:00:00Z",
-  "verified": false,
-  "default_organization": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "example"
-  }
-}'
+    '{
+      "allow_tracking": true,
+      "beta": false,
+      "created_at": "2012-01-01T12:00:00Z",
+      "email": "username@example.com",
+      "federated": false,
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "identity_provider": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "organization": {
+          "name": "example"
+        }
+      },
+      "last_login": "2012-01-01T12:00:00Z",
+      "name": "Tina Edmonds",
+      "sms_number": "+1 ***-***-1234",
+      "suspended_at": "2012-01-01T12:00:00Z",
+      "delinquent_at": "2012-01-01T12:00:00Z",
+      "two_factor_authentication": false,
+      "updated_at": "2012-01-01T12:00:00Z",
+      "verified": false,
+      "default_organization": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "name": "example"
+      }
+    }'
   }
 
   let(:builds_response_body) {
-'{
-  "app": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef"
-  },
-  "buildpacks": [
-    {
-      "url": "https://github.com/heroku/heroku-buildpack-ruby"
-    }
-  ],
-  "created_at": "2012-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef",
-  "source_blob": {
-    "checksum": "SHA256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "url": "https://example.com/source.tgz?token=xyz",
-    "version": "v1.3.0"
-  },
-  "release": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef"
-  },
-  "slug": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef"
-  },
-  "status": "succeeded",
-  "updated_at": "2012-01-01T12:00:00Z",
-  "user": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "email": "username@example.com"
-  }
-}'
+    '{
+      "app": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "buildpacks": [
+        {
+          "url": "https://github.com/heroku/heroku-buildpack-ruby"
+        }
+      ],
+      "created_at": "2012-01-01T12:00:00Z",
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef",
+      "source_blob": {
+        "checksum": "SHA256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "url": "https://example.com/source.tgz?token=xyz",
+        "version": "v1.3.0"
+      },
+      "release": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "slug": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "status": "succeeded",
+      "updated_at": "2012-01-01T12:00:00Z",
+      "user": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "email": "username@example.com"
+      }
+    }'
   }
 
   let(:source_response_body) {
-'{
-  "source_blob": {
-    "get_url": "https://api.heroku.com/sources/1234.tgz",
-    "put_url": "https://api.heroku.com/sources/1234.tgz"
-  }
-}'
+    '{
+      "source_blob": {
+        "get_url": "https://api.heroku.com/sources/1234.tgz",
+        "put_url": "https://api.heroku.com/sources/1234.tgz"
+      }
+    }'
   }
 
   let(:dynos_create_response_body) {
-'{
-  "attach_url": "rendezvous://rendezvous.runtime.heroku.com:5000/rendezvous",
-  "command": "bash",
-  "created_at": "2012-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "run.1",
-  "release": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "version": 11
-  },
-  "app": {
-    "name": "example",
-    "id": "01234567-89ab-cdef-0123-456789abcdef"
-  },
-  "size": "standard-1X",
-  "state": "up",
-  "type": "run",
-  "updated_at": "2012-01-01T12:00:00Z"
-}'
+    '{
+      "attach_url": "rendezvous://rendezvous.runtime.heroku.com:5000/rendezvous",
+      "command": "bash",
+      "created_at": "2012-01-01T12:00:00Z",
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "name": "run.1",
+      "release": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "version": 11
+      },
+      "app": {
+        "name": "example",
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "size": "standard-1X",
+      "state": "up",
+      "type": "run",
+      "updated_at": "2012-01-01T12:00:00Z"
+    }'
   }
+
   let(:build_result_response_body) {
-'{
-    "build": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "status": "succeeded",
-    "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
-  },
-  "exit_code": 0,
-  "lines": [
-    {
-      "line": "-----> Ruby app detected\n",
-      "stream": "STDOUT"
-    }
-  ]
-}'
+  '{
+      "build": {
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "status": "succeeded",
+      "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
+    },
+    "exit_code": 0,
+    "lines": [
+      {
+        "line": "-----> Ruby app detected\n",
+        "stream": "STDOUT"
+      }
+    ]
+  }'
   }
 
   let(:build_result_response_body_failure) {
-'{
-    "build": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "status": "failed",
-    "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
-  },
-  "exit_code": 1,
-  "lines": [
-    {
-      "line": "-----> Ruby app detected\n",
-      "stream": "STDOUT"
-    }
-  ]
-}'
+    '{
+        "build": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "status": "failed",
+        "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "exit_code": 1,
+      "lines": [
+        {
+          "line": "-----> Ruby app detected\n",
+          "stream": "STDOUT"
+        }
+      ]
+    }'
   }
 
   let(:build_result_response_body_in_progress) {
-'{
-    "build": {
-    "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "status": "failed",
-    "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
-  },
-  "lines": [
-    {
-      "line": "-----> Ruby app detected\n",
-      "stream": "STDOUT"
-    }
-  ]
-}'
+    '{
+        "build": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "status": "failed",
+        "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "lines": [
+        {
+          "line": "-----> Ruby app detected\n",
+          "stream": "STDOUT"
+        }
+      ]
+    }'
   }
-
-  let(:expected_headers) do
-    { "Authorization" => "Bearer #{api_key}", "Accept" => "application/vnd.heroku+json; version=3" }
-  end
-
-  let(:api_url) { 'https://api.heroku.com' }
 end
 
 describe DPL::Provider::Heroku, :api do
@@ -229,12 +224,6 @@ describe DPL::Provider::Heroku, :api do
   let(:provider_options) {
     {:app => 'example', :key_name => 'key', :strategy => "api"}
   }
-
-  let(:expected_headers) do
-    { "Authorization" => "Bearer #{api_key}", "Accept" => "application/vnd.heroku+json; version=3" }
-  end
-
-  let(:api_url) { 'https://api.heroku.com' }
 
   describe "#ssh" do
     it "doesn't require an ssh key" do
@@ -311,7 +300,7 @@ describe DPL::Provider::Heroku, :git do
   include_context "with faraday"
 
   subject :provider do
-    described_class.new(DummyContext.new, :app => 'example', :key_name => 'key', :api_key => "foo", :strategy => "git")
+    described_class.new(DummyContext.new, :app => 'example', :key_name => 'key', :api_key => api_key, :strategy => "git")
   end
 
   describe "#api" do
