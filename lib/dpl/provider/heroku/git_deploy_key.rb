@@ -2,6 +2,11 @@ module DPL
   class Provider
     module Heroku
       class GitDeployKey < GitSSH
+        deprecated(
+          "git-deploy-key strategy is deprecated, and will be shut down on June 26, 2017.",
+          "Please consider moving to the \`api\` or \`git\` strategy."
+        )
+
         def needs_key?
           false
         end

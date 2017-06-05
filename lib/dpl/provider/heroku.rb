@@ -1,7 +1,6 @@
 module DPL
   class Provider
     module Heroku
-      autoload :Anvil,        'dpl/provider/heroku/anvil'
       autoload :API,          'dpl/provider/heroku/api'
       autoload :Generic,      'dpl/provider/heroku/generic'
       autoload :Git,          'dpl/provider/heroku/git'
