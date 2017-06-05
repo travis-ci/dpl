@@ -75,7 +75,7 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 * **username**: heroku username. Not necessary if api-key is used. Requires git strategy.
 * **password**: heroku password. Not necessary if api-key is used. Requires git strategy.
 
-#### API vs Git vs Anvil Deploy:
+#### API vs Git Deploy:
 * API deploy will tar up the current directory (minus the git repo) and send it to Heroku.
 * Git deploy will send the contents of the git repo only, so may not contain any local changes.
 * The Git strategy allows using *user* and *password* instead of *api-key*.
