@@ -39,17 +39,6 @@ module DPL
           end
         end
 
-        def api_options
-          api_options = { headers: { 'User-Agent' => user_agent(::Heroku::API::HEADERS.fetch('User-Agent')) } }
-          if options[:user] and options[:password]
-            api_options[:user]     = options[:user]
-            api_options[:password] = options[:password]
-          else
-            api_options[:api_key]  = option(:api_key)
-          end
-          api_options
-        end
-
         def check_auth
           response = faraday.get('/account')
 
