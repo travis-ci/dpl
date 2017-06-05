@@ -286,7 +286,7 @@ describe DPL::Provider::Heroku, :api do
         expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
         expect(provider).to receive(:build_id).at_least(:once).and_return('01234567-89ab-cdef-0123-456789abcdef')
         stubs.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef/result") {|env| [200, response_headers, build_result_response_body_in_progress]}
-        expect(provider).to receive(:sleep).with(5) # stub sleep
+        expect(provider).to receive(:sleep).with(5).and_return(true)
         expect{ provider.verify_build }.not_to raise_error
       end
     end
