@@ -642,6 +642,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **repository**: Required. The repository to push to.
  * **local_dir**: Optional. The sub-directory of the built assets for deployment. Default to current path.
  * **dist**: Required for deb and rpm. The complete list of supported strings can be found on the [packagecloud.io docs](https://packagecloud.io/docs#os_distro_version)
+ * **force**: Optional. Wheter package has to be (re)uploaded / deleted before upload
 
 #### Examples:
 
