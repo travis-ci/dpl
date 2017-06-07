@@ -877,10 +877,11 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 
 * **token**: Your Firebase CI access token (generate with `firebase login:ci`)
 * **project**: Deploy to a different Firebase project than specified in your `firebase.json` (e.g. `myapp-staging`)
+* **message**: Optional. The message describing this deploy.
 
 #### Examples:
 
-    dpl --provider=firebase --token=<token> --project=<project>
+    dpl --provider=firebase --token=<token> --project=<project> --message=<message>
 
 
 
