@@ -88,6 +88,7 @@ module DPL
       end
 
       def push_app
+        forced = options.fetch(:force, nil)
         packages = []
         glob_args = Array(options.fetch(:package_glob, '**/*'))
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
@@ -109,6 +110,16 @@ module DPL
         end
 
         packages.each do |package|
+          if forced
+            log "Deleting package: #{package.filename}"
+            distro, distro_release = @dist.split("/")
+            result = @client.delete_package(@repo, distro, distro_release, package.filename)
+            if result.succeeded
+              log "Successfully deleted #{package.filename} on #{@dist}"
+            else
+              error "Error #{result.response}"
+            end
+          end
           log "Pushing package: #{package.filename}"
           if dist_required?(package.filename)
             result = @client.put_package(@repo, package, get_distro(@dist))
