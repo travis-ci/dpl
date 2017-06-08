@@ -14,6 +14,7 @@ module DPL
     autoload :BitBalloon,          'dpl/provider/bitballoon'
     autoload :BluemixCloudFoundry, 'dpl/provider/bluemix_cloud_foundry'
     autoload :Boxfuse,             'dpl/provider/boxfuse'
+    autoload :BuildBranch,         'dpl/provider/build_branch'
     autoload :Catalyze,            'dpl/provider/catalyze'
     autoload :ChefSupermarket,     'dpl/provider/chef_supermarket'
     autoload :Cloud66,             'dpl/provider/cloud66'
