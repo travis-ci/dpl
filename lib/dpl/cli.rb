@@ -30,6 +30,7 @@ module DPL
     def run
       provider = Provider.new(self, options)
       provider.deploy
+      exit provider.deploy_status.exitstatus
     rescue Error => error
       options[:debug] ? raise(error) : die(error.message)
     end
@@ -50,8 +51,8 @@ module DPL
       }
     end
 
-    def shell(command)
-      system(command)
+    def shell(command, opts = {})
+      DPL::Provider.shell command, opts
     end
 
     def die(message)
