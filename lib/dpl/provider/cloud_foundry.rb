@@ -23,7 +23,9 @@ module DPL
       end
 
       def push_app
-        context.shell "./cf push#{manifest}"
+        error 'Failed to push app' unless context.shell("./cf push#{manifest}")
+
+      ensure
         context.shell "./cf logout"
       end
 

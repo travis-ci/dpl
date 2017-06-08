@@ -25,7 +25,6 @@ Dpl supports the following providers:
 * [Deis](#deis)
 * [Divshot.io](#divshotio)
 * [Engine Yard](#engine-yard)
-* [ExoScale](#exoscale)
 * [Firebase](#firebase)
 * [Github Pages](#github-pages)
 * [Github Releases](#github-releases)
@@ -348,7 +347,7 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public_read
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999 --expires="2012-12-21 00:00:00 -0000"
-    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir= BUILD --upload-dir=BUILDS
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir=BUILD --upload-dir=BUILDS
 
 ### Elastic Beanstalk:
 
@@ -804,18 +803,6 @@ and your testers can start testing your app.
 #### Examples:
 
     dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>
-
-### ExoScale:
-
-#### Options:
-
-* **email**: ExoScale email or Organization ID.
-* **password**: ExoScale password.
-* **deployment**: ExoScale Deployment. Follows the format "APP_NAME/DEP_NAME".
-
-#### Examples:
-
-    dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
 
 ### Scalingo:
 

@@ -66,6 +66,14 @@ module DPL
       puts "", "!!! #{name} support is experimental !!!", ""
     end
 
+    def self.deprecated(*lines)
+      puts ''
+      lines.each do |line|
+        puts "\e[31;1m#{line}\e[0m"
+      end
+      puts ''
+    end
+
     def self.requires(name, options = {})
       version = options[:version] || '> 0'
       load    = options[:load]    || name
