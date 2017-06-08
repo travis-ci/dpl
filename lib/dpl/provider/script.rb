@@ -1,3 +1,5 @@
+require 'pathname'
+
 module DPL
   class Provider
     class Script < Provider
@@ -15,6 +17,13 @@ module DPL
       end
 
       def push_app
+        scriptPath = Pathname.new(script)
+        if not scriptPath.file?
+          raise Error, "The script file #{scriptPath} (#{scriptPath.expand_path}) does not exist"
+        end
+        if not scriptPath.executable?
+          raise Error, "The script file #{scriptPath} isn't executable"
+        end
         context.shell script
         if $?.exitstatus != 0
           raise Error, "Script failed with status #{$?.exitstatus}"
