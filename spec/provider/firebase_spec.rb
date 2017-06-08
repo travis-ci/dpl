@@ -27,8 +27,8 @@ describe DPL::Provider::Firebase do
     end
 
     it 'should include the message specified' do
-      provider.options.update(:message => 'test-message')
-      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --message test-message --token 'abc123'")
+      provider.options.update(:message => 'test message')
+      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --message 'test message' --token 'abc123'")
       provider.push_app
     end
 
