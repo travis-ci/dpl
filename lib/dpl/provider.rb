@@ -20,6 +20,7 @@ module DPL
     autoload :CloudFiles,          'dpl/provider/cloud_files'
     autoload :CloudFoundry,        'dpl/provider/cloud_foundry'
     autoload :CodeDeploy,          'dpl/provider/code_deploy'
+    autoload :Convox,              'dpl/provider/convox'
     autoload :Deis,                'dpl/provider/deis'
     autoload :Divshot,             'dpl/provider/divshot'
     autoload :ElasticBeanstalk,    'dpl/provider/elastic_beanstalk'

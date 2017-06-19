@@ -22,6 +22,7 @@ Dpl supports the following providers:
 * [Chef Supermarket](#chef-supermarket)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
+* [Convox](#convox)
 * [Deis](#deis)
 * [Divshot.io](#divshotio)
 * [Engine Yard](#engine-yard)
@@ -477,6 +478,22 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=divshot --api-key=<api-key> --environment=<environment>
+
+### Convox:
+
+#### Options:
+
+* **rack**: Convox Rack name.
+* **app**: Convox App name.
+* **console_key**: Convox Console API key.
+* **console_host**: Optional. Convox Console host, defaults to `console.convox.com`.
+* **description**: Optional. Build description
+* **copy_to_app**: Optional. After successful build, copy the build to this app.
+* **copy_to_rack**: Optional. Used together with `copy_to_app` to copy the build to an app in another rack.
+
+#### Examples:
+
+    dpl --provider=convox --rack=<rack name> --app=<app name>
 
 ### Cloud Foundry:
 
