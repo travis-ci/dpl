@@ -50,7 +50,6 @@ module DPL
           :servers_line => 'index-servers = pypi',
           :servers => {
             'pypi' => [
-                         "repository: #{pypi_server}",
                          "username: #{pypi_user}",
                          "password: #{pypi_password}",
                       ]

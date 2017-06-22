@@ -77,7 +77,7 @@ describe DPL::Provider::PyPI do
       f = double(:f)
       expect(f).to receive(:puts).with("    pypi")
       expect(f).to receive(:puts).with("[pypi]")
-      expect(f).to receive(:puts).with(["repository: https://pypi.python.org/pypi",
+      expect(f).to receive(:puts).with([
                                     "username: foo",
                                     "password: bar"
                                    ])
