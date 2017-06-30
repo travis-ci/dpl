@@ -1,17 +1,6 @@
 language: ruby
 rvm:
-- 1.9.3
-- 2.0.0
-- 2.1.5
-- "2.2.5"
-- "2.3.1"
-
-matrix:
-  include:
-    - rvm: "2.2.6"
-      sudo: required
-  allow_failures:
-    - rvm: "2.3.1"
+- "2.3.4"
 
 sudo: false
 
