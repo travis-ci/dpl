@@ -32,7 +32,7 @@ describe DPL::Provider::PyPI do
       expect(provider.context).to receive(:shell).with("python setup.py sdist")
       expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
-      expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r https://pypi.python.org/pypi")
+      expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/")
       provider.push_app
     end
 
@@ -41,7 +41,7 @@ describe DPL::Provider::PyPI do
       expect(provider.context).to receive(:shell).with("python setup.py sdist bdist")
       expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
-      expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r https://pypi.python.org/pypi")
+      expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/")
       provider.push_app
     end
 
@@ -59,7 +59,7 @@ describe DPL::Provider::PyPI do
       expect(provider.context).to receive(:shell).with("python setup.py sdist")
       expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
-      expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir some/dir -r https://pypi.python.org/pypi")
+      expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir some/dir -r https://upload.pypi.org/legacy/")
       provider.push_app
     end
 
@@ -77,7 +77,7 @@ describe DPL::Provider::PyPI do
       f = double(:f)
       expect(f).to receive(:puts).with("    pypi")
       expect(f).to receive(:puts).with("[pypi]")
-      expect(f).to receive(:puts).with(["repository: https://pypi.python.org/pypi",
+      expect(f).to receive(:puts).with(["repository: https://upload.pypi.org/legacy/",
                                     "username: foo",
                                     "password: bar"
                                    ])
