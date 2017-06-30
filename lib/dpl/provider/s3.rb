@@ -3,8 +3,8 @@ require 'json'
 module DPL
   class Provider
     class S3 < Provider
-      requires 'aws-sdk', version: '>= 2.0.22'
-      requires 'mime-types', version: '~> 2.0'
+      requires 'aws-sdk'
+      requires 'mime-types'
 
       def api
         @api ||= ::Aws::S3::Resource.new(s3_options)
