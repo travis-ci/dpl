@@ -29,6 +29,7 @@ module DPL
       end
 
       def api
+        log "api_key: #{option(:api_key)}"
         if options[:user] and options[:password]
           @api ||= Octokit::Client.new(:login => options[:user], :password => options[:password])
         else
