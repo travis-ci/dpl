@@ -3,7 +3,7 @@ module DPL
     class CloudFoundry < Provider
 
       def initial_go_tools_install
-        context.shell 'wget \'https://cli.run.pivotal.io/stable?release=linux64-binary&source=github\' -qO cf-linux-amd64.tgz && tar -zxvf cf-linux-amd64.tgz && rm cf-linux-amd64.tgz'
+        context.shell 'test $TRAVIS_OS_NAME = "linux" && rel="linux64-binary" || rel="macosx64"; wget \'https://cli.run.pivotal.io/stable?release=${rel}&source=github\' -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz'
       end
 
       def check_auth
