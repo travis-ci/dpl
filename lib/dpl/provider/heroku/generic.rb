@@ -45,7 +45,7 @@ module DPL
           if response.success?
             email = JSON.parse(response.body)["email"]
             @user = email
-            log "authenticated as #{email}"
+            log "authentication succeeded"
           else
             handle_error_response(response)
           end
