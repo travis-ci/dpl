@@ -18,6 +18,7 @@ module DPL
       def push_app
         command = "firebase deploy --non-interactive"
         command << " --project #{options[:project]}" if options[:project]
+        command << " --message '#{options[:message]}'" if options[:message]
         command << " --token '#{options[:token]}'" if options[:token]
         context.shell command
       end
