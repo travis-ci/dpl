@@ -317,7 +317,7 @@ describe DPL::Provider::Heroku, :git do
 
     describe "#check_auth" do
       example do
-        expect(provider).to receive(:log).with("authenticated as username@example.com")
+        expect(provider).to receive(:log).with("authentication succeeded")
         provider.check_auth
       end
     end
