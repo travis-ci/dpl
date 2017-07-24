@@ -180,11 +180,11 @@ module DPL
       end
 
       def all_lambda_functions
-        response = lambda.list_functions
+        response = lambda.list_functions(max_items: 200)
         functions = response.functions
         marker = response.next_marker
         until marker.to_s.empty? do
-          response = lambda.list_functions(marker: marker)
+          response = lambda.list_functions(marker: marker, max_items: 200)
           functions += response.functions
           marker = response.next_marker
         end
