@@ -27,9 +27,8 @@ module DPL
 
         function_name = options[:name] || option(:function_name)
 
-        response = lambda.list_functions
-
-        if response.functions.any? { |function| function.function_name == function_name }
+        begin
+          response = lambda.get_function({function_name: function_name})
 
           log "Function #{function_name} already exists, updating."
 
@@ -57,7 +56,8 @@ module DPL
           })
 
           log "Updated code of function: #{response.function_name}."
-        else
+        rescue ::Aws::Lambda::Errors::ResourceNotFoundException
+          log "Function #{function_name} doesn't exists, creating."
           # Options defined at
           #   https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html
           response = lambda.create_function({
