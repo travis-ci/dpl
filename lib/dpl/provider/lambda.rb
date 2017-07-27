@@ -14,8 +14,8 @@ module DPL
 
       def lambda_options
         {
-          region:      options[:region] || 'us-east-1',
-          credentials: ::Aws::Credentials.new(option(:access_key_id), option(:secret_access_key))
+            region:      options[:region] || 'us-east-1',
+            credentials: ::Aws::Credentials.new(option(:access_key_id), option(:secret_access_key))
         }
       end
 
@@ -25,7 +25,8 @@ module DPL
         # To keep compatibility we try to fetch the function and then decide
         # whether to update the code or create a new function
 
-        function_name = options[:name] || option(:function_name)
+        begin
+          function_name = options[:name] || option(:function_name)
 
         begin
           response = lambda.get_function({function_name: function_name})
@@ -55,10 +56,10 @@ module DPL
           # Options defined at
           #   https://docs.aws.amazon.com/sdkforruby/api/Aws/Lambda/Client.html#update_function_code-instance_method
           response = lambda.update_function_code({
-            function_name:  options[:name] || option(:function_name),
-            zip_file:       function_zip,
-            publish:        publish,
-          })
+                                                     function_name:  options[:name] || option(:function_name),
+                                                     zip_file:       function_zip,
+                                                     publish:        publish
+                                                 })
 
           log "Updated code of function: #{response.function_name}."
         rescue ::Aws::Lambda::Errors::ResourceNotFoundException
