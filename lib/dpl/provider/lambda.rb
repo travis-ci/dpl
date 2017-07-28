@@ -25,8 +25,7 @@ module DPL
         # To keep compatibility we try to fetch the function and then decide
         # whether to update the code or create a new function
 
-        begin
-          function_name = options[:name] || option(:function_name)
+        function_name = options[:name] || option(:function_name)
 
         begin
           response = lambda.get_function({function_name: function_name})
