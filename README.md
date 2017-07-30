@@ -528,6 +528,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **project-name**: Defaults to fqdn or repo slug, used for metadata.
 * **email**: Optional, committer info, defaults to deploy@travis-ci.org.
 * **name**: Optional, committer, defaults to Deployment Bot.
+* **deployment-file**: Optional, defaults to false, enables creation of deployment-info files
 
 #### Examples:
 
