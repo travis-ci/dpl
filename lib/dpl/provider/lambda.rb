@@ -163,7 +163,7 @@ module DPL
       end
 
       def environment_variables
-        options(:environment_variables) ? { variables: options(:environment_variables) } : nil
+        options[:environment_variables] ? { variables: options[:environment_variables] } : nil
       end
 
       def dead_letter_arn
