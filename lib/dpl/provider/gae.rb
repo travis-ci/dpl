@@ -44,7 +44,7 @@ module DPL
       end
 
       def check_auth
-        unless with_python_2_7("#{GCLOUD} -q --verbosity debug auth activate-service-account --key-file #{keyfile}")
+        unless with_python_2_7("#{GCLOUD} -q auth activate-service-account --key-file #{keyfile}")
           error 'Authentication failed.'
         end
       end

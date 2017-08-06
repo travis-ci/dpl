@@ -32,7 +32,7 @@ describe DPL::Provider::PyPI do
       expect(provider.context).to receive(:shell).with("python setup.py sdist")
       expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
-      expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r https://pypi.python.org/pypi")
+      expect(provider.context).not_to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/")
       provider.push_app
     end
 
@@ -41,7 +41,7 @@ describe DPL::Provider::PyPI do
       expect(provider.context).to receive(:shell).with("python setup.py sdist bdist")
       expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
-      expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r https://pypi.python.org/pypi")
+      expect(provider.context).not_to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/")
       provider.push_app
     end
 
@@ -50,16 +50,7 @@ describe DPL::Provider::PyPI do
       expect(provider.context).to receive(:shell).with("python setup.py sdist")
       expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
-      expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r http://blah.com")
-      provider.push_app
-    end
-
-    example "with :docs_dir option" do
-      provider.options.update(:docs_dir => 'some/dir')
-      expect(provider.context).to receive(:shell).with("python setup.py sdist")
-      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
-      expect(provider.context).to receive(:shell).with("rm -rf dist/*")
-      expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir some/dir -r https://pypi.python.org/pypi")
+      expect(provider.context).not_to receive(:shell).with("python setup.py upload_docs  -r http://blah.com")
       provider.push_app
     end
 
@@ -68,8 +59,33 @@ describe DPL::Provider::PyPI do
       expect(provider.context).to receive(:shell).with("python setup.py sdist")
       expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
       expect(provider.context).to receive(:shell).with("rm -rf dist/*")
+      expect(provider.context).not_to receive(:shell).with("python setup.py upload_docs -r https://upload.pypi.org/legacy/")
       provider.push_app
     end
+
+    context "with :skip_upload_docs option being false" do
+      before :each do
+        provider.options.update(:skip_upload_docs => false)
+      end
+
+      it "runs upload_docs" do
+        expect(provider.context).to receive(:shell).with("python setup.py sdist")
+        expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
+        expect(provider.context).to receive(:shell).with("rm -rf dist/*")
+        expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/")
+        provider.push_app
+      end
+
+      example "with :docs_dir option" do
+        provider.options.update(:docs_dir => 'some/dir')
+        expect(provider.context).to receive(:shell).with("python setup.py sdist")
+        expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
+        expect(provider.context).to receive(:shell).with("rm -rf dist/*")
+        expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir some/dir -r https://upload.pypi.org/legacy/")
+        provider.push_app
+      end
+    end
+
   end
 
   describe "#write_servers" do
@@ -77,7 +93,7 @@ describe DPL::Provider::PyPI do
       f = double(:f)
       expect(f).to receive(:puts).with("    pypi")
       expect(f).to receive(:puts).with("[pypi]")
-      expect(f).to receive(:puts).with(["repository: https://pypi.python.org/pypi",
+      expect(f).to receive(:puts).with(["repository: https://upload.pypi.org/legacy/",
                                     "username: foo",
                                     "password: bar"
                                    ])

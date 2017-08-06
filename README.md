@@ -13,6 +13,7 @@ Dpl supports the following providers:
 * [AWS CodeDeploy](#aws-codedeploy)
 * [AWS Elastic Beanstalk](#elastic-beanstalk)
 * [AWS OpsWorks](#opsworks)
+* [AWS S3](#s3)
 * [Azure Web Apps](#azure-web-apps)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
@@ -25,7 +26,6 @@ Dpl supports the following providers:
 * [Deis](#deis)
 * [Divshot.io](#divshotio)
 * [Engine Yard](#engine-yard)
-* [ExoScale](#exoscale)
 * [Firebase](#firebase)
 * [Github Pages](#github-pages)
 * [Github Releases](#github-releases)
@@ -44,7 +44,6 @@ Dpl supports the following providers:
 * [PyPi](#pypi)
 * [Rackspace Cloud Files](#rackspace-cloud-files)
 * [RubyGems](#rubygems)
-* [S3](#s3)
 * [Scalingo](#scalingo)
 * [Script](#script)
 * [Surge.sh](#surgesh)
@@ -71,15 +70,14 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 
 #### Options:
 * **api-key**: Heroku API Key
-* **strategy**: Deployment strategy for Dpl. Defaults to `api`. Other options are `git`, `git ssh`, and `git deploykey`.
+* **strategy**: Deployment strategy for Dpl. Defaults to `api`. The other option is `git`.
 * **app**: Heroku app name. Defaults to the name of your git repo.
 * **username**: heroku username. Not necessary if api-key is used. Requires git strategy.
 * **password**: heroku password. Not necessary if api-key is used. Requires git strategy.
 
-#### API vs Git vs Anvil Deploy:
+#### API vs Git Deploy:
 * API deploy will tar up the current directory (minus the git repo) and send it to Heroku.
 * Git deploy will send the contents of the git repo only, so may not contain any local changes.
-* Anvil deploys are no longer supported since Heroku shut down the Anvil service.
 * The Git strategy allows using *user* and *password* instead of *api-key*.
 * When using Git, Heroku might send you an email for every deploy, as it adds a temporary SSH key to your account.
 
@@ -281,9 +279,13 @@ For authentication you can also use Travis CI secure environment variable:
 
 * **user**: PyPI Username.
 * **password**: PyPI Password.
-* **server**: Optional. Only required if you want to release to a different index. Follows the form of 'https://mypackageindex.com/index'. Defaults to 'https://pypi.python.org/pypi'.
+* **server**: Optional. Only required if you want to release to a different index. Follows the form of 'https://mypackageindex.com/index'. Defaults to 'https://upload.pypi.org/legacy/'.
 * **distributions**: Optional. A space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
-* **skip_upload_docs**: Optional. When set to `true`, documentation is not uploaded. Defaults to `false`.
+* **skip_upload_docs**: Optional. When set to `false`, documentation is uploaded. Defaults to `true`.
+  Note that upload.pypi.org does not support document uploading. If you set
+  this option to `false`, your deployment fails, unless you specify the server
+  that supports this option. See https://github.com/travis-ci/dpl/issues/660
+  for details.
 * **docs_dir**: Optional. A path to the directory to upload documentation from. Defaults to 'build/docs'
 
 #### Environment variables:
@@ -348,7 +350,7 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public_read
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999 --expires="2012-12-21 00:00:00 -0000"
-    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir= BUILD --upload-dir=BUILDS
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir=BUILD --upload-dir=BUILDS
 
 ### Elastic Beanstalk:
 
@@ -643,6 +645,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **repository**: Required. The repository to push to.
  * **local_dir**: Optional. The sub-directory of the built assets for deployment. Default to current path.
  * **dist**: Required for deb and rpm. The complete list of supported strings can be found on the [packagecloud.io docs](https://packagecloud.io/docs#os_distro_version)
+ * **force**: Optional. Wheter package has to be (re)uploaded / deleted before upload
 
 #### Examples:
 
@@ -805,18 +808,6 @@ and your testers can start testing your app.
 
     dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>
 
-### ExoScale:
-
-#### Options:
-
-* **email**: ExoScale email or Organization ID.
-* **password**: ExoScale password.
-* **deployment**: ExoScale Deployment. Follows the format "APP_NAME/DEP_NAME".
-
-#### Examples:
-
-    dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
-
 ### Scalingo:
 
 #### Options:
@@ -890,10 +881,11 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 
 * **token**: Your Firebase CI access token (generate with `firebase login:ci`)
 * **project**: Deploy to a different Firebase project than specified in your `firebase.json` (e.g. `myapp-staging`)
+* **message**: Optional. The message describing this deploy.
 
 #### Examples:
 
-    dpl --provider=firebase --token=<token> --project=<project>
+    dpl --provider=firebase --token=<token> --project=<project> --message=<message>
 
 
 

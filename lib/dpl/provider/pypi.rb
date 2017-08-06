@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class PyPI < Provider
-      DEFAULT_SERVER = 'https://pypi.python.org/pypi'
+      DEFAULT_SERVER = 'https://upload.pypi.org/legacy/'
       PYPIRC_FILE = '~/.pypirc'
 
       def pypi_user
@@ -25,6 +25,11 @@ module DPL
         if !docs_dir.empty?
           '--upload-dir ' + docs_dir
         end
+      end
+
+      def skip_upload_docs?
+        ! options.has_key?(:skip_upload_docs) ||
+          (options.has_key?(:skip_upload_docs) && options[:skip_upload_docs])
       end
 
       def self.install_setuptools
@@ -96,7 +101,7 @@ module DPL
         context.shell "python setup.py #{pypi_distributions}"
         context.shell "twine upload -r pypi dist/*"
         context.shell "rm -rf dist/*"
-        unless options[:skip_upload_docs]
+        unless skip_upload_docs?
           log "Uploading documentation (skip with \"skip_upload_docs: true\")"
           context.shell "python setup.py upload_docs #{pypi_docs_dir_option} -r #{pypi_server}"
         end
