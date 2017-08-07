@@ -6,6 +6,7 @@ module DPL
       Options:
         - repo [optional, for pushed to other repos]
         - github-token [required]
+        - github-url [optional, defaults to github.com]
         - target-branch [optional, defaults to gh-pages]
         - local-dir [optional, defaults to `pwd`]
         - fqdn [optional]
@@ -22,16 +23,17 @@ module DPL
         super
 
         @build_dir = options[:local_dir] || '.'
-
         @project_name = options[:project_name] || fqdn || slug
-        @gh_fqdn = fqdn
-
-        @gh_ref = "github.com/#{slug}.git"
         @target_branch = options[:target_branch] || 'gh-pages'
+
+        @gh_fqdn = fqdn
+        @gh_url = options[:github_url] || 'github.com'
         @gh_token = option(:github_token)
 
         @gh_email = options[:email] || 'deploy@travis-ci.org'
         @gh_name = "#{options[:name] || 'Deployment Bot'} (from Travis CI)"
+
+        @gh_ref = "#{@gh_url}/#{slug}.git"
       end
 
       def fqdn
