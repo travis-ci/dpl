@@ -26,6 +26,8 @@ module DPL
         # whether to update the code or create a new function
 
         function_name = options[:name] || option(:function_name)
+        
+        log "Function #{function_name} environment variables: #{options[:environment_variables]}"
 
         begin
           response = lambda.get_function({function_name: function_name})
@@ -42,11 +44,11 @@ module DPL
               role:                 option(:role),
               handler:              handler,
               runtime:              options[:runtime]        || default_runtime,
-              vpc_config:           vpc_config,
-              environment:          environment_variables,
-              dead_letter_config:   dead_letter_arn,
-              kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
-              tracing_config:       tracing_mode
+              # vpc_config:           vpc_config,
+              # environment:          environment_variables,
+              # dead_letter_config:   dead_letter_arn,
+              # kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
+              # tracing_config:       tracing_mode
           })
 
 
@@ -77,12 +79,12 @@ module DPL
             },
             runtime:              options[:runtime]        || default_runtime,
             publish:              publish,
-            vpc_config:           vpc_config,
-            environment:          environment_variables,
-            dead_letter_config:   dead_letter_arn,
-            kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
-            tracing_config:       tracing_mode,
-            tags:                 options[:tags] || default_tags
+            # vpc_config:           vpc_config,
+            # environment:          environment_variables,
+            # dead_letter_config:   dead_letter_arn,
+            # kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
+            # tracing_config:       tracing_mode,
+            # tags:                 options[:tags] || default_tags
           })
 
           log "Created lambda: #{response.function_name}."
