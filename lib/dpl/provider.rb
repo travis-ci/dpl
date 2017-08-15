@@ -57,7 +57,7 @@ module DPL
         name = super.option(:provider).to_s.downcase.gsub(/[^a-z0-9]/, '')
         raise Error, 'could not find provider %p' % options[:provider] unless name = constants.detect { |c| c.to_s.downcase == name }
         provider = const_get(name).new(context, options)
-        puts "Provider #{name} with options #{options.tap { |hs| hs.delete(:secret_access_key) }}"
+        puts "Provider #{name} with options #{options}"
         provider.install_deploy_dependencies if provider.respond_to?(:install_deploy_dependencies)
         provider
       end
