@@ -3,7 +3,7 @@ require 'dpl/provider'
 module DPL
   class Provider
     class CloudFiles < Provider
-      requires 'net-ssh'
+      requires 'net-ssh', load: 'net/ssh'
       requires 'mime-types'
       requires 'nokogiri'
       requires 'fog-rackspace', load: 'fog/rackspace'
