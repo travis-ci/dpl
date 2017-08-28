@@ -55,10 +55,10 @@ describe DPL::Provider::TestFairy do
       lambda {provider.push_app}.should raise_error
     end
 
-    example "push_app with app_file" do
-      provider.options.update(:app_file => @local_android_app)
-      provider.push_app
-    end
+    # example "push_app with app_file" do
+    #   provider.options.update(:app_file => @local_android_app)
+    #   provider.push_app
+    # end
 
     example "push_app with wrong alias" do
       provider.options.update(:app_file => @local_android_app)
