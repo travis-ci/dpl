@@ -11,7 +11,8 @@ sudo: false
 cache: bundler
 
 script:
-  - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'
+  - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem
+  - ./test_loading_provider.sh
 
 deploy:
   provider: rubygems
