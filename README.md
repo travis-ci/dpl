@@ -13,6 +13,7 @@ Dpl supports the following providers:
 * [AWS CodeDeploy](#aws-codedeploy)
 * [AWS Elastic Beanstalk](#elastic-beanstalk)
 * [AWS OpsWorks](#opsworks)
+* [AWS S3](#s3)
 * [Azure Web Apps](#azure-web-apps)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
@@ -43,7 +44,6 @@ Dpl supports the following providers:
 * [PyPi](#pypi)
 * [Rackspace Cloud Files](#rackspace-cloud-files)
 * [RubyGems](#rubygems)
-* [S3](#s3)
 * [Scalingo](#scalingo)
 * [Script](#script)
 * [Surge.sh](#surgesh)
@@ -279,9 +279,13 @@ For authentication you can also use Travis CI secure environment variable:
 
 * **user**: PyPI Username.
 * **password**: PyPI Password.
-* **server**: Optional. Only required if you want to release to a different index. Follows the form of 'https://mypackageindex.com/index'. Defaults to 'https://pypi.python.org/pypi'.
+* **server**: Optional. Only required if you want to release to a different index. Follows the form of 'https://mypackageindex.com/index'. Defaults to 'https://upload.pypi.org/legacy/'.
 * **distributions**: Optional. A space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
-* **skip_upload_docs**: Optional. When set to `true`, documentation is not uploaded. Defaults to `false`.
+* **skip_upload_docs**: Optional. When set to `false`, documentation is uploaded. Defaults to `true`.
+  Note that upload.pypi.org does not support document uploading. If you set
+  this option to `false`, your deployment fails, unless you specify the server
+  that supports this option. See https://github.com/travis-ci/dpl/issues/660
+  for details.
 * **docs_dir**: Optional. A path to the directory to upload documentation from. Defaults to 'build/docs'
 
 #### Environment variables:
@@ -877,10 +881,11 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 
 * **token**: Your Firebase CI access token (generate with `firebase login:ci`)
 * **project**: Deploy to a different Firebase project than specified in your `firebase.json` (e.g. `myapp-staging`)
+* **message**: Optional. The message describing this deploy.
 
 #### Examples:
 
-    dpl --provider=firebase --token=<token> --project=<project>
+    dpl --provider=firebase --token=<token> --project=<project> --message=<message>
 
 
 

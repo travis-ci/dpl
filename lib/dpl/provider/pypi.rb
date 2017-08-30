@@ -27,6 +27,11 @@ module DPL
         end
       end
 
+      def skip_upload_docs?
+        ! options.has_key?(:skip_upload_docs) ||
+          (options.has_key?(:skip_upload_docs) && options[:skip_upload_docs])
+      end
+
       def self.install_setuptools
         shell 'wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python'
         shell 'rm -f setuptools-*.zip'
@@ -96,7 +101,7 @@ module DPL
         context.shell "python setup.py #{pypi_distributions}"
         context.shell "twine upload -r pypi dist/*"
         context.shell "rm -rf dist/*"
-        unless options[:skip_upload_docs]
+        unless skip_upload_docs?
           log "Uploading documentation (skip with \"skip_upload_docs: true\")"
           context.shell "python setup.py upload_docs #{pypi_docs_dir_option} -r #{pypi_server}"
         end

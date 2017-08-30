@@ -24,17 +24,17 @@ group :rubygems do
 end
 
 group :sss do
-  gem 'aws-sdk'
+  gem 'aws-sdk', '~> 2.6.32', '< 3.0'
   gem 'mime-types'
 end
 
 group :code_deploy do
-  gem 'aws-sdk'
+  gem 'aws-sdk', '~> 2.6.32', '< 3.0'
 end
 
 group :lambda do
-  gem 'aws-sdk'
-  gem 'rubyzip'
+  gem 'aws-sdk', '~> 2.6.32', '< 3.0'
+  gem 'rubyzip', '~> 1.1'
 end
 
 group :cloud_files do
@@ -54,8 +54,8 @@ group :gcs do
 end
 
 group :elastic_beanstalk do
-  gem 'aws-sdk'
-  gem 'rubyzip'
+  gem 'aws-sdk', '~> 2.6.32', '< 3.0'
+  gem 'rubyzip', '~> 1.1'
 end
 
 group :bitballoon do
@@ -87,5 +87,5 @@ group :deis do
 end
 
 group :opsworks do
-  gem 'aws-sdk'
+  gem 'aws-sdk', '~> 2.6.32', '< 3.0'
 end

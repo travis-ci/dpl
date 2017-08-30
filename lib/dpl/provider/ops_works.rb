@@ -3,7 +3,7 @@ require 'timeout'
 module DPL
   class Provider
     class OpsWorks < Provider
-      requires 'aws-sdk'
+      requires 'aws-sdk', version: '< 3.0'
       experimental 'AWS OpsWorks'
 
       def opsworks

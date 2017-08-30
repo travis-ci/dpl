@@ -26,6 +26,12 @@ describe DPL::Provider::Firebase do
       provider.push_app
     end
 
+    it 'should include the message specified' do
+      provider.options.update(:message => 'test message')
+      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --message 'test message' --token 'abc123'")
+      provider.push_app
+    end
+
     it 'should default to no project override' do
       expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --token 'abc123'")
       provider.push_app
