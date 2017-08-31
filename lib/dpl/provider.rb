@@ -151,7 +151,7 @@ module DPL
         cleanup
       end
 
-      deploy
+      push_app
 
       Array(options[:run]).each do |command|
         if command == 'restart'
@@ -190,7 +190,7 @@ module DPL
       context.shell "git stash pop"
     end
 
-    def deploy
+    def push_app
       return if options[:skip_deploy]
       context.fold("Deploying application") { push_app }
     end
