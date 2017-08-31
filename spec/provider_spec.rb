@@ -99,6 +99,7 @@ describe DPL::Provider do
     example "skip deploy" do
       expect(provider.options).to receive(:[]).with(:skip_deploy).and_return("true")
       expect(provider.options).to receive(:[]).with(:skip_cleanup).and_return("false")
+      allow(provider).to receive_messages(:needs_key? => false)
       expect(provider).not_to receive(:push_app)
       provider.deploy
     end
