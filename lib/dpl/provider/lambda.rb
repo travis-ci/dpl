@@ -5,7 +5,7 @@ require 'fileutils'
 module DPL
   class Provider
     class Lambda < Provider
-      requires 'aws-sdk', version: '< 3.0'
+      requires 'aws-sdk', version: '~> 2.0'
       requires 'rubyzip', load: 'zip'
 
       def lambda
