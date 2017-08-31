@@ -100,6 +100,8 @@ describe DPL::Provider do
       allow(provider.options).to receive(:[]).and_call_original
       allow(provider.options).to receive(:[]).with(:skip_deploy).and_return("true")
       allow(provider).to receive_messages(:needs_key? => false)
+      allow(provider).to receive(:log).and_call_original
+      expect(provider).to receive(:log).with("Skipping application deployment for testing purpose")
       expect(provider).not_to receive(:push_app)
       provider.deploy
     end

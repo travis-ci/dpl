@@ -191,7 +191,10 @@ module DPL
     end
 
     def push
-      return if options[:skip_deploy]
+      if options[:skip_deploy]
+        log "Skipping application deployment for testing purpose"
+        return
+      end
       context.fold("Deploying application") { push_app }
     end
 
