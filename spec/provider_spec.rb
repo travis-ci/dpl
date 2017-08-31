@@ -124,6 +124,13 @@ describe DPL::Provider do
     end
   end
 
+  describe "#deploy" do
+    example "skip deploy" do
+      expect(provider.options).to receive(:[]).with(:skip_deploy).and_return("true")
+      expect(provider.context).not_to receive(:fold)
+    end
+  end
+
   describe "#create_key" do
     example do
       expect(provider.context).to receive(:shell).with('ssh-keygen -t rsa -N "" -C foo -f thekey')

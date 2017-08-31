@@ -151,7 +151,7 @@ module DPL
         cleanup
       end
 
-      context.fold("Deploying application") { push_app }
+      deploy
 
       Array(options[:run]).each do |command|
         if command == 'restart'
@@ -188,6 +188,11 @@ module DPL
     def uncleanup
       return if options[:skip_cleanup]
       context.shell "git stash pop"
+    end
+
+    def deploy
+      return if options[:skip_deploy]
+      context.fold("Deploying application") { push_app }
     end
 
     def needs_key?
