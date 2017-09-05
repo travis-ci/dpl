@@ -44,11 +44,11 @@ module DPL
               role:                 option(:role),
               handler:              handler,
               runtime:              options[:runtime]        || default_runtime,
-              # vpc_config:           vpc_config,
-              # environment:          environment_variables,
-              # dead_letter_config:   dead_letter_arn,
-              # kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
-              # tracing_config:       tracing_mode
+              vpc_config:           vpc_config,
+              environment:          environment_variables,
+              dead_letter_config:   dead_letter_arn,
+              kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
+              tracing_config:       tracing_mode
           })
 
 
@@ -64,7 +64,7 @@ module DPL
 
           log "Updated code of function: #{response.function_name}."
         rescue ::Aws::Lambda::Errors::ResourceNotFoundException
-          log "Function #{function_name} doesn't exists, creating."
+          log "Function #{function_name} does not exist, creating."
           # Options defined at
           #   https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html
           response = lambda.create_function({
@@ -79,12 +79,12 @@ module DPL
             },
             runtime:              options[:runtime]        || default_runtime,
             publish:              publish,
-            # vpc_config:           vpc_config,
-            # environment:          environment_variables,
-            # dead_letter_config:   dead_letter_arn,
-            # kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
-            # tracing_config:       tracing_mode,
-            # tags:                 options[:tags] || default_tags
+            vpc_config:           vpc_config,
+            environment:          environment_variables,
+            dead_letter_config:   dead_letter_arn,
+            kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
+            tracing_config:       tracing_mode,
+            tags:                 options[:tags] || default_tags
           })
 
           log "Created lambda: #{response.function_name}."
@@ -161,20 +161,25 @@ module DPL
       end
 
       def vpc_config
-        options[:subnet_ids] && options[:security_group_ids] ? { subnet_ids: options[:subnet_ids], security_group_ids: options[:security_group_ids] } : nil
+        options[:subnet_ids] && options[:security_group_ids] ? { :subnet_ids => options[:subnet_ids], :security_group_ids => options[:security_group_ids] } : nil
       end
 
       def environment_variables
         log "environment_variables: #{options[:environment_variables]}"
-        options[:environment_variables] ? { variables: options[:environment_variables] } : nil
+        variables = {}
+        Array(options[:environment_variables]).map do |val|
+          keyval = variables.split("=")
+          variables[keyval[0]] = keyval[1]
+        end
+        options[:environment_variables] ? { :variables => variables } : nil
       end
 
       def dead_letter_arn
-        options[:dead_letter_arn] ? {target_arn: options[:dead_letter_arn]} : nil
+        options[:dead_letter_arn] ? { :target_arn => options[:dead_letter_arn]} : nil
       end
 
       def tracing_mode
-        options[:tracing_mode] ? {mode: options[:tracing_mode]} : nil
+        options[:tracing_mode] ? { :mode => options[:tracing_mode]} : nil
       end
 
       def default_kms_key_arn

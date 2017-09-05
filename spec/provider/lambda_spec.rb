@@ -105,7 +105,7 @@ describe DPL::Provider::Lambda do
 
       example do
 
-        expect(provider).to receive(:log).with(/Function #{lambda_options[:function_name]} doesn't exists, creating\./)
+        expect(provider).to receive(:log).with(/Function #{lambda_options[:function_name]} does not exist, creating\./)
         expect(provider).to receive(:log).with(/Created lambda: #{lambda_options[:function_name]}\./)
         provider.push_app
       end
