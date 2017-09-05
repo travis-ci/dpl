@@ -168,7 +168,7 @@ module DPL
       end
 
       def vpc_config
-        options[:subnet_ids] && options[:security_group_ids] ? { :subnet_ids => options[:subnet_ids], :security_group_ids => options[:security_group_ids] } : nil
+        options[:subnet_ids] && options[:security_group_ids] ? { :subnet_ids => Array(options[:subnet_ids]), :security_group_ids => Array(options[:security_group_ids]) } : nil
       end
 
       def environment_variables
