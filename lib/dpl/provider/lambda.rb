@@ -48,8 +48,7 @@ module DPL
             environment:          environment_variables,
             dead_letter_config:   dead_letter_arn,
             kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
-            tracing_config:       tracing_mode,
-            tags:                 function_tags
+            tracing_config:       tracing_mode
           }
 
           log "Calling Lambda update_function_configuration with #{config}"
@@ -58,13 +57,22 @@ module DPL
 
           log "Updated configuration of function: #{response.function_name}."
 
+          if function_tags
+            log "Updating function tags with #{function_tags}"
+
+            response = lambda.tag_resource({
+															              resource: response.function_arn,
+															              tags: function_tags
+															            })
+          end
+
           # Options defined at
           #   https://docs.aws.amazon.com/sdkforruby/api/Aws/Lambda/Client.html#update_function_code-instance_method
           response = lambda.update_function_code({
-                                                     function_name:  options[:name] || option(:function_name),
-                                                     zip_file:       function_zip,
-                                                     publish:        publish
-                                                 })
+                                                   function_name:  options[:name] || option(:function_name),
+                                                   zip_file:       function_zip,
+                                                   publish:        publish
+                                               })
 
           log "Updated code of function: #{response.function_name}."
         rescue ::Aws::Lambda::Errors::ResourceNotFoundException
