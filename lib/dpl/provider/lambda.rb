@@ -36,21 +36,24 @@ module DPL
 
           # Options defined at
           #   https://docs.aws.amazon.com/sdkforruby/api/Aws/Lambda/Client.html#update_function_configuration-instance_method
-          response = lambda.update_function_configuration({
-              function_name:        function_name,
-              description:          options[:description]    || default_description,
-              timeout:              options[:timeout]        || default_timeout,
-              memory_size:          options[:memory_size]    || default_memory_size,
-              role:                 option(:role),
-              handler:              handler,
-              runtime:              options[:runtime]        || default_runtime,
-              vpc_config:           vpc_config,
-              environment:          environment_variables,
-              dead_letter_config:   dead_letter_arn,
-              kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
-              tracing_config:       tracing_mode
-          })
+          config = {
+	          function_name:        function_name,
+	          description:          options[:description]    || default_description,
+	          timeout:              options[:timeout]        || default_timeout,
+	          memory_size:          options[:memory_size]    || default_memory_size,
+	          role:                 option(:role),
+	          handler:              handler,
+	          runtime:              options[:runtime]        || default_runtime,
+	          vpc_config:           vpc_config,
+	          environment:          environment_variables,
+	          dead_letter_config:   dead_letter_arn,
+	          kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
+	          tracing_config:       tracing_mode
+          }
 
+          log "Calling Lambda update_function_configuration with #{config}"
+
+          response = lambda.update_function_configuration(config)
 
           log "Updated configuration of function: #{response.function_name}."
 
@@ -67,25 +70,29 @@ module DPL
           log "Function #{function_name} does not exist, creating."
           # Options defined at
           #   https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html
-          response = lambda.create_function({
-            function_name:        options[:name]           || option(:function_name),
-            description:          options[:description]    || default_description,
-            timeout:              options[:timeout]        || default_timeout,
-            memory_size:          options[:memory_size]    || default_memory_size,
-            role:                 option(:role),
-            handler:              handler,
-            code: {
-              zip_file:           function_zip,
-            },
-            runtime:              options[:runtime]        || default_runtime,
-            publish:              publish,
-            vpc_config:           vpc_config,
-            environment:          environment_variables,
-            dead_letter_config:   dead_letter_arn,
-            kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
-            tracing_config:       tracing_mode,
-            tags:                 options[:tags] || default_tags
-          })
+          config = {
+						function_name:        options[:name]           || option(:function_name),
+						description:          options[:description]    || default_description,
+						timeout:              options[:timeout]        || default_timeout,
+						memory_size:          options[:memory_size]    || default_memory_size,
+						role:                 option(:role),
+						handler:              handler,
+						code: {
+						 zip_file:           function_zip,
+						},
+						runtime:              options[:runtime]        || default_runtime,
+						publish:              publish,
+						vpc_config:           vpc_config,
+						environment:          environment_variables,
+						dead_letter_config:   dead_letter_arn,
+						kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
+						tracing_config:       tracing_mode,
+						tags:                 options[:tags] || default_tags
+					}
+
+          log "Calling Lambda create_function with #{config}"
+
+          response = lambda.create_function(config)
 
           log "Created lambda: #{response.function_name}."
         end
@@ -168,7 +175,7 @@ module DPL
         log "environment_variables: #{options[:environment_variables]}"
         variables = {}
         Array(options[:environment_variables]).map do |val|
-          keyval = variables.split("=")
+          keyval = val.split("=")
           variables[keyval[0]] = keyval[1]
         end
         options[:environment_variables] ? { :variables => variables } : nil
