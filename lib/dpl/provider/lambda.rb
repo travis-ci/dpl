@@ -27,7 +27,7 @@ module DPL
 
         function_name = options[:name] || option(:function_name)
         
-        log "Function #{function_name} environment variables: #{options[:environment_variables]}"
+        log "Function #{function_name} with options: #{options}"
 
         begin
           response = lambda.get_function({function_name: function_name})
@@ -44,11 +44,12 @@ module DPL
 	          role:                 option(:role),
 	          handler:              handler,
 	          runtime:              options[:runtime]        || default_runtime,
-	          vpc_config:           vpc_config,
-	          environment:          environment_variables,
-	          dead_letter_config:   dead_letter_arn,
-	          kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
-	          tracing_config:       tracing_mode
+            vpc_config:           vpc_config,
+            environment:          environment_variables,
+            dead_letter_config:   dead_letter_arn,
+            kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
+            tracing_config:       tracing_mode,
+            tags:                 function_tags
           }
 
           log "Calling Lambda update_function_configuration with #{config}"
@@ -87,7 +88,7 @@ module DPL
 						dead_letter_config:   dead_letter_arn,
 						kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
 						tracing_config:       tracing_mode,
-						tags:                 tags
+						tags:                 function_tags
 					}
 
           log "Calling Lambda create_function with #{config}"
@@ -188,9 +189,9 @@ module DPL
         nil
       end
 
-      def tags
-        log "tags: #{options[:tags]}"
-        options[:tags] ? split_string_array_to_hash(options[:tags]) : nil
+      def function_tags
+        log "function_tags: #{options[:function_tags]}"
+        options[:function_tags] ? split_string_array_to_hash(options[:function_tags]) : nil
       end
 
       def default_runtime
