@@ -87,7 +87,7 @@ module DPL
 						dead_letter_config:   dead_letter_arn,
 						kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
 						tracing_config:       tracing_mode,
-						tags:                 options[:tags] || default_tags
+						tags:                 tags
 					}
 
           log "Calling Lambda create_function with #{config}"
@@ -173,12 +173,7 @@ module DPL
 
       def environment_variables
         log "environment_variables: #{options[:environment_variables]}"
-        variables = {}
-        Array(options[:environment_variables]).map do |val|
-          keyval = val.split("=")
-          variables[keyval[0]] = keyval[1]
-        end
-        options[:environment_variables] ? { :variables => variables } : nil
+        options[:environment_variables] ? { :variables => split_string_array_to_hash(options[:environment_variables]) } : nil
       end
 
       def dead_letter_arn
@@ -193,8 +188,9 @@ module DPL
         nil
       end
 
-      def default_tags
-        nil
+      def tags
+        log "tags: #{options[:tags]}"
+        options[:tags] ? split_string_array_to_hash(options[:tags]) : nil
       end
 
       def default_runtime
@@ -219,6 +215,15 @@ module DPL
 
       def publish
         !!options[:publish]
+      end
+
+      def split_string_array_to_hash(arr, delimiter="=")
+        variables = {}
+        Array(arr).map do |val|
+          keyval = val.split(delimiter)
+          variables[keyval[0]] = keyval[1]
+        end
+        variables
       end
 
       def random_chars(count=8)
