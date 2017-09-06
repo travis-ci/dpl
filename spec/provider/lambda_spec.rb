@@ -76,18 +76,9 @@ describe DPL::Provider::Lambda do
       }
     }
 
-    list_functions_response = {
-      functions: [
-        { function_name: 'test-function' }
-      ]
-    }
-
-    empty_list_functions_response = {
-        functions: [ ]
-    }
-
     example_response = {
       function_name: 'test-function',
+      function_arn: 'arn:lambda:region:account-id:function:test-function',
       role: 'some-role',
       handler: 'index.handler'
     }
@@ -121,6 +112,24 @@ describe DPL::Provider::Lambda do
       example do
         expect(provider).to receive(:log).with(/Function #{lambda_options[:function_name]} already exists, updating\./)
         expect(provider).to receive(:log).with(/Updated configuration of function: #{lambda_options[:function_name]}\./)
+        expect(provider).to receive(:log).with(/Updated code of function: #{lambda_options[:function_name]}\./)
+        provider.push_app
+      end
+    end
+
+    context 'by updating an existing function with new tags' do
+      before do
+        lambda_options[:function_tags] = [ 'TAG_KEY=some-value' ]
+        provider.lambda.stub_responses(:get_function, example_get_function_response)
+        provider.lambda.stub_responses(:update_function_configuration, example_response)
+        provider.lambda.stub_responses(:tag_resource)
+        provider.lambda.stub_responses(:update_function_code, example_response)
+      end
+
+      example do
+        expect(provider).to receive(:log).with(/Function #{lambda_options[:function_name]} already exists, updating\./)
+        expect(provider).to receive(:log).with(/Updated configuration of function: #{lambda_options[:function_name]}\./)
+        expect(provider).to receive(:log).with(/Add tags to function #{lambda_options[:function_name]}\./)
         expect(provider).to receive(:log).with(/Updated code of function: #{lambda_options[:function_name]}\./)
         provider.push_app
       end

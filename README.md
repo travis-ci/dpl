@@ -714,6 +714,17 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **memory_size**: Optional. The amount of memory in MB to allocate to this Lambda. Defaults to 128.
  * **runtime**: Optional. The Lambda runtime to use. Defaults to `node`.
  * **publish**: If `true`, a [new version](http://docs.aws.amazon.com/lambda/latest/dg/versioning-intro.html#versioning-intro-publish-version) of the Lambda function will be created instead of replacing the code of the existing one.
+ * **subnet_ids**: Optional. List of subnet IDs to be added to the function. Needs the `ec2:DescribeSubnets` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
+ * **security_group_ids**: Optional. List of security group IDs to be added to the function. Needs the `ec2:DescribeSecurityGroups` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
+ * **dead_letter_arn**: Optional. ARN to an SNS or SQS resource used for the dead letter queue. [More about DLQs here](https://docs.aws.amazon
+ .com/lambda/latest/dg/dlq.html).
+ * **tracing_mode**: Optional. "Active" or "PassThrough" only. Default is "PassThrough".  Needs the `xray:PutTraceSegments` and `xray:PutTelemetryRecords` on the role for this to work. [More on 
+ Active Tracing here](https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html).
+ * **environment_variables**: Optional. List of Environment Variables to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
+ * **kms_key_arn**: Optional. KMS key ARN to use to encrypt `environment_variables`.
+ * **function_tags**: Optional. List of tags to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
+ 
+ For a list of all [permissions for Lambda, please refer to the documentation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html).
 
 #### Examples:
 
