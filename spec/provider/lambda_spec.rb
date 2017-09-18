@@ -66,18 +66,19 @@ describe DPL::Provider::Lambda do
       handler_name: 'handler'
     }
 
-    list_functions_response = {
-      functions: [
-        { function_name: 'test-function' }
-      ]
-    }
-
-    empty_list_functions_response = {
-        functions: [ ]
+    example_get_function_response = {
+      code: {
+        location: 'location',
+        repository_type: 's3',
+      },
+      configuration: {
+        function_name: 'test-function'
+      }
     }
 
     example_response = {
       function_name: 'test-function',
+      function_arn: 'arn:lambda:region:account-id:function:test-function',
       role: 'some-role',
       handler: 'index.handler'
     }
@@ -89,11 +90,13 @@ describe DPL::Provider::Lambda do
 
     context 'by creating a new function' do
       before do
-        provider.lambda.stub_responses(:list_functions, empty_list_functions_response)
+        provider.lambda.stub_responses(:get_function, 'ResourceNotFoundException')
         provider.lambda.stub_responses(:create_function, example_response)
       end
 
       example do
+
+        expect(provider).to receive(:log).with(/Function #{lambda_options[:function_name]} does not exist, creating\./)
         expect(provider).to receive(:log).with(/Created lambda: #{lambda_options[:function_name]}\./)
         provider.push_app
       end
@@ -101,7 +104,7 @@ describe DPL::Provider::Lambda do
 
     context 'by updating an existing function' do
       before do
-        provider.lambda.stub_responses(:list_functions, list_functions_response)
+        provider.lambda.stub_responses(:get_function, example_get_function_response)
         provider.lambda.stub_responses(:update_function_configuration, example_response)
         provider.lambda.stub_responses(:update_function_code, example_response)
       end
@@ -114,9 +117,27 @@ describe DPL::Provider::Lambda do
       end
     end
 
+    context 'by updating an existing function with new tags' do
+      before do
+        lambda_options[:function_tags] = [ 'TAG_KEY=some-value' ]
+        provider.lambda.stub_responses(:get_function, example_get_function_response)
+        provider.lambda.stub_responses(:update_function_configuration, example_response)
+        provider.lambda.stub_responses(:tag_resource)
+        provider.lambda.stub_responses(:update_function_code, example_response)
+      end
+
+      example do
+        expect(provider).to receive(:log).with(/Function #{lambda_options[:function_name]} already exists, updating\./)
+        expect(provider).to receive(:log).with(/Updated configuration of function: #{lambda_options[:function_name]}\./)
+        expect(provider).to receive(:log).with(/Add tags to function #{lambda_options[:function_name]}\./)
+        expect(provider).to receive(:log).with(/Updated code of function: #{lambda_options[:function_name]}\./)
+        provider.push_app
+      end
+    end
+
     context 'with a ServiceException response' do
       before do
-        provider.lambda.stub_responses(:list_functions, 'ResourceNotFoundException')
+        provider.lambda.stub_responses(:get_function, 'ResourceNotFoundException')
         provider.lambda.stub_responses(:create_function, 'ServiceException')
       end
 
@@ -128,7 +149,7 @@ describe DPL::Provider::Lambda do
 
     context 'with a InvalidParameterValueException response' do
       before do
-        provider.lambda.stub_responses(:list_functions, 'InvalidParameterValueException')
+        provider.lambda.stub_responses(:get_function, 'InvalidParameterValueException')
       end
 
       example do
@@ -139,7 +160,7 @@ describe DPL::Provider::Lambda do
 
     context 'with a ResourceNotFoundException response' do
       before do
-        provider.lambda.stub_responses(:list_functions, 'ResourceNotFoundException')
+        provider.lambda.stub_responses(:get_function, 'ResourceNotFoundException')
         provider.lambda.stub_responses(:create_function, 'ResourceNotFoundException')
       end
 

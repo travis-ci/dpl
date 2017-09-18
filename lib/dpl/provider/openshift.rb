@@ -3,6 +3,7 @@ module DPL
     class Openshift < Provider
       requires 'httpclient', version: '~> 2.4.0'
       requires 'net-ssh',    load: 'net/ssh',    version: '~> 2.9.2' # Anything higher requires Ruby 2.x
+      requires 'net-ssh-gateway', load: 'net/ssh/gateway',    version: '~> 1.3.0' # 2.0.0 requires net-ssh 4.0.0
       requires 'rhc'
 
       def initialize(context, options)
