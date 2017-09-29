@@ -5,7 +5,10 @@ module DPL
 
       Options:
         - repo [optional, for pushed to other repos]
-        - github-token [required]
+        - github-token [this or deploy-key required]
+        - deploy-key [this or github-token required; deploy key encrypted with `travis encrypt-file`]
+        - deploy-key-key [required if deploy-key is present]
+        - deploy-key-iv [required if deploy-key is present]
         - github-url [optional, defaults to github.com]
         - target-branch [optional, defaults to gh-pages]
         - local-dir [optional, defaults to `pwd`]
@@ -28,7 +31,15 @@ module DPL
 
         @gh_fqdn = fqdn
         @gh_url = options[:github_url] || 'github.com'
-        @gh_token = option(:github_token)
+        @gh_token = options[:github_token]
+        @gh_deploy_key = options[:deploy_key]
+        unless @gh_token || @gh_deploy_key
+          raise(Error, "must specify github-token or deploy-key")
+        end
+        if @gh_deploy_key
+          @gh_deploy_key_key = option(:deploy_key_key)
+          @gh_deploy_key_iv = option(:deploy_key_iv)
+        end
 
         @gh_email = options[:email] || 'deploy@travis-ci.org'
         @gh_name = "#{options[:name] || 'Deployment Bot'} (from Travis CI)"
@@ -48,6 +59,9 @@ module DPL
       end
 
       def needs_key?
+        # Provider's generic support for keys is about provisioning and
+        # deprovisioning them, while this provider needs to install an encrypted
+        # key provided by the caller.
         false
       end
 
@@ -60,17 +74,31 @@ module DPL
         context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
         context.shell 'git add .'
         context.shell "FILES=\"`git commit -m 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}' | tail`\"; echo \"$FILES\"; echo \"$FILES\" | [ `wc -l` -lt 10 ] || echo '...'"
-        context.shell "git push --force --quiet 'https://#{@gh_token}@#{@gh_ref}' master:#{@target_branch} > /dev/null 2>&1"
+        if @gh_token
+          target_repo = "https://#{@gh_token}@#{@gh_ref}"
+        else
+          # Depend on the key set up in push_app.
+          target_repo = "git@github.com:#{slug}.git"
+        end
+        context.shell "git push --force --quiet '#{target_repo}' master:#{@target_branch}"
       end
 
       def push_app
-        Dir.mktmpdir {|tmpdir|
+        Dir.mktmpdir {|gitdir|
+          if @gh_deploy_key
+            # Decrypt a key encrypted by `travis encrypt-file`, and install it.
+            context.shell "openssl aes-256-cbc -K #{@gh_deploy_key_key} -iv #{@gh_deploy_key_iv} -in #{@gh_deploy_key} -out #{gitdir}/deploykey -d"
+            File.chmod(0600, "#{gitdir}/deploykey")
+            setup_git_ssh("#{gitdir}/git-ssh", "#{gitdir}/deploykey")
+          end
+          Dir.mktmpdir {|tmpdir|
             FileUtils.cp_r("#{@build_dir}/.", tmpdir)
             FileUtils.cd(tmpdir, :verbose => true) do
               unless github_deploy
                 error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
               end
             end
+          }
         }
       end
 
