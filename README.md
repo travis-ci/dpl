@@ -517,6 +517,14 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Options:
 
 * **github-token**: GitHub oauth token with `repo` permission.
+* **deploy-key**: Filename of an encrypted
+  [GitHub deploy key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
+  with write access to the **repo** repository, encrypted with `travis
+  encrypt-file`.
+* **deploy-key-key**: The key produced by `travis encrypt-file`, usually of the
+  form `$encrypted_<hex-digits>_key`.
+* **deploy-key-iv**: The IV produced by `travis encrypt-file`, usually of the
+  form `$encrypted_<hex-digits>_iv`.
 * **repo**: Repo slug, defaults to current one.
 * **target-branch**: Branch to push force to, defaults to gh-pages.
 * **keep-history**: Optional, create incremental commit instead of doing push force, defaults to false.

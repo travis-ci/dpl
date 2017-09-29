@@ -5,7 +5,10 @@ module DPL
 
       Options:
         - repo [optional, for pushed to other repos]
-        - github-token [required]
+        - github-token [this or deploy-key required]
+        - deploy-key [this or github-token required; deploy key encrypted with `travis encrypt-file`]
+        - deploy-key-key [required if deploy-key is present]
+        - deploy-key-iv [required if deploy-key is present]
         - github-url [optional, defaults to github.com]
         - target-branch [optional, defaults to gh-pages]
         - keep-history [optional, defaults to false]
@@ -41,7 +44,16 @@ module DPL
 
         @gh_fqdn = fqdn
         @gh_url = options[:github_url] || 'github.com'
-        @gh_token = option(:github_token)
+        @gh_token = options[:github_token]
+        @gh_deploy_key = options[:deploy_key]
+        unless @gh_token || @gh_deploy_key
+          raise(Error, "must specify github-token or deploy-key")
+        end
+        if @gh_deploy_key
+          @gh_deploy_key_key = option(:deploy_key_key)
+          @gh_deploy_key_iv = option(:deploy_key_iv)
+        end
+
         @keep_history = !!keep_history
         @allow_empty_commit = !!allow_empty_commit
         @committer_from_gh = !!committer_from_gh
@@ -53,7 +65,12 @@ module DPL
         @deployment_file = !!options[:deployment_file]
 
         @gh_ref = "#{@gh_url}/#{slug}.git"
-        @gh_remote_url = "https://#{@gh_token}@#{@gh_ref}"
+        if @gh_token
+          @gh_remote_url = "https://#{@gh_token}@#{@gh_ref}"
+        else
+          # Depend on the key set up in push_app.
+          @gh_remote_url = "git@#{@gh_ref}:#{slug}.git"
+        end
         @git_push_opts = @keep_history ? '' : ' --force'
         @git_commit_opts = (@allow_empty_commit and @keep_history) ? ' --allow-empty' : ''
 
@@ -121,11 +138,26 @@ module DPL
       end
 
       def needs_key?
+        # Provider's generic support for keys is about provisioning and
+        # deprovisioning them, while this provider needs to install an encrypted
+        # key provided by the caller.
         false
       end
 
       def print_step(msg)
         log msg if @verbose
+      end
+
+      def github_install_key(tmpdir)
+        if @gh_deploy_key
+          gitdir = "#{tmpdir}/git"
+          Dir.mkdir(gitdir)
+          print_step "Decrypting git deploy key into #{gitdir}"
+          # Decrypt a key encrypted by `travis encrypt-file`, and install it.
+          context.shell "openssl aes-256-cbc -K #{@gh_deploy_key_key} -iv #{@gh_deploy_key_iv} -in #{@gh_deploy_key} -out #{gitdir}/deploykey -d"
+          File.chmod(0600, "#{gitdir}/deploykey")
+          setup_git_ssh("#{gitdir}/git-ssh", "#{gitdir}/deploykey")
+        end
       end
 
       def github_pull_or_init(target_dir)
@@ -188,6 +220,8 @@ module DPL
         print_step "Starting deployment of #{@target_branch} branch to GitHub Pages..."
         print_step "The deployment is configured to preserve the target branch if it exists on remote" if @keep_history
         Dir.mktmpdir do |tmpdir|
+            github_install_key(tmpdir)
+          
             workdir = "#{tmpdir}/work"
             Dir.mkdir(workdir)
             print_step "Created a temporary work directory #{workdir}"
