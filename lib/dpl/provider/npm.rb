@@ -30,10 +30,12 @@ module DPL
         log "http://docs.travis-ci.com/user/deployment/npm/"
         log "#{NPMRC_FILE} size: #{File.size(File.expand_path(NPMRC_FILE))}"
 
-        command = "env NPM_API_KEY=#{option(:api_key)} npm publish"
-        command << " --tag #{option(:tag)}" if options[:tag]
-        context.shell "#{command}"
-        FileUtils.rm(File.expand_path(NPMRC_FILE))
+        Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
+          command = "env NPM_API_KEY=#{option(:api_key)} npm publish"
+          command << " --tag #{option(:tag)}" if options[:tag]
+          context.shell "#{command}"
+          FileUtils.rm(File.expand_path(NPMRC_FILE))
+        end
       end
 
       def package_registry
