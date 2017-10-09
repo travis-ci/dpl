@@ -15,6 +15,7 @@ Dpl supports the following providers:
 * [AWS OpsWorks](#opsworks)
 * [AWS S3](#s3)
 * [Azure Web Apps](#azure-web-apps)
+* [Azure Blob](#azure-blob-storage)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
 * [Bluemix Cloud Foundry](#bluemix-cloud-foundry)
@@ -470,6 +471,25 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --slot=dplsite-test --verbose
+
+### Azure Blob Storage:
+
+#### Options:
+
+* **accessKey**: Access Key for your Azure Blob Storage Account.
+* **sourceDir**: The relative path from the root directory. Remember to prepend a slash. Defaults to root directory.
+* **destinationUrl**: The Destination URL that you would like to upload the files.  Remember this url should include the container as well
+
+#### Environment variables:
+
+ * **AZURE_BLOB_ACCESS_KEY**: Access Key for your Azure Blob Storage Account.
+ * **AZURE_BLOB_SOURCE_DIR**: The relative path from the root directory. Remember to prepend a slash. Defaults to root directory.
+ * **AZURE_BLOB_DESTINATION_URL**: The Destination URL that you would like to upload the files.  Remember this url should include the container as well.
+
+#### Examples:
+
+    dpl --provider=AzureBlob --accessKey=secret --destinationUrl=https://dplblob.blob.core.windows.net/dplcontainer
+    dpl --provider=AzureBlob --accessKey=secret --sourceDir=public --destinationUrl=https://dplblob.blob.core.windows.net/dplcontainer --verbose
 
 ### Divshot.io:
 
