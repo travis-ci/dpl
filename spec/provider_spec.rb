@@ -77,12 +77,12 @@ describe DPL::Provider do
     before do
       expect(provider).to receive(:check_auth)
       expect(provider).to receive(:check_app)
-      expect(provider).to receive(:push_app)
       expect(provider).to receive(:run).with("foo")
       expect(provider).to receive(:run).with("bar")
     end
 
     example "needs key" do
+      expect(provider).to receive(:push_app)
       expect(provider).to receive(:remove_key)
       expect(provider).to receive(:create_key)
       expect(provider).to receive(:setup_key)
@@ -91,7 +91,18 @@ describe DPL::Provider do
     end
 
     example "does not need key" do
+      expect(provider).to receive(:push_app)
       allow(provider).to receive_messages(:needs_key? => false)
+      provider.deploy
+    end
+
+    example "skip deploy" do
+      allow(provider.options).to receive(:[]).and_call_original
+      allow(provider.options).to receive(:[]).with(:skip_deploy).and_return("true")
+      allow(provider).to receive_messages(:needs_key? => false)
+      allow(provider).to receive(:log).and_call_original
+      expect(provider).to receive(:log).with("Skipping application deployment for testing purpose")
+      expect(provider).not_to receive(:push_app)
       provider.deploy
     end
   end
