@@ -15,7 +15,6 @@ module DPL
       end
 
       def check_app
-        log 'Warning: The endpoint option is no longer used and can be removed.' if options[:endpoint]
       end
 
       def access_key_id
@@ -27,10 +26,12 @@ module DPL
       end
 
       def s3_options
-        {
+        defaults = {
           region:      options[:region] || 'us-east-1',
           credentials: ::Aws::Credentials.new(access_key_id, secret_access_key)
         }
+
+        defaults[:endpoint] = options[:endpoint] if options[:endpoint]
       end
 
       def check_auth
