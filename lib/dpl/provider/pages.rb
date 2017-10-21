@@ -6,9 +6,8 @@ module DPL
       Options:
         - repo [optional, for pushed to other repos]
         - github-token [this or deploy-key required]
-        - deploy-key [this or github-token required; deploy key encrypted with `travis encrypt-file`]
+        - deploy-key [this or github-token required; deploy key encrypted with `openssl aes-256-cbc -k`]
         - deploy-key-key [required if deploy-key is present]
-        - deploy-key-iv [required if deploy-key is present]
         - github-url [optional, defaults to github.com]
         - target-branch [optional, defaults to gh-pages]
         - keep-history [optional, defaults to false]
@@ -51,7 +50,6 @@ module DPL
         end
         if @gh_deploy_key
           @gh_deploy_key_key = option(:deploy_key_key)
-          @gh_deploy_key_iv = option(:deploy_key_iv)
         end
 
         @keep_history = !!keep_history
@@ -153,8 +151,8 @@ module DPL
           gitdir = "#{tmpdir}/git"
           Dir.mkdir(gitdir)
           print_step "Decrypting git deploy key into #{gitdir}"
-          # Decrypt a key encrypted by `travis encrypt-file`, and install it.
-          context.shell "openssl aes-256-cbc -K #{@gh_deploy_key_key} -iv #{@gh_deploy_key_iv} -in #{@gh_deploy_key} -out #{gitdir}/deploykey -d"
+          # Decrypt the key and install it.
+          context.shell "openssl aes-256-cbc -k '#{@gh_deploy_key_key}' -in '#{@gh_deploy_key}' -out #{gitdir}/deploykey -d"
           File.chmod(0600, "#{gitdir}/deploykey")
           setup_git_ssh("#{gitdir}/git-ssh", "#{gitdir}/deploykey")
         end

@@ -518,13 +518,16 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 
 * **github-token**: GitHub oauth token with `repo` permission.
 * **deploy-key**: Filename of an encrypted
-  [GitHub deploy key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
-  with write access to the **repo** repository, encrypted with `travis
-  encrypt-file`.
-* **deploy-key-key**: The key produced by `travis encrypt-file`, usually of the
-  form `$encrypted_<hex-digits>_key`.
-* **deploy-key-iv**: The IV produced by `travis encrypt-file`, usually of the
-  form `$encrypted_<hex-digits>_iv`.
+  [GitHub deploy key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys) with
+  write access to the **repo** repository, encrypted using
+  [`openssl aes-256-cbc -k`](https://docs.travis-ci.com/user/encrypting-files/#Using-OpenSSL). For
+  example, if your deploy key is in `deploy_key`, its encryption key is in `$DEPLOY_KEY_KEY`, and
+  you want to encrypt it to `deploy_key.enc`, you can use: `openssl aes-256-cbc -k "$DEPLOY_KEY_KEY"
+  -in deploy_key -out deploy_key.enc`.
+* **deploy-key-key**: The decryption key for the deploy-key file. This can be created with `openssl
+  rand -base64 32` and saved securely into Travis CI using `travis encrypt DEPLOY_KEY_KEY=<the
+  key> --add`. Be sure to pick an [encrypted variable](https://docs.travis-ci.com/user/encryption-keys/)
+  name that you're not yet using.
 * **repo**: Repo slug, defaults to current one.
 * **target-branch**: Branch to push force to, defaults to gh-pages.
 * **keep-history**: Optional, create incremental commit instead of doing push force, defaults to false.
@@ -541,6 +544,10 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=pages --github-token=<api-key> --local-dir=build
+    DEPLOY_KEY_KEY=$(openssl rand -base64 32)
+    travis encrypt DEPLOY_KEY_KEY=$DEPLOY_KEY_KEY --add
+    openssl aes-256-cbc -k $DEPLOY_KEY_KEY -in deploy_key -out deploy_key.enc
+    dpl --provider=pages --deploy-key=deploy_key.enc --deploy-key-key=$DEPLOY_KEY_KEY --local-dir=build
 
 ### GitHub Releases:
 
