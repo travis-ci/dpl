@@ -32,6 +32,8 @@ module DPL
         }
 
         defaults[:endpoint] = options[:endpoint] if options[:endpoint]
+
+        defaults
       end
 
       def check_auth
