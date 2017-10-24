@@ -38,6 +38,11 @@ module DPL
         setup_auth
         setup_gem
         context.shell "gem build #{gemspec || option(:gem)}.gemspec"
+
+        if options[:gemspec] && options[:gemspec].include?(File::Separator)
+          options[:gemspec] = options[:gemspec].split(File::Separator)[-1]
+        end
+
         Dir.glob("#{gemspec || option(:gem)}-*.gem") do |f|
           if options[:host]
             log ::Gems.push(File.new(f), options[:host])

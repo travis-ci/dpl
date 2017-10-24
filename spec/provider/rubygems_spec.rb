@@ -69,6 +69,13 @@ describe DPL::Provider::RubyGems do
       expect(::Gems).to receive(:push).with('Test file').and_return('Yes!')
     end
 
+    example "with options[:gemspec] where gemspec is a path" do
+      provider.options.update(:gemspec => 'dummy/blah.gemspec')
+      expect(provider.context).to receive(:shell).with("gem build dummy/blah.gemspec")
+      expect(Dir).to receive(:glob).with('blah-*.gem').and_yield('File')
+      expect(::Gems).to receive(:push).with('Test file').and_return('Yes!')
+    end
+
     example "with options[:host]" do
       provider.options.update(:host => 'http://example.com')
       expect(provider.context).to receive(:shell).with("gem build example.gemspec")
