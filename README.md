@@ -320,6 +320,7 @@ For authentication you can also use Travis CI secure environment variable:
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **bucket**: S3 Bucket.
 * **region**: S3 Region. Defaults to us-east-1.
+* **endpoint**: S3 Endpoint. Default is computed for you.
 * **upload-dir**: S3 directory to upload to. Defaults to root directory.
 * **storage-class**: S3 storage class to upload as. Defaults to "STANDARD". Other values are "STANDARD_IA" or "REDUCED_REDUNDANCY". Details can be found [here](https://aws.amazon.com/s3/storage-classes/).
 * **server-side-encryption**: When set to `true`, use S3 Server Side Encryption (SSE-AES256). Defaults to `false`.
@@ -351,6 +352,12 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public_read
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999 --expires="2012-12-21 00:00:00 -0000"
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir=BUILD --upload-dir=BUILDS
+
+### Using S3-compatible Object Storage
+
+By overriding the `endpoint` option, you can use an S3-compatible object storage such as [Digital Ocean Spaces](https://www.digitalocean.com/products/object-storage/).
+
+For example: `--endpoint=https://nyc3.digitaloceanspaces.com`
 
 ### Elastic Beanstalk:
 
@@ -718,12 +725,12 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **security_group_ids**: Optional. List of security group IDs to be added to the function. Needs the `ec2:DescribeSecurityGroups` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
  * **dead_letter_arn**: Optional. ARN to an SNS or SQS resource used for the dead letter queue. [More about DLQs here](https://docs.aws.amazon
  .com/lambda/latest/dg/dlq.html).
- * **tracing_mode**: Optional. "Active" or "PassThrough" only. Default is "PassThrough".  Needs the `xray:PutTraceSegments` and `xray:PutTelemetryRecords` on the role for this to work. [More on 
+ * **tracing_mode**: Optional. "Active" or "PassThrough" only. Default is "PassThrough".  Needs the `xray:PutTraceSegments` and `xray:PutTelemetryRecords` on the role for this to work. [More on
  Active Tracing here](https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html).
  * **environment_variables**: Optional. List of Environment Variables to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
  * **kms_key_arn**: Optional. KMS key ARN to use to encrypt `environment_variables`.
  * **function_tags**: Optional. List of tags to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
- 
+
  For a list of all [permissions for Lambda, please refer to the documentation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html).
 
 #### Examples:
