@@ -28,7 +28,7 @@ module DPL
 
         def upload_archive
           log "uploading application archive"
-          context.shell "curl #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' -H 'Accept: application/vnd.heroku+json; version=3' --data-binary @#{archive_file}"
+          context.shell "curl #{curl_options} #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' -H 'Accept: application/vnd.heroku+json; version=3' --data-binary @#{archive_file}"
         end
 
         def trigger_build
@@ -46,7 +46,7 @@ module DPL
           if response.success?
             @build_id  = JSON.parse(response.body)['id']
             output_stream_url = JSON.parse(response.body)['output_stream_url']
-            context.shell "curl #{Shellwords.escape(output_stream_url)} -H 'Accept: application/vnd.heroku+json; version=3'"
+            context.shell "curl #{curl_options} #{Shellwords.escape(output_stream_url)} -H 'Accept: application/vnd.heroku+json; version=3'"
           else
             handle_error_response(response)
           end
@@ -90,6 +90,10 @@ module DPL
 
         def version
           @version ||= options[:version] || context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
+        end
+        
+        def curl_options
+          $stdout.isatty ? '' : ' -sS'
         end
 
       end
