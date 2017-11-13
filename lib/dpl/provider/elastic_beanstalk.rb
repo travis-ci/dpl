@@ -5,7 +5,7 @@ module DPL
     class ElasticBeanstalk < Provider
       experimental 'AWS Elastic Beanstalk'
 
-      requires 'aws-sdk'
+      requires 'aws-sdk', version: '~> 2.0'
       requires 'rubyzip', :load => 'zip'
 
       DEFAULT_REGION = 'us-east-1'

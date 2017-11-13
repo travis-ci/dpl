@@ -5,7 +5,7 @@ require 'fileutils'
 module DPL
   class Provider
     class Lambda < Provider
-      requires 'aws-sdk'
+      requires 'aws-sdk', version: '~> 2.0'
       requires 'rubyzip', load: 'zip'
 
       def lambda
@@ -14,8 +14,8 @@ module DPL
 
       def lambda_options
         {
-          region:      options[:region] || 'us-east-1',
-          credentials: ::Aws::Credentials.new(option(:access_key_id), option(:secret_access_key))
+            region:      options[:region] || 'us-east-1',
+            credentials: ::Aws::Credentials.new(option(:access_key_id), option(:secret_access_key))
         }
       end
 
@@ -26,53 +26,71 @@ module DPL
         # whether to update the code or create a new function
 
         function_name = options[:name] || option(:function_name)
-
-        response = lambda.list_functions
-
-        if response.functions.any? { |function| function.function_name == function_name }
+        
+        begin
+          response = lambda.get_function({function_name: function_name})
 
           log "Function #{function_name} already exists, updating."
 
           # Options defined at
           #   https://docs.aws.amazon.com/sdkforruby/api/Aws/Lambda/Client.html#update_function_configuration-instance_method
           response = lambda.update_function_configuration({
-              function_name:  function_name,
-              description:    options[:description]    || default_description,
-              timeout:        options[:timeout]        || default_timeout,
-              memory_size:    options[:memory_size]    || default_memory_size,
-              role:           option(:role),
-              handler:        handler,
-              runtime:        options[:runtime]        || default_runtime,
-          })
-
+	                      function_name:        function_name,
+	                      description:          options[:description]    || default_description,
+	                      timeout:              options[:timeout]        || default_timeout,
+	                      memory_size:          options[:memory_size]    || default_memory_size,
+	                      role:                 option(:role),
+	                      handler:              handler,
+	                      runtime:              options[:runtime]        || default_runtime,
+	                      vpc_config:           vpc_config,
+	                      environment:          environment_variables,
+	                      dead_letter_config:   dead_letter_arn,
+	                      kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
+	                      tracing_config:       tracing_mode
+	                    })
 
           log "Updated configuration of function: #{response.function_name}."
+
+          if function_tags
+            log "Add tags to function #{response.function_name}."
+            response = lambda.tag_resource({
+						              resource: response.function_arn,
+						              tags: function_tags
+						            })
+          end
 
           # Options defined at
           #   https://docs.aws.amazon.com/sdkforruby/api/Aws/Lambda/Client.html#update_function_code-instance_method
           response = lambda.update_function_code({
-            function_name:  options[:name] || option(:function_name),
-            zip_file:       function_zip,
-            publish:        publish,
-          })
+                                                   function_name:  options[:name] || option(:function_name),
+                                                   zip_file:       function_zip,
+                                                   publish:        publish
+                                               })
 
           log "Updated code of function: #{response.function_name}."
-        else
+        rescue ::Aws::Lambda::Errors::ResourceNotFoundException
+          log "Function #{function_name} does not exist, creating."
           # Options defined at
           #   https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html
           response = lambda.create_function({
-            function_name:  options[:name]           || option(:function_name),
-            description:    options[:description]    || default_description,
-            timeout:        options[:timeout]        || default_timeout,
-            memory_size:    options[:memory_size]    || default_memory_size,
-            role:           option(:role),
-            handler:        handler,
-            code: {
-              zip_file:     function_zip,
-            },
-            runtime:        options[:runtime]        || default_runtime,
-            publish:        publish,
-          })
+		                    function_name:        options[:name]           || option(:function_name),
+		                    description:          options[:description]    || default_description,
+		                    timeout:              options[:timeout]        || default_timeout,
+		                    memory_size:          options[:memory_size]    || default_memory_size,
+		                    role:                 option(:role),
+		                    handler:              handler,
+		                    code: {
+		                     zip_file:           function_zip,
+		                    },
+		                    runtime:              options[:runtime]        || default_runtime,
+		                    publish:              publish,
+		                    vpc_config:           vpc_config,
+		                    environment:          environment_variables,
+		                    dead_letter_config:   dead_letter_arn,
+		                    kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
+		                    tracing_config:       tracing_mode,
+		                    tags:                 function_tags
+		                  })
 
           log "Created lambda: #{response.function_name}."
         end
@@ -147,6 +165,30 @@ module DPL
         @output_file_path ||= '/tmp/' + random_chars(8) + '-lambda.zip'
       end
 
+      def vpc_config
+        options[:subnet_ids] && options[:security_group_ids] ? { :subnet_ids => Array(options[:subnet_ids]), :security_group_ids => Array(options[:security_group_ids]) } : nil
+      end
+
+      def environment_variables
+        options[:environment_variables] ? { :variables => split_string_array_to_hash(options[:environment_variables]) } : nil
+      end
+
+      def dead_letter_arn
+        options[:dead_letter_arn] ? { :target_arn => options[:dead_letter_arn]} : nil
+      end
+
+      def tracing_mode
+        options[:tracing_mode] ? { :mode => options[:tracing_mode]} : nil
+      end
+
+      def default_kms_key_arn
+        nil
+      end
+
+      def function_tags
+        options[:function_tags] ? split_string_array_to_hash(options[:function_tags]) : nil
+      end
+
       def default_runtime
         'nodejs'
       end
@@ -169,6 +211,15 @@ module DPL
 
       def publish
         !!options[:publish]
+      end
+
+      def split_string_array_to_hash(arr, delimiter="=")
+        variables = {}
+        Array(arr).map do |val|
+          keyval = val.split(delimiter)
+          variables[keyval[0]] = keyval[1]
+        end
+        variables
       end
 
       def random_chars(count=8)
