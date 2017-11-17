@@ -92,13 +92,6 @@ module DPL
         end
       end
 
-      def github_clean
-        print_step 'Purging every existing file from repo...'
-        context.shell "git ls-files -z 2>/dev/null | xargs -0 rm -f 2>/dev/null"  # remove all committed files from the repo
-        print_step 'Cleaning up all folders from repo...'
-        context.shell "git ls-tree --name-only -d -r -z HEAD 2>/dev/null | sort -rz | xargs -0 rmdir 2>/dev/null"  # remove all directories from the repo
-      end
-
       def github_init
         print_step 'Creating a brand new local repo from scratch...'
         context.shell "git init" or raise 'Could not create new git repo'
@@ -129,58 +122,26 @@ module DPL
         end
       end
 
-      def prepare_dir_tree(dir)
-            build = "#{dir}/build"
-            work = "#{dir}/work"
-
-            Dir.mkdir(build)
-            print_step "Created a temporary build directory #{build}"
-
-            Dir.mkdir(work)
-            print_step "Created a temporary working directory #{work}"
-
-            return build, work
-      end
-
-      def prepare_build_dir(build, tmp)
-            FileUtils.cp_r("#{build}/.", tmp)
-            print_step "Copied over build contents to #{tmp}"
-            FileUtils.cd(tmp, :verbose => @verbose) do
-                FileUtils.rm_r '.git', :force => true, :verbose => @verbose # cleanup garbage
-                print_step "Cleaned up .git artifacts"
-            end
-      end
-
       def push_app
         print_step "Starting deployment of #{@target_branch} branch to GitHub Pages..."
         print_step "The deployment is configured to preserve the target branch if it exists on remote" if @keep_history
         Dir.mktmpdir do |tmpdir|
             print_step "Created a temporary directory #{tmpdir}"
 
-            tmp_build_dir, tmp_work_dir = prepare_dir_tree(tmpdir)
-
-            prepare_build_dir(@build_dir, tmp_build_dir)
-
             if @keep_history
-              github_pull(tmp_work_dir)
-              FileUtils.cd(tmp_work_dir, :verbose => @verbose) do
-                github_clean
-              end
+              github_pull(tmpdir)
             end
 
-            print_step "Copying #{@build_dir} contents to #{tmp_work_dir}..."
-            FileUtils.cp_r("#{tmp_build_dir}/.", tmp_work_dir)
+            print_step "Copying #{@build_dir} contents to #{tmpdir}..."
+            context.shell "rsync -r --exclude .git --delete '#{@build_dir}/' '#{tmpdir}'" or error "Could not copy #{@build_dir}."
 
-            print_step "Entering #{tmp_work_dir}..."
-            FileUtils.cd(tmp_work_dir, :verbose => @verbose) do
-              unless @keep_history
-                github_init
-              end
-              github_configure
-              github_commit
-              github_deploy
-              context.shell "git status" if @verbose
+            unless @keep_history
+              github_init
             end
+            github_configure
+            github_commit
+            github_deploy
+            context.shell "git status" if @verbose
         end
         print_step "App has been pushed"
       end
