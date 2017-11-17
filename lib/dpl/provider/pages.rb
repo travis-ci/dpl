@@ -61,22 +61,37 @@ module DPL
         false
       end
 
-      def github_deploy
-        context.shell 'rm -rf .git > /dev/null 2>&1'
-        context.shell "touch \"deployed at `date` by #{@gh_name}\""
-        context.shell 'git init' or raise 'Could not create new git repo'
-        context.shell "git config user.email '#{@gh_email}'"
-        context.shell "git config user.name '#{@gh_name}'"
-        context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
-        context.shell 'git add .'
-        context.shell "FILES=\"`git commit -m 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}' | tail`\"; echo \"$FILES\"; echo \"$FILES\" | [ `wc -l` -lt 10 ] || echo '...'"
+      def create_git_dir(gitdir)
         if @gh_token
           target_repo = "https://#{@gh_token}@#{@gh_ref}"
         else
           # Depend on the key set up in push_app.
           target_repo = "git@github.com:#{slug}.git"
         end
-        context.shell "git push --force --quiet '#{target_repo}' master:#{@target_branch}"
+        unless context.shell "git clone --branch '#{@target_branch}' --depth 1 '#{target_repo}' '#{gitdir}'"
+          FileUtils.mkdir(gitdir)
+          FileUtils.cd(gitdir) do
+            context.shell "git init" or error 'Could not create new git repo'
+            context.shell "git remote add origin '#{target_repo}'"
+            context.shell "git checkout -b '#{@target_branch}'"
+          end
+        end
+        FileUtils.cd(gitdir) do
+          context.shell "git config user.email '#{@gh_email}'"
+          context.shell "git config user.name '#{@gh_name}'"
+        end
+        return true
+      end
+
+      def github_deploy
+        context.shell "touch \"deployed at `date` by #{@gh_name}\""
+        context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
+        context.shell 'git add .'
+        context.shell "FILES=\"`git commit -m 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}' | tail`\"; echo \"$FILES\"; echo \"$FILES\" | [ `wc -l` -lt 10 ] || echo '...'"
+        # The following line will fail if another deploy happened concurrently.
+        # We'd rather have the deploy for the later revision succeed, but that
+        # takes a lot more code.
+        context.shell "git push --quiet origin #{@target_branch}"
       end
 
       def push_app
@@ -89,7 +104,13 @@ module DPL
             setup_git_ssh("#{gitdir}/git-ssh", "#{gitdir}/deploykey")
           end
           Dir.mktmpdir {|tmpdir|
-            FileUtils.cp_r("#{@build_dir}/.", tmpdir)
+            # A failed `git clone` removes its target directory, so use a
+            # subdirectory to make sure we can safely re-create it.
+            tmpdir = "#{tmpdir}/deploy"
+            unless create_git_dir(tmpdir)
+              error "Couldn't create checkout to push to #{@gh_ref}:#{@target_branch}"
+            end
+            context.shell "rsync -r --exclude .git --delete #{@build_dir}/ #{tmpdir}" or error "Could not copy #{@build_dir}."
             FileUtils.cd(tmpdir, :verbose => true) do
               unless github_deploy
                 error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
