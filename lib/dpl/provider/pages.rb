@@ -84,9 +84,12 @@ module DPL
       end
 
       def github_deploy
-        context.shell "touch \"deployed at `date` by #{@gh_name}\""
         context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
         context.shell 'git add .'
+        if context.shell "git diff --cached --quiet"
+          log "No changes; skipping deploy."
+          return true
+        end
         context.shell "FILES=\"`git commit -m 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}' | tail`\"; echo \"$FILES\"; echo \"$FILES\" | [ `wc -l` -lt 10 ] || echo '...'"
         # The following line will fail if another deploy happened concurrently.
         # We'd rather have the deploy for the later revision succeed, but that
