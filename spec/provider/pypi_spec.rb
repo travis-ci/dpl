@@ -6,17 +6,19 @@ describe DPL::Provider::PyPI do
     described_class.new(DummyContext.new, :user => 'foo', :password => 'bar')
   end
 
+  describe "#install_deploy_dependencies" do
+    example do
+      expect(provider.context).to receive(:shell).with(
+        "wget -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade setuptools twine wheel"
+      ).and_return(true)
+      provider.install_deploy_dependencies
+    end
+  end
+
   describe "#config" do
     it 'accepts a user and a password' do
       expect(provider.config[:servers]['pypi']).to include 'username: foo'
       expect(provider.config[:servers]['pypi']).to include 'password: bar'
-    end
-  end
-
-  describe "#initialize" do
-    example "with :distributions option containing 'bdist_wheel'" do
-      expect(described_class).to receive(:pip).with("wheel")
-      described_class.new(DummyContext.new, :user => 'foo', :password => 'bar', :distributions => 'bdist_wheel sdist')
     end
   end
 
