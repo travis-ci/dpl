@@ -99,7 +99,9 @@ module DPL
 
       def push_app
         context.shell "python setup.py #{pypi_distributions}"
-        context.shell "twine upload -r pypi dist/*"
+        unless context.shell "twine upload -r pypi dist/*"
+          error 'PyPI upload failed.'
+        end
         context.shell "rm -rf dist/*"
         unless skip_upload_docs?
           log "Uploading documentation (skip with \"skip_upload_docs: true\")"
