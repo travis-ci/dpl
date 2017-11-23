@@ -1,3 +1,5 @@
+require "base64"
+
 module DPL
   class Provider
     class Pages < Provider
@@ -6,8 +8,7 @@ module DPL
       Options:
         - repo [optional, for pushed to other repos]
         - github-token [this or deploy-key required]
-        - deploy-key [this or github-token required; deploy key encrypted with `openssl aes-256-cbc -k`]
-        - deploy-key-key [required if deploy-key is present]
+        - deploy-key [this or github-token required]
         - github-url [optional, defaults to github.com]
         - target-branch [optional, defaults to gh-pages]
         - local-dir [optional, defaults to `pwd`]
@@ -35,9 +36,6 @@ module DPL
         unless @gh_token || @gh_deploy_key
           raise(Error, "must specify github-token or deploy-key")
         end
-        if @gh_deploy_key
-          @gh_deploy_key_key = option(:deploy_key_key)
-        end
 
         @gh_email = options[:email] || 'deploy@travis-ci.org'
         @gh_name = "#{options[:name] || 'Deployment Bot'} (from Travis CI)"
@@ -58,8 +56,8 @@ module DPL
 
       def needs_key?
         # Provider's generic support for keys is about provisioning and
-        # deprovisioning them, while this provider needs to install an encrypted
-        # key provided by the caller.
+        # deprovisioning them, while this provider needs to install a key
+        # provided by the caller.
         false
       end
 
@@ -84,9 +82,10 @@ module DPL
       def push_app
         Dir.mktmpdir {|gitdir|
           if @gh_deploy_key
-            # Decrypt the key and install it.
-            context.shell "openssl aes-256-cbc -k '#{@gh_deploy_key_key}' -in '#{@gh_deploy_key}' -out #{gitdir}/deploykey -d"
-            File.chmod(0600, "#{gitdir}/deploykey")
+            # Install the key.
+            File.open("#{gitdir}/deploykey", "w", 0600) {|file|
+              file.write Base64.decode64(@gh_deploy_key)
+            }
             setup_git_ssh("#{gitdir}/git-ssh", "#{gitdir}/deploykey")
           end
           Dir.mktmpdir {|tmpdir|
