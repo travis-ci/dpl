@@ -519,7 +519,8 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **github-token**: GitHub oauth token with `repo` permission.
 * **deploy-key**: A base64-encoded [GitHub deploy
   key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
-  with write access to the **repo** repository.
+  with write access to the **repo** repository. Note that RSA keys are too long
+  to fit into a secure variable, but ECDSA-521 fits.
 * **repo**: Repo slug, defaults to current one.
 * **target-branch**: Branch to push force to, defaults to gh-pages.
 * **local-dir**: Directory to push to GitHub Pages, defaults to current.
