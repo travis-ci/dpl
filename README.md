@@ -718,12 +718,12 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **security_group_ids**: Optional. List of security group IDs to be added to the function. Needs the `ec2:DescribeSecurityGroups` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
  * **dead_letter_arn**: Optional. ARN to an SNS or SQS resource used for the dead letter queue. [More about DLQs here](https://docs.aws.amazon
  .com/lambda/latest/dg/dlq.html).
- * **tracing_mode**: Optional. "Active" or "PassThrough" only. Default is "PassThrough".  Needs the `xray:PutTraceSegments` and `xray:PutTelemetryRecords` on the role for this to work. [More on 
+ * **tracing_mode**: Optional. "Active" or "PassThrough" only. Default is "PassThrough".  Needs the `xray:PutTraceSegments` and `xray:PutTelemetryRecords` on the role for this to work. [More on
  Active Tracing here](https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html).
  * **environment_variables**: Optional. List of Environment Variables to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
  * **kms_key_arn**: Optional. KMS key ARN to use to encrypt `environment_variables`.
  * **function_tags**: Optional. List of tags to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
- 
+
  For a list of all [permissions for Lambda, please refer to the documentation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html).
 
 #### Examples:
@@ -822,16 +822,15 @@ and your testers can start testing your app.
 ### Scalingo:
 
 #### Options:
-* **api_key**: scalingo API Key. Not necessary if username and password are used.
-* **username**: scalingo username. Not necessary if api_key is used.
-* **password**: scalingo password. Not necessary if api_key is used.
-* **remote**: Remote url or git remote name of your git repository. By default remote name is "scalingo".
+* **api_key**: Scalingo API Key. Not necessary if username and password are used.
+* **username**: Scalingo username. Not necessary if api_key is used.
+* **password**: Scalingo password. Not necessary if api_key is used.
 * **branch**: Branch of your git repository. By default branch name is "master".
-* **app**: Only necessary if your repository does not contain the appropriate remote. Specifying the app will add a remote to your local repository: `git remote add <remote> git@scalingo.com:<app>.git`
+* **app**: Only necessary if your git repository does not already contain the appropriate remote. Specifying the app will push with: `git push git@scalingo.com:<app>.git <branch>`.
 
 #### Use:
 
-You can connect to Scalingo using your username/password or your api key.
+You can connect to Scalingo using your username/password or your API key.
 It needs [Scalingo CLI](http://cli.scalingo.com/) which will be [downloaded here](http://cli.scalingo.com/).
 Then, it will push your project to Scalingo and deploy it automatically.
 
@@ -842,8 +841,8 @@ Note: You only need to connect once to Scalingo CLI, credentials are stored loca
     dpl --provider=scalingo --api_key="aaAAbbBB0011223344"
     dpl --provider=scalingo --username=<username> --password=<password>
 
-    dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --remote="scalingo-staging"
-    dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --remote="scalingo-staging" --branch="master"
+    dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --app="my-app"
+    dpl --provider=scalingo --api_key="aaAAbbBB0011223344" --app="my-app-staging" --branch="staging"
 
     dpl --provider=scalingo
 

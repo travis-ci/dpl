@@ -4,7 +4,7 @@ require 'dpl/provider/scalingo'
 describe DPL::Provider::Scalingo do
 
   subject :provider do
-    described_class.new(DummyContext.new, :username => 'travis', :password => 'secret', :remote => 'scalingo', :branch => 'master')
+    described_class.new(DummyContext.new, :username => 'travis', :password => 'secret', :app => 'scalingo-app', :branch => 'master')
   end
 
   describe "#install_deploy_dependencies" do
@@ -55,10 +55,9 @@ describe DPL::Provider::Scalingo do
   describe "#push_app" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'git push scalingo master -f'
+        'git push --force git@scalingo.com:scalingo-app.git master'
       ).and_return(true)
       provider.push_app
     end
   end
-
 end
