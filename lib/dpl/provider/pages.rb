@@ -118,7 +118,8 @@ module DPL
         context.shell "touch \"deployed at `date` by #{@gh_name}\""
         context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
         context.shell 'git add -A .'
-        context.shell "FILES=\"`git commit#{@git_commit_opts} -m 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}' | tail`\"; echo \"$FILES\"; echo \"$FILES\" | [ `wc -l` -lt 10 ] || echo '...'"
+        context.shell "git commit#{@git_commit_opts} -qm 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}'"
+        context.shell 'git show --stat-count=10 HEAD'
       end
 
       def github_deploy
