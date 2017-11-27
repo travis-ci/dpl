@@ -46,9 +46,6 @@ module DPL
         @gh_url = options[:github_url] || 'github.com'
         @gh_token = options[:github_token]
         @gh_deploy_key = options[:deploy_key]
-        unless @gh_token || @gh_deploy_key
-          raise(Error, "must specify github-token or deploy-key")
-        end
 
         @keep_history = !!keep_history
         @allow_empty_commit = !!allow_empty_commit
@@ -122,15 +119,23 @@ module DPL
       end
 
       def check_auth
-        setup_auth
+        if @gh_token
+          begin
+            setup_auth
 
-        unless api.scopes.include? 'public_repo' or api.scopes.include? 'repo'
-          error "Dpl does not have permission to access #{@gh_url} using it. Make sure your token contains the repo or public_repo scope."
+            unless api.scopes.include? 'public_repo' or api.scopes.include? 'repo'
+              error "Dpl does not have permission to access #{@gh_url} using it. Make sure your token contains the repo or public_repo scope."
+            end
+
+            log "Logged in as @#{user.login} (#{user.name})"
+          rescue Octokit::Unauthorized => exc
+            error "gh-token is invalid. Details: #{exc}"
+          end
+        else
+          unless @gh_deploy_key
+            error "must specify github-token or deploy-key"
+          end
         end
-
-        log "Logged in as @#{user.login} (#{user.name})"
-      rescue Octokit::Unauthorized => exc
-        error "gh-token is invalid. Details: #{exc}"
       end
 
       def needs_key?
