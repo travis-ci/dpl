@@ -33,9 +33,6 @@ module DPL
         @gh_url = options[:github_url] || 'github.com'
         @gh_token = options[:github_token]
         @gh_deploy_key = options[:deploy_key]
-        unless @gh_token || @gh_deploy_key
-          raise(Error, "must specify github-token or deploy-key")
-        end
 
         @gh_email = options[:email] || 'deploy@travis-ci.org'
         @gh_name = "#{options[:name] || 'Deployment Bot'} (from Travis CI)"
@@ -52,6 +49,9 @@ module DPL
       end
 
       def check_auth
+        unless @gh_token || @gh_deploy_key
+          error "must specify github-token or deploy-key"
+        end
       end
 
       def needs_key?
