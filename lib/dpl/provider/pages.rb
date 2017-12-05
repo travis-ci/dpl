@@ -77,37 +77,39 @@ module DPL
         log msg if @verbose
       end
 
-      def github_pull(target_dir)
+      def github_pull_or_init(target_dir)
+        unless @keep_history
+          github_init(target_dir)
+          return
+        end
+
         print_step "Trying to clone a single branch #{@target_branch} from existing repo..."
         unless context.shell "git clone --quiet --branch='#{@target_branch}' --depth=1 '#{@gh_remote_url}' '#{target_dir}' &>/dev/null"
-          # if such branch doesn't exist at remote, do normal clone and create
-          # a new orphan branch
+          # if such branch doesn't exist at remote, init it from scratch
           print_step "Cloning #{@target_branch} branch failed"
-          print_step 'Trying to clone the whole repo...'
-          context.shell "git clone --quiet '#{@gh_remote_url}' '#{target_dir}' &>/dev/null" or raise "It looks the repo doesn't exist on remote or is inaccessible"
-          FileUtils.cd(target_dir, :verbose => @verbose) do
-            print_step "Assuming #{@target_branch} branch doesn't exist, thus creating orphan one"
-            context.shell "git checkout --orphan '#{@target_branch}'"
-          end
+          Dir.mkdir(target_dir)  # Restore dir destroyed by failed `git clone`
+          github_init(target_dir)
         end
       end
 
-      def github_init
-        print_step 'Creating a brand new local repo from scratch...'
-        context.shell "git init" or raise 'Could not create new git repo'
-        print_step 'Repo created successfully'
-        context.shell "git checkout --orphan '#{@target_branch}'" or raise 'Could not create an orphan git branch'
-        print_step "An orphan branch #{@target_branch} created successfully"
+      def github_init(target_dir)
+        FileUtils.cd(target_dir, :verbose => true) do
+          print_step "Creating a brand new local repo from scratch in dir #{`pwd`}..."
+          context.shell "git init" or raise 'Could not create new git repo'
+          print_step 'Repo created successfully'
+          context.shell "git checkout --orphan '#{@target_branch}'" or raise 'Could not create an orphan git branch'
+          print_step "An orphan branch #{@target_branch} created successfully"
+        end
       end
 
       def github_configure
-        print_step "Configuring git committer to be #{@gh_name} <#{@gh_email}>"
+        print_step "Configuring git committer to be #{@gh_name} <#{@gh_email}> (workdir: #{`pwd`})"
         context.shell "git config user.email '#{@gh_email}'"
         context.shell "git config user.name '#{@gh_name}'"
       end
 
       def github_commit
-        print_step "Preparing to deploy #{@target_branch} branch to gh-pages"
+        print_step "Preparing to deploy #{@target_branch} branch to gh-pages (workdir: #{`pwd`})"
         context.shell "touch \"deployed at `date` by #{@gh_name}\""
         context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
         context.shell 'git add -A .'
@@ -116,7 +118,7 @@ module DPL
       end
 
       def github_deploy
-        print_step "Doing the git push..."
+        print_step "Doing the git push (workdir: #{`pwd`})..."
         unless context.shell "git push#{@git_push_opts} --quiet '#{@gh_remote_url}' '#{@target_branch}':'#{@target_branch}' &>/dev/null"
           error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
         end
@@ -126,22 +128,21 @@ module DPL
         print_step "Starting deployment of #{@target_branch} branch to GitHub Pages..."
         print_step "The deployment is configured to preserve the target branch if it exists on remote" if @keep_history
         Dir.mktmpdir do |tmpdir|
-            print_step "Created a temporary directory #{tmpdir}"
+            workdir = "#{tmpdir}/work"
+            Dir.mkdir(workdir)
+            print_step "Created a temporary work directory #{workdir}"
 
-            if @keep_history
-              github_pull(tmpdir)
+            github_pull_or_init(workdir)
+
+            FileUtils.cd(workdir, :verbose => true) do
+              print_step "Copying #{@build_dir} contents to #{workdir} (workdir: #{`pwd`})..."
+              context.shell "rsync -r --exclude .git --delete '#{@build_dir}/' '#{workdir}'" or error "Could not copy #{@build_dir}."
+
+              github_configure
+              github_commit
+              github_deploy
+              context.shell "git status" if @verbose
             end
-
-            print_step "Copying #{@build_dir} contents to #{tmpdir}..."
-            context.shell "rsync -r --exclude .git --delete '#{@build_dir}/' '#{tmpdir}'" or error "Could not copy #{@build_dir}."
-
-            unless @keep_history
-              github_init
-            end
-            github_configure
-            github_commit
-            github_deploy
-            context.shell "git status" if @verbose
         end
         print_step "App has been pushed"
       end
