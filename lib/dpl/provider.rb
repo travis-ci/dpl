@@ -138,19 +138,7 @@ module DPL
       rm_rf ".dpl"
       mkdir_p ".dpl"
 
-      context.fold("Preparing deploy") do
-        check_auth
-        check_app
-
-        if needs_key?
-          create_key(".dpl/id_rsa")
-          setup_key(".dpl/id_rsa.pub")
-          setup_git_ssh(".dpl/git-ssh", ".dpl/id_rsa")
-        end
-
-        cleanup
-      end
-
+      prepare
       push
 
       Array(options[:run]).each do |command|
@@ -188,6 +176,26 @@ module DPL
     def uncleanup
       return if options[:skip_cleanup]
       context.shell "git stash pop"
+    end
+
+    def prepare
+      if options[:skip_prepare]
+        log "Skipping deployment preparation for testing purpose"
+        return
+      end
+
+      context.fold("Preparing deploy") do
+        check_auth
+        check_app
+
+        if needs_key?
+          create_key(".dpl/id_rsa")
+          setup_key(".dpl/id_rsa.pub")
+          setup_git_ssh(".dpl/git-ssh", ".dpl/id_rsa")
+        end
+
+        cleanup
+      end
     end
 
     def push
