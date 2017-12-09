@@ -53,7 +53,6 @@ module DPL
 
       def github_deploy
         context.shell 'rm -rf .git > /dev/null 2>&1'
-        context.shell "touch \"deployed at `date` by #{@gh_name}\""
         context.shell 'git init' or raise 'Could not create new git repo'
         context.shell "git config user.email '#{@gh_email}'"
         context.shell "git config user.name '#{@gh_name}'"
