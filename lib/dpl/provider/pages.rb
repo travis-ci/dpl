@@ -25,7 +25,7 @@ module DPL
       def initialize(context, options)
         super
 
-        @build_dir = options[:local_dir] || '.'
+        @build_dir = File.join(Dir.pwd, options[:local_dir] || '.')
         @project_name = options[:project_name] || fqdn || slug
         @target_branch = options[:target_branch] || 'gh-pages'
 
@@ -94,7 +94,7 @@ module DPL
 
       def github_init(target_dir)
         FileUtils.cd(target_dir, :verbose => true) do
-          print_step "Creating a brand new local repo from scratch in dir #{`pwd`}..."
+          print_step "Creating a brand new local repo from scratch in dir #{Dir.pwd}..."
           context.shell "git init" or raise 'Could not create new git repo'
           print_step 'Repo created successfully'
           context.shell "git checkout --orphan '#{@target_branch}'" or raise 'Could not create an orphan git branch'
@@ -103,13 +103,13 @@ module DPL
       end
 
       def github_configure
-        print_step "Configuring git committer to be #{@gh_name} <#{@gh_email}> (workdir: #{`pwd`})"
+        print_step "Configuring git committer to be #{@gh_name} <#{@gh_email}> (workdir: #{Dir.pwd})"
         context.shell "git config user.email '#{@gh_email}'"
         context.shell "git config user.name '#{@gh_name}'"
       end
 
       def github_commit
-        print_step "Preparing to deploy #{@target_branch} branch to gh-pages (workdir: #{`pwd`})"
+        print_step "Preparing to deploy #{@target_branch} branch to gh-pages (workdir: #{Dir.pwd})"
         context.shell "touch \"deployed at `date` by #{@gh_name}\""
         context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
         context.shell 'git add -A .'
@@ -118,7 +118,7 @@ module DPL
       end
 
       def github_deploy
-        print_step "Doing the git push (workdir: #{`pwd`})..."
+        print_step "Doing the git push (workdir: #{Dir.pwd})..."
         unless context.shell "git push#{@git_push_opts} --quiet '#{@gh_remote_url}' '#{@target_branch}':'#{@target_branch}' &>/dev/null"
           error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
         end
@@ -135,7 +135,7 @@ module DPL
             github_pull_or_init(workdir)
 
             FileUtils.cd(workdir, :verbose => true) do
-              print_step "Copying #{@build_dir} contents to #{workdir} (workdir: #{`pwd`})..."
+              print_step "Copying #{@build_dir} contents to #{workdir} (workdir: #{Dir.pwd})..."
               context.shell "rsync -r --exclude .git --delete '#{@build_dir}/' '#{workdir}'" or error "Could not copy #{@build_dir}."
 
               github_configure
