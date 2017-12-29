@@ -84,7 +84,7 @@ module DPL
         end
 
         print_step "Trying to clone a single branch #{@target_branch} from existing repo..."
-        unless context.shell "git clone --quiet --branch='#{@target_branch}' --depth=1 '#{@gh_remote_url}' '#{target_dir}' &>/dev/null"
+        unless context.shell "git clone --quiet --branch='#{@target_branch}' --depth=1 '#{@gh_remote_url}' '#{target_dir}' > /dev/null 2>&1"
           # if such branch doesn't exist at remote, init it from scratch
           print_step "Cloning #{@target_branch} branch failed"
           Dir.mkdir(target_dir)  # Restore dir destroyed by failed `git clone`
@@ -119,7 +119,7 @@ module DPL
 
       def github_deploy
         print_step "Doing the git push (workdir: #{Dir.pwd})..."
-        unless context.shell "git push#{@git_push_opts} --quiet '#{@gh_remote_url}' '#{@target_branch}':'#{@target_branch}' &>/dev/null"
+        unless context.shell "git push#{@git_push_opts} --quiet '#{@gh_remote_url}' '#{@target_branch}':'#{@target_branch}' > /dev/null 2>&1"
           error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
         end
       end
