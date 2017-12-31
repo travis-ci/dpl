@@ -521,12 +521,13 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **target-branch**: Branch to push force to, defaults to gh-pages.
 * **keep-history**: Optional, create incremental commit instead of doing push force, defaults to false.
 * **allow-empty-commit**: Optional, defaults to false. Enabled if only keep-history is true.
+* **committer-from-gh**: Optional, defaults to false. Allows to use token's owner name and email for commit. Overrides `email` and `name` options.
 * **verbose**: Optional, be verbose about internal steps, defaults to false.
 * **local-dir**: Directory to push to GitHub Pages, defaults to current.
 * **fqdn**: Optional, no default, sets a main domain for your website.
 * **project-name**: Defaults to fqdn or repo slug, used for metadata.
-* **email**: Optional, comitter info, defaults to deploy@travis-ci.org.
-* **name**: Optional, comitter, defaults to Deployment Bot.
+* **email**: Optional, committer info, defaults to deploy@travis-ci.org.
+* **name**: Optional, committer, defaults to Deployment Bot.
 
 #### Examples:
 

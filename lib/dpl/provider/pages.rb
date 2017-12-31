@@ -10,6 +10,7 @@ module DPL
         - target-branch [optional, defaults to gh-pages]
         - keep-history [optional, defaults to false]
         - allow-empty-commit [optional, defaults to false]
+        - committer-from-gh [optional, defaults to false]
         - verbose [optional, defaults to false]
         - local-dir [optional, defaults to `pwd`]
         - fqdn [optional]
@@ -40,6 +41,7 @@ module DPL
         @gh_token = option(:github_token)
         @keep_history = !!keep_history
         @allow_empty_commit = !!allow_empty_commit
+        @committer_from_gh = !!committer_from_gh
         @verbose = !!verbose
 
         @gh_email = options[:email] || 'deploy@travis-ci.org'
@@ -49,6 +51,8 @@ module DPL
         @gh_remote_url = "https://#{@gh_token}@#{@gh_ref}"
         @git_push_opts = @keep_history ? '' : ' --force'
         @git_commit_opts = (@allow_empty_commit and @keep_history) ? ' --allow-empty' : ''
+
+        print_step "The repo is configured to use committer user and email." if @committer_from_gh
       end
 
       def fqdn
@@ -61,6 +65,10 @@ module DPL
 
       def keep_history
         options.fetch(:keep_history, false)
+      end
+
+      def committer_from_gh
+        options.fetch(:committer_from_gh, false)
       end
 
       def allow_empty_commit
@@ -131,15 +139,24 @@ module DPL
         end
       end
 
+      def identify_preferred_committer
+        if @committer_from_gh and @gh_token
+          return (user.name or @gh_name), (user.email or @gh_email)
+        end
+        return @gh_name, @gh_email
+      end
+
       def github_configure
-        print_step "Configuring git committer to be #{@gh_name} <#{@gh_email}> (workdir: #{Dir.pwd})"
-        context.shell "git config user.email '#{@gh_email}'"
-        context.shell "git config user.name '#{@gh_name}'"
+        committer_name, committer_email = identify_preferred_committer
+        print_step "Configuring git committer to be #{committer_name} <#{committer_email}> (workdir: #{Dir.pwd})"
+        context.shell "git config user.email '#{committer_email}'"
+        context.shell "git config user.name '#{committer_name}'"
       end
 
       def github_commit
+        committer_name, _ = identify_preferred_committer
         print_step "Preparing to deploy #{@target_branch} branch to gh-pages (workdir: #{Dir.pwd})"
-        context.shell "touch \"deployed at `date` by #{@gh_name}\""
+        context.shell "touch \"deployed at `date` by #{committer_name}\""
         context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
         context.shell 'git add -A .'
         context.shell "git commit#{@git_commit_opts} -qm 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}'"
