@@ -20,6 +20,12 @@ module DPL
 
       require 'tmpdir'
 
+      if RUBY_VERSION >= "2.0.0"
+        requires 'octokit', version: '~> 4.6.2'
+      else
+        requires 'octokit', version: '~> 4.3.0'
+      end
+
       experimental 'GitHub Pages'
 
       def initialize(context, options)
@@ -66,7 +72,30 @@ module DPL
         options.fetch(:verbose, false)
       end
 
+      def api  # Borrowed from Releases provider
+        error 'gh-token must be provided for Pages provider to work.' unless @gh_token
+
+        @api ||= Octokit::Client.new(:access_token => @gh_token)
+      end
+
+      def user
+        @user ||= api.user
+      end
+
+      def setup_auth
+        user.login
+      end
+
       def check_auth
+        setup_auth
+
+        unless api.scopes.include? 'public_repo' or api.scopes.include? 'repo'
+          error "Dpl does not have permission to access #{@gh_url} using it. Make sure your token contains the repo or public_repo scope."
+        end
+
+        log "Logged in as @#{user.login} (#{user.name})"
+      rescue Octokit::Unauthorized => exc
+        error "gh-token is invalid. Details: #{exc}"
       end
 
       def needs_key?
