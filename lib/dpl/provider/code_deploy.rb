@@ -9,6 +9,10 @@ module DPL
         @code_deploy ||= Aws::CodeDeploy::Client.new(code_deploy_options)
       end
 
+      def s3api
+        @s3api ||= Aws::S3::Client.new(code_deploy_options)
+      end
+
       def code_deploy_options
         code_deploy_options = {
           region:      options[:region] || 'us-east-1',
@@ -39,13 +43,23 @@ module DPL
         end
       end
 
+      def revision_version_info
+          s3obj = s3api.head_object({
+              bucket: option(:bucket),
+              key: s3_key
+            })
+      end
+
       def s3_revision
+        s3info = revision_version_info
         {
           revision_type: 'S3',
           s3_location: {
             bucket:      option(:bucket),
             bundle_type: bundle_type,
-            key:         s3_key
+            key:         s3_key,
+            version:     s3info[:version_id],
+            e_tag:       s3info[:etag]
           }
         }
       end
@@ -61,6 +75,16 @@ module DPL
       end
 
       def push_app
+        rev = revision()
+        if rev[:s3_location]
+            rev_info = rev[:s3_location]
+            log "Registering app revision with version=#{rev_info[:version]}, etag=#{rev_info[:e_tag]}"
+        end
+        code_deploy.register_application_revision({
+            revision:               rev,
+            application_name:       options[:application] || option(:application_name),
+            description:            options[:description] || default_description
+        })
         data = code_deploy.create_deployment({
           revision:               revision,
           application_name:       options[:application]      || option(:application_name),
