@@ -86,7 +86,7 @@ module DPL
         return @api if @api
 
         api_opts = { :access_token => @gh_token }
-        api_opts[:api_endpoint] = @gh_url == 'github.com' ? "https://api.github.com/" : "https://#{gh_url}/api/v3/"
+        api_opts[:api_endpoint] = @gh_url == 'github.com' ? "https://api.github.com/" : "https://#{@gh_url}/api/v3/"
 
         @api = Octokit::Client.new(api_opts)
       end
