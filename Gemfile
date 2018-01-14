@@ -5,7 +5,13 @@ gem 'term-ansicolor', '~> 1.3.2'
 
 platforms :mri_19 do
   gem 'slop', '~> 3.6.0'
-  gem 'ohai', '~> 7.4.0'
+  if RUBY_VERSION >= '2.3'
+    gem 'ohai', '~> 13.7.1'
+  elsif RUBY_VERSION >= '2.1'
+    gem 'ohai', '~> 8.26.0'
+  else
+    gem 'ohai', '~> 7.4.1'
+  end
   gem 'amq-protocol', '~> 1.9.2'
   gem 'net-ssh', '~> 2.9.2'
 end
