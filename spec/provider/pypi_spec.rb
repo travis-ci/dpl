@@ -13,13 +13,6 @@ describe DPL::Provider::PyPI do
     end
   end
 
-  describe "#initialize" do
-    example "with :distributions option containing 'bdist_wheel'" do
-      expect(described_class).to receive(:pip).with("wheel")
-      described_class.new(DummyContext.new, :user => 'foo', :password => 'bar', :distributions => 'bdist_wheel sdist')
-    end
-  end
-
   describe "#check_auth" do
     example do
       expect(provider).to receive(:log).with("Authenticated as foo")

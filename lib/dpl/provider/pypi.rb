@@ -32,21 +32,15 @@ module DPL
           (options.has_key?(:skip_upload_docs) && options[:skip_upload_docs])
       end
 
-      def self.install_setuptools
-        shell 'wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python'
-        shell 'rm -f setuptools-*.zip'
+      def self.install_pip
+        shell 'wget https://bootstrap.pypa.io/get-pip.py -O - | sudo python'
       end
 
       def self.install_twine
         shell("pip install twine", retry: true) if `which twine`.chop.empty?
       end
 
-      def initialize(*args)
-        super(*args)
-        self.class.pip 'wheel' if pypi_distributions.to_s.include? 'bdist_wheel'
-      end
-
-      install_setuptools
+      install_pip
       install_twine
 
       def config
