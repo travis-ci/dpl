@@ -44,10 +44,10 @@ module DPL
       end
 
       def revision_version_info
-          s3obj = s3api.head_object({
-              bucket: option(:bucket),
-              key: s3_key
-            })
+        s3obj = s3api.head_object({
+          bucket: option(:bucket),
+          key: s3_key
+        })
       end
 
       def s3_revision
@@ -77,13 +77,13 @@ module DPL
       def push_app
         rev = revision()
         if rev[:s3_location]
-            rev_info = rev[:s3_location]
-            log "Registering app revision with version=#{rev_info[:version]}, etag=#{rev_info[:e_tag]}"
+          rev_info = rev[:s3_location]
+          log "Registering app revision with version=#{rev_info[:version]}, etag=#{rev_info[:e_tag]}"
         end
         code_deploy.register_application_revision({
-            revision:               rev,
-            application_name:       options[:application] || option(:application_name),
-            description:            options[:description] || default_description
+          revision:               rev,
+          application_name:       options[:application] || option(:application_name),
+          description:            options[:description] || default_description
         })
         data = code_deploy.create_deployment({
           revision:               revision,

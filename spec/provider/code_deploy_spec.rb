@@ -165,8 +165,8 @@ describe DPL::Provider::CodeDeploy do
 
     before(:each) do
       head_data = provider.s3api.stub_data(:head_object, {
-          version_id: 'object_version_id',
-          etag: 'etag'
+        version_id: 'object_version_id',
+        etag: 'etag'
       })
       provider.s3api.stub_responses(:head_object, head_data)
       expect(provider).to receive(:option).with(:bucket).and_return(bucket).twice
@@ -181,8 +181,8 @@ describe DPL::Provider::CodeDeploy do
           bucket: bucket,
           bundle_type: bundle_type,
           key: key,
-	      version: 'object_version_id',
-	      e_tag: 'etag'
+          version: 'object_version_id',
+          e_tag: 'etag'
         }
       })
     end
