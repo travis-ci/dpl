@@ -89,7 +89,9 @@ describe DPL::Provider::CodeDeploy do
       s3_location: {
         bucket:      'bucket',
         bundle_type: 'tar',
-        key:         'key'
+        key:         'key',
+        version:     'object_version_id',
+        e_tag:       'etag'
       }
     }
 
@@ -162,9 +164,14 @@ describe DPL::Provider::CodeDeploy do
     key = "/some/key.#{bundle_type}"
 
     before(:each) do
-      expect(provider).to receive(:option).with(:bucket).and_return(bucket)
+      head_data = provider.s3api.stub_data(:head_object, {
+          version_id: 'object_version_id',
+          etag: 'etag'
+      })
+      provider.s3api.stub_responses(:head_object, head_data)
+      expect(provider).to receive(:option).with(:bucket).and_return(bucket).twice
       expect(provider).to receive(:bundle_type).and_return(bundle_type)
-      expect(provider).to receive(:s3_key).and_return(key)
+      expect(provider).to receive(:s3_key).and_return(key).twice
     end
 
     example do
@@ -173,7 +180,9 @@ describe DPL::Provider::CodeDeploy do
         s3_location: {
           bucket: bucket,
           bundle_type: bundle_type,
-          key: key
+          key: key,
+	      version: 'object_version_id',
+	      e_tag: 'etag'
         }
       })
     end
