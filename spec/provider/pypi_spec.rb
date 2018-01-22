@@ -6,17 +6,19 @@ describe DPL::Provider::PyPI do
     described_class.new(DummyContext.new, :user => 'foo', :password => 'bar')
   end
 
+  describe "#install_deploy_dependencies" do
+    example do
+      expect(provider.context).to receive(:shell).with(
+        "wget -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade setuptools twine wheel"
+      ).and_return(true)
+      provider.install_deploy_dependencies
+    end
+  end
+
   describe "#config" do
     it 'accepts a user and a password' do
       expect(provider.config[:servers]['pypi']).to include 'username: foo'
       expect(provider.config[:servers]['pypi']).to include 'password: bar'
-    end
-  end
-
-  describe "#initialize" do
-    example "with :distributions option containing 'bdist_wheel'" do
-      expect(described_class).to receive(:pip).with("wheel")
-      described_class.new(DummyContext.new, :user => 'foo', :password => 'bar', :distributions => 'bdist_wheel sdist')
     end
   end
 
@@ -28,37 +30,37 @@ describe DPL::Provider::PyPI do
   end
 
   describe "#push_app" do
-    example do
-      expect(provider.context).to receive(:shell).with("python setup.py sdist")
-      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
-      expect(provider.context).to receive(:shell).with("rm -rf dist/*")
+    example "default" do
+      expect(provider.context).to receive(:shell).with("python setup.py sdist").and_return(true)
+      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
       expect(provider.context).not_to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/")
       provider.push_app
     end
 
     example "with :distributions option" do
       provider.options.update(:distributions => 'sdist bdist')
-      expect(provider.context).to receive(:shell).with("python setup.py sdist bdist")
-      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
-      expect(provider.context).to receive(:shell).with("rm -rf dist/*")
+      expect(provider.context).to receive(:shell).with("python setup.py sdist bdist").and_return(true)
+      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
       expect(provider.context).not_to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/")
       provider.push_app
     end
 
     example "with :server option" do
       provider.options.update(:server => 'http://blah.com')
-      expect(provider.context).to receive(:shell).with("python setup.py sdist")
-      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
-      expect(provider.context).to receive(:shell).with("rm -rf dist/*")
+      expect(provider.context).to receive(:shell).with("python setup.py sdist").and_return(true)
+      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
       expect(provider.context).not_to receive(:shell).with("python setup.py upload_docs  -r http://blah.com")
       provider.push_app
     end
 
     example "with :skip_upload_docs option" do
       provider.options.update(:skip_upload_docs => true)
-      expect(provider.context).to receive(:shell).with("python setup.py sdist")
-      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
-      expect(provider.context).to receive(:shell).with("rm -rf dist/*")
+      expect(provider.context).to receive(:shell).with("python setup.py sdist").and_return(true)
+      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
       expect(provider.context).not_to receive(:shell).with("python setup.py upload_docs -r https://upload.pypi.org/legacy/")
       provider.push_app
     end
@@ -69,19 +71,19 @@ describe DPL::Provider::PyPI do
       end
 
       it "runs upload_docs" do
-        expect(provider.context).to receive(:shell).with("python setup.py sdist")
-        expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
-        expect(provider.context).to receive(:shell).with("rm -rf dist/*")
-        expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/")
+        expect(provider.context).to receive(:shell).with("python setup.py sdist").and_return(true)
+        expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
+        expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
+        expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/").and_return(true)
         provider.push_app
       end
 
       example "with :docs_dir option" do
         provider.options.update(:docs_dir => 'some/dir')
-        expect(provider.context).to receive(:shell).with("python setup.py sdist")
-        expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*")
-        expect(provider.context).to receive(:shell).with("rm -rf dist/*")
-        expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir some/dir -r https://upload.pypi.org/legacy/")
+        expect(provider.context).to receive(:shell).with("python setup.py sdist").and_return(true)
+        expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
+        expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
+        expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir some/dir -r https://upload.pypi.org/legacy/").and_return(true)
         provider.push_app
       end
     end
