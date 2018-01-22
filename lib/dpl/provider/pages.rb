@@ -32,7 +32,9 @@ module DPL
       def initialize(context, options)
         super
 
-        @build_dir = File.join(Dir.pwd, options[:local_dir] || '.')
+        @build_dir = File.join(src_dir, options[:local_dir] || '.')
+        print_step "The target dir for deployment is '#{@build_dir}'."
+
         @project_name = options[:project_name] || fqdn || slug
         @target_branch = options[:target_branch] || 'gh-pages'
 
@@ -61,6 +63,10 @@ module DPL
 
       def slug
         options.fetch(:repo) { context.env['TRAVIS_REPO_SLUG'] }
+      end
+
+      def src_dir
+        context.env['TRAVIS_BUILD_DIR'] or Dir.pwd
       end
 
       def keep_history
