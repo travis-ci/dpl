@@ -17,6 +17,7 @@ module DPL
         - project-name [optional, defaults to fqdn or repo slug]
         - email [optional, defaults to deploy@travis-ci.org]
         - name [optional, defaults to Deployment Bot]
+        - deployment-file [optional, defaults to false]
       """
 
       require 'tmpdir'
@@ -48,6 +49,8 @@ module DPL
 
         @gh_email = options[:email] || 'deploy@travis-ci.org'
         @gh_name = "#{options[:name] || 'Deployment Bot'} (from Travis CI)"
+
+        @deployment_file = !!options[:deployment_file]
 
         @gh_ref = "#{@gh_url}/#{slug}.git"
         @gh_remote_url = "https://#{@gh_token}@#{@gh_ref}"
@@ -167,7 +170,7 @@ module DPL
       def github_commit
         committer_name, _ = identify_preferred_committer
         print_step "Preparing to deploy #{@target_branch} branch to gh-pages (workdir: #{Dir.pwd})"
-        context.shell "touch \"deployed at `date` by #{committer_name}\""
+        context.shell "touch \"deployed at `date` by #{committer_name}\"" if @deployment_file
         context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
         context.shell 'git add -A .'
         context.shell "git commit#{@git_commit_opts} -qm 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}'"
