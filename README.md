@@ -2,7 +2,7 @@
 
 ## Writing and Testing a New Deployment Provider and new functionality
 
-See [TESTING.md](TESTING.md).
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ## Supported Providers:
 Dpl supports the following providers:
