@@ -1,17 +1,17 @@
 language: ruby
 rvm:
-- 1.9.3
-- 2.0.0
-- 2.1.5
-- "2.2.5"
-- "2.3.1"
+- "2.2"
+- "2.3"
+- "2.4"
+- "2.5.0"
 
 matrix:
   include:
     - rvm: "2.2.6"
       sudo: required
   allow_failures:
-    - rvm: "2.3.1"
+    - rvm: "2.4"
+    - rvm: "2.5.0"
 
 sudo: false
 
@@ -31,6 +31,3 @@ deploy:
   on:
     repo: travis-ci/dpl
     ruby: 2.2.6
-
-notifications:
-  webhooks: "http://requestb.in/1guaq7t1"

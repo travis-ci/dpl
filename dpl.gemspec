@@ -14,12 +14,12 @@ Gem::Specification.new do |s|
   s.test_files            = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables           = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_path          = 'lib'
-  s.required_ruby_version = '>= 1.9.3'
+  s.required_ruby_version = '>= 2.2.0'
 
   s.add_development_dependency 'rspec', '~> 3.0.0'
   s.add_development_dependency 'rspec-its'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'json', '1.8.3'
+  s.add_development_dependency 'json'
   s.add_development_dependency 'tins', '~> 1.6.0', '>= 1.6.0'
   s.add_development_dependency 'coveralls'
 

@@ -5,7 +5,7 @@ gem 'term-ansicolor', '~> 1.3.2'
 
 platforms :mri_19 do
   gem 'slop', '~> 3.6.0'
-  gem 'ohai', '~> 7.4.0'
+  gem 'ohai'
   gem 'amq-protocol', '~> 1.9.2'
   gem 'net-ssh', '~> 2.9.2'
 end
@@ -50,7 +50,7 @@ group :cloud_files do
   gem 'fog-google', '< 0.1.1', platforms: :mri_19
   gem 'fog-profitbricks', '< 2.0', platforms: :mri_19
   gem 'fog'
-  gem 'nokogiri', '~> 1.6.8.1'
+  gem 'nokogiri'
 end
 
 group :releases do
