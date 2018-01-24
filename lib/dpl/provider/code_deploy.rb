@@ -48,7 +48,7 @@ module DPL
           bucket: option(:bucket),
           key: s3_key
         })
-      rescue Aws::S3::Errors
+      rescue Aws::Errors::ServiceError
         {}
       end
 
