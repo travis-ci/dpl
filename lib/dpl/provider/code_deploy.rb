@@ -75,15 +75,17 @@ module DPL
 
       def push_app
         rev = revision()
-        if rev[:s3_location]
-          rev_info = rev[:s3_location]
+        rev_info = rev[:s3_location]
+
+        if rev_info && rev_info[:version]
           log "Registering app revision with version=#{rev_info[:version]}, etag=#{rev_info[:e_tag]}"
+          code_deploy.register_application_revision({
+            revision:               rev,
+            application_name:       options[:application] || option(:application_name),
+            description:            options[:description] || default_description
+          })
         end
-        code_deploy.register_application_revision({
-          revision:               rev,
-          application_name:       options[:application] || option(:application_name),
-          description:            options[:description] || default_description
-        })
+
         data = code_deploy.create_deployment({
           revision:               revision,
           application_name:       options[:application]      || option(:application_name),
