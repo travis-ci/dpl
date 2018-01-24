@@ -51,7 +51,7 @@ module DPL
               }
             }
           }
-        }
+        }.to_json
       end
 
       def current_sha
@@ -84,7 +84,7 @@ module DPL
           app_id: option(:app_id),
           command: {name: 'deploy'},
           comment: travis_deploy_comment,
-          custom_json: custom_json.to_json
+          custom_json: custom_json
         }
         if !options[:instance_ids].nil?
           deployment_config[:instance_ids] = Array(option(:instance_ids))
