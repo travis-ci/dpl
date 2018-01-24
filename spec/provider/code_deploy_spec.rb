@@ -164,9 +164,9 @@ describe DPL::Provider::CodeDeploy do
     key = "/some/key.#{bundle_type}"
 
     before(:each) do
-      head_data = provider.s3api.stub_data(:head_object, {
+      head_data = provider.s3api.stub(:head_object).and_return({
         version_id: 'object_version_id',
-        etag: 'etag'
+        e_tag: 'etag'
       })
       provider.s3api.stub_responses(:head_object, head_data)
       expect(provider).to receive(:option).with(:bucket).and_return(bucket).twice
@@ -175,16 +175,13 @@ describe DPL::Provider::CodeDeploy do
     end
 
     example do
-      expect(provider.s3_revision).to eq({
-        revision_type: 'S3',
-        s3_location: {
+      expect(provider.s3_revision[:s3_location]).to include(
           bucket: bucket,
           bundle_type: bundle_type,
           key: key,
-          version: 'object_version_id',
+          version_id: 'object_version_id',
           e_tag: 'etag'
-        }
-      })
+        )
     end
   end
 
