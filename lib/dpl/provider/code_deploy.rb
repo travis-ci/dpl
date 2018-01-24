@@ -44,23 +44,22 @@ module DPL
       end
 
       def revision_version_info
-        s3obj = s3api.head_object({
+        s3api.head_object({
           bucket: option(:bucket),
           key: s3_key
         })
+      rescue Aws::S3::Errors
+        {}
       end
 
       def s3_revision
-        s3info = revision_version_info
         {
           revision_type: 'S3',
           s3_location: {
             bucket:      option(:bucket),
             bundle_type: bundle_type,
             key:         s3_key,
-            version:     s3info[:version_id],
-            e_tag:       s3info[:etag]
-          }
+          }.merge( revision_version_info )
         }
       end
 
