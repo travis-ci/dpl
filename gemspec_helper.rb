@@ -15,8 +15,15 @@ def gemspec_for(provider_name=nil, runtime_dependencies=[])
     s.require_path          = 'lib'
     s.required_ruby_version = '>= 2.2'
 
-    # set up version
-    s.version = ENV['DPL_VERSION'] || DPL::VERSION
+    # prereleases from Travis CI
+    if ENV['TRAVIS'] # WeWork custom stuff
+      digits = s.version.to_s.split '.'
+      digits[-1] = digits[-1].to_s.succ
+      s.version = digits.join('.') + ".travis.#{ENV['TRAVIS_JOB_NUMBER']}"
+    else
+      # set up version
+      s.version = ENV['DPL_VERSION'] || DPL::VERSION
+    end
 
     # dependencies
     if provider_name
