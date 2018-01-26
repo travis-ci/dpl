@@ -166,12 +166,12 @@ describe DPL::Provider::CodeDeploy do
     before(:each) do
       head_data = provider.s3api.stub(:head_object).and_return({
         version_id: 'object_version_id',
-        e_tag: 'etag'
+        etag: 'etag'
       })
       provider.s3api.stub_responses(:head_object, head_data)
-      expect(provider).to receive(:option).with(:bucket).and_return(bucket).twice
+      expect(provider).to receive(:option).at_least(1).times.with(:bucket).and_return(bucket)
       expect(provider).to receive(:bundle_type).and_return(bundle_type)
-      expect(provider).to receive(:s3_key).and_return(key).twice
+      expect(provider).to receive(:s3_key).at_least(1).times.and_return(key)
     end
 
     example do
@@ -179,7 +179,7 @@ describe DPL::Provider::CodeDeploy do
           bucket: bucket,
           bundle_type: bundle_type,
           key: key,
-          version_id: 'object_version_id',
+          version: 'object_version_id',
           e_tag: 'etag'
         )
     end

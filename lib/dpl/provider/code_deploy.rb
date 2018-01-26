@@ -53,14 +53,20 @@ module DPL
       end
 
       def s3_revision
-        {
+        info = {
           revision_type: 'S3',
           s3_location: {
             bucket:      option(:bucket),
             bundle_type: bundle_type,
             key:         s3_key,
-          }.merge( revision_version_info )
+          }
         }
+        unless revision_version_info.empty?
+          info[:s3_location][:version] = revision_version_info[:version_id]
+          info[:s3_location][:e_tag]   = revision_version_info[:etag]
+        end
+
+        info
       end
 
       def github_revision
