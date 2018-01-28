@@ -517,7 +517,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Options:
 
 * **github-token**: GitHub oauth token with `repo` permission.
-* **deploy-key**: A base64-encoded [GitHub deploy
+* **deploy-key**: A base64-encoded [GitHub deploy private
   key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
   with write access to the **repo** repository. Note that RSA keys are too long
   to fit into a secure variable, but ECDSA-521 fits.
