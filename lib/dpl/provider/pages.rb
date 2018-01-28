@@ -131,10 +131,16 @@ module DPL
           rescue Octokit::Unauthorized => exc
             error "gh-token is invalid. Details: #{exc}"
           end
-        else
-          unless @gh_deploy_key
-            error "must specify github-token or deploy-key"
+        elsif  @gh_deploy_key
+          Dir.mktmpdir do |tmpdir|
+            github_install_key(tmpdir)
+            context.shell "ssh -T git@#{@gh_url}"
+            if $?.exitstatus == 255
+              error "deploy-key is invalid"
+            end
           end
+        else
+          error "must specify github-token or deploy-key"
         end
       end
 
