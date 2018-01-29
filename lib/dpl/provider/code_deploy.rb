@@ -44,24 +44,29 @@ module DPL
       end
 
       def revision_version_info
-        s3obj = s3api.head_object({
+        s3api.head_object({
           bucket: option(:bucket),
           key: s3_key
         })
+      rescue Aws::Errors::ServiceError
+        {}
       end
 
       def s3_revision
-        s3info = revision_version_info
-        {
+        info = {
           revision_type: 'S3',
           s3_location: {
             bucket:      option(:bucket),
             bundle_type: bundle_type,
             key:         s3_key,
-            version:     s3info[:version_id],
-            e_tag:       s3info[:etag]
           }
         }
+        unless revision_version_info.empty?
+          info[:s3_location][:version] = revision_version_info[:version_id]
+          info[:s3_location][:e_tag]   = revision_version_info[:etag]
+        end
+
+        info
       end
 
       def github_revision
@@ -76,15 +81,17 @@ module DPL
 
       def push_app
         rev = revision()
-        if rev[:s3_location]
-          rev_info = rev[:s3_location]
+        rev_info = rev[:s3_location]
+
+        if rev_info && rev_info[:version]
           log "Registering app revision with version=#{rev_info[:version]}, etag=#{rev_info[:e_tag]}"
+          code_deploy.register_application_revision({
+            revision:               rev,
+            application_name:       options[:application] || option(:application_name),
+            description:            options[:description] || default_description
+          })
         end
-        code_deploy.register_application_revision({
-          revision:               rev,
-          application_name:       options[:application] || option(:application_name),
-          description:            options[:description] || default_description
-        })
+
         data = code_deploy.create_deployment({
           revision:               revision,
           application_name:       options[:application]      || option(:application_name),
