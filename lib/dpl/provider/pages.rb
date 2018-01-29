@@ -62,7 +62,7 @@ module DPL
           @gh_remote_url = "https://#{@gh_token}@#{@gh_ref}"
         else
           # Depend on the key set up in push_app.
-          @gh_remote_url = "git@#{@gh_ref}:#{slug}.git"
+          @gh_remote_url = "git@#{@gh_url}:#{slug}.git"
         end
         @git_push_opts = @keep_history ? '' : ' --force'
         @git_commit_opts = (@allow_empty_commit and @keep_history) ? ' --allow-empty' : ''
@@ -131,13 +131,11 @@ module DPL
           rescue Octokit::Unauthorized => exc
             error "gh-token is invalid. Details: #{exc}"
           end
-        elsif  @gh_deploy_key
-          Dir.mktmpdir do |tmpdir|
-            github_install_key(tmpdir)
-            context.shell "ssh -T git@#{@gh_url}"
-            if $?.exitstatus == 255
-              error "deploy-key is invalid"
-            end
+        elsif @gh_deploy_key
+          github_install_key(".dpl")
+          context.shell "ssh -T git@#{@gh_url}"
+          if $?.exitstatus == 255
+            error "deploy-key is invalid"
           end
         else
           error "must specify github-token or deploy-key"
@@ -155,17 +153,15 @@ module DPL
         log msg if @verbose
       end
 
-      def github_install_key(tmpdir)
-        if @gh_deploy_key
-          gitdir = "#{tmpdir}/git"
-          Dir.mkdir(gitdir)
-          print_step "Decoding git deploy key into #{gitdir}"
-          # Install the key.
-          File.open("#{gitdir}/deploykey", "w", 0600) {|file|
-            file.write Base64.decode64(@gh_deploy_key)
-          }
-          setup_git_ssh("#{gitdir}/git-ssh", "#{gitdir}/deploykey")
-        end
+      def github_install_key(targetdir)
+        gitdir = "#{targetdir}/git"
+        Dir.mkdir(gitdir)
+        print_step "Decoding git deploy key into #{gitdir}"
+        # Install the key.
+        File.open("#{gitdir}/deploykey", "w", 0600) {|file|
+          file.write Base64.decode64(@gh_deploy_key)
+        }
+        setup_git_ssh("#{gitdir}/git-ssh", "#{gitdir}/deploykey")
       end
 
       def github_pull_or_init(target_dir)
@@ -228,8 +224,6 @@ module DPL
         print_step "Starting deployment of #{@target_branch} branch to GitHub Pages..."
         print_step "The deployment is configured to preserve the target branch if it exists on remote" if @keep_history
         Dir.mktmpdir do |tmpdir|
-            github_install_key(tmpdir)
-          
             workdir = "#{tmpdir}/work"
             Dir.mkdir(workdir)
             print_step "Created a temporary work directory #{workdir}"
