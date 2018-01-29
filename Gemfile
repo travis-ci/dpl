@@ -98,3 +98,7 @@ end
 group :opsworks do
   gem 'aws-sdk', '~> 2.10.39', '< 3.0'
 end
+
+group :qingstor do
+  gem 'qingstor-sdk', '= 1.9.3'
+end
