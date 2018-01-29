@@ -8,7 +8,7 @@ module DPL
       # Compatibility with ruby 1.9
       requires 'rack', version: '< 2.0'
       requires 'mime-types', version: '~> 1.16'
-      requires 'chef', version: '< 12.0'
+      requires 'chef'
       requires 'chef', load: 'chef/config'
       requires 'chef', load: 'chef/cookbook_loader'
       requires 'chef', load: 'chef/cookbook_uploader'
