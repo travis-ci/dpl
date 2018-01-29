@@ -132,9 +132,7 @@ module DPL
             error "gh-token is invalid. Details: #{exc}"
           end
         elsif @gh_deploy_key
-          github_install_key(".dpl")
-          context.shell "ssh -T git@#{@gh_url}"
-          if $?.exitstatus == 255
+          unless github_install_key(".dpl")
             error "deploy-key is invalid"
           end
         else
@@ -162,6 +160,9 @@ module DPL
           file.write Base64.decode64(@gh_deploy_key)
         }
         setup_git_ssh("#{gitdir}/git-ssh", "#{gitdir}/deploykey")
+        # Return true if the deploy key actually works.
+        context.shell "ssh -i .dpl/git/deploykey -T git@#{@gh_url}"
+        return $?.exitstatus != 255
       end
 
       def github_pull_or_init(target_dir)
