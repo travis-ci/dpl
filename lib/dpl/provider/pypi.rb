@@ -33,8 +33,8 @@ module DPL
       end
 
       def install_deploy_dependencies
-        unless context.shell "wget -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && " \
-                             "pip install --upgrade setuptools twine wheel"
+        unless context.shell "wget -O - https://bootstrap.pypa.io/get-pip.py | sudo python - --no-setuptools --no-wheel && " \
+                             "sudo pip install --upgrade setuptools twine wheel"
           error "Couldn't install pip, setuptools, twine or wheel."
         end
       end
