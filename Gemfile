@@ -15,6 +15,7 @@ group :heroku do
   gem 'heroku-api', '= 0.3.16'
   gem 'anvil-cli', '~> 0.16.1'
   gem 'netrc'
+  gem 'faraday'
 end
 
 group :openshift do
@@ -28,20 +29,20 @@ group :appfog do
 end
 
 group :rubygems do
-  gem 'gems'
+  gem 'gems', '~> 0.8.3'
 end
 
 group :sss do
-  gem 'aws-sdk', '~> 2.6.32'
+  gem 'aws-sdk', '~> 2.10.39', '< 3.0'
   gem 'mime-types'
 end
 
 group :code_deploy do
-  gem 'aws-sdk', '~> 2.6.32'
+  gem 'aws-sdk', '~> 2.10.39', '< 3.0'
 end
 
 group :lambda do
-  gem 'aws-sdk', '~> 2.6.32'
+  gem 'aws-sdk', '~> 2.10.39', '< 3.0'
   gem 'rubyzip', '~> 1.1'
 end
 
@@ -49,6 +50,7 @@ group :cloud_files do
   gem 'fog-google', '< 0.1.1', platforms: :mri_19
   gem 'fog-profitbricks', '< 2.0', platforms: :mri_19
   gem 'fog'
+  gem 'nokogiri', '~> 1.6.8.1'
 end
 
 group :releases do
@@ -61,8 +63,8 @@ group :gcs do
 end
 
 group :elastic_beanstalk do
+  gem 'aws-sdk', '~> 2.10.39', '< 3.0'
   gem 'rubyzip', '~> 1.1'
-  gem 'aws-sdk-v1'
 end
 
 group :bitballoon do
@@ -94,5 +96,5 @@ group :deis do
 end
 
 group :opsworks do
-  gem 'aws-sdk', '~> 2.6.32'
+  gem 'aws-sdk', '~> 2.10.39', '< 3.0'
 end

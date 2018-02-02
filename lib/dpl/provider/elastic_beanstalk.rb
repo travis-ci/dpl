@@ -5,7 +5,7 @@ module DPL
     class ElasticBeanstalk < Provider
       experimental 'AWS Elastic Beanstalk'
 
-      requires 'aws-sdk-v1'
+      requires 'aws-sdk', version: '~> 2.0'
       requires 'rubyzip', :load => 'zip'
 
       DEFAULT_REGION = 'us-east-1'
@@ -23,7 +23,11 @@ module DPL
       end
 
       def check_auth
-        AWS.config(access_key_id: access_key_id, secret_access_key: secret_access_key, region: region)
+        options = {
+          :region      => region,
+          :credentials => Aws::Credentials.new(access_key_id, secret_access_key)
+        }
+        Aws.config.update(options)
       end
 
       def check_app
@@ -38,7 +42,7 @@ module DPL
         create_bucket unless bucket_exists?
 
         if options[:zip_file]
-          zip_file = File.join(Dir.pwd, options[:zip_file])
+          zip_file = File.expand_path(options[:zip_file])
         else
           zip_file = create_zip
         end
@@ -87,19 +91,19 @@ module DPL
       end
 
       def s3
-        @s3 ||= AWS::S3.new
+        @s3 ||= Aws::S3::Resource.new
       end
 
       def eb
-        @eb ||= AWS::ElasticBeanstalk.new.client
+        @eb ||= Aws::ElasticBeanstalk::Client.new
       end
 
       def bucket_exists?
-        s3.buckets.map(&:name).include? bucket_name
+        s3.bucket(bucket_name).exists?
       end
 
       def create_bucket
-        s3.buckets.create(bucket_name)
+        s3.bucket(bucket_name).create
       end
 
       def files_to_pack
@@ -120,9 +124,12 @@ module DPL
       end
 
       def upload(key, file)
-        obj = s3.buckets[bucket_name]
-        obj = bucket_path ? obj.objects["#{bucket_path}#{key}"] : obj.objects[key]
-        obj.write(Pathname.new(file))
+        options = {
+          :body => Pathname.new(file).open
+        }
+        bucket = s3.bucket(bucket_name)
+        obj = bucket_path ? bucket.object("#{bucket_path}#{key}") : bucket.object(key)
+        obj.put(options)
         obj
       end
 
