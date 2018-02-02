@@ -21,12 +21,7 @@ module DPL
         @username = option(:username)
         @token = option(:token)
         @repo = option(:repository)
-        if option(:dist)
-          @dist = option(:dist)
-        elsif option(:distro)
-          @dist = option(:distro)
-        end
-        log "Using dist #{@dist}"
+        @dist = option(:dist)
         @creds = ::Packagecloud::Credentials.new(@username, @token)
         log "Logging into https://packagecloud.io with #{@username}:#{@token[-4..-1].rjust(20, '*')}"
       end
