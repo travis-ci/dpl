@@ -47,7 +47,7 @@ module DPL
         end
 
         s3_object = upload(archive_name, zip_file)
-        sleep 50 #s3 eventual consistency
+        sleep 5 #s3 eventual consistency
         version = create_app_version(s3_object)
         if !only_create_app_version
           update_app(version)
