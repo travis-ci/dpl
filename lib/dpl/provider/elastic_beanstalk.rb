@@ -51,6 +51,7 @@ module DPL
         version = create_app_version(s3_object)
         if !only_create_app_version
           update_app(version)
+          puts ">>>>>>>> wait_until_deployed: #{options[:wait_until_deployed]} <<<<<"
           wait_until_deployed if options[:wait_until_deployed]
         end
       end
