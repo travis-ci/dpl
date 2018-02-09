@@ -53,7 +53,6 @@ module DPL
         wait_until_deployed if options[:wait_until_deployed]
         if !only_create_app_version
           update_app(version)
-          wait_until_deployed if options[:wait_until_deployed]
         end
         puts ">>>>>>>> got here first <<<<<<<<"
       end
@@ -222,7 +221,12 @@ module DPL
           :version_label     => version[:application_version][:version_label]
         }
         wait_until_deployed if options[:wait_until_deployed]
-        eb.update_environment(options)
+        begin
+          eb.update_environment(options)
+        rescue ::Aws::ElasticBeanstalk::Errors => e
+          # Catching these failures because they do not stop a deployment
+          puts e.message
+        end
       end
     end
   end
