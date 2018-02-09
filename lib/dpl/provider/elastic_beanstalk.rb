@@ -223,7 +223,7 @@ module DPL
         wait_until_deployed if options[:wait_until_deployed]
         begin
           eb.update_environment(options)
-        rescue ::Aws::ElasticBeanstalk::Errors => e
+        rescue Aws::ElasticBeanstalk::Errors::ServiceError => e
           # Catching these failures because they do not stop a deployment
           puts e.message
         end
