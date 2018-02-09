@@ -197,7 +197,7 @@ module DPL
       end
 
       context.fold("Deploying application") { push_app }
-      puts ">>>>>>>> got here <<<<<<<<"
+
       Array(options[:run]).each do |command|
         if command == 'restart'
           context.fold("Restarting application") { restart }
@@ -205,6 +205,7 @@ module DPL
           context.fold("Running %p" % command) { run(command) }
         end
       end
+      puts ">>>>>>>> Deployment Completed <<<<<<<<"
     ensure
       if needs_key?
         remove_key rescue nil
