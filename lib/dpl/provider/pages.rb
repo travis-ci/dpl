@@ -33,7 +33,7 @@ module DPL
       def initialize(context, options)
         super
 
-        @build_dir = File.join(src_dir, options[:local_dir] || '.')
+        @build_dir = File.absolute_path(options[:local_dir] || '.', src_dir)
         print_step "The target dir for deployment is '#{@build_dir}'."
 
         @project_name = options[:project_name] || fqdn || slug
