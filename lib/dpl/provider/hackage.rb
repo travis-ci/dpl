@@ -20,10 +20,9 @@ module DPL
       def push_app
         context.shell "cabal sdist" or raise Error, "cabal sdist failed"
         Dir.glob("dist/*.tar.gz") do |tar|
-          context.shell "cabal upload --username=#{option(:username)} --password=#{option(:password)} #{tar}"
+          context.shell "cabal upload --publish --username=#{option(:username)} --password=#{option(:password)} #{tar}"
         end
       end
     end
   end
 end
-
