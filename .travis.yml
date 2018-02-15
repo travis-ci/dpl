@@ -16,6 +16,7 @@ before_install:
   - gem update bundler
 
 script:
+  - gem build dpl.gemspec && gem install dpl-*.gem
   - |
     for f in dpl-*.gemspec; do
       base=${f%*.gemspec}; name=${base#dpl-*}
