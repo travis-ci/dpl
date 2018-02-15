@@ -4,6 +4,10 @@ rvm:
 - "2.2.9"
 - "2.3.6"
 
+env:
+  global:
+    - PREREQUISITE_PROVIDERS="cloud_foundry"
+
 matrix:
   allow_failures:
     - rvm: "1.9.3"
@@ -18,9 +22,13 @@ before_install:
 script:
   - gem build dpl.gemspec && gem install dpl-*.gem
   - |
+    for p in $PREREQUISITE_PROVIDERS; do
+      gem build dpl-${p}.gemspec && gem install dpl-${p}-*.gem
+    done
+  - |
     for f in dpl-*.gemspec; do
       base=${f%*.gemspec}; name=${base#dpl-*}
-      gem build $f && gem install dpl-${name}-*.gem && dpl --provider=${name} --skip-cleanup=true || true
+      gem build $f && gem install dpl-${name}-*.gem && ( yes | dpl --provider=${name} --skip-cleanup=true ) || true
     done
   # - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'
 
