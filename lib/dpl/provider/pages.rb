@@ -1,3 +1,5 @@
+require 'octokit'
+
 module DPL
   class Provider
     class Pages < Provider
@@ -21,13 +23,6 @@ module DPL
       """
 
       require 'tmpdir'
-
-      if RUBY_VERSION >= "2.0.0"
-        requires 'octokit', version: '~> 4.6.2'
-      else
-        requires 'octokit', version: '~> 4.3.0'
-      end
-
       experimental 'GitHub Pages'
 
       def initialize(context, options)

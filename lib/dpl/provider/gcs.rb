@@ -1,11 +1,9 @@
 require 'kconv'
+require 'gstore'
 
 module DPL
   class Provider
     class GCS < Provider
-      requires 'gstore'
-      requires 'mime-types', version: '~> 2.0'
-
       def needs_key?
         false
       end

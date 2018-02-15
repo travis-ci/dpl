@@ -1,9 +1,8 @@
+require 'packagecloud'
+
 module DPL
   class Provider
     class Packagecloud < Provider
-      requires 'json_pure', :version => '< 2.0', :load => 'json/pure'
-      requires 'packagecloud-ruby', :version => "1.0.5", :load => 'packagecloud'
-
       def check_auth
         setup_auth
         begin

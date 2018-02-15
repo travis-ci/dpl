@@ -1,13 +1,12 @@
 require 'json'
 require 'tempfile'
 require 'fileutils'
+require 'aws-sdk'
+require 'zip'
 
 module DPL
   class Provider
     class Lambda < Provider
-      requires 'aws-sdk', version: '~> 2.0'
-      requires 'rubyzip', load: 'zip'
-
       def lambda
         @lambda ||= ::Aws::Lambda::Client.new(lambda_options)
       end
@@ -26,7 +25,7 @@ module DPL
         # whether to update the code or create a new function
 
         function_name = options[:name] || option(:function_name)
-        
+
         begin
           response = lambda.get_function({function_name: function_name})
 
