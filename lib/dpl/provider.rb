@@ -66,7 +66,7 @@ module DPL
         rescue NameError, LoadError
           install_cmd = "gem install dpl-#{opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
 
-          if File.exist?(local_gem = File.join(File.dirname(__FILE__), '../..', "dpl-#{opt_lower}-*.gem"))
+          if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
             install_cmd = "gem install #{local_gem}"
           end
 
