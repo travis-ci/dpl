@@ -63,8 +63,15 @@ module DPL
         begin
           provider = const_get(name).new(context, options)
         rescue NameError
-          context.shell "gem install dpl-#{opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
-          require "dpl/provider/#{opt}"
+          install_cmd = "gem install dpl-#{opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
+
+          if File.exist?(File.join(File.dirname(__FILE__), '../..', "dpl-#{opt_lower}-*.gem"
+            install_cmd += " --local"
+          end
+
+          context.shell install_cmd
+
+          require "dpl/provider/#{opt_lower}"
 
           provider = const_get(name).new(context, options)
         end
