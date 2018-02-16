@@ -55,14 +55,15 @@ module DPL
       return super if self < Provider
 
       context.fold("Installing deploy dependencies") do
-        opt = super.option(:provider).to_s.downcase.gsub(/[^a-z0-9]/, '')
+        opt_lower = super.option(:provider).to_s.downcase
+        opt = opt_lower.gsub(/[^a-z0-9]/, '')
         name = PROVIDERS.detect { |p| p.to_s.downcase == opt }
         raise Error, "could not find provider %p" % opt unless name
 
         begin
           provider = const_get(name).new(context, options)
         rescue NameError
-          context.shell "gem install dpl-#{opt} -v #{DPL::VERSION}"
+          context.shell "gem install dpl-#{opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
           require "dpl/provider/#{opt}"
 
           provider = const_get(name).new(context, options)

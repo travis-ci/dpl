@@ -16,15 +16,7 @@ def gemspec_for(provider_name=nil, runtime_dependencies=[])
     s.required_ruby_version = '>= 2.2'
 
     # set up version
-    version = DPL::VERSION
-    # prereleases from Travis CI
-    if ENV['CI']
-      digits = version.to_s.split '.'
-      digits[-1] = digits[-1].to_s.succ
-      version = digits.join('.') + ".travis.#{ENV['TRAVIS_JOB_NUMBER']}"
-    end
-
-    s.version = version
+    s.version = ENV['DPL_VERSION'] || DPL::VERSION
 
     # dependencies
     if provider_name
