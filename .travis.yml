@@ -29,7 +29,7 @@ script:
   - |
     for f in dpl-*.gemspec; do
       base=${f%*.gemspec}; name=${base#dpl-*}
-      gem build $f && gem install dpl-${name}-*.gem && ( yes | dpl --provider=${name} --skip-cleanup=true ) || true
+      gem build $f && gem install dpl-${name}-*.gem --local && ( yes | dpl --provider=${name} --skip-cleanup=true ) || true
     done
   # - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'
 

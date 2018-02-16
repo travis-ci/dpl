@@ -6,50 +6,50 @@ module DPL
   class Provider
     include FileUtils
 
-    PROVIDERS = %w(
-      Anynines
-      Appfog
-      Atlas
-      AzureWebApps
-      Bintray
-      BitBalloon
-      BluemixCloudFoundry
-      Boxfuse
-      Catalyze
-      ChefSupermarket
-      Cloud66
-      CloudFiles
-      CloudFoundry
-      CodeDeploy
-      Deis
-      Divshot
-      ElasticBeanstalk
-      EngineYard
-      Firebase
-      GAE
-      GCS
-      Hackage
-      Heroku
-      Lambda
-      Launchpad
-      Modulus
-      Nodejitsu
-      NPM
-      Openshift
-      OpsWorks
-      Packagecloud
-      Pages
-      PuppetForge
-      PyPI
-      Releases
-      RubyGems
-      S3
-      Scalingo
-      Script
-      Surge
-      TestFairy
-      Transifex
-    )
+    PROVIDERS = {
+      'Anynines'            => 'anynines',
+      'Appfog'              => 'appfog',
+      'Atlas'               => 'atlas',
+      'AzureWebApps'        => 'azure_webapps',
+      'Bintray'             => 'bintray',
+      'BitBalloon'          => 'bitballoon',
+      'BluemixCloudFoundry' => 'bluemix_cloud_foundry',
+      'Boxfuse'             => 'boxfuse',
+      'Catalyze'            => 'catalyze',
+      'ChefSupermarket'     => 'chef_supermarket',
+      'Cloud66'             => 'cloud66',
+      'CloudFiles'          => 'cloud_files',
+      'CloudFoundry'        => 'cloud_foundry',
+      'CodeDeploy'          => 'cloud_deploy',
+      'Deis'                => 'deis',
+      'Divshot'             => 'divshot',
+      'ElasticBeanstalk'    => 'elastic_beanstalk',
+      'EngineYard'          => 'engine_yard',
+      'Firebase'            => 'firebase',
+      'GAE'                 => 'gae',
+      'GCS'                 => 'gcs',
+      'Hackage'             => 'hackage',
+      'Heroku'              => 'heroku',
+      'Lambda'              => 'lambda',
+      'Launchpad'           => 'launchpad',
+      'Modulus'             => 'modulus',
+      'Nodejitsu'           => 'nodejitsu',
+      'NPM'                 => 'npm',
+      'Openshift'           => 'openshift',
+      'OpsWorks'            => 'ops_works',
+      'Packagecloud'        => 'packagecloud',
+      'Pages'               => 'pages',
+      'PuppetForge'         => 'puppet_forge',
+      'PyPI'                => 'pypi',
+      'Releases'            => 'releases',
+      'RubyGems'            => 'rubygems',
+      'S3'                  => 's3',
+      'Scalingo'            => 'scalingo',
+      'Script'              => 'script',
+      'Surge'               => 'surge',
+      'TestFairy'           => 'testfairy',
+      'Transifex'           => 'transifex',
+    }
 
     def self.new(context, options)
       return super if self < Provider
@@ -57,20 +57,24 @@ module DPL
       context.fold("Installing deploy dependencies") do
         opt_lower = super.option(:provider).to_s.downcase
         opt = opt_lower.gsub(/[^a-z0-9]/, '')
-        name = PROVIDERS.detect { |p| p.to_s.downcase == opt }
+        name = PROVIDERS.keys.detect { |p| p.to_s.downcase == opt }.tap {|x| puts "name: #{x}"}
         raise Error, "could not find provider %p" % opt unless name
 
         begin
           require "dpl/provider/#{opt_lower}"
           provider = const_get(name).new(context, options)
-        rescue NameError, LoadError
-          install_cmd = "gem install dpl-#{opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
+        rescue NameError, LoadError => e
+          if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message
+            provider_name = PROVIDERS[provider_wanted]
+          end
+          install_cmd = "gem install dpl-#{PROVIDERS[provider_name] || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
 
-          if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
+          if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{PROVIDERS[provider_name] || opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
             install_cmd = "gem install #{local_gem}"
           end
 
-          context.shell install_cmd
+          context.shell(install_cmd.tap {|cmd| $stderr.puts "Running #{cmd}"})
+          Gem.clear_paths
 
           require "dpl/provider/#{opt_lower}"
           provider = const_get(name).new(context, options)
