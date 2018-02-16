@@ -20,7 +20,7 @@ def gemspec_for(provider_name=nil, runtime_dependencies=[])
 
     # dependencies
     if provider_name
-      s.add_runtime_dependency 'dpl', version
+      s.add_runtime_dependency 'dpl', s.version
     end
 
     runtime_dependencies.each do |part|
