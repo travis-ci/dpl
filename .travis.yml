@@ -7,7 +7,7 @@ rvm:
 env:
   global:
     - PREREQUISITE_PROVIDERS="cloud_foundry"
-    - DPL_VERSION=$(ruby -I lib -r dpl/version.rb -e "puts DPL::VERSION.succ").travis.${TRAVIS_JOB_NUMBER}
+    - DPL_VERSION=$(ruby -I lib -r dpl/version.rb -e "puts DPL::VERSION.succ + \".travis.ENV['TRAVIS_JOB_NUMBER']\"")
 
 matrix:
   allow_failures:
