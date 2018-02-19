@@ -1,4 +1,5 @@
 require 'time'
+require 'engineyard-cloud-client'
 
 module DPL
   class Provider
