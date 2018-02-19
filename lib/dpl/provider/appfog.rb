@@ -1,5 +1,3 @@
-require 'af'
-
 module DPL
   class Provider
     class Appfog < Provider
