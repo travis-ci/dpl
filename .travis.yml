@@ -28,6 +28,18 @@ script:
       echo -e "\n${ANSI_GREEN}${base}${ANSI_RESET}\n"
       travis_fold start dpl-${name}
       travis_time_start
+      bundle exec rspec spec/provider/${name}_spec.rb || let no_err=$no_err+1
+      travis_time_finish
+      travis_fold end dpl-${name}
+    done
+    test $no_err -eq 0
+  - |
+    no_err=0
+    for f in dpl-*.gemspec; do
+      base=${f%*.gemspec}; name=${base#dpl-*}
+      echo -e "\n${ANSI_GREEN}${base}${ANSI_RESET}\n"
+      travis_fold start dpl-${name}
+      travis_time_start
       gem build --silent $f && gem install dpl-${name}-*.gem && ( dpl --provider=${name} --no-deploy ) || let no_err=$no_err+1
       travis_time_finish
       travis_fold end dpl-${name}
