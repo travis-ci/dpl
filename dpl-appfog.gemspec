@@ -1,3 +1,3 @@
 require './gemspec_helper'
 
-gemspec_for 'appfog', [['json_pure'], ['af']]
+gemspec_for 'appfog', [['af']]
