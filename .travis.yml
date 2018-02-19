@@ -26,7 +26,7 @@ script:
     for f in dpl-*.gemspec; do
       base=${f%*.gemspec}; name=${base#dpl-*}
       echo -e "\n${ANSI_GREEN}${base}${ANSI_RESET}\n"
-      gem build $f && gem install --silent dpl-${name}-*.gem && ( yes | dpl --provider=${name} --skip-cleanup=true ) || let no_err=$no_err+1
+      gem build --silent $f && gem install --silent dpl-${name}-*.gem && ( yes | dpl --provider=${name} --skip-cleanup=true ) || let no_err=$no_err+1
     done
     test $no_err -eq 0
   # - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'
