@@ -6,7 +6,6 @@ rvm:
 
 env:
   global:
-    - PREREQUISITE_PROVIDERS="cloud_foundry"
     - DPL_VERSION=$(ruby -I lib -r dpl/version.rb -e "puts DPL::VERSION.succ + \".travis.#{ENV['TRAVIS_JOB_NUMBER']}\"")
 
 matrix:
@@ -22,10 +21,6 @@ before_install:
 
 script:
   - gem build dpl.gemspec && gem install dpl-*.gem
-  - |
-    for p in $PREREQUISITE_PROVIDERS; do
-      gem build dpl-${p}.gemspec && gem install dpl-${p}-*.gem
-    done
   - |
     for f in dpl-*.gemspec; do
       base=${f%*.gemspec}; name=${base#dpl-*}
