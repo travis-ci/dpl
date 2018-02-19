@@ -1,5 +1,5 @@
 require 'dpl/provider'
-  require 'fog-rackspace'
+require 'fog/rackspace'
 
 module DPL
   class Provider
