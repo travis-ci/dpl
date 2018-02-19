@@ -80,8 +80,12 @@ module DPL
           provider = const_get(name).new(context, options)
         end
 
-        # raise Error, 'could not find provider %p' % options[:provider] unless name = constants.detect { |c| c.to_s.downcase == provider }
-        provider.install_deploy_dependencies
+        if options[:no_deploy]
+          def provider.deploy; end
+        else
+          provider.install_deploy_dependencies
+        end
+
         provider
       end
     end
