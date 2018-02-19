@@ -20,29 +20,26 @@ before_install:
   - gem update bundler
 
 script:
-  - gem build dpl.gemspec && gem install dpl-*.gem
+  - bundle exec rspec spec/cli_spec.rb spec/provider_spec.rb
+    - gem build dpl.gemspec && gem install dpl-*.gem
+  - echo -e "\n${ANSI_GREEN}Run specs${ANSI_RESET}"
   - |
-    no_err=0
-    for f in spec/provider/*_spec.rb; do
-      base=${f%_spec.rb}; name=${base#spec/provider/*}
+    spec_errors=0
+    for f in dpl-*.gemspec; do
+      base=${f%*.gemspec}; name=${base#dpl-*}
       echo -e "\n${ANSI_GREEN}${base}${ANSI_RESET}\n"
-      travis_fold start ${name}
-      travis_time_start
-      bundle exec rspec $f || let no_err=$no_err+1
-      travis_time_finish
-      travis_fold end ${name}
+      echo "gemspec :name => \"dpl-${name}\"" > Gemfile-${name}
+      bundle install --gemfile Gemfile-${name} && bundle exec rspec spec/provider/${name}_spec.rb || let spec_errors=$spec_errors+1
     done
-    test $no_err -eq 0
+    test $spec_errors -eq 0
+  - echo -e "\n${ANSI_GREEN}Install gem and invoke dpl${ANSI_RESET}"
   - |
     no_err=0
     for f in dpl-*.gemspec; do
       base=${f%*.gemspec}; name=${base#dpl-*}
       echo -e "\n${ANSI_GREEN}${base}${ANSI_RESET}\n"
-      travis_fold start dpl-${name}
-      travis_time_start
+      echo "gemspec :name => \"dpl-${name}\"" > Gemfile-${name}
       gem build --silent $f && gem install dpl-${name}-*.gem && ( dpl --provider=${name} --no-deploy ) || let no_err=$no_err+1
-      travis_time_finish
-      travis_fold end dpl-${name}
     done
     test $no_err -eq 0
   # - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'

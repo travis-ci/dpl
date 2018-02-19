@@ -19,37 +19,6 @@ describe DPL::Provider do
     end
   end
 
-  describe "#requires" do
-    before do
-      expect(example_provider).to receive(:require).with("foo")
-    end
-
-    example "installed" do
-      expect(example_provider).to receive(:gem).with("foo", "~> 1.4")
-      example_provider.requires("foo", :version => "~> 1.4")
-    end
-
-    example "missing" do
-      expect(example_provider).to receive(:gem).with("foo", "~> 1.4").and_raise(LoadError)
-      expect(example_provider.context).to receive(:shell).with('gem install foo -v "~> 1.4" --no-ri --no-rdoc ', retry: true)
-      example_provider.requires("foo", :version => "~> 1.4")
-    end
-  end
-
-  describe "#apt_get" do
-    example "installed" do
-      expect(example_provider).to receive(:`).with("which foo").and_return("/bin/foo\n")
-      expect(example_provider).not_to receive(:system)
-      example_provider.apt_get("foo")
-    end
-
-    example "missing" do
-      expect(example_provider).to receive(:`).with("which foo").and_return("")
-      expect(example_provider.context).to receive(:shell).with("sudo apt-get -qq install foo", retry: true)
-      example_provider.apt_get("foo")
-    end
-  end
-
   describe "#pip" do
     example "installed" do
       expect(example_provider).to receive(:`).with("which foo").and_return("/bin/foo\n")
