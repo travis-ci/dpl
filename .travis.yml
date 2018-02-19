@@ -26,9 +26,11 @@ script:
     for f in dpl-*.gemspec; do
       base=${f%*.gemspec}; name=${base#dpl-*}
       echo -e "\n${ANSI_GREEN}${base}${ANSI_RESET}\n"
+      travis_fold start dpl-${name}
       travis_time_start
       gem build --silent $f && gem install dpl-${name}-*.gem && ( dpl --provider=${name} --no-deploy ) || let no_err=$no_err+1
       travis_time_finish
+      travis_fold end dpl-${name}
     done
     test $no_err -eq 0
   # - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'
