@@ -1,4 +1,4 @@
-require 'json/pue'
+require 'json/pure'
 require 'puppet/face'
 require 'puppet_blacksmith'
 
