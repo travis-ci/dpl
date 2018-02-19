@@ -1,6 +1,6 @@
 require 'httpclient'
-require 'net-ssh'
-require 'net-ssh-gateway'
+require 'net/ssh'
+require 'net/ssh/gateway'
 
 module DPL
   class Provider
