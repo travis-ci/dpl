@@ -40,7 +40,6 @@ script:
     for f in dpl-*.gemspec; do
       base=${f%*.gemspec}; name=${base#dpl-*}
       echo -e "\n${ANSI_GREEN}${base}${ANSI_RESET}\n"
-      echo "gemspec :name => \"dpl-${name}\"" > Gemfile-${name}
       gem build --silent $f && gem install dpl-${name}-*.gem && ( dpl --provider=${name} --no-deploy ) || let no_err=$no_err+1
     done
     test $no_err -eq 0
