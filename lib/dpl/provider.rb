@@ -78,6 +78,8 @@ module DPL
 
           require "dpl/provider/#{opt_lower}"
           provider = const_get(name).new(context, options)
+        rescue DPL::Error
+          provider = const_get(opt_lower).new(context, options)
         end
 
         if options[:no_deploy]
