@@ -36,7 +36,6 @@ module DPL
 
         @gh_fqdn = fqdn
         @gh_url = options[:github_url] || 'github.com'
-        @gh_token = option(:github_token)
         @keep_history = !!keep_history
         @allow_empty_commit = !!allow_empty_commit
         @committer_from_gh = !!committer_from_gh
@@ -48,11 +47,18 @@ module DPL
         @deployment_file = !!options[:deployment_file]
 
         @gh_ref = "#{@gh_url}/#{slug}.git"
-        @gh_remote_url = "https://#{@gh_token}@#{@gh_ref}"
         @git_push_opts = @keep_history ? '' : ' --force'
         @git_commit_opts = (@allow_empty_commit and @keep_history) ? ' --allow-empty' : ''
 
         print_step "The repo is configured to use committer user and email." if @committer_from_gh
+      end
+
+      def gh_token
+        @gh_token ||= option(:github_token)
+      end
+
+      def gh_remote_url
+        @gh_remote_url ||= "https://#{gh_token}@#{@gh_ref}"
       end
 
       def fqdn
