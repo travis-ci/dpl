@@ -31,7 +31,7 @@ def gemspec_for(provider_name=nil, runtime_dependencies=[])
     s.add_development_dependency 'rspec-its'
     s.add_development_dependency 'rake'
     s.add_development_dependency 'json_pure'
-    s.add_development_dependency 'tins', '~> 1.6.0', '>= 1.6.0'
+    s.add_development_dependency 'tins'
     s.add_development_dependency 'coveralls'
 
     # set up files
