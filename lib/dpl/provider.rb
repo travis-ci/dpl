@@ -55,12 +55,12 @@ module DPL
       return super if self < Provider
 
       context.fold("Installing deploy dependencies") do
-        opt_lower = super.option(:provider).to_s.downcase
-        opt = opt_lower.gsub(/[^a-z0-9]/, '')
-        name = PROVIDERS.keys.detect { |p| p.to_s.downcase == opt }.tap {|x| puts "name: #{x}"}
-        raise Error, "could not find provider %p" % opt unless name
-
         begin
+          opt_lower = super.option(:provider).to_s.downcase
+          opt = opt_lower.gsub(/[^a-z0-9]/, '')
+          name = PROVIDERS.keys.detect { |p| p.to_s.downcase == opt }.tap {|x| puts "name: #{x}"}
+          raise Error, "could not find provider %p" % opt unless name
+
           require "dpl/provider/#{opt_lower}"
           provider = const_get(name).new(context, options)
         rescue NameError, LoadError => e
@@ -79,7 +79,7 @@ module DPL
           require "dpl/provider/#{opt_lower}"
           provider = const_get(name).new(context, options)
         rescue DPL::Error
-          provider = const_get(opt_lower).new(context, options)
+          provider = const_get(opt_lower.capitalize).new(context, options) if opt_lower
         end
 
         if options[:no_deploy]
