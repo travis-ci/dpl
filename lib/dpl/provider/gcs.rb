@@ -1,5 +1,6 @@
 require 'kconv'
 require 'gstore'
+require 'mime-types'
 
 module DPL
   class Provider
@@ -29,7 +30,7 @@ module DPL
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           Dir.glob(*glob_args) do |filename|
             next if File.directory?(filename)
-            content_type = ::MIME::Types.type_for(filename).first.to_s
+            content_type = MIME::Types.type_for(filename).first.to_s
             opts                  = { :"Content-Type" => content_type }.merge(encoding_option_for(filename))
             opts["Cache-Control"] = options[:cache_control] if options[:cache_control]
             opts["x-goog-acl"]    = options[:acl] if options[:acl]
