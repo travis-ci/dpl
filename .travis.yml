@@ -21,6 +21,9 @@ cache:
 before_install:
   - gem update bundler
 
+install:
+  - bundle install --jobs=3 --retry=3 --path=vendor/cache/dpl
+
 script:
   - bundle exec rspec spec/cli_spec.rb spec/provider_spec.rb
   - gem build dpl.gemspec && gem install dpl-*.gem
