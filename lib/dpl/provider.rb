@@ -79,7 +79,11 @@ module DPL
           require "dpl/provider/#{opt_lower}"
           provider = const_get(name).new(context, options)
         rescue DPL::Error
-          provider = const_get(opt.capitalize).new(context, options) if opt_lower
+          if opt_lower
+            provider = const_get(opt.capitalize).new(context, options)
+          else
+            raise Error, 'missing provider'
+          end
         end
 
         if options[:no_deploy]
