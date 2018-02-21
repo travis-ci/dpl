@@ -85,7 +85,7 @@ module DPL
         if options[:no_deploy]
           def provider.deploy; end
         else
-          provider.install_deploy_dependencies
+          provider.install_deploy_dependencies if provider.respond_to? :install_deploy_dependencies
         end
 
         provider
