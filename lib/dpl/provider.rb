@@ -58,7 +58,7 @@ module DPL
         begin
           opt_lower = super.option(:provider).to_s.downcase
           opt = opt_lower.gsub(/[^a-z0-9]/, '')
-          name = PROVIDERS.keys.detect { |p| p.to_s.downcase == opt }.tap {|x| puts "name: #{x}"}
+          name = PROVIDERS.keys.detect { |p| p.to_s.downcase == opt }
           raise Error, "could not find provider %p" % opt unless name
 
           require "dpl/provider/#{opt_lower}"
@@ -73,7 +73,7 @@ module DPL
             install_cmd = "gem install #{local_gem}"
           end
 
-          context.shell(install_cmd.tap {|cmd| $stderr.puts "Running #{cmd}"})
+          context.shell(install_cmd)
           Gem.clear_paths
 
           require "dpl/provider/#{opt_lower}"
