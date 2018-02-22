@@ -22,6 +22,7 @@ jobs:
         on:
           repo: travis-ci/dpl
           rvm: 2.3.6
+          branch: v1.9
 
 env:
   global:
