@@ -8,6 +8,7 @@ rvm:
 jobs:
   include:
     - stage: deploy
+      rvm: "2.3.6"
       install: true
       script: true
       deploy:
