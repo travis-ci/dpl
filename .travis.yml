@@ -20,7 +20,7 @@ jobs:
         edge:
           branch: v1.9
         gemspec_glob: 'dpl*.gemspec'
-        host: localhost
+        host: https://localhost
         on:
           repo: travis-ci/dpl
           rvm: 2.3.6
