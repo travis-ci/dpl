@@ -8,8 +8,8 @@ rvm:
 jobs:
   include:
     - stage: deploy
-      install: skip
-      script: skip
+      install: true
+      script: true
       deploy:
         provider: rubygems
         api_key:
