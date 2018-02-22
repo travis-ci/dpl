@@ -267,6 +267,7 @@ For authentication you can also use Travis CI secure environment variable:
 #### Options:
 
 * **api-key**: Rubygems Api Key.
+* **gemspec_glob**: Optional. A glob pattern to search for gemspec files when multiple gems are generated in the repository.
 
 #### Examples:
 
