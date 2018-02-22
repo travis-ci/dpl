@@ -1,8 +1,9 @@
 language: ruby
 rvm:
-- "1.9.3"
 - "2.2.9"
 - "2.3.6"
+- "2.4"
+- "2.5"
 
 jobs:
   include:
@@ -25,10 +26,6 @@ jobs:
 env:
   global:
     - DPL_VERSION=$(ruby -I lib -r dpl/version.rb -e "puts DPL::VERSION.succ + \".travis.#{ENV['TRAVIS_JOB_NUMBER']}\"")
-
-matrix:
-  allow_failures:
-    - rvm: "1.9.3"
 
 sudo: false
 
