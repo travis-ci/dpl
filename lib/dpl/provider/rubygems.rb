@@ -37,7 +37,7 @@ module DPL
       def push_app
         setup_auth
         setup_gem
-        context.shell "gem build #{gemspec || option(:gem)}.gemspec"
+        context.shell "for f in #{gemspec_glob}; do gem build $f; done"
         Dir.glob("#{gemspec || option(:gem)}-*.gem") do |f|
           if options[:host]
             log ::Gems.push(File.new(f), options[:host])
@@ -45,6 +45,10 @@ module DPL
             log ::Gems.push(File.new f)
           end
         end
+      end
+
+      def gemspec_glob
+        options[:gemspec_glob] || "#{gemspec || option(:gem)}.gemspec"
       end
     end
   end
