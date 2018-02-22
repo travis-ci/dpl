@@ -11,6 +11,7 @@ jobs:
       rvm: "2.3.6"
       install: true
       script: true
+      cache:
       deploy:
         provider: rubygems
         api_key:
