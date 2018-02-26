@@ -9,7 +9,7 @@ describe DPL::Provider::PyPI do
   describe "#install_deploy_dependencies" do
     example do
       expect(provider.context).to receive(:shell).with(
-        "wget -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade setuptools twine wheel"
+        "wget -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade --ignore-installed setuptools twine wheel"
       ).and_return(true)
       provider.install_deploy_dependencies
     end
