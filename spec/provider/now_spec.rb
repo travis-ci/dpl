@@ -11,7 +11,7 @@ describe DPL::Provider::Now do
       expect{ provider.check_auth }.to raise_error('> Error!! Please add NOW_TOKEN Environment Variables in Travis settings (get your token here https://zeit.co/account/tokens)')
     end
 
-    it 'should allow no token if FIREBASE_TOKEN is set' do
+    it 'should allow no token if NOW_TOKEN is set' do
       provider.context.env['NOW_TOKEN'] = '000000000000000000000000'
       expect{ provider.check_auth }.not_to raise_error
     end
