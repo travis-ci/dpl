@@ -33,6 +33,7 @@ module DPL
     autoload :Launchpad,           'dpl/provider/launchpad'
     autoload :Modulus,             'dpl/provider/modulus'
     autoload :Nodejitsu,           'dpl/provider/nodejitsu'
+    autoload :Now,                 'dpl/provider/now'
     autoload :NPM,                 'dpl/provider/npm'
     autoload :Openshift,           'dpl/provider/openshift'
     autoload :OpsWorks,            'dpl/provider/ops_works'

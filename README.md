@@ -37,6 +37,7 @@ Dpl supports the following providers:
 * [Launchpad](#launchpad)
 * [Modulus](#modulus)
 * [Nodejitsu](#nodejitsu)
+* [▲ZEIT now](#now)
 * [NPM](#npm)
 * [OpenShift](#openshift)
 * [packagecloud](#packagecloud)
@@ -219,6 +220,29 @@ For authentication you can also use Travis CI secure environment variable:
 
 #### Examples:
     dpl --provider=nodejitsu --username=<username> --api-key=<api-key>
+
+
+### Now:
+
+#### Options:
+
+* **directory** The directory you want to deploy. Defaults to repo root if not set. See the [Deployment Documentation](https://zeit.co/docs/getting-started/deployment) for more info.
+* **deploy_name** Set the name of the deployment. If it is not given now.sh will use name of the working directory.
+* **team** Set the team scope.
+* **type** Deployment type (docker, npm, static). By default, it's detected automatically.
+* **alias** Assigning [Aliases and Domains](https://zeit.co/docs/features/aliases) (e.g. alias.now.sh).
+* **cleanup** Default `false`. Equivalent to now rm --safe --yes $alias (You should also set the **alias** parameter). See [Cleaning Up Old Deployments].(https://zeit.co/docs/other/faq#how-do-i-remove-an-old-deployment) for more info.
+* **rules_domain** Custom [Path Aliases](https://zeit.co/docs/features/path-aliases).
+* **rules_file** Rules file.
+* **scale** [Scaling](https://zeit.co/docs/getting-started/scaling).
+
+
+#### Environment variables:
+
+* **NOW_TOKEN**: Set it to your [▲ZEIT now token](https://zeit.co/account/tokens)
+
+#### Example:
+    dpl --provider=now --directory=<directory> --deploy_name=<deploy-name> --team=<team> --type=<type> --alias=<alias> --cleanup=<cleanup> --rules_domain=<rules_domain> --rules_file=<rules_file> --scale=<scale>
 
 
 ### Modulus
