@@ -75,6 +75,13 @@ describe DPL::Provider::RubyGems do
       expect(Dir).to receive(:glob).with('example-*.gem').and_yield('File')
       expect(::Gems).to receive(:push).with('Test file', host='http://example.com').and_return('Yes!')
     end
+
+    example "with options[:gemspec_glob]" do
+      provider.options.update(:gemspec_glob => 'example-*.gemspec')
+      expect(provider.context).to receive(:shell).with("for f in example-*.gemspec; do gem build $f; done")
+      expect(Dir).to receive(:glob).with('example-*.gem').and_yield('File')
+      expect(::Gems).to receive(:push).with('Test file').and_return('Yes!')
+    end
   end
 
   describe "#setup_gem" do
