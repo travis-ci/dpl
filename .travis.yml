@@ -14,6 +14,10 @@ jobs:
       cache:
       before_deploy:
         - sed -i.bak "s/VERSION = '.*'/VERSION = '${DPL_VERSION}'/g" lib/dpl/version.rb
+        - git config user.name "travisbot"
+        - git config user.email "deploy@travis-ci.org"
+        - git add lib/dpl/version.rb
+        - git commit -m "Update DPL::Version"
       deploy:
         - provider: rubygems
           api_key:
