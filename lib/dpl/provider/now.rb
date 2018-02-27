@@ -76,7 +76,7 @@ module DPL
 
         def aliasing(deployment_url)
           if alias_url
-            log '> Assigning alias…'
+            log '> Assigning alias...'
             context.shell "now alias #{auth} #{deployment_url} #{alias_url}"
             deployment_url = "https://#{alias_url}"
           else
@@ -100,26 +100,26 @@ module DPL
         end
   
         def push_app
-          log "> Deploying #{directory} on now.sh…"
+          log "> Deploying #{directory} on now.sh..."
           deployment_url = `now #{auth} #{deploy_options} #{directory}`
           log "> Success! Deployment complete to #{deployment_url}"
 
           deployment_url = aliasing(deployment_url)
 
           if cleanup
-            log '> Cleaning up old deployments…'
+            log '> Cleaning up old deployments...'
             cleanup_success_message = `now rm --safe --yes #{auth} #{alias_url}`
             log cleanup_success_message
           end
 
           if scale
-            log '> Scaling…'
+            log '> Scaling...'
             scale_success_message = `now scale #{auth} #{deployment_url} #{scale}`
             log scale_success_message
           end
 
           if rules_domain
-            log '> Assigning domain rules…'
+            log '> Assigning domain rules...'
             rules_success_message = `now alias #{auth} #{rules_domain} -r #{rules_file}`
             log rules_success_message
           end
