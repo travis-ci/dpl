@@ -12,6 +12,8 @@ jobs:
       install: true
       script: true
       cache:
+      before_deploy:
+        - sed -i.bak "s/VERSION = '.*'/VERSION = '${DPL_VERSION}'/g" lib/dpl/version.rb
       deploy:
         - provider: rubygems
           api_key:
