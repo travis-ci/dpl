@@ -52,7 +52,7 @@ before_install:
 
 script:
   - bundle exec rspec spec/cli_spec.rb spec/provider_spec.rb
-  - gem build dpl.gemspec && gem dpl-*.gem
+  - gem build dpl.gemspec && gem install dpl-*.gem
   - echo -e "\n${ANSI_GREEN}Run specs${ANSI_RESET}"
   - |
     spec_errors=0
