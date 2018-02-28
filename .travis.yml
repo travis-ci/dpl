@@ -8,7 +8,6 @@ rvm:
 jobs:
   include:
     - stage: deploy
-      rvm: "2.3.6"
       install: true
       script: true
       cache:
@@ -28,7 +27,6 @@ jobs:
           gemspec_glob: 'dpl*.gemspec'
           on:
             repo: travis-ci/dpl
-            rvm: 2.3.6
             branch: v1.9
 
 env:
