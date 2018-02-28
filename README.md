@@ -36,6 +36,7 @@ Dpl supports the following providers:
 * [Lambda](#lambda)
 * [Launchpad](#launchpad)
 * [Modulus](#modulus)
+* [Netlify](#netlify)
 * [Nodejitsu](#nodejitsu)
 * [NPM](#npm)
 * [OpenShift](#openshift)
@@ -208,6 +209,22 @@ For authentication you can also use Travis CI secure environment variable:
     dpl --provider=boxfuse
     dpl --provider=boxfuse --user=<your-boxfuse-user> --secret=<your-boxfuse-secret> --env=<your-boxfuse-environment>
     dpl --provider=boxfuse --configfile=<your-boxfuse-config-file>
+
+
+### Netlify:
+
+#### Options:
+
+* **directory**: Deploy a specific folder or Zip (default current working directory)
+
+#### Environment variables:
+
+* **NETLIFY_TOKEN**: Netlify [token](https://app.netlify.com/applications)
+* **NETLIFY_SITE_ID**: Site ID (or API ID in your Site settings dashboard)
+
+#### Examples:
+
+    dpl --provider=netlify --directory=dist
 
 
 ### Nodejitsu:

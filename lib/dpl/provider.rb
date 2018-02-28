@@ -32,6 +32,7 @@ module DPL
     autoload :Lambda,              'dpl/provider/lambda'
     autoload :Launchpad,           'dpl/provider/launchpad'
     autoload :Modulus,             'dpl/provider/modulus'
+    autoload :Netlify,             'dpl/provider/netlify'
     autoload :Nodejitsu,           'dpl/provider/nodejitsu'
     autoload :NPM,                 'dpl/provider/npm'
     autoload :Openshift,           'dpl/provider/openshift'
