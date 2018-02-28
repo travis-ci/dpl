@@ -76,7 +76,7 @@ module DPL
           if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message ||
             provider_gem_name = PROVIDERS[provider_wanted]
           elsif %r(cannot load such file -- dpl/provider/(?<provider_file_name>\S+)) =~ e.message
-            provider_gem_name = name
+            provider_gem_name = provider_file_name
           else
             # don't know what to do with this error
             raise e
