@@ -73,12 +73,17 @@ module DPL
           require "dpl/provider/#{PROVIDERS[name]}"
           provider = const_get(name).new(context, options)
         rescue NameError, LoadError => e
-          if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message
-            provider_name = PROVIDERS[provider_wanted]
+          if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message ||
+            provider_gem_name = PROVIDERS[provider_wanted]
+          elsif %r(cannot load such file -- dpl/provider/(?<provider_file_name>\S+)) =~ e.message
+            provider_gem_name = name
+          else
+            # don't know what to do with this error
+            raise e
           end
-          install_cmd = "gem install dpl-#{PROVIDERS[provider_name] || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
+          install_cmd = "gem install dpl-#{PROVIDERS[provider_gem_name] || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
 
-          if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{PROVIDERS[provider_name] || opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
+          if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{PROVIDERS[provider_gem_name] || opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
             install_cmd = "gem install #{local_gem}"
           end
 
