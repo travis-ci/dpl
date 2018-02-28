@@ -12,6 +12,8 @@ describe DPL::Provider do
     example { expect(described_class.new(DummyContext.new, :provider => "Example")) .to be_an(example_provider) }
     example { expect(described_class.new(DummyContext.new, :provider => "exa_mple")).to be_an(example_provider) }
     example { expect(described_class.new(DummyContext.new, :provider => "exa-mple")).to be_an(example_provider) }
+    example { expect(described_class.new(DummyContext.new, :provider => "scri_pt")).to be_an(DPL::Provider::Script) }
+    example { expect(described_class.new(DummyContext.new, :provider => "scri _pt")).to be_an(DPL::Provider::Script) }
     example "install deployment dependencies" do
       expect_any_instance_of(described_class).to receive(:respond_to?).with(:install_deploy_dependencies).and_return(true)
       expect_any_instance_of(described_class).to receive(:install_deploy_dependencies)

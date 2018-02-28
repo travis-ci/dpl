@@ -6,6 +6,10 @@ module DPL
   class Provider
     include FileUtils
 
+    # map of DPL provider class name constants to their corresponding
+    # file names. There is no simple rule to map them automatically
+    # (camel-cases, snake-cases, call-caps, etc.), so we need an explicit
+    # map.
     PROVIDERS = {
       'Anynines'            => 'anynines',
       'Appfog'              => 'appfog',
@@ -54,6 +58,11 @@ module DPL
     def self.new(context, options)
       return super if self < Provider
 
+      # when requiring the file corresponding to the provider name
+      # given in the options, the general strategy is to normalize
+      # the option to lower-case alphanumeric, then
+      # use that key to find the file name using the PROVIDERS map.
+
       context.fold("Installing deploy dependencies") do
         begin
           opt_lower = super.option(:provider).to_s.downcase
@@ -61,7 +70,7 @@ module DPL
           name = PROVIDERS.keys.detect { |p| p.to_s.downcase == opt }
           raise Error, "could not find provider %p" % opt unless name
 
-          require "dpl/provider/#{opt_lower}"
+          require "dpl/provider/#{PROVIDERS[name]}"
           provider = const_get(name).new(context, options)
         rescue NameError, LoadError => e
           if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message
@@ -76,7 +85,7 @@ module DPL
           context.shell(install_cmd)
           Gem.clear_paths
 
-          require "dpl/provider/#{opt_lower}"
+          require "dpl/provider/#{PROVIDERS[name]}"
           provider = const_get(name).new(context, options)
         rescue DPL::Error
           if opt_lower
