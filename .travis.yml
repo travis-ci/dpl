@@ -36,6 +36,9 @@ env:
 
 sudo: false
 
+before_cache:
+  - rm -rf $GEM_HOME/cache/dpl-*.travis.*.gem $GEM_HOME/gems/dpl-*.travis.*
+
 cache:
   directories:
     - vendor/cache
