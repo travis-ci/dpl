@@ -24,7 +24,7 @@ module DPL
       'Cloud66'             => 'cloud66',
       'CloudFiles'          => 'cloud_files',
       'CloudFoundry'        => 'cloud_foundry',
-      'CodeDeploy'          => 'cloud_deploy',
+      'CodeDeploy'          => 'code_deploy',
       'Deis'                => 'deis',
       'Divshot'             => 'divshot',
       'ElasticBeanstalk'    => 'elastic_beanstalk',
