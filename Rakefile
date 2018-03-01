@@ -22,13 +22,25 @@ gemspecs = FileList[File.join(top, "dpl-*.gemspec")]
 
 providers = gemspecs.map { |f| /dpl-(?<provider>.*)\.gemspec/ =~ f && provider }
 
+dpl_bin = File.join(Gem.bindir, "dpl")
+
 task :default => [:spec, :install] do
   providers.each do |provider|
     Rake::Task["spec-#{provider}"].invoke
   end
   providers.each do |provider|
-    Rake::Task["test-dpl-#{provider}"].invoke
+    Rake::Task["check-#{provider}"].invoke
   end
+end
+
+task :deep_clean do
+  Rake::Task[:clean].invoke
+  sh "git clean -dfx"
+end
+
+task :clean do
+  rm_rf "stubs"
+  rm_rf "vendor"
 end
 
 desc "Run dpl specs"
@@ -44,6 +56,10 @@ end
 
 desc "Install dpl gem"
 task :install => "dpl-#{gem_version}.gem" do
+  Rake::FileTask[dpl_bin].invoke
+end
+
+file dpl_bin do
   logger.info green("Installing dpl gem")
   ruby "-S gem install dpl-#{gem_version}.gem"
 end
@@ -57,9 +73,14 @@ providers.each do |provider|
   end
 
   desc %Q(Run dpl-#{provider} specs)
-  task "spec-#{provider}" => "Gemfile-#{provider}" do |t|
+  task "spec-#{provider}" => [:install, "Gemfile-#{provider}"] do |t|
     logger.info green("Running `bundle install` for #{provider}")
-    sh "env BUNDLE_GEMFILE=Gemfile-#{provider} bundle install --gemfile=Gemfile-#{provider} --path=vendor/cache/dpl-#{provider} --binstubs=bin && ./bin/rspec spec/provider/#{provider}_spec.rb"
+    rm_rf 'stubs'
+    rm_rf '.bundle'
+    sh "cat Gemfile-#{provider}"
+    sh "env BUNDLE_GEMFILE=Gemfile-#{provider} bundle install --retry=3 --binstubs=stubs --path=vendor/cache/dpl-#{provider}"
+    logger.info green("Running specs for #{provider}")
+    sh "env BUNDLE_GEMFILE=Gemfile-#{provider} ./stubs/rspec spec/provider/#{provider}_spec.rb"
   end
 
   desc "Build dpl-#{provider} gem"
@@ -69,9 +90,9 @@ providers.each do |provider|
   end
 
   desc "Test dpl-#{provider} gem"
-  task "test-dpl-#{provider}" => "dpl-#{provider}-#{gem_version}.gem" do
+  task "check-#{provider}" => [:install, "dpl-#{provider}-#{gem_version}.gem"] do
     logger.info green("Installing dpl-#{provider} gem")
-    ruby "-S gem install --no-post-install-message dpl-#{provider}-#{gem_version}.gem"
+    sh "gem install --no-post-install-message dpl-#{provider}-#{gem_version}.gem"
     logger.info green("Testing dpl-#{provider} loads correctly")
     ruby "-S dpl --provider=#{provider} --skip-cleanup=true --no-delploy"
   end

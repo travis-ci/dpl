@@ -38,6 +38,7 @@ sudo: false
 
 before_cache:
   - rm -rf $GEM_HOME/cache/dpl-*.travis.*.gem $GEM_HOME/gems/dpl-*.travis.* $GEM_HOME/specifications/dpl-*.travis.*
+  - git checkout bin/dpl
 
 cache:
   directories:
