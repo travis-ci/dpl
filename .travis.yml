@@ -49,37 +49,7 @@ before_install:
   - gem update bundler
 
 script:
-  - bundle exec rspec spec/cli_spec.rb spec/provider_spec.rb
-  - gem build dpl.gemspec && gem install dpl-*.gem
-  - echo -e "\n${ANSI_GREEN}Run specs${ANSI_RESET}"
-  - |
-    spec_errors=0
-    for f in dpl-*.gemspec; do
-      base=${f%*.gemspec}; name=${base#dpl-*}
-      echo -e "\n${ANSI_GREEN}${base}${ANSI_RESET}\n"
-      echo -e "source 'https://rubygems.org'\ngemspec :name => \"dpl-${name}\"" > Gemfile-${name}
-      export BUNDLE_GEMFILE=Gemfile-${name}
-      bundle install --gemfile Gemfile-${name} --path=vendor/cache/dpl-${name} --binstubs=bin && ./bin/rspec spec/provider/${name}_spec.rb
-      if [[ $? -ne 0 ]]; then
-        echo -e "${ANSI_RED}${name} specs failed${ANSI_RESET}" && let spec_errors=$spec_errors+1
-      fi
-    done
-    test $spec_errors -eq 0
-  - echo -e "\n${ANSI_GREEN}Install gem and invoke dpl${ANSI_RESET}"
-  - |
-    no_err=0
-    export BUNDLE_GEMFILE=Gemfile
-    for f in dpl-*.gemspec; do
-      base=${f%*.gemspec}; name=${base#dpl-*}
-      echo -e "\n${ANSI_GREEN}${base}${ANSI_RESET}\n"
-      gem build --silent $f && gem install --no-post-install-message dpl-${name}-*.gem && ( dpl --provider=${name} --no-deploy )
-      if [[ $? -ne 0 ]]; then
-        echo -e "${ANSI_RED}${name} invocation failed${ANSI_RESET}" && let no_err=$no_err+1
-      fi
-    done
-    test $no_err -eq 0
-  # - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'
-
+  - bundle exec rake
 
 notifications:
   webhooks: "http://requestb.in/1guaq7t1"
