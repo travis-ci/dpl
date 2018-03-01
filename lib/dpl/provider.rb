@@ -50,6 +50,7 @@ module DPL
       'S3'                  => 's3',
       'Scalingo'            => 'scalingo',
       'Script'              => 'script',
+      'Snap'                => 'snap',
       'Surge'               => 'surge',
       'TestFairy'           => 'testfairy',
       'Transifex'           => 'transifex',
@@ -147,6 +148,20 @@ module DPL
 
     def self.npm_g(name, command = name)
       context.shell("npm install -g #{name}", retry: true) if `which #{command}`.chop.empty?
+    end
+
+    def self.snap(name, command = name, classic: false, channel: nil)
+      install_command = "sudo snap install #{name}"
+
+      if classic
+        install_command += " --classic"
+      end
+
+      unless channel.nil?
+        install_command += " --channel=#{channel}"
+      end
+
+      context.shell(install_command, retry: true) if `which #{command}`.chop.empty?
     end
 
     def self.class_of(filename)
