@@ -10,7 +10,7 @@ jobs:
     - stage: deploy
       install: true
       script: true
-      cache:
+      cache: false
       before_deploy:
         - sed -i.bak "s/VERSION = '.*'/VERSION = '${DPL_VERSION}'/g" lib/dpl/version.rb
         - git config user.name "travisbot"
@@ -37,12 +37,13 @@ env:
 sudo: false
 
 before_cache:
-  - rm -rf $GEM_HOME/cache/dpl-*.travis.*.gem $GEM_HOME/gems/dpl-*.travis.*
+  - rm -rf $GEM_HOME/cache/dpl-*.travis.*.gem $GEM_HOME/gems/dpl-*.travis.* $GEM_HOME/specifications/dpl-*.travis.*
 
 cache:
   directories:
     - vendor/cache
     - $GEM_HOME
+    - node_modules
 
 before_install:
   - gem update bundler
