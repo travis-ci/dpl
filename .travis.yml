@@ -28,7 +28,7 @@ jobs:
           on:
             repo: travis-ci/dpl
             branch: v1.9
-          if: NOT type IN (pull_request)
+          if: branch = foo
 
 env:
   global:
