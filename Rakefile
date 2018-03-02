@@ -25,9 +25,17 @@ providers = gemspecs.map { |f| /dpl-(?<provider>.*)\.gemspec/ =~ f && provider }
 dpl_bin = File.join(Gem.bindir, "dpl")
 
 task :default => [:spec, :install] do
+  Rake::Task["spec_providers"].invoke
+  Rake::Task["check_providers"].invoke
+end
+
+task :spec_providers do
   providers.each do |provider|
     Rake::Task["spec-#{provider}"].invoke
   end
+end
+
+task :check_providers do
   providers.each do |provider|
     Rake::Task["check-#{provider}"].invoke
   end
@@ -77,7 +85,7 @@ providers.each do |provider|
     logger.info green("Running `bundle install` for #{provider}")
     # rm_rf 'stubs'
     # rm_rf '.bundle'
-    sh "bundle install --gemfile=Gemfile-#{provider} --verbose --retry=3 --binstubs=stubs"
+    sh 'bash', '-cl', "bundle install --gemfile=Gemfile-#{provider} --verbose --retry=3 --binstubs=stubs"
     logger.info green("Running specs for #{provider}")
     sh "env BUNDLE_GEMFILE=Gemfile-#{provider} ./stubs/rspec spec/provider/#{provider}_spec.rb"
   end
