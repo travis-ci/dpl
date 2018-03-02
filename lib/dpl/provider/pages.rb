@@ -91,7 +91,7 @@ module DPL
       end
 
       def api  # Borrowed from Releases provider
-        error 'gh-token must be provided for Pages provider to work.' unless @gh_token
+        error 'gh-token must be provided for Pages provider to work.' unless gh_token
 
         return @api if @api
 
