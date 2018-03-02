@@ -67,21 +67,20 @@ module DPL
         begin
           opt_lower = super.option(:provider).to_s.downcase
           opt = opt_lower.gsub(/[^a-z0-9]/, '')
-          name = PROVIDERS.keys.detect { |p| p.to_s.downcase == opt }
-          raise Error, "could not find provider %p" % opt unless name
-
-          require "dpl/provider/#{PROVIDERS[name]}"
-          provider = const_get(name).new(context, options)
+          class_name = PROVIDERS.keys.detect { |p| p.to_s.downcase == opt }
+          raise Error, "could not find provider %p" % opt unless class_name
+          require "dpl/provider/#{PROVIDERS[class_name]}"
+          provider = const_get(class_name).new(context, options)
         rescue NameError, LoadError => e
-          if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message ||
+          if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message
             provider_gem_name = PROVIDERS[provider_wanted]
           elsif %r(cannot load such file -- dpl/provider/(?<provider_file_name>\S+)) =~ e.message
-            provider_gem_name = provider_file_name
+            provider_gem_name = PROVIDERS[class_name]
           else
             # don't know what to do with this error
             raise e
           end
-          install_cmd = "gem install dpl-#{PROVIDERS[provider_gem_name] || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
+          install_cmd = "gem install dpl-#{provider_gem_name || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
 
           if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{PROVIDERS[provider_gem_name] || opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
             install_cmd = "gem install #{local_gem}"
@@ -90,8 +89,8 @@ module DPL
           context.shell(install_cmd)
           Gem.clear_paths
 
-          require "dpl/provider/#{PROVIDERS[name]}"
-          provider = const_get(name).new(context, options)
+          require "dpl/provider/#{PROVIDERS[class_name]}"
+          provider = const_get(class_name).new(context, options)
         rescue DPL::Error
           if opt_lower
             provider = const_get(opt.capitalize).new(context, options)
