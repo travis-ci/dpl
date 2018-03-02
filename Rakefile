@@ -101,7 +101,7 @@ providers.each do |provider|
     logger.info green("Installing dpl-#{provider} gem")
     sh "gem install --no-post-install-message dpl-#{provider}-#{gem_version}.gem"
     logger.info green("Testing dpl-#{provider} loads correctly")
-    ruby "-S dpl --provider=#{provider} --skip-cleanup=true --no-delploy"
+    ruby "-S dpl --provider=#{provider} --skip-cleanup=true --no-deploy"
   end
 
 end
