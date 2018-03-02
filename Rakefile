@@ -67,18 +67,17 @@ end
 providers.each do |provider|
   desc "Write Gemfile-#{provider}"
   file "Gemfile-#{provider}" do |t|
-    dest = top + t.name
-    logger.info green("Writing #{dest}")
-    dest.write %Q(source 'https://rubygems.org'\ngemspec :name => "dpl-#{provider}"\n)
+    gemfile = top + t.name
+    logger.info green("Writing #{gemfile}")
+    gemfile.write %Q(source 'https://rubygems.org'\ngemspec :name => "dpl-#{provider}"\n)
   end
 
   desc %Q(Run dpl-#{provider} specs)
   task "spec-#{provider}" => [:install, "Gemfile-#{provider}"] do |t|
     logger.info green("Running `bundle install` for #{provider}")
-    rm_rf 'stubs'
-    rm_rf '.bundle'
-    sh "cat Gemfile-#{provider}"
-    sh "env BUNDLE_GEMFILE=Gemfile-#{provider} bundle install --verbose --full-index --retry=3 --binstubs=stubs --path=vendor/cache/dpl-#{provider}"
+    # rm_rf 'stubs'
+    # rm_rf '.bundle'
+    sh "bundle install --gemfile=Gemfile-#{provider} --verbose --retry=3 --binstubs=stubs"
     logger.info green("Running specs for #{provider}")
     sh "env BUNDLE_GEMFILE=Gemfile-#{provider} ./stubs/rspec spec/provider/#{provider}_spec.rb"
   end
