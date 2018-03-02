@@ -78,7 +78,7 @@ providers.each do |provider|
     rm_rf 'stubs'
     rm_rf '.bundle'
     sh "cat Gemfile-#{provider}"
-    sh "env BUNDLE_GEMFILE=Gemfile-#{provider} bundle install --retry=3 --binstubs=stubs --path=vendor/cache/dpl-#{provider}"
+    sh "env BUNDLE_GEMFILE=Gemfile-#{provider} bundle install --verbose --full-index --retry=3 --binstubs=stubs --path=vendor/cache/dpl-#{provider}"
     logger.info green("Running specs for #{provider}")
     sh "env BUNDLE_GEMFILE=Gemfile-#{provider} ./stubs/rspec spec/provider/#{provider}_spec.rb"
   end
