@@ -49,6 +49,9 @@ cache:
 before_install:
   - gem update bundler
 
+before_script:
+  - rm -f $(ruby -r rubygems -e "puts Gem.bindir")/dpl
+
 script:
   - rake
 
