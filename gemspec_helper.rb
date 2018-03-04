@@ -33,6 +33,7 @@ def gemspec_for(provider_name=nil, runtime_dependencies=[])
     s.add_development_dependency 'json_pure'
     s.add_development_dependency 'tins'
     s.add_development_dependency 'coveralls'
+    s.add_development_dependency 'highline'
 
     # set up files
     if provider_name
