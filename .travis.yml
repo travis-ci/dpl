@@ -22,13 +22,11 @@ jobs:
           api_key:
             secure: ZmZoDL1tilWvQrqRWDm2K4xQ5Grt9eRJzYVZPLANR0P1TM5BJBLk+UhWCWCPkkDVIBWMa5ANsiFYBxtH65Lw+uqMztSpVusk0l0LQXZGv9jMpT9445A8008U3vvfS0ke7IG8Q4bMAC7Sd6VGaiHDyZC7zmNvnqMpmVX7ShcgBME=
           gem: dpl
-          edge:
-            branch: v1.9
+
           gemspec_glob: 'dpl*.gemspec'
           on:
             repo: travis-ci/dpl
-            branch: v1.9
-          if: NOT type IN (pull_request)
+          if: branch = master AND NOT type IN (pull_request)
 
 env:
   global:
