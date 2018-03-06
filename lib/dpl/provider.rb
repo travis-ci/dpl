@@ -10,7 +10,7 @@ module DPL
     # file names. There is no simple rule to map them automatically
     # (camel-cases, snake-cases, call-caps, etc.), so we need an explicit
     # map.
-    PROVIDERS = {
+    GEM_NAME_OF = {
       'Anynines'            => 'anynines',
       'Appfog'              => 'appfog',
       'Atlas'               => 'atlas',
@@ -61,35 +61,35 @@ module DPL
       # when requiring the file corresponding to the provider name
       # given in the options, the general strategy is to normalize
       # the option to lower-case alphanumeric, then
-      # use that key to find the file name using the PROVIDERS map.
+      # use that key to find the file name using the GEM_NAME_OF map.
 
       context.fold("Installing deploy dependencies") do
         begin
           opt_lower = super.option(:provider).to_s.downcase
           opt = opt_lower.gsub(/[^a-z0-9]/, '')
-          class_name = PROVIDERS.keys.detect { |p| p.to_s.downcase == opt }
+          class_name = class_of(opt)
           raise Error, "could not find provider %p" % opt unless class_name
-          require "dpl/provider/#{PROVIDERS[class_name]}"
+          require "dpl/provider/#{GEM_NAME_OF[class_name]}"
           provider = const_get(class_name).new(context, options)
         rescue NameError, LoadError => e
           if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message
-            provider_gem_name = PROVIDERS[provider_wanted]
+            provider_gem_name = GEM_NAME_OF[provider_wanted]
           elsif %r(cannot load such file -- dpl/provider/(?<provider_file_name>\S+)) =~ e.message
-            provider_gem_name = PROVIDERS[class_name]
+            provider_gem_name = GEM_NAME_OF[class_name]
           else
             # don't know what to do with this error
             raise e
           end
           install_cmd = "gem install dpl-#{provider_gem_name || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
 
-          if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{PROVIDERS[provider_gem_name] || opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
+          if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{GEM_NAME_OF[provider_gem_name] || opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
             install_cmd = "gem install #{local_gem}"
           end
 
           context.shell(install_cmd)
           Gem.clear_paths
 
-          require "dpl/provider/#{PROVIDERS[class_name]}"
+          require "dpl/provider/#{GEM_NAME_OF[class_name]}"
           provider = const_get(class_name).new(context, options)
         rescue DPL::Error
           if opt_lower
@@ -147,6 +147,10 @@ module DPL
 
     def self.npm_g(name, command = name)
       context.shell("npm install -g #{name}", retry: true) if `which #{command}`.chop.empty?
+    end
+
+    def self.class_of(filename)
+      GEM_NAME_OF.keys.detect { |p| p.to_s.downcase == filename }
     end
 
     attr_reader :context, :options
