@@ -1,31 +1,57 @@
 language: ruby
 rvm:
-- 1.9.3
-- 2.0.0
-- 2.1.5
-- "2.2.5"
-- "2.3.1"
+- "2.2.9"
+- "2.3.6"
+- "2.4"
+- "2.5"
 
-matrix:
-  allow_failures:
-    - rvm: "2.2.5"
-    - rvm: "2.3.1"
+jobs:
+  include:
+    - stage: deploy
+      install: true
+      script: true
+      cache: false
+      before_deploy:
+        - sed -i.bak "s/VERSION = '.*'/VERSION = '${DPL_VERSION}'/g" lib/dpl/version.rb
+        - git config user.name "travisbot"
+        - git config user.email "deploy@travis-ci.org"
+        - git add lib/dpl/version.rb
+        - git commit -m "Update DPL::Version"
+      deploy:
+        - provider: rubygems
+          api_key:
+            secure: ZmZoDL1tilWvQrqRWDm2K4xQ5Grt9eRJzYVZPLANR0P1TM5BJBLk+UhWCWCPkkDVIBWMa5ANsiFYBxtH65Lw+uqMztSpVusk0l0LQXZGv9jMpT9445A8008U3vvfS0ke7IG8Q4bMAC7Sd6VGaiHDyZC7zmNvnqMpmVX7ShcgBME=
+          gem: dpl
+
+          gemspec_glob: 'dpl*.gemspec'
+          on:
+            repo: travis-ci/dpl
+          if: branch = master AND NOT type IN (pull_request)
+
+env:
+  global:
+    - DPL_VERSION=$(ruby -I lib -r dpl/version.rb -e "puts DPL::VERSION.succ + \".travis.#{ENV['TRAVIS_JOB_NUMBER']}\"")
 
 sudo: false
 
-cache: bundler
+before_cache:
+  - rm -rf $GEM_HOME/cache/dpl-*.travis.*.gem $GEM_HOME/gems/dpl-*.travis.* $GEM_HOME/specifications/dpl-*.travis.*
+  - git checkout bin/dpl
+
+cache:
+  directories:
+    - vendor/cache
+    - $GEM_HOME
+    - node_modules
+
+before_install:
+  - gem update bundler
+
+before_script:
+  - rm -f $(ruby -r rubygems -e "puts Gem.bindir")/dpl
 
 script:
-  - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'
-
-deploy:
-  provider: rubygems
-  api_key:
-    secure: ZmZoDL1tilWvQrqRWDm2K4xQ5Grt9eRJzYVZPLANR0P1TM5BJBLk+UhWCWCPkkDVIBWMa5ANsiFYBxtH65Lw+uqMztSpVusk0l0LQXZGv9jMpT9445A8008U3vvfS0ke7IG8Q4bMAC7Sd6VGaiHDyZC7zmNvnqMpmVX7ShcgBME=
-  gem: dpl
-  on:
-    repo: travis-ci/dpl
-    ruby: 2.1.5
+  - rake
 
 notifications:
   webhooks: "http://requestb.in/1guaq7t1"

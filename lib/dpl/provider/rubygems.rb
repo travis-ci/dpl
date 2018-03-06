@@ -1,8 +1,8 @@
+require 'gems'
+
 module DPL
   class Provider
     class RubyGems < Provider
-      requires 'gems', version: '>= 0.8.3'
-
       def setup_auth
         ::Gems.key = option(:api_key) if options[:api_key]
         ::Gems.username = option(:user) unless options[:api_key]
@@ -24,6 +24,7 @@ module DPL
       def check_app
         setup_auth
         setup_gem
+        log "Looking up gem #{options[:gem]}"
         info = ::Gems.info(options[:gem])
         log "Found gem #{info['name']}"
       end
@@ -36,7 +37,7 @@ module DPL
       def push_app
         setup_auth
         setup_gem
-        context.shell "gem build #{gemspec || option(:gem)}.gemspec"
+        context.shell "for f in #{gemspec_glob}; do gem build $f; done"
         Dir.glob("#{gemspec || option(:gem)}-*.gem") do |f|
           if options[:host]
             log ::Gems.push(File.new(f), options[:host])
@@ -44,6 +45,10 @@ module DPL
             log ::Gems.push(File.new f)
           end
         end
+      end
+
+      def gemspec_glob
+        options[:gemspec_glob] || "#{gemspec || option(:gem)}.gemspec"
       end
     end
   end

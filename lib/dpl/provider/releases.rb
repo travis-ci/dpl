@@ -1,10 +1,10 @@
+require 'octokit'
+require 'mime-types'
+
 module DPL
   class Provider
     class Releases < Provider
       require 'pathname'
-
-      requires 'octokit', version: '~> 4.3.0' # later versions require Ruby 2.x
-      requires 'mime-types', version: '~> 2.0'
 
       def travis_tag
         # Check if $TRAVIS_TAG is unset or set but empty

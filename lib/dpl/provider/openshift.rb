@@ -1,10 +1,10 @@
+require 'httpclient'
+require 'net/ssh'
+require 'net/ssh/gateway'
+
 module DPL
   class Provider
     class Openshift < Provider
-      requires 'httpclient', version: '~> 2.4.0'
-      requires 'net-ssh',    load: 'net/ssh',    version: '~> 2.9.2' # Anything higher requires Ruby 2.x
-      requires 'rhc'
-
       def initialize(context, options)
         super
         @deployment_branch = options[:deployment_branch]

@@ -9,10 +9,10 @@ To do so, add the following to your `.travis.yml`:
 deploy:
   provider: X
   edge:
-  	source: myown/dpl
+    source: myown/dpl
     branch: foo
   on:
-  	branch: TEST_BRANCH # or all_branches: true
+    branch: TEST_BRANCH # or all_branches: true
   ⋮ # rest of provider X configuration
 ```
 

@@ -1,10 +1,9 @@
 require 'time'
+require 'engineyard-cloud-client'
 
 module DPL
   class Provider
     class EngineYard < Provider
-      requires 'engineyard-cloud-client'
-
       def token
         options[:api_key] ||= if options[:email] and options[:password]
           EY::CloudClient.authenticate(options[:email], options[:password])

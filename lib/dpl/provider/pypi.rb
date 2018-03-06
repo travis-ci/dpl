@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class PyPI < Provider
-      DEFAULT_SERVER = 'https://pypi.python.org/pypi'
+      DEFAULT_SERVER = 'https://upload.pypi.org/legacy/'
       PYPIRC_FILE = '~/.pypirc'
 
       def pypi_user
@@ -27,22 +27,17 @@ module DPL
         end
       end
 
-      def self.install_setuptools
-        shell 'wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python'
-        shell 'rm -f setuptools-*.zip'
+      def skip_upload_docs?
+        ! options.has_key?(:skip_upload_docs) ||
+          (options.has_key?(:skip_upload_docs) && options[:skip_upload_docs])
       end
 
-      def self.install_twine
-        shell("pip install twine", retry: true) if `which twine`.chop.empty?
+      def install_deploy_dependencies
+        unless context.shell "wget -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && " \
+                             "pip install --upgrade setuptools twine wheel"
+          error "Couldn't install pip, setuptools, twine or wheel."
+        end
       end
-
-      def initialize(*args)
-        super(*args)
-        self.class.pip 'wheel' if pypi_distributions.to_s.include? 'bdist_wheel'
-      end
-
-      install_setuptools
-      install_twine
 
       def config
         {
@@ -94,9 +89,14 @@ module DPL
 
       def push_app
         context.shell "python setup.py #{pypi_distributions}"
-        context.shell "twine upload -r pypi dist/*"
+        unless context.shell "twine upload -r pypi dist/*"
+          error 'PyPI upload failed.'
+        end
         context.shell "rm -rf dist/*"
-        context.shell "python setup.py upload_docs #{pypi_docs_dir_option} -r #{pypi_server}"
+        unless skip_upload_docs?
+          log "Uploading documentation (skip with \"skip_upload_docs: true\")"
+          context.shell "python setup.py upload_docs #{pypi_docs_dir_option} -r #{pypi_server}"
+        end
       end
     end
   end

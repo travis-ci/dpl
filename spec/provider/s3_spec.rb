@@ -140,6 +140,13 @@ describe DPL::Provider::S3 do
       provider.push_app
     end
 
+    example "Sets SSE" do
+      provider.options.update(:server_side_encryption => true)
+      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:server_side_encryption => "AES256"))
+      provider.push_app
+    end
+
     example "Sets Website Index Document" do
       provider.options.update(:index_document_suffix => "test/index.html")
       expect(Dir).to receive(:glob).and_yield(__FILE__)

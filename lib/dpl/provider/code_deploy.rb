@@ -1,12 +1,15 @@
 require 'json'
+require 'aws-sdk'
 
 module DPL
   class Provider
     class CodeDeploy < Provider
-      requires 'aws-sdk', pre: true
-
       def code_deploy
         @code_deploy ||= Aws::CodeDeploy::Client.new(code_deploy_options)
+      end
+
+      def s3api
+        @s3api ||= Aws::S3::Client.new(code_deploy_options)
       end
 
       def code_deploy_options
@@ -39,15 +42,30 @@ module DPL
         end
       end
 
+      def revision_version_info
+        s3api.head_object({
+          bucket: option(:bucket),
+          key: s3_key
+        })
+      rescue Aws::Errors::ServiceError
+        {}
+      end
+
       def s3_revision
-        {
+        info = {
           revision_type: 'S3',
           s3_location: {
             bucket:      option(:bucket),
             bundle_type: bundle_type,
-            key:         s3_key
+            key:         s3_key,
           }
         }
+        unless revision_version_info.empty?
+          info[:s3_location][:version] = revision_version_info[:version_id]
+          info[:s3_location][:e_tag]   = revision_version_info[:etag]
+        end
+
+        info
       end
 
       def github_revision
@@ -61,6 +79,18 @@ module DPL
       end
 
       def push_app
+        rev = revision()
+        rev_info = rev[:s3_location]
+
+        if rev_info && rev_info[:version]
+          log "Registering app revision with version=#{rev_info[:version]}, etag=#{rev_info[:e_tag]}"
+          code_deploy.register_application_revision({
+            revision:               rev,
+            application_name:       options[:application] || option(:application_name),
+            description:            options[:description] || default_description
+          })
+        end
+
         data = code_deploy.create_deployment({
           revision:               revision,
           application_name:       options[:application]      || option(:application_name),

@@ -10,9 +10,20 @@ module DPL
       BOOTSTRAP="#{INSTALL}/#{NAME}/bin/bootstrapping/install.py"
       GCLOUD="#{INSTALL}/#{NAME}/bin/gcloud"
 
+      def with_python_2_7(cmd)
+        cmd.gsub!(/'/, "'\\\\''")
+        context.shell("bash -c 'source #{context.env['HOME']}/virtualenv/python2.7/bin/activate; #{cmd}'")
+      end
+
       def install_deploy_dependencies
         if File.exists? GCLOUD
           return
+        end
+
+        $stderr.puts 'Python 2.7 Version'
+
+        unless with_python_2_7("python -c 'import sys; print(sys.version)'")
+          error 'Could not use python2.7'
         end
 
         $stderr.puts 'Downloading Google Cloud SDK ...'
@@ -23,7 +34,7 @@ module DPL
 
         $stderr.puts 'Bootstrapping Google Cloud SDK ...'
 
-        unless context.shell("#{BOOTSTRAP} --usage-reporting=false --command-completion=false --path-update=false")
+        unless with_python_2_7("#{BOOTSTRAP} --usage-reporting=false --command-completion=false --path-update=false")
           error 'Could not bootstrap Google Cloud SDK.'
         end
       end
@@ -33,7 +44,7 @@ module DPL
       end
 
       def check_auth
-        unless context.shell("#{GCLOUD} -q --verbosity debug auth activate-service-account --key-file #{keyfile}")
+        unless with_python_2_7("#{GCLOUD} -q auth activate-service-account --key-file #{keyfile}")
           error 'Authentication failed.'
         end
       end
@@ -47,7 +58,7 @@ module DPL
       end
 
       def version
-        options[:version] || ''
+        options[:version]
       end
 
       def config
@@ -71,11 +82,11 @@ module DPL
         command << ' --quiet'
         command << " --verbosity \"#{verbosity}\""
         command << " --project \"#{project}\""
-        command << " preview app deploy \"#{config}\""
-        command << " --version \"#{version}\""
+        command << " app deploy \"#{config}\""
+        command << " --version \"#{version}\"" unless version.to_s.empty?
         command << " --#{no_promote ? 'no-' : ''}promote"
-        command << (no_stop_previous_version ? ' --no-stop-previous-version' : '')
-        unless context.shell(command)
+        command << ' --no-stop-previous-version' unless no_stop_previous_version.to_s.empty?
+        unless with_python_2_7(command)
           log 'Deployment failed.'
           context.shell('find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;')
           error ''

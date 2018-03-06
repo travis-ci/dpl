@@ -48,12 +48,14 @@ describe DPL::Provider::Lambda do
   end
 
   before :each do
-    provider.stub(:lambda_options).and_return(client_options)
+    FileUtils.touch provider.output_file_path
+    allow(provider).to receive(:lambda_options).and_return(client_options)
+    allow(provider).to receive(:create_zip).and_return(provider.output_file_path)
   end
 
   describe '#lambda' do
     example do
-      expect(Aws::LambdaPreview::Client).to receive(:new).with(client_options).once
+      expect(Aws::Lambda::Client).to receive(:new).with(client_options).once
       provider.lambda
     end
   end
@@ -66,31 +68,78 @@ describe DPL::Provider::Lambda do
       handler_name: 'handler'
     }
 
+    example_get_function_response = {
+      code: {
+        location: 'location',
+        repository_type: 's3',
+      },
+      configuration: {
+        function_name: 'test-function'
+      }
+    }
+
     example_response = {
       function_name: 'test-function',
+      function_arn: 'arn:lambda:region:account-id:function:test-function',
       role: 'some-role',
       handler: 'index.handler'
     }
 
     before(:each) do
       old_options = provider.options
-      provider.stub(:options) { old_options.merge(lambda_options) }
+      allow(provider).to receive(:options) { old_options.merge(lambda_options) }
     end
 
-    context 'with a successful response' do
+    context 'by creating a new function' do
       before do
-        provider.lambda.stub_responses(:upload_function, example_response)
+        provider.lambda.stub_responses(:get_function, 'ResourceNotFoundException')
+        provider.lambda.stub_responses(:create_function, example_response)
       end
 
       example do
-        expect(provider).to receive(:log).with(/Uploaded lambda: #{lambda_options[:function_name]}\./)
+        expect(provider).to receive(:log).with(/Function #{lambda_options[:function_name]} does not exist, creating\./)
+        expect(provider).to receive(:log).with(/Created lambda: #{lambda_options[:function_name]}\./)
+        provider.push_app
+      end
+    end
+
+    context 'by updating an existing function' do
+      before do
+        provider.lambda.stub_responses(:get_function, example_get_function_response)
+        provider.lambda.stub_responses(:update_function_configuration, example_response)
+        provider.lambda.stub_responses(:update_function_code, example_response)
+      end
+
+      example do
+        expect(provider).to receive(:log).with(/Function #{lambda_options[:function_name]} already exists, updating\./)
+        expect(provider).to receive(:log).with(/Updated configuration of function: #{lambda_options[:function_name]}\./)
+        expect(provider).to receive(:log).with(/Updated code of function: #{lambda_options[:function_name]}\./)
+        provider.push_app
+      end
+    end
+
+    context 'by updating an existing function with new tags' do
+      before do
+        lambda_options[:function_tags] = [ 'TAG_KEY=some-value' ]
+        provider.lambda.stub_responses(:get_function, example_get_function_response)
+        provider.lambda.stub_responses(:update_function_configuration, example_response)
+        provider.lambda.stub_responses(:tag_resource)
+        provider.lambda.stub_responses(:update_function_code, example_response)
+      end
+
+      example do
+        expect(provider).to receive(:log).with(/Function #{lambda_options[:function_name]} already exists, updating\./)
+        expect(provider).to receive(:log).with(/Updated configuration of function: #{lambda_options[:function_name]}\./)
+        expect(provider).to receive(:log).with(/Add tags to function #{lambda_options[:function_name]}\./)
+        expect(provider).to receive(:log).with(/Updated code of function: #{lambda_options[:function_name]}\./)
         provider.push_app
       end
     end
 
     context 'with a ServiceException response' do
       before do
-        provider.lambda.stub_responses(:upload_function, 'ServiceException')
+        provider.lambda.stub_responses(:get_function, 'ResourceNotFoundException')
+        provider.lambda.stub_responses(:create_function, 'ServiceException')
       end
 
       example do
@@ -101,7 +150,7 @@ describe DPL::Provider::Lambda do
 
     context 'with a InvalidParameterValueException response' do
       before do
-        provider.lambda.stub_responses(:upload_function, 'InvalidParameterValueException')
+        provider.lambda.stub_responses(:get_function, 'InvalidParameterValueException')
       end
 
       example do
@@ -112,7 +161,8 @@ describe DPL::Provider::Lambda do
 
     context 'with a ResourceNotFoundException response' do
       before do
-        provider.lambda.stub_responses(:upload_function, 'ResourceNotFoundException')
+        provider.lambda.stub_responses(:get_function, 'ResourceNotFoundException')
+        provider.lambda.stub_responses(:create_function, 'ResourceNotFoundException')
       end
 
       example do
@@ -275,7 +325,7 @@ describe DPL::Provider::Lambda do
 
   describe '#create_zip' do
     dest = '/some/dest.zip'
-    src = '/some/src/dir'
+    src =  '/some/src/dir'
     file_one = 'one.js'
     file_two = 'two.js'
     files = [
@@ -284,6 +334,7 @@ describe DPL::Provider::Lambda do
     ]
 
     before do
+      expect(provider).to receive(:create_zip).and_call_original
       zip_file = double(Zip::File)
       expect(Zip::File).to receive(:open).with(dest, Zip::File::CREATE).and_yield(zip_file)
       expect(zip_file).to receive(:add).once.with(file_one, File.join(src, file_one))
@@ -320,12 +371,6 @@ describe DPL::Provider::Lambda do
     end
   end
 
-  describe '#default_mode' do
-    example do
-      expect(provider.default_mode).to eq('event')
-    end
-  end
-
   describe '#default_timeout' do
     example do
       expect(provider.default_timeout).to eq(3)
@@ -336,7 +381,7 @@ describe DPL::Provider::Lambda do
     build_number = 2
 
     before do
-      provider.context.env.stub(:[]).with('TRAVIS_BUILD_NUMBER').and_return(build_number)
+      allow(provider.context.env).to receive(:[]).with('TRAVIS_BUILD_NUMBER').and_return(build_number)
     end
 
     let(:build_number) { provider.context.env['TRAVIS_BUILD_NUMBER'] }
@@ -348,9 +393,26 @@ describe DPL::Provider::Lambda do
     end
   end
 
-  describe '#deafult_memory_size' do
+  describe '#default_memory_size' do
     example do
-      expect(provider.deafult_memory_size).to eq(128)
+      expect(provider.default_memory_size).to eq(128)
+    end
+  end
+
+  describe '#publish' do
+    context 'is default turned off' do
+      example do
+        expect(provider.publish).to eq(false)
+      end
+    end
+    context 'can be turned on' do
+      before do
+        expect(provider.options).to receive(:[]).with(:publish).and_return(true)
+      end
+
+      example do
+        expect(provider.publish).to eq(true)
+      end
     end
   end
 
