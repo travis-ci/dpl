@@ -124,6 +124,7 @@ providers.each do |provider|
 
   desc %Q(Run dpl-#{provider} specs)
   task "spec-#{provider}" => [:install, "Gemfile-#{provider}"] do
+    sh "rm -f $HOME/.npmrc"
     logger.info green("Running `bundle install` for #{provider}")
     sh 'bash', '-cl', "bundle install --gemfile=Gemfile-#{provider} --path=vendor/cache/dpl-#{provider} --retry=3 --binstubs=stubs"
     logger.info green("Running specs for #{provider}")
