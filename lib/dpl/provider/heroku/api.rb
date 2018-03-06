@@ -7,8 +7,6 @@ module DPL
     module Heroku
       class API < Generic
         attr_reader :build_id
-        requires 'faraday'
-        requires 'rendezvous'
 
         def push_app
           pack_archive

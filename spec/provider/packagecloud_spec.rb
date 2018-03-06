@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'rubygems'
-require 'gems'
 require 'dpl/provider/packagecloud'
 
 describe DPL::Provider::Packagecloud do

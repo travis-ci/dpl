@@ -4,9 +4,6 @@ module DPL
   class Provider
     module Heroku
       class Generic < Provider
-        requires 'rendezvous'
-        requires 'faraday'
-
         attr_reader :app, :user
 
         def needs_key?
