@@ -1,3 +1,7 @@
+require 'faraday'
+require 'rendezvous'
+require 'netrc'
+
 module DPL
   class Provider
     module Heroku

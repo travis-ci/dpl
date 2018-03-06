@@ -7,6 +7,9 @@ module DPL
   class Provider
     class Bintray < Provider
       def check_auth
+        @user = option(:user)
+        @key = option(:key)
+        @url = option(:url)
       end
 
       def needs_key?
@@ -25,22 +28,11 @@ module DPL
       def initialize(*args)
         super(*args)
         @test_mode = false
-        @user = options[:user]
-        @key = options[:key]
-        @url = options[:url]
+
         @file = options[:file]
         @passphrase = options[:passphrase]
         @dry_run = options[:dry_run]
 
-        if @user.nil?
-          abort("The 'user' argument is required")
-        end
-        if @key.nil?
-          abort("The 'key' argument is required")
-        end
-        if @file.nil?
-          abort("The 'file' argument is required")
-        end
         if @url.nil?
           @url = 'https://api.bintray.com'
         end

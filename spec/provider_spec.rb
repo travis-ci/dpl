@@ -3,51 +3,32 @@ require 'dpl/provider'
 
 describe DPL::Provider do
   let(:example_provider) { Class.new(described_class)}
-  subject(:provider) { example_provider.new(DummyContext.new, :app => 'example', :key_name => 'foo', :run => ["foo", "bar"]) }
+  let(:context) { DummyContext.new }
+  subject(:provider) { example_provider.new(context, :app => 'example', :key_name => 'foo', :run => ["foo", "bar"]) }
 
   before { stub_const "DPL::Provider::Example", example_provider }
 
   describe "#new" do
-    example { expect(described_class.new(DummyContext.new, :provider => "example")) .to be_an(example_provider) }
-    example { expect(described_class.new(DummyContext.new, :provider => "Example")) .to be_an(example_provider) }
-    example { expect(described_class.new(DummyContext.new, :provider => "exa_mple")).to be_an(example_provider) }
-    example { expect(described_class.new(DummyContext.new, :provider => "exa-mple")).to be_an(example_provider) }
+    example { expect(described_class.new(context, :provider => "example")) .to be_an(example_provider) }
+    example { expect(described_class.new(context, :provider => "Example")) .to be_an(example_provider) }
+    example { expect(described_class.new(context, :provider => "exa_mple")).to be_an(example_provider) }
+    example { expect(described_class.new(context, :provider => "exa-mple")).to be_an(example_provider) }
+    example { expect(described_class.new(context, :provider => "scri_pt")).to be_an(DPL::Provider::Script) }
+    example { expect(described_class.new(context, :provider => "scri _pt")).to be_an(DPL::Provider::Script) }
+    example { expect(described_class.new(context, :provider => "cloudfoundry")).to be_an(DPL::Provider::CloudFoundry) }
     example "install deployment dependencies" do
       expect_any_instance_of(described_class).to receive(:respond_to?).with(:install_deploy_dependencies).and_return(true)
       expect_any_instance_of(described_class).to receive(:install_deploy_dependencies)
-      described_class.new(DummyContext.new, :provider => "example")
-    end
-  end
-
-  describe "#requires" do
-    before do
-      expect(example_provider).to receive(:require).with("foo")
+      described_class.new(context, :provider => "example")
     end
 
-    example "installed" do
-      expect(example_provider).to receive(:gem).with("foo", "~> 1.4")
-      example_provider.requires("foo", :version => "~> 1.4")
+    it "installs correct gem when provider name does not match" do
+      expect(context).to receive(:shell).with("gem install dpl-cloud_foundry -v #{ENV['DPL_VERSION'] || DPL::VERSION}")
+      expect(described_class).to receive(:require).with("dpl/provider/cloud_foundry").and_raise LoadError.new("cannot load such file -- dpl/provider/cloud_foundry")
+      expect(described_class).to receive(:require).with("dpl/provider/cloud_foundry").and_call_original
+      described_class.new(context, :provider => 'cloudfoundry')
     end
 
-    example "missing" do
-      expect(example_provider).to receive(:gem).with("foo", "~> 1.4").and_raise(LoadError)
-      expect(example_provider.context).to receive(:shell).with('gem install foo -v "~> 1.4" --no-ri --no-rdoc ', retry: true)
-      example_provider.requires("foo", :version => "~> 1.4")
-    end
-  end
-
-  describe "#apt_get" do
-    example "installed" do
-      expect(example_provider).to receive(:`).with("which foo").and_return("/bin/foo\n")
-      expect(example_provider).not_to receive(:system)
-      example_provider.apt_get("foo")
-    end
-
-    example "missing" do
-      expect(example_provider).to receive(:`).with("which foo").and_return("")
-      expect(example_provider.context).to receive(:shell).with("sudo apt-get -qq install foo", retry: true)
-      example_provider.apt_get("foo")
-    end
   end
 
   describe "#pip" do
