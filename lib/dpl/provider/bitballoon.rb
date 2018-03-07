@@ -1,8 +1,8 @@
+require 'bitballoon'
+
 module DPL
   class Provider
     class BitBalloon < Provider
-      requires 'bitballoon'
-
       def check_auth
       end
 
