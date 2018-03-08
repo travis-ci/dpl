@@ -63,6 +63,7 @@ module DPL
         file_number = 0
         mutex = Mutex.new
         threads = []
+        log "Beginning upload of ${files.length} files with ${thread_count} threads."
 
         thread_count.times do |i|
           threads[i] = Thread.new {
@@ -81,9 +82,9 @@ module DPL
               opts[:storage_class]          = options[:storage_class] if options[:storage_class]
               opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
               unless File.directory?(filename)
-                # log "uploading #{filename.inspect} with #{opts.inspect}"
+                log "uploading #{filename.inspect} with #{opts.inspect}"
                 result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
-                raise "error while uploading #{filename.inspect}" unless result
+                warn "error while uploading #{filename.inspect}" unless result
               end
             end
           }
