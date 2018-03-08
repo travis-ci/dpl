@@ -44,7 +44,7 @@ module DPL
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
-            upload(Dir.glob(*glob_args))
+            upload_parallel(Dir.glob(*glob_args))
         end
 
         if suffix = options[:index_document_suffix]
@@ -58,7 +58,7 @@ module DPL
         end
       end
 
-      def upload(files, thread_count = 5)
+      def upload_parallel(files, thread_count = 5)
         file_number = 0
         mutex = Mutex.new
         threads = []
