@@ -88,8 +88,8 @@ module DPL
               end
             end
           }
-        end
-        threads.each { |t| t.join }
+        end.map(&:value)
+        # threads.each { |t| t.join }
       end
 
       def deploy
