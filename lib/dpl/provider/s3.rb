@@ -58,7 +58,7 @@ module DPL
         end
       end
 
-      def upload_parallel(files, thread_count = 5)
+      def upload_parallel(files, thread_count = 1)
         file_number = 0
         mutex = Mutex.new
         threads = []
