@@ -59,11 +59,11 @@ module DPL
         end
       end
 
-      def upload_multithreaded(files, thread_count = 9)
+      def upload_multithreaded(files, thread_count = 5)
         file_number = 0
         mutex = Mutex.new
         threads = []
-        log "Beginning upload of ${files.length} files with ${thread_count} threads."
+        log "Beginning upload of #{files.length} files with #{thread_count} threads."
 
         thread_count.times do |i|
           threads[i] = Thread.new {
