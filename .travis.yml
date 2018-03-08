@@ -9,7 +9,7 @@ jobs:
   include:
     - stage: deploy
       install: true
-      script: true
+      script: rake build
       cache: false
       before_deploy:
         - sed -i.bak "s/VERSION = '.*'/VERSION = '${DPL_VERSION}'/g" lib/dpl/version.rb
