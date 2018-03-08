@@ -59,7 +59,7 @@ module DPL
         end
       end
 
-      def upload_multithreaded(files, thread_count = 5)
+      def upload_multithreaded(files, thread_count = 9)
         file_number = 0
         mutex = Mutex.new
         threads = []
