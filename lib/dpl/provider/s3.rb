@@ -59,7 +59,7 @@ module DPL
         end
       end
 
-      def upload_parallel(files, thread_count = 1)
+      def upload_parallel(files, thread_count = 5)
         file_number = 0
         mutex = Mutex.new
         threads = []
@@ -72,7 +72,7 @@ module DPL
                 Thread.current["file_number"] = file_number
               end
               filename = files.pop rescue nil
-              next unless file
+              next unless filename
 
               opts  = content_data_for(filename)
               opts[:cache_control]          = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]
