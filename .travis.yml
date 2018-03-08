@@ -8,7 +8,6 @@ rvm:
 jobs:
   include:
     - stage: deploy
-      install: true
       script: rake build
       cache: false
       before_deploy:
