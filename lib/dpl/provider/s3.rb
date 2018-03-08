@@ -40,42 +40,12 @@ module DPL
         [options[:upload_dir], filename].compact.join("/")
       end
 
-      def push_app(thread_count = 20)
+      def push_app
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           files = Dir.glob(*glob_args)
-          file_number = 0
-          mutex = Mutex.new
-          threads = []
-          log "Beginning upload of ${files.length} files with ${thread_count} threads."
-
-          thread_count.times do |i|
-            threads[i] = Thread.new {
-              until files.empty?
-                mutex.synchronize do
-                  file_number += 1
-                  Thread.current["file_number"] = file_number
-                end
-                filename = files.pop rescue nil
-                next unless filename
-
-                opts  = content_data_for(filename)
-                opts[:cache_control]          = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]
-                opts[:acl]                    = options[:acl].gsub(/_/, '-') if options[:acl]
-                opts[:expires]                = get_option_value_by_filename(options[:expires], filename) if options[:expires]
-                opts[:storage_class]          = options[:storage_class] if options[:storage_class]
-                opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
-                unless File.directory?(filename)
-                  log "uploading #{filename.inspect} with #{opts.inspect}"
-                  result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
-                  warn "error while uploading #{filename.inspect}" unless result
-                end
-              end
-            }
-          end
-          threads.each { |t| t.join }
-          # upload_parallel(files)
+          upload_multithreaded(files)
         end
 
         if suffix = options[:index_document_suffix]
@@ -89,8 +59,37 @@ module DPL
         end
       end
 
-      def upload_parallel(files, thread_count = 20)
+      def upload_multithreaded(files, thread_count = 5)
+        file_number = 0
+        mutex = Mutex.new
+        threads = []
+        log "Beginning upload of ${files.length} files with ${thread_count} threads."
 
+        thread_count.times do |i|
+          threads[i] = Thread.new {
+            until files.empty?
+              mutex.synchronize do
+                file_number += 1
+                Thread.current["file_number"] = file_number
+              end
+              filename = files.pop rescue nil
+              next unless filename
+
+              opts  = content_data_for(filename)
+              opts[:cache_control]          = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]
+              opts[:acl]                    = options[:acl].gsub(/_/, '-') if options[:acl]
+              opts[:expires]                = get_option_value_by_filename(options[:expires], filename) if options[:expires]
+              opts[:storage_class]          = options[:storage_class] if options[:storage_class]
+              opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
+              unless File.directory?(filename)
+                log "uploading #{filename.inspect} with #{opts.inspect}"
+                result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
+                warn "error while uploading #{filename.inspect}" unless result
+              end
+            end
+          }
+        end
+        threads.each { |t| t.join }
       end
 
       def deploy
