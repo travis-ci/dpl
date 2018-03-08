@@ -44,7 +44,8 @@ module DPL
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
-            upload_parallel(Dir.glob(*glob_args))
+          files = Dir.glob(*glob_args)
+          upload_parallel(files)
         end
 
         if suffix = options[:index_document_suffix]
@@ -87,7 +88,7 @@ module DPL
             end
           }
         end
-        thread.each { |t| t.join }
+        threads.each { |t| t.join }
       end
 
       def deploy
