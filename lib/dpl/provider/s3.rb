@@ -81,7 +81,7 @@ module DPL
               opts[:storage_class]          = options[:storage_class] if options[:storage_class]
               opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
               unless File.directory?(filename)
-                log "uploading #{filename.inspect} with #{opts.inspect}"
+                # log "uploading #{filename.inspect} with #{opts.inspect}"
                 result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
                 raise "error while uploading #{filename.inspect}" unless result
               end
