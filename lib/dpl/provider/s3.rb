@@ -83,7 +83,7 @@ module DPL
               unless File.directory?(filename)
                 log "uploading #{filename.inspect} with #{opts.inspect}"
                 result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
-                warn "error while uploading #{filename.inspect}" unless result
+                raise "error while uploading #{filename.inspect}" unless result
               end
             end
           }
