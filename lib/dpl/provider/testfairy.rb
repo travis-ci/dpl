@@ -2,8 +2,6 @@ module DPL
   class Provider
     class TestFairy < Provider
 
-      requires "multipart-post", load: 'net/http/post/multipart', version: '2.0.0'
-
       require "net/http"
       require 'net/http/post/multipart'
       require 'json'
