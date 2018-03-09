@@ -8,7 +8,6 @@ See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 Dpl supports the following providers:
 
 * [Anynines](#anynines)
-* [AppFog](#appfog)
 * [Atlas by HashiCorp](#atlas)
 * [AWS CodeDeploy](#aws-codedeploy)
 * [AWS Elastic Beanstalk](#elastic-beanstalk)
@@ -268,6 +267,9 @@ For authentication you can also use Travis CI secure environment variable:
 #### Options:
 
 * **api-key**: Rubygems Api Key.
+* **gemspec**: Optional. The name of the `gemspec` file to use to build the gem.
+* **gemspec_glob**: Optional. A glob pattern to search for gemspec files when multiple gems are generated in the repository.
+This _overrides_ the `gemspec` option.
 
 #### Examples:
 
@@ -287,6 +289,7 @@ For authentication you can also use Travis CI secure environment variable:
   that supports this option. See https://github.com/travis-ci/dpl/issues/660
   for details.
 * **docs_dir**: Optional. A path to the directory to upload documentation from. Defaults to 'build/docs'
+* **skip_existing**: Optional. When set to `true`, the deployment will not fail if a file with the same name already exists on the server. It won't be uploaded and will not overwrite the existing file. Defaults to `false`.
 
 #### Environment variables:
 
@@ -411,19 +414,6 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 #### Examples:
 
     dpl --provider=anynines --username=<username> --password=<password> --organization=<organization> --space=<space>
-
-### Appfog:
-
-#### Options:
-
-* **email**: Appfog Email.
-* **password**: Appfog Password.
-* **app**: Appfog App. Defaults to git repo's name.
-
-#### Examples:
-
-    dpl --provider=appfog --email=<email> --password=<password>
-    dpl --provider=appfog --email=<email> --password=<password> --app=<app>
 
 ### Atlas:
 
@@ -723,12 +713,12 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **security_group_ids**: Optional. List of security group IDs to be added to the function. Needs the `ec2:DescribeSecurityGroups` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
  * **dead_letter_arn**: Optional. ARN to an SNS or SQS resource used for the dead letter queue. [More about DLQs here](https://docs.aws.amazon
  .com/lambda/latest/dg/dlq.html).
- * **tracing_mode**: Optional. "Active" or "PassThrough" only. Default is "PassThrough".  Needs the `xray:PutTraceSegments` and `xray:PutTelemetryRecords` on the role for this to work. [More on 
+ * **tracing_mode**: Optional. "Active" or "PassThrough" only. Default is "PassThrough".  Needs the `xray:PutTraceSegments` and `xray:PutTelemetryRecords` on the role for this to work. [More on
  Active Tracing here](https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html).
  * **environment_variables**: Optional. List of Environment Variables to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
  * **kms_key_arn**: Optional. KMS key ARN to use to encrypt `environment_variables`.
  * **function_tags**: Optional. List of tags to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
- 
+
  For a list of all [permissions for Lambda, please refer to the documentation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html).
 
 #### Examples:

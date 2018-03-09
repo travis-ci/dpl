@@ -56,6 +56,24 @@ describe DPL::Provider::PyPI do
       provider.push_app
     end
 
+    example "with :skip_existing option being false" do
+      provider.options.update(:skip_existing => false)
+      expect(provider.context).to receive(:shell).with("python setup.py sdist").and_return(true)
+      expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
+      expect(provider.context).not_to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/")
+      provider.push_app
+    end
+
+    example "with :skip_existing option being true" do
+      provider.options.update(:skip_existing => true)
+      expect(provider.context).to receive(:shell).with("python setup.py sdist").and_return(true)
+      expect(provider.context).to receive(:shell).with("twine upload --skip-existing -r pypi dist/*").and_return(true)
+      expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
+      expect(provider.context).not_to receive(:shell).with("python setup.py upload_docs  -r https://upload.pypi.org/legacy/")
+      provider.push_app
+    end
+
     example "with :skip_upload_docs option" do
       provider.options.update(:skip_upload_docs => true)
       expect(provider.context).to receive(:shell).with("python setup.py sdist").and_return(true)

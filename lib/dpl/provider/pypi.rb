@@ -32,6 +32,12 @@ module DPL
           (options.has_key?(:skip_upload_docs) && options[:skip_upload_docs])
       end
 
+      def pypi_skip_existing_option
+          if options.fetch(:skip_existing, false)
+            ' --skip-existing'
+          end
+      end
+
       def install_deploy_dependencies
         unless context.shell "wget -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && " \
                              "pip install --upgrade setuptools twine wheel"
@@ -89,7 +95,7 @@ module DPL
 
       def push_app
         context.shell "python setup.py #{pypi_distributions}"
-        unless context.shell "twine upload -r pypi dist/*"
+        unless context.shell "twine upload#{pypi_skip_existing_option} -r pypi dist/*"
           error 'PyPI upload failed.'
         end
         context.shell "rm -rf dist/*"

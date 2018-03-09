@@ -1,3 +1,4 @@
+Gemfile-*
 Gemfile.lock
 .coverage
 coverage
@@ -6,3 +7,4 @@ setuptools*.zip
 google_appengine_*.zip
 google_appengine/*
 npm-debug.log
+*.gem
