@@ -431,7 +431,7 @@ module DPL
         return upload_files
       end
 
-      def deploy
+      def push_app
         read_descriptor
         check_and_create_package
         check_and_create_version
