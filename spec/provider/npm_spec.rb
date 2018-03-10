@@ -13,7 +13,7 @@ describe DPL::Provider::NPM do
   describe "#check_auth" do
     example do
       expect(provider).to receive(:setup_auth)
-      expect(provider).to receive(:log).with("Authenticated with email foo@blah.com")
+      expect(provider).to receive(:log).with("Authenticated with email foo@blah.com and API key #{'test'.rjust(20, '*')}");
       provider.check_auth
     end
   end
