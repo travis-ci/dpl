@@ -6,10 +6,12 @@ require 'find'
 module DPL
   class Provider
     class Bintray < Provider
+      DEFAULT_URL = 'https://api.bintray.com'
+
       def check_auth
         @user = option(:user)
         @key = option(:key)
-        @url = option(:url)
+        @url = option(:url, DEFAULT_URL)
       end
 
       def needs_key?
@@ -29,13 +31,10 @@ module DPL
         super(*args)
         @test_mode = false
 
-        @file = options[:file]
+        @file = option(:file)
         @passphrase = options[:passphrase]
         @dry_run = options[:dry_run]
 
-        if @url.nil?
-          @url = 'https://api.bintray.com'
-        end
         if @dry_run.nil?
           @dry_run = false
         end
