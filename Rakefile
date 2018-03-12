@@ -36,6 +36,10 @@ def confirm(verb = "release")
   end
 end
 
+def dpl_bin
+  File.join(Gem.bindir, 'dpl')
+end
+
 gemspecs = FileList[File.join(top, "dpl-*.gemspec")]
 
 providers = gemspecs.map { |f| /dpl-(?<provider>.*)\.gemspec/ =~ f && provider }
@@ -64,6 +68,15 @@ task :build => "dpl-#{gem_version}.gem" do
   providers.each do |provider|
     Rake::Task["dpl-#{provider}-#{gem_version}.gem"].invoke
   end
+end
+
+desc "Uninstall all gems"
+task :uninstall do
+  providers.each do |provider|
+    Rake::Task["uninstall-#{provider}"].invoke
+  end
+  logger.info red("Uninstalling dpl")
+  sh "gem uninstall -aIx dpl"
 end
 
 desc "Release all gems"
@@ -95,6 +108,8 @@ end
 task :clean do
   rm_rf "stubs"
   rm_rf "vendor"
+  rm_rf "dpl-*.gem"
+  Rake::Task[:uninstall].invoke
 end
 
 desc "Run dpl specs"
@@ -109,7 +124,7 @@ file "dpl-#{gem_version}.gem" do
 end
 
 desc "Install dpl gem"
-task :install => "dpl-#{gem_version}.gem" do
+file dpl_bin => "dpl-#{gem_version}.gem" do
   logger.info green("Installing dpl gem")
   ruby "-S gem install dpl-#{gem_version}.gem"
 end
@@ -123,7 +138,7 @@ providers.each do |provider|
   end
 
   desc %Q(Run dpl-#{provider} specs)
-  task "spec-#{provider}" => [:install, "Gemfile-#{provider}"] do
+  task "spec-#{provider}" => [Rake::FileTask[dpl_bin], "Gemfile-#{provider}"] do
     sh "rm -f $HOME/.npmrc"
     logger.info green("Running `bundle install` for #{provider}")
     sh 'bash', '-cl', "bundle install --gemfile=Gemfile-#{provider} --path=vendor/cache/dpl-#{provider} --retry=3 --binstubs=stubs"
@@ -138,11 +153,17 @@ providers.each do |provider|
   end
 
   desc "Test dpl-#{provider} gem"
-  task "check-#{provider}" => [:install, "dpl-#{provider}-#{gem_version}.gem"] do
+  task "check-#{provider}" => [Rake::FileTask[dpl_bin], "dpl-#{provider}-#{gem_version}.gem"] do
     logger.info green("Installing dpl-#{provider} gem")
     sh "gem install --no-post-install-message dpl-#{provider}-#{gem_version}.gem"
     logger.info green("Testing dpl-#{provider} loads correctly")
     ruby "-S dpl --provider=#{provider} --skip-cleanup=true --no-deploy"
+  end
+
+  desc "Uninstall dpl-#{provider}"
+  task "uninstall-#{provider}" do
+    logger.info red("Uninstalling dpl-#{provider}")
+    sh "gem uninstall -aIx dpl-#{provider}"
   end
 
   desc "Release dpl-#{provider} gem"
