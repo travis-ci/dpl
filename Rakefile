@@ -45,7 +45,7 @@ gemspecs = FileList[File.join(top, "dpl-*.gemspec")]
 
 providers = gemspecs.map { |f| /dpl-(?<provider>.*)\.gemspec/ =~ f && provider }
 
-task :default => [:spec, :install] do
+task :default => [:spec, Rake::FileTask[dpl_bin]] do
   Rake::Task["spec_providers"].invoke
   Rake::Task["check_providers"].invoke
 end
