@@ -11,11 +11,14 @@ module DPL
       def check_auth
         @user = option(:user)
         @key = option(:key)
-        @url = option(:url, DEFAULT_URL)
       end
 
       def needs_key?
         false
+      end
+
+      def url
+        @url ||= URI.parse(options[:url] || DEFAULT_URL)
       end
 
       attr_accessor :test_mode
@@ -23,7 +26,6 @@ module DPL
       attr_reader :key
       attr_reader :file
       attr_reader :passphrase
-      attr_reader :url
       attr_reader :dry_run
       attr_reader :descriptor
 
@@ -50,7 +52,6 @@ module DPL
       end
 
       def head_request(path)
-        url = URI.parse(self.url)
         req = Net::HTTP::Head.new(path)
         req.basic_auth user, key
 
@@ -69,7 +70,6 @@ module DPL
           req.body = body.to_json
         end
 
-        url = URI.parse(self.url)
         sock = Net::HTTP.new(url.host, url.port)
         sock.use_ssl = true
         res = sock.start {|http| http.request(req) }
@@ -77,7 +77,6 @@ module DPL
       end
 
       def put_file_request(local_file_path, upload_path, matrix_params)
-        url = URI.parse(self.url)
 
         file = File.open(local_file_path, 'rb')
         data = file.read()
