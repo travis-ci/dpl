@@ -925,3 +925,14 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Examples:
 
     dpl --provider=bluemixcloudfoundry --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
+
+## `dpl` and `sudo`
+
+`dpl` installs deployment provider code as the user invoking
+`dpl` at run time, if it is not available.
+This causes [a problem](https://github.com/travis-ci/dpl/issues/769)
+if you invoke `dpl` via `dpl`, where the process instaling the
+provider code may not have sufficient permissions.
+
+In this case, you can install the provider gem (of the same version as
+`dpl`) with `sudo` beforehand to work around this issue.
