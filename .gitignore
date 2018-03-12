@@ -1,5 +1,6 @@
 Gemfile-*
 Gemfile.lock
+.bundle
 .coverage
 coverage
 .dpl
@@ -8,3 +9,5 @@ google_appengine_*.zip
 google_appengine/*
 npm-debug.log
 *.gem
+stubs
+vendor
