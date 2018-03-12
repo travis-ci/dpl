@@ -4,6 +4,7 @@ require 'pathname'
 require 'logger'
 require './lib/dpl/version'
 require 'highline'
+require 'faraday'
 
 include Term::ANSIColor
 
@@ -82,9 +83,34 @@ end
 desc "Release all gems"
 task :release do
   confirm
-  threads = []
-  providers.each { |provider| threads << Thread.new { Rake::Task["release-#{provider}"].invoke } }
-  threads.each { |thr| thr.join }
+  released = []
+  providers.each do |provider|
+    while !released.include? provider
+      logger.info "checking dpl-#{provider}"
+
+      cli = Faraday.new url: 'https://rubygems.org'
+
+      begin
+        response = cli.get("/api/v2/rubygems/dpl-#{provider}/versions/#{gem_version}.json")
+        if response.success?
+          released << provider
+          logger.info green("dpl-#{provider} #{gem_version} exists")
+          next
+        else
+          begin
+            if Rake::Task["release-#{provider}"].invoke
+              released << provider
+            end
+          rescue => e
+            Rake::Task["release-#{provider}"].reenable
+          end
+        end
+      rescue Faraday::Error => e
+        logger.info yellow("connection failed. retrying")
+        retry
+      end
+    end
+  end
   logger.info green("Pushing dpl-#{gem_version}.gem")
   sh "gem push dpl-#{gem_version}.gem"
 end
@@ -95,9 +121,9 @@ task :yank, [:version] do |t, args|
   confirm "yank"
   logger.info green("Yanking `dpl` version #{version}")
   sh "gem yank dpl -v #{version}"
-  threads = []
-  providers.each { |provider| threads << Thread.new { Rake::Task["yank-#{provider}"].invoke } }
-  threads.each { |thr| thr.join }
+  providers.each do |provider|
+    Rake::Task["yank-#{provider}"].invoke
+  end
 end
 
 task :deep_clean do
