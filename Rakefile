@@ -45,6 +45,18 @@ gemspecs = FileList[File.join(top, "dpl-*.gemspec")]
 
 providers = gemspecs.map { |f| /dpl-(?<provider>.*)\.gemspec/ =~ f && provider }
 
+desc "Build dpl gem"
+file "dpl-#{gem_version}.gem" do
+  logger.info green("Building dpl gem")
+  ruby "-S gem build dpl.gemspec"
+end
+
+desc "Install dpl gem"
+file dpl_bin => "dpl-#{gem_version}.gem" do
+  logger.info green("Installing dpl gem")
+  ruby "-S gem install dpl-#{gem_version}.gem"
+end
+
 task :default => [:spec, Rake::FileTask[dpl_bin]] do
   Rake::Task["spec_providers"].invoke
   Rake::Task["check_providers"].invoke
@@ -141,18 +153,6 @@ end
 desc "Run dpl specs"
 task :spec do
   ruby '-S rspec spec/cli_spec.rb spec/provider_spec.rb'
-end
-
-desc "Build dpl gem"
-file "dpl-#{gem_version}.gem" do
-  logger.info green("Building dpl gem")
-  ruby "-S gem build dpl.gemspec"
-end
-
-desc "Install dpl gem"
-file dpl_bin => "dpl-#{gem_version}.gem" do
-  logger.info green("Installing dpl gem")
-  ruby "-S gem install dpl-#{gem_version}.gem"
 end
 
 providers.each do |provider|
