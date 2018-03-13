@@ -313,6 +313,7 @@ This _overrides_ the `gemspec` option.
   that supports this option. See https://github.com/travis-ci/dpl/issues/660
   for details.
 * **docs_dir**: Optional. A path to the directory to upload documentation from. Defaults to 'build/docs'
+* **skip_existing**: Optional. When set to `true`, the deployment will not fail if a file with the same name already exists on the server. It won't be uploaded and will not overwrite the existing file. Defaults to `false`.
 
 #### Environment variables:
 
@@ -662,8 +663,8 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **token**: Required. The [packagecloud.io api token](https://packagecloud.io/docs/api#api_tokens).
  * **repository**: Required. The repository to push to.
  * **local_dir**: Optional. The sub-directory of the built assets for deployment. Default to current path.
- * **dist**: Required for deb and rpm. The complete list of supported strings can be found on the [packagecloud.io docs](https://packagecloud.io/docs#os_distro_version)
- * **force**: Optional. Wheter package has to be (re)uploaded / deleted before upload
+ * **dist**: Required for debian, rpm, and node.js packages. The complete list of supported strings can be found on the [packagecloud.io docs](https://packagecloud.io/docs#os_distro_version). For node.js packages, simply use "node".
+ * **force**: Optional. Whether package has to be (re)uploaded / deleted before upload
 
 #### Examples:
 
@@ -948,3 +949,14 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Examples:
 
     dpl --provider=bluemixcloudfoundry --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
+
+## `dpl` and `sudo`
+
+`dpl` installs deployment provider code as the user invoking
+`dpl` at run time, if it is not available.
+This causes [a problem](https://github.com/travis-ci/dpl/issues/769)
+if you invoke `dpl` via `dpl`, where the process instaling the
+provider code may not have sufficient permissions.
+
+In this case, you can install the provider gem (of the same version as
+`dpl`) with `sudo` beforehand to work around this issue.

@@ -48,7 +48,7 @@ module DPL
         if ext.nil?
           error "filename: #{filename} has no extension!"
         end
-        ["rpm", "deb", "dsc", "whl", "egg", "egg-info", "gz", "zip", "tar", "bz2", "z"].include?(ext.downcase)
+        ["rpm", "deb", "dsc", "whl", "egg", "egg-info", "gz", "zip", "tar", "bz2", "z", "tgz"].include?(ext.downcase)
       end
 
       def error_if_dist_required(filename)

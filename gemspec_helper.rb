@@ -34,6 +34,8 @@ def gemspec_for(provider_name=nil, runtime_dependencies=[])
     s.add_development_dependency 'tins'
     s.add_development_dependency 'coveralls'
     s.add_development_dependency 'highline'
+    s.add_development_dependency 'term-ansicolor'
+    s.add_development_dependency 'faraday'
 
     # set up files
     if provider_name
