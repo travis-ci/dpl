@@ -9,8 +9,9 @@ module DPL
       DEFAULT_URL = 'https://api.bintray.com'
 
       def check_auth
-        @user = option(:user)
-        @key = option(:key)
+        @user ||= option(:user)
+        @key  ||= option(:key)
+        @file ||= option(:file)
       end
 
       def needs_key?
@@ -22,9 +23,7 @@ module DPL
       end
 
       attr_accessor :test_mode
-      attr_reader :user
-      attr_reader :key
-      attr_reader :file
+      attr_reader :user, :key, :file
       attr_reader :passphrase
       attr_reader :dry_run
       attr_reader :descriptor
@@ -33,7 +32,6 @@ module DPL
         super(*args)
         @test_mode = false
 
-        @file = option(:file)
         @passphrase = options[:passphrase]
         @dry_run = options[:dry_run]
 
