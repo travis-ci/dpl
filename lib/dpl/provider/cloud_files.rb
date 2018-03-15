@@ -1,12 +1,9 @@
 require 'dpl/provider'
+require 'fog/rackspace'
 
 module DPL
   class Provider
     class CloudFiles < Provider
-      requires 'net-ssh',    load: 'net/ssh',    version: '~> 2.9.2' # Anything higher requires Ruby 2.x
-      requires 'mime-types', load: 'mime/types', version: '~> 2.6.2' # Anything higher requires Ruby 2.x
-      requires 'nokogiri', version: '~> 1.6.8.1' # 1.7.0 and up requires Ruby 2.1.0 (via fog-xml)
-      requires 'fog-rackspace', load: 'fog/rackspace'
       experimental 'Rackspace Cloud Files'
 
       def needs_key?

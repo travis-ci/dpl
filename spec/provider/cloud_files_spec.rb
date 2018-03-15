@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'dpl/provider/cloud_files'
-require 'fog'
+require 'fog/rackspace'
 
 describe DPL::Provider::CloudFiles do
   before :each do

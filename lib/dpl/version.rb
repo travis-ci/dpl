@@ -1,3 +1,3 @@
 module DPL
-  VERSION = '1.8.43'
+  VERSION = '1.9.1'
 end

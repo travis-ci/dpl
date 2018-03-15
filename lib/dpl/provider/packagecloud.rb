@@ -1,9 +1,8 @@
+require 'packagecloud'
+
 module DPL
   class Provider
     class Packagecloud < Provider
-      requires 'json_pure', :version => '< 2.0', :load => 'json/pure'
-      requires 'packagecloud-ruby', :version => "1.0.5", :load => 'packagecloud'
-
       def check_auth
         setup_auth
         begin
@@ -49,7 +48,7 @@ module DPL
         if ext.nil?
           error "filename: #{filename} has no extension!"
         end
-        ["rpm", "deb", "dsc", "whl", "egg", "egg-info", "gz", "zip", "tar", "bz2", "z"].include?(ext.downcase)
+        ["rpm", "deb", "dsc", "whl", "egg", "egg-info", "gz", "zip", "tar", "bz2", "z", "tgz"].include?(ext.downcase)
       end
 
       def error_if_dist_required(filename)
