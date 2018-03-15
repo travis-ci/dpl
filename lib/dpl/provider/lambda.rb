@@ -11,10 +11,18 @@ module DPL
         @lambda ||= ::Aws::Lambda::Client.new(lambda_options)
       end
 
+      def access_key_id
+        options[:access_key_id] || context.env['AWS_ACCESS_KEY_ID'] || raise(Error, "missing access_key_id")
+      end
+
+      def secret_access_key
+        options[:secret_access_key] || context.env['AWS_SECRET_ACCESS_KEY'] || raise(Error, "missing secret_access_key")
+      end
+
       def lambda_options
         {
             region:      options[:region] || 'us-east-1',
-            credentials: ::Aws::Credentials.new(option(:access_key_id), option(:secret_access_key))
+            credentials: ::Aws::Credentials.new(access_key_id, secret_access_key)
         }
       end
 
@@ -157,7 +165,7 @@ module DPL
       end
 
       def check_auth
-        log "Using Access Key: #{option(:access_key_id)[-4..-1].rjust(20, '*')}"
+        log "Using Access Key: #{access_key_id[-4..-1].rjust(20, '*')}"
       end
 
       def output_file_path
