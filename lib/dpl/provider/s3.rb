@@ -43,10 +43,11 @@ module DPL
       def push_app
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
+        files = []
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           files = Dir.glob(*glob_args)
-          upload_multithreaded(files)
         end
+        upload_multithreaded(files)
 
         if suffix = options[:index_document_suffix]
           api.bucket(option(:bucket)).website.put(
