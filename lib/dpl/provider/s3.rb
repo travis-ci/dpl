@@ -41,10 +41,8 @@ module DPL
       end
 
       def push_app
-        glob_args = ["**/*"]
+        glob_args = [options.fetch(:local_dir, Dir.pwd) + "**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
-        cwd = options.fetch(:local_dir, Dir.pwd)
-        glob_args.map{|s| s.prepend(cwd)}
         files = Dir.glob(*glob_args)
         upload_multithreaded(files)
 
