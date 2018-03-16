@@ -43,10 +43,9 @@ module DPL
       def push_app
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
-        files = []
-        Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
-          files = Dir.glob(*glob_args)
-        end
+        cwd = options.fetch(:local_dir, Dir.pwd)
+        glob_args.map{|s| s.prepend(cwd)}
+        files = Dir.glob(*glob_args)
         upload_multithreaded(files)
 
         if suffix = options[:index_document_suffix]
