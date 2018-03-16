@@ -5,8 +5,14 @@ require 'mime-types'
 module DPL
   class Provider
     class S3 < Provider
+      DEFAULT_MAX_THREADS = 5
+
       def api
         @api ||= ::Aws::S3::Resource.new(s3_options)
+      end
+
+      def max_threads
+        @max_threads ||= options.fetch(:max_threads, DEFAULT_MAX_THREADS)
       end
 
       def needs_key?
@@ -58,13 +64,13 @@ module DPL
         end
       end
 
-      def upload_multithreaded(files, thread_count = 5)
+      def upload_multithreaded(files)
         file_number = 0
         mutex = Mutex.new
         threads = []
-        log "Beginning upload of #{files.length} files with #{thread_count} threads."
+        log "Beginning upload of #{files.length} files with #{max_threads} threads."
 
-        thread_count.times do |i|
+        max_threads.times do |i|
           threads[i] = Thread.new {
             until files.empty?
               mutex.synchronize do

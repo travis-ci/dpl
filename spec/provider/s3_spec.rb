@@ -159,6 +159,13 @@ describe DPL::Provider::S3 do
       expect(Dir).to receive(:glob).with(Dir.pwd + "/**/*", File::FNM_DOTMATCH).and_return([__FILE__])
       provider.push_app
     end
+
+    example "when max_threads is set" do
+      provider.options.update(:max_threads => 10)
+      expect(Dir).to receive(:glob).with(Dir.pwd + "/**/*").and_return([__FILE__])
+      expect(provider).to receive(:log).with("Beginning upload of 1 files with 10 threads.")
+      provider.push_app
+    end
   end
 
   describe "#check_app" do
