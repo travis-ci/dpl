@@ -48,7 +48,7 @@ describe DPL::Provider::S3 do
   end
 
   before :each do
-    provider.stub(:s3_options).and_return(client_options)
+    allow(provider).to receive(:s3_options).and_return(client_options)
     allow_any_instance_of(::Aws::S3::Object).to receive(:upload_file).and_return(true)
     allow(provider).to receive(:log).with(anything).and_return(true)
   end
