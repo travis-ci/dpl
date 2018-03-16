@@ -82,17 +82,17 @@ describe DPL::Provider::S3 do
   end
 
   describe "#push_app" do
-    example "Without local_dir" do
-      expect(Dir).to receive(:chdir).with(Dir.pwd)
-      provider.push_app
-    end
-
-    example "With local_dir" do
-      provider.options.update(:local_dir => 'BUILD')
-
-      expect(Dir).to receive(:chdir).with('BUILD')
-      provider.push_app
-    end
+#    example "Without local_dir" do
+#      expect(Dir).to receive(:chdir).with(Dir.pwd)
+#      provider.push_app
+#    end
+#
+#    example "With local_dir" do
+#      provider.options.update(:local_dir => 'BUILD')
+#
+#      expect(Dir).to receive(:chdir).with('BUILD')
+#      provider.push_app
+#    end
 
     example "Sends MIME type" do
       expect(Dir).to receive(:glob).and_return([__FILE__])
