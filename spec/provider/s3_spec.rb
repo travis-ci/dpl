@@ -161,7 +161,7 @@ describe DPL::Provider::S3 do
 
     example "when dot_match is set" do
       provider.options.update(:dot_match => true)
-      expect(Dir).to receive(:glob).with("**/*", File::FNM_DOTMATCH).and_return([__FILE__]  )
+      expect(Dir).to receive(:glob).with(:local_dir + "/**/*", File::FNM_DOTMATCH).and_return([__FILE__]  )
       provider.push_app
     end
   end
