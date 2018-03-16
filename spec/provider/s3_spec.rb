@@ -166,6 +166,14 @@ describe DPL::Provider::S3 do
       expect(provider).to receive(:log).with("Beginning upload of 1 files with 10 threads.")
       provider.push_app
     end
+
+    example "when max_threads is too large" do
+      provider.options.update(:max_threads => 100)
+      expect(Dir).to receive(:glob).with(Dir.pwd + "/**/*").and_return([__FILE__])
+      expect(provider).to receive(:log).with("Beginning upload of 1 files with 15 threads.")
+      expect(provider).to receive(:log).with("Desired thread count 100 is too large. Using 15.")
+      provider.push_app
+    end
   end
 
   describe "#check_app" do

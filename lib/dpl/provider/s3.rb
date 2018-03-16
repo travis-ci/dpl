@@ -6,13 +6,19 @@ module DPL
   class Provider
     class S3 < Provider
       DEFAULT_MAX_THREADS = 5
+      MAX_THREADS = 15
 
       def api
         @api ||= ::Aws::S3::Resource.new(s3_options)
       end
 
       def max_threads
-        @max_threads ||= options.fetch(:max_threads, DEFAULT_MAX_THREADS)
+        return @max_threads if @max_threads
+        if (@max_threads = threads_wanted = options.fetch(:max_threads, DEFAULT_MAX_THREADS)) >= MAX_THREADS
+          log "Desired thread count #{threads_wanted} is too large. Using #{MAX_THREADS}."
+          @max_threads = MAX_THREADS
+        end
+        @max_threads
       end
 
       def needs_key?
