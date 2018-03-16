@@ -85,7 +85,7 @@ describe DPL::Provider::S3 do
     example "With local_dir" do
       someDir = "/some/dir/"
       provider.options.update(:local_dir => someDir)
-      expect(Dir).to receive(:glob).with(someDir + "/**/*", File::FNM_DOTMATCH).and_return([__FILE__])
+      expect(Dir).to receive(:glob).with(someDir + "/**/*").and_return([__FILE__])
       provider.push_app
     end
 
