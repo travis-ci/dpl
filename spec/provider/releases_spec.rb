@@ -160,6 +160,8 @@ describe DPL::Provider::Releases do
 
       allow(provider).to receive(:releases).and_return([""])
       allow(provider).to receive(:get_tag).and_return("v0.0.0")
+      expect(File).to receive(:file?).with("test/foo.bar").and_return(true)
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       provider.releases.map do |release|
         allow(release).to receive(:tag_name).and_return("v0.0.0")
@@ -186,6 +188,8 @@ describe DPL::Provider::Releases do
 
       allow(provider).to receive(:releases).and_return([""])
       allow(provider).to receive(:get_tag).and_return("v0.0.0")
+      expect(File).to receive(:file?).with("test/foo.bar").and_return(true)
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       provider.releases.map do |release|
         allow(release).to receive(:tag_name).and_return("v0.0.0")
@@ -213,6 +217,7 @@ describe DPL::Provider::Releases do
 
       allow(provider).to receive(:releases).and_return([""])
       allow(provider).to receive(:get_tag).and_return("v0.0.0")
+      expect(File).to receive(:file?).with("exists.txt").and_return(true)
 
       provider.releases.map do |release|
         allow(release).to receive(:tag_name).and_return("v0.0.0")
@@ -238,6 +243,8 @@ describe DPL::Provider::Releases do
       provider.options.update(:file => ["test/foo.bar", "bar.txt"])
 
       allow(provider).to receive(:releases).and_return([""])
+      expect(File).to receive(:file?).with("test/foo.bar").and_return(true)
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       provider.releases.map do |release|
         allow(release).to receive(:tag_name).and_return("foo")
@@ -268,6 +275,7 @@ describe DPL::Provider::Releases do
       provider.options.update(:release_number => "1234")
 
       allow(provider).to receive(:slug).and_return("foo/bar")
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       allow(provider.api).to receive(:release)
       allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
@@ -286,8 +294,8 @@ describe DPL::Provider::Releases do
       provider.options.update(:file => ["bar.txt"])
       provider.options.update(:release_number => "1234")
       provider.options.update(:draft => true)
-
       allow(provider).to receive(:slug).and_return("foo/bar")
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       allow(provider.api).to receive(:release)
       allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
