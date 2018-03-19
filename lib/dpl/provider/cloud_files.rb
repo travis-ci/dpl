@@ -27,6 +27,7 @@ module DPL
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
 
         Dir.glob(*glob_args).each do |name|
+          log "Uploading #{name}"
           container.files.create(:key => name, :body => File.open(name)) unless File.directory?(name)
         end
       end
