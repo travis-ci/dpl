@@ -134,14 +134,15 @@ module DPL
       end
 
       def booleanize!(opts)
-        opts.transform_values! do |val|
-          case val.to_s.downcase
+        opts.map do |k,v|
+          opts[k] =
+          case v.to_s.downcase
           when 'true'
             true
           when 'false'
             false
           else
-            val
+            v
           end
         end
       end
