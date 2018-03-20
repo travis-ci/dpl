@@ -2,6 +2,8 @@ require 'json'
 require 'aws-sdk'
 require 'mime-types'
 
+Aws.eager_autoload!
+
 module DPL
   class Provider
     class S3 < Provider
