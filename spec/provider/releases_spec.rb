@@ -307,5 +307,25 @@ describe DPL::Provider::Releases do
 
       provider.push_app
     end
+
+    example "When prerelease is 'true'" do
+      allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["bar.txt"])
+      provider.options.update(:release_number => "1234")
+      provider.options.update(:prerelease => 'true')
+      allow(provider).to receive(:slug).and_return("foo/bar")
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
+
+      allow(provider.api).to receive(:release)
+      allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
+      allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => nil})
+      allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
+
+      expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:prerelease => true))
+
+      provider.push_app
+    end
   end
 end

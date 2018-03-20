@@ -82,6 +82,8 @@ module DPL
         tag_matched = false
         release_url = nil
 
+        booleanize!(options)
+
         if options[:release_number]
           tag_matched = true
           release_url = "https://api.github.com/repos/" + slug + "/releases/" + options[:release_number]
@@ -129,6 +131,20 @@ module DPL
           content_type = "application/octet-stream"
         end
         api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
+      end
+
+      def booleanize!(opts)
+        opts.map do |k,v|
+          opts[k] =
+          case v.to_s.downcase
+          when 'true'
+            true
+          when 'false'
+            false
+          else
+            v
+          end
+        end
       end
     end
   end
