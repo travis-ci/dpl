@@ -175,12 +175,4 @@ describe DPL::Provider::S3 do
       provider.push_app
     end
   end
-
-  describe "#check_app" do
-    example "With Endpoint" do
-      provider.options.update(:endpoint => 's3test.com.s3-website-us-west-2.amazonaws.com')
-      expect(provider).to receive(:log).with('Warning: The endpoint option is no longer used and can be removed.')
-      provider.check_app
-    end
-  end
 end
