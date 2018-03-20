@@ -52,7 +52,7 @@ module DPL
         old_pwd = Dir.pwd
         cwd = options.fetch(:local_dir, Dir.pwd)
         Dir.chdir(cwd)
-        glob_args = ["/**/*"]
+        glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         files = Dir.glob(*glob_args).reject {|f| File.directory?(f)}
         upload_multithreaded(files)
