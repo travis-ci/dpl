@@ -25,10 +25,6 @@ module DPL
         false
       end
 
-      def check_app
-        log 'Warning: The endpoint option is no longer used and can be removed.' if options[:endpoint]
-      end
-
       def access_key_id
         options[:access_key_id] || context.env['AWS_ACCESS_KEY_ID'] || raise(Error, "missing access_key_id")
       end
