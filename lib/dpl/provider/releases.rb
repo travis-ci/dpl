@@ -6,6 +6,11 @@ module DPL
     class Releases < Provider
       require 'pathname'
 
+      BOOLEAN_PARAMS = %w(
+        draft
+        prerelease
+      )
+
       def travis_tag
         # Check if $TRAVIS_TAG is unset or set but empty
         if context.env.fetch('TRAVIS_TAG','') == ''
@@ -135,12 +140,15 @@ module DPL
 
       def booleanize!(opts)
         opts.map do |k,v|
-          opts[k] =
-          case v.to_s.downcase
-          when 'true'
-            true
-          when 'false'
-            false
+          opts[k] = if BOOLEAN_PARAMS.include?(k.to_s.squeeze.downcase)
+            case v.to_s.downcase
+            when 'true'
+              true
+            when 'false'
+              false
+            else
+              v
+            end
           else
             v
           end
