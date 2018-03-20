@@ -146,7 +146,9 @@ module DPL
       end
 
       def zip_directory(dest_file_path, target_directory_path)
-        files = Dir[File.join(target_directory_path, '**', '**')]
+        glob_args = Array(File.join(target_directory_path, '**', '**'))
+        glob_args << File::FNM_DOTMATCH if options[:dot_match]
+        files = Dir.glob(glob_args)
         create_zip(dest_file_path, target_directory_path, files)
       end
 
