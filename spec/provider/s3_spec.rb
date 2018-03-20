@@ -86,6 +86,7 @@ describe DPL::Provider::S3 do
       someDir = "/some/dir/"
       provider.options.update(:local_dir => someDir)
       allow(Dir).to receive(:chdir).with(someDir).and_return(true)
+      allow(Dir).to receive(:chdir).with(Dir.pwd).and_return(true)
       expect(Dir).to receive(:glob).with("/**/*").and_return([__FILE__])
       provider.push_app
     end
