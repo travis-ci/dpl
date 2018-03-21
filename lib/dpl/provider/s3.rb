@@ -25,10 +25,6 @@ module DPL
         false
       end
 
-      def check_app
-        log 'Warning: The endpoint option is no longer used and can be removed.' if options[:endpoint]
-      end
-
       def access_key_id
         options[:access_key_id] || context.env['AWS_ACCESS_KEY_ID'] || raise(Error, "missing access_key_id")
       end
@@ -53,8 +49,10 @@ module DPL
       end
 
       def push_app
+        old_pwd = Dir.pwd
         cwd = options.fetch(:local_dir, Dir.pwd)
-        glob_args = [cwd + "/**/*"]
+        Dir.chdir(cwd)
+        glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         files = Dir.glob(*glob_args).reject {|f| File.directory?(f)}
         upload_multithreaded(files)
@@ -68,6 +66,8 @@ module DPL
             }
           )
         end
+
+        Dir.chdir(old_pwd)
       end
 
       def upload_multithreaded(files)

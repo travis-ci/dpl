@@ -85,7 +85,9 @@ describe DPL::Provider::S3 do
     example "With local_dir" do
       someDir = "/some/dir/"
       provider.options.update(:local_dir => someDir)
-      expect(Dir).to receive(:glob).with(someDir + "/**/*").and_return([__FILE__])
+      allow(Dir).to receive(:chdir).with(someDir).and_return(true)
+      allow(Dir).to receive(:chdir).with(Dir.pwd).and_return(true)
+      expect(Dir).to receive(:glob).with("**/*").and_return([__FILE__])
       provider.push_app
     end
 
@@ -156,31 +158,23 @@ describe DPL::Provider::S3 do
 
     example "when dot_match is set" do
       provider.options.update(:dot_match => true)
-      expect(Dir).to receive(:glob).with(Dir.pwd + "/**/*", File::FNM_DOTMATCH).and_return([__FILE__])
+      expect(Dir).to receive(:glob).with("**/*", File::FNM_DOTMATCH).and_return([__FILE__])
       provider.push_app
     end
 
     example "when max_threads is set" do
       provider.options.update(:max_threads => 10)
-      expect(Dir).to receive(:glob).with(Dir.pwd + "/**/*").and_return([__FILE__])
+      expect(Dir).to receive(:glob).with("**/*").and_return([__FILE__])
       expect(provider).to receive(:log).with("Beginning upload of 1 files with 10 threads.")
       provider.push_app
     end
 
     example "when max_threads is too large" do
       provider.options.update(:max_threads => 100)
-      expect(Dir).to receive(:glob).with(Dir.pwd + "/**/*").and_return([__FILE__])
+      expect(Dir).to receive(:glob).with("**/*").and_return([__FILE__])
       expect(provider).to receive(:log).with("Beginning upload of 1 files with 15 threads.")
       expect(provider).to receive(:log).with("Desired thread count 100 is too large. Using 15.")
       provider.push_app
-    end
-  end
-
-  describe "#check_app" do
-    example "With Endpoint" do
-      provider.options.update(:endpoint => 's3test.com.s3-website-us-west-2.amazonaws.com')
-      expect(provider).to receive(:log).with('Warning: The endpoint option is no longer used and can be removed.')
-      provider.check_app
     end
   end
 end
