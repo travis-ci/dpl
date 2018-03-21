@@ -101,7 +101,7 @@ module DPL
         print "\n"
         if deployment[:status] == 'successful'
           log "Deployment successful."
-          return unless options[:update_app_on_success]
+          return unless options[:update_app_on_success].to_s.squeeze.downcase == 'true'
           update_app
         else
           error "Deployment failed."

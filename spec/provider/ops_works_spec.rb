@@ -105,6 +105,16 @@ describe DPL::Provider::OpsWorks do
         provider.push_app
       end
 
+      example 'with :wait_until_deployed and :update_app_on_success' do
+        provider.options.update(app_id: 'app-id', wait_until_deployed: 'true', update_app_on_success: 'true')
+        expect(client).to receive(:describe_apps).with(app_ids: ['app-id']).and_return({apps: [ops_works_app]})
+        expect(client).to receive(:create_deployment).and_return({deployment_id: 'deployment_id'})
+        expect(client).to receive(:describe_deployments).with({deployment_ids: ['deployment_id']}).and_return({deployments: [status: 'running']}, {deployments: [status: 'successful']})
+        expect(provider).to receive(:update_app).and_return(true)
+
+        provider.push_app
+      end
+
       example 'with :instance-ids' do
         provider.options.update(app_id: 'app-id', instance_ids: ['instance-id'])
         expect(client).to receive(:describe_apps).with(app_ids: ['app-id']).and_return({apps: [ops_works_app]})
