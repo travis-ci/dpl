@@ -117,6 +117,15 @@ or
 
 to completely clean up the working directory.
 
+### Testing a portion of specs
+
+The `spec-*` Rake tasks take an optional argument, which is passed on
+to `rspec` to indicate which lines to execute.
+
+For example:
+
+    $ rake spec-s3["55"]
+
 ### Avoid making actual network calls
 
 Deployment code often interact with external services to do the job.
