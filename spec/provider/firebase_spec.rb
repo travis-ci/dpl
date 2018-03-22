@@ -6,6 +6,8 @@ describe DPL::Provider::Firebase do
     described_class.new DummyContext.new, :token => 'abc123'
   end
 
+  let(:deploy_dir) { Dir.pwd }
+
   describe "#check_auth" do
     it 'should require a token if no FIREBASE_TOKEN is set' do
       provider.options.update(:token => nil)
@@ -20,6 +22,10 @@ describe DPL::Provider::Firebase do
   end
 
   describe "#push_app" do
+    before do
+      expect(Dir).to receive(:chdir).with(deploy_dir).and_yield
+    end
+
     it 'should include the project specified' do
       provider.options.update(:project => 'myapp-dev')
       expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --project myapp-dev --token 'abc123'")
@@ -35,6 +41,17 @@ describe DPL::Provider::Firebase do
     it 'should default to no project override' do
       expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --token 'abc123'")
       provider.push_app
+    end
+
+    context "with local-dir" do
+      let(:deploy_dir) { "/tmp" }
+
+      it 'should deploy from the specified dir' do
+        provider.options.update(:local_dir => "/tmp")
+        expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --token 'abc123'")
+        provider.push_app
+      end
+
     end
   end
 end
