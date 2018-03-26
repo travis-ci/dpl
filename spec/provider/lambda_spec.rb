@@ -314,7 +314,7 @@ describe DPL::Provider::Lambda do
     files = %w[ 'one' 'two' ]
 
     before do
-      expect(Dir).to receive(:glob).with([glob]).and_return(files)
+      expect(Dir).to receive(:glob).with(*glob).and_return(files)
       expect(provider).to receive(:create_zip).with(dest, target, files)
     end
 
