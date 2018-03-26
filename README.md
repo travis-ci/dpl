@@ -53,7 +53,7 @@ Dpl supports the following providers:
 
 Dpl is published to rubygems.
 
-* Dpl requires ruby with a version greater than 1.9.3
+* Dpl requires ruby 2.2 and later.
 * To install: `gem install dpl`
 
 ## Usage:
@@ -358,6 +358,7 @@ This _overrides_ the `gemspec` option.
 * **dot_match**: When set to `true`, upload files starting a `.`.
 * **index_document_suffix**: Set the index document of a S3 website.
 * **default_text_charset**: Set the default character set to append to the content-type of text files you are uploading.
+* **max_threads**: The number of threads to use for S3 file uploads. Default is 5, and the absolute maximum is 15.
 
 #### File-specific `Cache-Control` and `Expires` headers
 
@@ -414,6 +415,7 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 * **layer-ids**: A layer id. (Use this option multiple times to specify multiple layer ids. Default: [])
 * **migrate**: Migrate the database. (Default: false)
 * **wait-until-deployed**: Wait until the app is deployed and return the deployment status. (Default: false)
+* **update-on-success**: When **wait-until-deployed** and **updated-on-success** are both `true`, application source is updated to the current SHA. Ignored when **wait-until-deployed** is false. (Default: false)
 * **custom_json**: Override custom_json options. If using this, default configuration will be overriden. See the code [here](https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/ops_works.rb#L43). More about `custom_json` [here](http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json.html).
 
 #### Environment variables:
@@ -726,6 +728,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **function_name**: Required. The name of the Lambda being created / updated.
  * **role**: Required. The ARN of the IAM role to assign to this Lambda function.
  * **handler_name**: Required. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module.
+ * **dot_match**: Optional. When `true`, the zipped archive will include the hidden `.*` files. Defaults to `false`.
  * **module_name**: Optional. The name of the module that exports the handler. Defaults to `index`.
  * **zip**: Optional. Either a path to an existing packaged (zipped) Lambda, a directory to package, or a single file to package. Defaults to `Dir.pwd`.
  * **description**: Optional. The description of the Lambda being created / updated. Defaults to "Deploy build #{context.env['TRAVIS_BUILD_NUMBER']} to AWS Lambda via Travis CI"
