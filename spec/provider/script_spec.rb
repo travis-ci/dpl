@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'dpl/provider/script'
 
 describe DPL::Provider::Script do
 
