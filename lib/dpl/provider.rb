@@ -38,6 +38,7 @@ module DPL
       'Launchpad'           => 'launchpad',
       'Modulus'             => 'modulus',
       'Nodejitsu'           => 'nodejitsu',
+      'Now'                 => 'now',
       'NPM'                 => 'npm',
       'Openshift'           => 'openshift',
       'OpsWorks'            => 'ops_works',
