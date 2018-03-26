@@ -1,9 +1,9 @@
 require 'timeout'
+require 'aws-sdk'
 
 module DPL
   class Provider
     class OpsWorks < Provider
-      requires 'aws-sdk', version: '~> 2.0'
       experimental 'AWS OpsWorks'
 
       def opsworks
@@ -101,9 +101,22 @@ module DPL
         print "\n"
         if deployment[:status] == 'successful'
           log "Deployment successful."
+          return unless options[:update_app_on_success].to_s.squeeze.downcase == 'true'
+          update_app
         else
           error "Deployment failed."
         end
+      end
+
+      def update_app
+        update_config = {
+          app_id: option(:app_id),
+          app_source: {
+            revision: current_sha,
+          }
+        }
+        opsworks.update_app(update_config)
+        log "Application Source branch/revision setting updated."
       end
 
       def wait_until_deployed(deployment_id)

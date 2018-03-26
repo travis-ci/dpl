@@ -6,59 +6,106 @@ module DPL
   class Provider
     include FileUtils
 
-    autoload :Anynines,            'dpl/provider/anynines'
-    autoload :Appfog,              'dpl/provider/appfog'
-    autoload :Atlas,               'dpl/provider/atlas'
-    autoload :AzureWebApps,        'dpl/provider/azure_webapps'
-    autoload :Bintray,             'dpl/provider/bintray'
-    autoload :BitBalloon,          'dpl/provider/bitballoon'
-    autoload :BluemixCloudFoundry, 'dpl/provider/bluemix_cloud_foundry'
-    autoload :Boxfuse,             'dpl/provider/boxfuse'
-    autoload :Catalyze,            'dpl/provider/catalyze'
-    autoload :ChefSupermarket,     'dpl/provider/chef_supermarket'
-    autoload :Cloud66,             'dpl/provider/cloud66'
-    autoload :CloudFiles,          'dpl/provider/cloud_files'
-    autoload :CloudFoundry,        'dpl/provider/cloud_foundry'
-    autoload :CodeDeploy,          'dpl/provider/code_deploy'
-    autoload :Deis,                'dpl/provider/deis'
-    autoload :Divshot,             'dpl/provider/divshot'
-    autoload :ElasticBeanstalk,    'dpl/provider/elastic_beanstalk'
-    autoload :EngineYard,          'dpl/provider/engine_yard'
-    autoload :Firebase,            'dpl/provider/firebase'
-    autoload :GAE,                 'dpl/provider/gae'
-    autoload :GCS,                 'dpl/provider/gcs'
-    autoload :Hackage,             'dpl/provider/hackage'
-    autoload :Heroku,              'dpl/provider/heroku'
-    autoload :Lambda,              'dpl/provider/lambda'
-    autoload :Launchpad,           'dpl/provider/launchpad'
-    autoload :Modulus,             'dpl/provider/modulus'
-    autoload :Nodejitsu,           'dpl/provider/nodejitsu'
-    autoload :Now,                 'dpl/provider/now'
-    autoload :NPM,                 'dpl/provider/npm'
-    autoload :Openshift,           'dpl/provider/openshift'
-    autoload :OpsWorks,            'dpl/provider/ops_works'
-    autoload :Packagecloud,        'dpl/provider/packagecloud'
-    autoload :Pages,               'dpl/provider/pages'
-    autoload :PuppetForge,         'dpl/provider/puppet_forge'
-    autoload :PyPI,                'dpl/provider/pypi'
-    autoload :Releases,            'dpl/provider/releases'
-    autoload :RubyGems,            'dpl/provider/rubygems'
-    autoload :S3,                  'dpl/provider/s3'
-    autoload :Scalingo,            'dpl/provider/scalingo'
-    autoload :Script,              'dpl/provider/script'
-    autoload :Surge,               'dpl/provider/surge'
-    autoload :TestFairy,           'dpl/provider/testfairy'
-    autoload :Transifex,           'dpl/provider/transifex'
-
+    # map of DPL provider class name constants to their corresponding
+    # file names. There is no simple rule to map them automatically
+    # (camel-cases, snake-cases, call-caps, etc.), so we need an explicit
+    # map.
+    GEM_NAME_OF = {
+      'Anynines'            => 'anynines',
+      'Appfog'              => 'appfog',
+      'Atlas'               => 'atlas',
+      'AzureWebApps'        => 'azure_webapps',
+      'Bintray'             => 'bintray',
+      'BitBalloon'          => 'bitballoon',
+      'BluemixCloudFoundry' => 'bluemix_cloud_foundry',
+      'Boxfuse'             => 'boxfuse',
+      'Catalyze'            => 'catalyze',
+      'ChefSupermarket'     => 'chef_supermarket',
+      'Cloud66'             => 'cloud66',
+      'CloudFiles'          => 'cloud_files',
+      'CloudFoundry'        => 'cloud_foundry',
+      'CodeDeploy'          => 'code_deploy',
+      'Deis'                => 'deis',
+      'Divshot'             => 'divshot',
+      'ElasticBeanstalk'    => 'elastic_beanstalk',
+      'EngineYard'          => 'engine_yard',
+      'Firebase'            => 'firebase',
+      'GAE'                 => 'gae',
+      'GCS'                 => 'gcs',
+      'Hackage'             => 'hackage',
+      'Heroku'              => 'heroku',
+      'Lambda'              => 'lambda',
+      'Launchpad'           => 'launchpad',
+      'Modulus'             => 'modulus',
+      'Nodejitsu'           => 'nodejitsu',
+      'Now'                 => 'now',
+      'NPM'                 => 'npm',
+      'Openshift'           => 'openshift',
+      'OpsWorks'            => 'ops_works',
+      'Packagecloud'        => 'packagecloud',
+      'Pages'               => 'pages',
+      'PuppetForge'         => 'puppet_forge',
+      'PyPI'                => 'pypi',
+      'Releases'            => 'releases',
+      'RubyGems'            => 'rubygems',
+      'S3'                  => 's3',
+      'Scalingo'            => 'scalingo',
+      'Script'              => 'script',
+      'Surge'               => 'surge',
+      'TestFairy'           => 'testfairy',
+      'Transifex'           => 'transifex',
+    }
 
     def self.new(context, options)
       return super if self < Provider
 
+      # when requiring the file corresponding to the provider name
+      # given in the options, the general strategy is to normalize
+      # the option to lower-case alphanumeric, then
+      # use that key to find the file name using the GEM_NAME_OF map.
+
       context.fold("Installing deploy dependencies") do
-        name = super.option(:provider).to_s.downcase.gsub(/[^a-z0-9]/, '')
-        raise Error, 'could not find provider %p' % options[:provider] unless name = constants.detect { |c| c.to_s.downcase == name }
-        provider = const_get(name).new(context, options)
-        provider.install_deploy_dependencies if provider.respond_to?(:install_deploy_dependencies)
+        begin
+          opt_lower = super.option(:provider).to_s.downcase
+          opt = opt_lower.gsub(/[^a-z0-9]/, '')
+          class_name = class_of(opt)
+          raise Error, "could not find provider %p" % opt unless class_name
+          require "dpl/provider/#{GEM_NAME_OF[class_name]}"
+          provider = const_get(class_name).new(context, options)
+        rescue NameError, LoadError => e
+          if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message
+            provider_gem_name = GEM_NAME_OF[provider_wanted]
+          elsif %r(cannot load such file -- dpl/provider/(?<provider_file_name>\S+)) =~ e.message
+            provider_gem_name = GEM_NAME_OF[class_name]
+          else
+            # don't know what to do with this error
+            raise e
+          end
+          install_cmd = "gem install dpl-#{provider_gem_name || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
+
+          if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{GEM_NAME_OF[provider_gem_name] || opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
+            install_cmd = "gem install #{local_gem}"
+          end
+
+          context.shell(install_cmd)
+          Gem.clear_paths
+
+          require "dpl/provider/#{GEM_NAME_OF[class_name]}"
+          provider = const_get(class_name).new(context, options)
+        rescue DPL::Error
+          if opt_lower
+            provider = const_get(opt.capitalize).new(context, options)
+          else
+            raise Error, 'missing provider'
+          end
+        end
+
+        if options[:no_deploy]
+          def provider.deploy; end
+        else
+          provider.install_deploy_dependencies if provider.respond_to? :install_deploy_dependencies
+        end
+
         provider
       end
     end
@@ -73,17 +120,6 @@ module DPL
         puts "\e[31;1m#{line}\e[0m"
       end
       puts ''
-    end
-
-    def self.requires(name, options = {})
-      version = options[:version] || '> 0'
-      load    = options[:load]    || name
-      gem(name, version)
-    rescue LoadError
-      context.shell("gem install %s -v %p --no-ri --no-rdoc #{'--pre' if options[:pre]}" % [name, version], retry: true)
-      Gem.clear_paths
-    ensure
-      require load
     end
 
     def self.context
@@ -112,6 +148,10 @@ module DPL
 
     def self.npm_g(name, command = name)
       context.shell("npm install -g #{name}", retry: true) if `which #{command}`.chop.empty?
+    end
+
+    def self.class_of(filename)
+      GEM_NAME_OF.keys.detect { |p| p.to_s.downcase == filename }
     end
 
     attr_reader :context, :options
@@ -181,7 +221,7 @@ module DPL
       context.shell "mv .dpl ~/dpl"
       log "Cleaning up git repository with `git stash --all`. " \
         "If you need build artifacts for deployment, set `deploy.skip_cleanup: true`. " \
-        "See https://docs.travis-ci.com/user/deployment/#Uploading-Files."
+        "See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup."
       context.shell "git stash --all"
       context.shell "mv ~/dpl .dpl"
     end
@@ -230,6 +270,9 @@ module DPL
 
     def default_text_charset
       options[:default_text_charset].downcase
+    end
+
+    def install_deploy_dependencies
     end
 
     def encoding_for(path)

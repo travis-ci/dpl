@@ -1,15 +1,15 @@
+require 'octokit'
+require 'mime-types'
+
 module DPL
   class Provider
     class Releases < Provider
       require 'pathname'
 
-      if RUBY_VERSION >= "2.0.0"
-        requires 'octokit', version: '~> 4.6.2'
-      else
-        requires 'octokit', version: '~> 4.3.0'
-      end
-
-      requires 'mime-types', version: '~> 2.0'
+      BOOLEAN_PARAMS = %w(
+        draft
+        prerelease
+      )
 
       def travis_tag
         # Check if $TRAVIS_TAG is unset or set but empty
@@ -87,6 +87,8 @@ module DPL
         tag_matched = false
         release_url = nil
 
+        booleanize!(options)
+
         if options[:release_number]
           tag_matched = true
           release_url = "https://api.github.com/repos/" + slug + "/releases/" + options[:release_number]
@@ -105,6 +107,7 @@ module DPL
         end
 
         files.each do |file|
+          next unless File.file?(file)
           existing_url = nil
           filename = Pathname.new(file).basename.to_s
           api.release(release_url).rels[:assets].get.data.each do |existing_file|
@@ -133,6 +136,23 @@ module DPL
           content_type = "application/octet-stream"
         end
         api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
+      end
+
+      def booleanize!(opts)
+        opts.map do |k,v|
+          opts[k] = if BOOLEAN_PARAMS.include?(k.to_s.squeeze.downcase)
+            case v.to_s.downcase
+            when 'true'
+              true
+            when 'false'
+              false
+            else
+              v
+            end
+          else
+            v
+          end
+        end
       end
     end
   end
