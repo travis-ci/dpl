@@ -41,11 +41,11 @@ module DPL
       end
 
       def push_app
-        cwd =
-        glob_args = ["**/*"]
+        cwd = options.fetch(:local_dir, Dir.pwd)
+        glob_args = [cwd, "**/*"].join("/")
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
-        Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
-          files = Dir.glob(*glob_args).reject {|f| File.directory?(f)}
+        files = Dir.glob(*glob_args).reject {|f| File.directory?(f)}.map {|f| f.gsub(Regexp.compile(Regexp.escape("^" + cwd + "/")), "")}
+        Dir.chdir(cwd) do
           upload_multithreaded(files)
         end
 
