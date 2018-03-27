@@ -41,11 +41,13 @@ module DPL
       end
 
       def push_app
-        cwd = options.fetch(:local_dir, Dir.pwd)
-        glob_args = [cwd + "/**/*"]
+        cwd =
+        glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
-        files = Dir.glob(*glob_args)
-        upload_multithreaded(files.reject {|f| File.directory?(f)})
+        Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
+          files = Dir.glob(*glob_args).reject {|f| File.directory?(f)}
+          upload_multithreaded(files)
+        end
 
         if suffix = options[:index_document_suffix]
           api.bucket(option(:bucket)).website.put(
@@ -80,11 +82,9 @@ module DPL
               opts[:expires]                = get_option_value_by_filename(options[:expires], filename) if options[:expires]
               opts[:storage_class]          = options[:storage_class] if options[:storage_class]
               opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
-              unless File.directory?(filename)
-                log "uploading #{filename.inspect} with #{opts.inspect}"
-                result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
-                warn "error while uploading #{filename.inspect}" unless result
-              end
+              log "uploading #{filename.inspect} with #{opts.inspect}"
+              result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
+              warn "error while uploading #{filename.inspect}" unless result
             end
           }
         end
