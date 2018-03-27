@@ -65,7 +65,7 @@ module DPL
         file_number = 0
         mutex = Mutex.new
         threads = []
-        log "Beginning upload of #{files.length} files with #{thread_count} threads."
+        log "Beginning upload of #{files.length} from #{current_working_directory} files with #{thread_count} threads."
 
         thread_count.times do |i|
           threads[i] = Thread.new {
