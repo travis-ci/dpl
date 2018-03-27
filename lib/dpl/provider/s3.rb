@@ -37,17 +37,18 @@ module DPL
       end
 
       def upload_path(filename)
-        [options[:upload_dir], filename].compact.join("/")
+        [options[:upload_dir], filename.gsub(Regexp.compile(Regexp.escape("^" + current_working_directory + "/")), "")].compact.join("/")
+      end
+
+      def current_working_directory
+        options.fetch(:local_dir, Dir.pwd)
       end
 
       def push_app
-        cwd = options.fetch(:local_dir, Dir.pwd)
-        glob_args = [cwd, "**/*"].join("/")
+        glob_args = [current_working_directory, "**/*"].join("/")
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
-        files = Dir.glob(*glob_args).reject {|f| File.directory?(f)}.map {|f| f.gsub(Regexp.compile(Regexp.escape("^" + cwd + "/")), "")}
-        Dir.chdir(cwd) do
-          upload_multithreaded(files)
-        end
+        files = Dir.glob(*glob_args).reject {|f| File.directory?(f)}
+        upload_multithreaded(files)
 
         if suffix = options[:index_document_suffix]
           api.bucket(option(:bucket)).website.put(
