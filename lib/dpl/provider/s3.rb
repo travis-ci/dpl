@@ -37,7 +37,7 @@ module DPL
       end
 
       def upload_path(filename)
-        [options[:upload_dir], filename.gsub(Regexp.compile(Regexp.escape("^" + current_working_directory + "/")), "")].compact.join("/")
+        [options[:upload_dir], filename.gsub(Regexp.compile("^" + Regexp.escape(current_working_directory + "/")), "")].compact.join("/")
       end
 
       def current_working_directory
