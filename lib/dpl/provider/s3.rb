@@ -37,15 +37,15 @@ module DPL
       end
 
       def upload_path(filename)
-        [options[:upload_dir], filename.gsub(Regexp.compile("^" + Regexp.escape(current_working_directory + "/")), "")].compact.join("/")
+        [options[:upload_dir], filename.gsub(Regexp.compile("^" + Regexp.escape(local_directory + "/")), "")].compact.join("/")
       end
 
-      def current_working_directory
+      def local_directory
         options.fetch(:local_dir, Dir.pwd)
       end
 
       def push_app
-        glob_args = [current_working_directory, "**/*"].join("/")
+        glob_args = [local_directory + "/**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         files = Dir.glob(*glob_args).reject {|f| File.directory?(f)}
         upload_multithreaded(files)
@@ -65,7 +65,7 @@ module DPL
         file_number = 0
         mutex = Mutex.new
         threads = []
-        log "Beginning upload of #{files.length} from #{current_working_directory} files with #{thread_count} threads."
+        log "Beginning upload of #{files.length} files with #{thread_count} threads."
 
         thread_count.times do |i|
           threads[i] = Thread.new {
@@ -83,8 +83,10 @@ module DPL
               opts[:expires]                = get_option_value_by_filename(options[:expires], filename) if options[:expires]
               opts[:storage_class]          = options[:storage_class] if options[:storage_class]
               opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
-              log "uploading #{filename.inspect} with #{opts.inspect}"
-              result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
+              s3path = upload_path(filename)
+              bucket = option(:bucket)
+              log "uploading #{filename.inspect} to s3://#{bucket.inspect}/#{s3path.inspect} with #{opts.inspect}"
+              result = api.bucket(bucket).object(s3path).upload_file(filename, opts)
               warn "error while uploading #{filename.inspect}" unless result
             end
           }
