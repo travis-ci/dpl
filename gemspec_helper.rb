@@ -19,6 +19,8 @@ def gemspec_for(provider_name=nil, runtime_dependencies=[])
     s.version = ENV['DPL_VERSION'] || DPL::VERSION
 
     # dependencies
+    s.add_runtime_dependency 'term-ansicolor'
+
     if provider_name
       s.add_runtime_dependency 'dpl', s.version
     end
@@ -34,7 +36,6 @@ def gemspec_for(provider_name=nil, runtime_dependencies=[])
     s.add_development_dependency 'tins'
     s.add_development_dependency 'coveralls'
     s.add_development_dependency 'highline'
-    s.add_development_dependency 'term-ansicolor'
     s.add_development_dependency 'faraday'
 
     # set up files
