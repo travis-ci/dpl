@@ -24,7 +24,7 @@ module DPL
           else
             log yellow("This commit is not tagged. Fetching tags")
             context.shell "git fetch --tags"
-            `git describe --tags --exact-match 2>/dev/null`.chomp.tap { |tag| log green("Tag #{tag} fetched") }
+            `git describe --tags --exact-match 2>/dev/null`.chomp.tap { |tag| log green("Tag #{tag} fetched") unless tag.empty? }
           end
 
         if tag.empty?
