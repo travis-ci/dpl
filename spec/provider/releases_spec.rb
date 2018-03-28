@@ -7,23 +7,21 @@ describe DPL::Provider::Releases do
     described_class.new(DummyContext.new, :api_key => '0123445789qwertyuiop0123445789qwertyuiop', :file => 'blah.txt')
   end
 
-  describe "#travis_tag" do
+  let(:a_release) { double('a_release', tag_name: 'foo', rels: {self: double('href', href: "https://")}) }
+
+  before { allow(provider).to receive(:log).and_return(true) }
+
+  describe "#current_tag" do
     example "When $TRAVIS_TAG is nil" do
-      provider.context.env['TRAVIS_TAG'] = nil
+      provider.context.env['TRAVIS_TAG'] = ''
 
-      expect(provider.travis_tag).to eq(nil)
-    end
-
-    example "When $TRAVIS_TAG if set but empty" do
-      provider.context.env['TRAVIS_TAG'] = nil
-
-      expect(provider.travis_tag).to eq(nil)
+      expect(provider.current_tag).to eq('')
     end
 
     example "When $TRAVIS_TAG if set" do
       provider.context.env['TRAVIS_TAG'] = "foo"
 
-      expect(provider.travis_tag).to eq("foo")
+      expect(provider.current_tag).to eq("foo")
     end
   end
 
@@ -94,11 +92,9 @@ describe DPL::Provider::Releases do
 
   describe "#check_app" do
     example "Without $TRAVIS_TAG" do
-      allow(provider).to receive(:travis_tag).and_return(nil)
       allow(provider).to receive(:slug).and_return("foo/bar")
-      allow(provider).to receive(:get_tag).and_return("foo")
+      allow(provider).to receive(:current_tag).and_return("foo")
 
-      expect(provider.context).to receive(:shell).with("git fetch --tags")
       expect(provider).to receive(:log).with("Deploying to repo: foo/bar")
       expect(provider).to receive(:log).with("Current tag is: foo")
 
@@ -106,7 +102,7 @@ describe DPL::Provider::Releases do
     end
 
     example "With $TRAVIS_TAG" do
-      allow(provider).to receive(:travis_tag).and_return("bar")
+      allow(provider).to receive(:current_tag).and_return("bar")
       allow(provider).to receive(:slug).and_return("foo/bar")
 
       expect(provider.context).not_to receive(:shell).with("git fetch --tags")
@@ -114,21 +110,6 @@ describe DPL::Provider::Releases do
       expect(provider).to receive(:log).with("Current tag is: bar")
 
       provider.check_app
-    end
-  end
-
-  describe "#get_tag" do
-    example "Without $TRAVIS_TAG" do
-      allow(provider).to receive(:travis_tag).and_return(nil)
-      allow(provider).to receive(:`).and_return("bar")
-
-      expect(provider.get_tag).to eq("bar")
-    end
-
-    example "With $TRAVIS_TAG" do
-      allow(provider).to receive(:travis_tag).and_return("foo")
-
-      expect(provider.get_tag).to eq("foo")
     end
   end
 
@@ -159,7 +140,7 @@ describe DPL::Provider::Releases do
       provider.options.update(:file => ["test/foo.bar", "bar.txt"])
 
       allow(provider).to receive(:releases).and_return([""])
-      allow(provider).to receive(:get_tag).and_return("v0.0.0")
+      allow(provider).to receive(:current_tag).and_return("v0.0.0")
       expect(File).to receive(:file?).with("test/foo.bar").and_return(true)
       expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
@@ -187,7 +168,7 @@ describe DPL::Provider::Releases do
       provider.options.update(:file => ["test/foo.bar", "bar.txt"])
 
       allow(provider).to receive(:releases).and_return([""])
-      allow(provider).to receive(:get_tag).and_return("v0.0.0")
+      allow(provider).to receive(:current_tag).and_return("v0.0.0")
       expect(File).to receive(:file?).with("test/foo.bar").and_return(true)
       expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
@@ -216,7 +197,7 @@ describe DPL::Provider::Releases do
       provider.options.update(:overwrite => true)
 
       allow(provider).to receive(:releases).and_return([""])
-      allow(provider).to receive(:get_tag).and_return("v0.0.0")
+      allow(provider).to receive(:current_tag).and_return("v0.0.0")
       expect(File).to receive(:file?).with("exists.txt").and_return(true)
 
       provider.releases.map do |release|
@@ -242,12 +223,12 @@ describe DPL::Provider::Releases do
 
       provider.options.update(:file => ["test/foo.bar", "bar.txt"])
 
-      allow(provider).to receive(:releases).and_return([""])
+      allow(provider).to receive(:releases).and_return([a_release])
       expect(File).to receive(:file?).with("test/foo.bar").and_return(true)
       expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       provider.releases.map do |release|
-        allow(release).to receive(:tag_name).and_return("foo")
+        allow(release).to receive(:current_tag).and_return("foo")
         allow(release).to receive(:rels).and_return({:self => nil})
         allow(release.rels[:self]).to receive(:href)
       end

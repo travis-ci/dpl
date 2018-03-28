@@ -11,21 +11,21 @@ module DPL
         prerelease
       )
 
-      def travis_tag
-        # Check if $TRAVIS_TAG is unset or set but empty
-        if context.env.fetch('TRAVIS_TAG','') == ''
-          nil
-        else
-          context.env['TRAVIS_TAG']
-        end
-      end
+      attr_reader :current_tag
 
-      def get_tag
-        if travis_tag.nil?
-          @tag ||= `git describe --tags --exact-match 2>/dev/null`.chomp
-        else
-          @tag ||= travis_tag
-        end
+      def current_tag
+        return @current_tag if @current_tag
+
+        log "Determining tag for this GitHub Release"
+
+        @current_tag = options[:tag_name].tap { |tag| log green("Tag #{tag} set in .travis.yml") } || # first choice
+          if !context.env['TRAVIS_TAG'].to_s.empty?
+            context.env['TRAVIS_TAG'].to_s.tap { |tag| log green("Tag #{tag} set by TRAVIS_TAG (via this commit's tag)")}
+          else
+            log yellow("This commit is not tagged. Fetching tags")
+            context.shell "git fetch --tags"
+            `git describe --tags --exact-match 2>/dev/null`.chomp.tap { |tag| log green("Tag #{tag} fetched") }
+          end
       end
 
       def api
@@ -65,8 +65,7 @@ module DPL
       def check_app
         log "Deploying to repo: #{slug}"
 
-        context.shell 'git fetch --tags' if travis_tag.nil?
-        log "Current tag is: #{get_tag}"
+        log "Current tag is: #{current_tag}"
       end
 
       def setup_auth
@@ -94,7 +93,7 @@ module DPL
           release_url = "https://api.github.com/repos/" + slug + "/releases/" + options[:release_number]
         else
           releases.each do |release|
-            if release.tag_name == get_tag
+            if release.tag_name == current_tag
               release_url = release.rels[:self].href
               tag_matched = true
             end
@@ -103,7 +102,7 @@ module DPL
 
         #If for some reason GitHub hasn't already created a release for the tag, create one
         if tag_matched == false
-          release_url = api.create_release(slug, get_tag, options.merge({:draft => true})).rels[:self].href
+          release_url = api.create_release(slug, current_tag, options.merge({:draft => true})).rels[:self].href
         end
 
         files.each do |file|
