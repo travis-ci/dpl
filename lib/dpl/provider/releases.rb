@@ -18,7 +18,7 @@ module DPL
 
         log "Determining tag for this GitHub Release"
 
-        @current_tag = options[:tag_name].tap { |tag| log green("Tag #{tag} set in .travis.yml") } || # first choice
+        tag = options[:tag_name].tap { |tag| log green("Tag #{tag} set in .travis.yml") } || # first choice
           if !context.env['TRAVIS_TAG'].to_s.empty?
             context.env['TRAVIS_TAG'].to_s.tap { |tag| log green("Tag #{tag} set by TRAVIS_TAG (via this commit's tag)")}
           else
@@ -26,6 +26,12 @@ module DPL
             context.shell "git fetch --tags"
             `git describe --tags --exact-match 2>/dev/null`.chomp.tap { |tag| log green("Tag #{tag} fetched") }
           end
+
+        if tag.empty?
+          log yellow("Unable to compute tag name. GitHub may assign a tag of the form 'untagged-*'.")
+        end
+
+        tag
       end
 
       def api
