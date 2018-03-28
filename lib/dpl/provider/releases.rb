@@ -31,7 +31,7 @@ module DPL
           log yellow("Unable to compute tag name. GitHub may assign a tag of the form 'untagged-*'.")
         end
 
-        tag
+        @current_tag = tag
       end
 
       def api
