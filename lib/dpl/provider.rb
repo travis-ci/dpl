@@ -1,12 +1,10 @@
 require 'dpl/error'
 require 'dpl/version'
 require 'fileutils'
-require 'term/ansicolor'
 
 module DPL
   class Provider
     include FileUtils
-    include Term::ANSIColor
 
     # map of DPL provider class name constants to their corresponding
     # file names. There is no simple rule to map them automatically
