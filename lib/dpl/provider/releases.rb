@@ -18,9 +18,9 @@ module DPL
 
         log "Determining tag for this GitHub Release"
 
-        @tag = tag_name(options[:tag_name])
+        @current_tag = tag_name(options[:tag_name])
 
-        if @tag.empty?
+        if @current_tag.empty?
           log yellow("Unable to compute tag name. GitHub may assign a tag of the form 'untagged-*'.")
         end
       end
