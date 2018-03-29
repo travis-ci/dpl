@@ -18,20 +18,29 @@ module DPL
 
         log "Determining tag for this GitHub Release"
 
-        tag = options[:tag_name].tap { |tag| log green("Tag #{tag} set in .travis.yml") } || # first choice
-          if !context.env['TRAVIS_TAG'].to_s.empty?
-            context.env['TRAVIS_TAG'].to_s.tap { |tag| log green("Tag #{tag} set by TRAVIS_TAG (via this commit's tag)")}
-          else
-            log yellow("This commit is not tagged. Fetching tags")
-            context.shell "git fetch --tags"
-            `git describe --tags --exact-match 2>/dev/null`.chomp.tap { |tag| log green("Tag #{tag} fetched") unless tag.empty? }
-          end
+        @tag = tag_name(options[:tag_name])
 
-        if tag.empty?
+        if @tag.empty?
           log yellow("Unable to compute tag name. GitHub may assign a tag of the form 'untagged-*'.")
         end
+      end
 
-        @current_tag = tag
+      def tag_name(opts_tag_name)
+        if opts_tag_name
+          opts_tag_name.tap {|tag| log green("Tag #{tag} set in .travis.yml")}
+        elsif !context.env['TRAVIS_TAG'].to_s.empty?
+          context.env['TRAVIS_TAG'].to_s.tap {|tag| log green("Tag #{tag} set by TRAVIS_TAG (via this commit's tag)")}
+        else
+          log yellow("This commit is not tagged. Fetching tags")
+          context.shell "git fetch --tags"
+          `git describe --tags --exact-match 2>/dev/null`.chomp.tap do |tag|
+            if tag.empty?
+              log yellow("No tag is attached to this commit")
+            else
+              log green("Tag #{tag} is attached to this commit")
+            end
+          end
+        end
       end
 
       def api
@@ -71,7 +80,7 @@ module DPL
       def check_app
         log "Deploying to repo: #{slug}"
 
-        log "Current tag is: #{current_tag}"
+        log "Current tag is: #{current_tag}" unless current_tag.empty?
       end
 
       def setup_auth
