@@ -31,7 +31,7 @@ module DPL
         elsif !context.env['TRAVIS_TAG'].to_s.empty?
           context.env['TRAVIS_TAG'].to_s.tap {|tag| log green("Tag #{tag} set by TRAVIS_TAG (via this commit's tag)")}
         else
-          log yellow("This commit is not tagged. Fetching tags")
+          log yellow("TRAVIS_TAG is not defined. Fetching tags")
           context.shell "git fetch --tags"
           `git describe --tags --exact-match 2>/dev/null`.chomp.tap do |tag|
             if tag.empty?
