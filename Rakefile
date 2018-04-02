@@ -164,12 +164,13 @@ providers.each do |provider|
   end
 
   desc %Q(Run dpl-#{provider} specs)
-  task "spec-#{provider}" => [Rake::FileTask[dpl_bin], "Gemfile-#{provider}"] do
+  task "spec-#{provider}", [:lines] => [Rake::FileTask[dpl_bin], "Gemfile-#{provider}"] do |_t, args|
+    tail = args.lines ? ":#{args.lines}" : ""
     sh "rm -f $HOME/.npmrc"
     logger.info green("Running `bundle install` for #{provider}")
     sh 'bash', '-cl', "bundle install --gemfile=Gemfile-#{provider} --path=vendor/cache/dpl-#{provider} --retry=3 --binstubs=stubs"
     logger.info green("Running specs for #{provider}")
-    sh "env BUNDLE_GEMFILE=Gemfile-#{provider} ./stubs/rspec spec/provider/#{provider}_spec.rb"
+    sh "env BUNDLE_GEMFILE=Gemfile-#{provider} ./stubs/rspec spec/provider/#{provider}_spec.rb#{tail}"
   end
 
   desc "Build dpl-#{provider} gem"
