@@ -110,8 +110,10 @@ module DPL
       end
 
       def handler
-        module_name = options[:module_name] || default_module_name
         handler_name = option(:handler_name)
+        return handler_name unless use_module_name?
+        
+        module_name = options[:module_name] || default_module_name
 
         "#{module_name}.#{handler_name}"
       end
@@ -216,6 +218,10 @@ module DPL
 
       def default_module_name
         'index'
+      end
+
+      def use_module_name?
+        ! (options.has_key?(:skip_module_name) && options[:skip_module_name])
       end
 
       def publish
