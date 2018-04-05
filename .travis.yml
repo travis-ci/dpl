@@ -4,6 +4,7 @@ rvm:
 - "2.3.6"
 - "2.4"
 - "2.5.0"
+- "2.5"
 
 jobs:
   include:
@@ -27,6 +28,8 @@ jobs:
           on:
             repo: travis-ci/dpl
           if: branch = master AND NOT type IN (pull_request)
+  allow_failures:
+    - "2.5"
 
 env:
   global:
