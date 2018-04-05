@@ -29,7 +29,7 @@ jobs:
             repo: travis-ci/dpl
           if: branch = master AND NOT type IN (pull_request)
   allow_failures:
-    - "2.5"
+    - rvm: "2.5"
 
 env:
   global:
