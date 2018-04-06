@@ -1,6 +1,5 @@
 require 'kconv'
-require 'gstore'
-require 'mime-types'
+require 'google/cloud/storage'
 
 module DPL
   class Provider
@@ -10,14 +9,19 @@ module DPL
       end
 
       def client
-        @client ||= GStore::Client.new(
-          :access_key => option(:access_key_id),
-          :secret_key => option(:secret_access_key)
+        @client ||= Google::Cloud::Storage.new(
+          project_id: option(:project_id),
+          credentials: option(:credentials)
         )
+      rescue
+        error "Unable to initialize GCS API client. Please check your project_id and credentials file"
       end
 
       def check_auth
-        log "Logging in with Access Key: #{option(:access_key_id)[-4..-1].rjust(20, '*')}"
+        client && client.bucket(option(:bucket))
+      end
+
+      def check_app
       end
 
       def upload_path(filename)
@@ -30,16 +34,13 @@ module DPL
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
           Dir.glob(*glob_args) do |filename|
             next if File.directory?(filename)
-            content_type = MIME::Types.type_for(filename).first.to_s
-            opts                  = { :"Content-Type" => content_type }.merge(encoding_option_for(filename))
-            opts["Cache-Control"] = options[:cache_control] if options[:cache_control]
-            opts["x-goog-acl"]    = options[:acl] if options[:acl]
+            opts = {}
+            opts[:acl] = options[:acl] if options[:acl]
 
-            client.put_object(
-              option(:bucket),
-              upload_path(filename),
-              { :data => File.read(filename), :headers => opts }
-            )
+            bucket = client.bucket(option(:bucket))
+            local_file = bucket.file(filename)
+
+            file.copy bucket, file.name, opts
           end
         end
       end

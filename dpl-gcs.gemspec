@@ -1,3 +1,3 @@
 require './gemspec_helper'
 
-gemspec_for 'gcs', [['gstore'], ['mime-types', '~> 2.0']]
+gemspec_for 'gcs', [['google-cloud-storage']]
