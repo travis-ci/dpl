@@ -41,6 +41,8 @@ module DPL
             local_file = bucket.file(filename)
 
             file.copy bucket, file.name, opts
+            file.content_type = MIME::Types.type_for(filename).first.to_s
+            file.cache_control = options[:cache_control] if options[:cache_control]
           end
         end
       end
