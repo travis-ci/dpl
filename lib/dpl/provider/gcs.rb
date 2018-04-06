@@ -46,16 +46,6 @@ module DPL
           end
         end
       end
-
-      private
-      def encoding_option_for(path)
-        if detect_encoding? && encoding_for(path)
-          {"Content-Encoding" => encoding_for(path)}
-        else
-          {}
-        end
-      end
-
     end
   end
 end
