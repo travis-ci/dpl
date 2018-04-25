@@ -150,20 +150,6 @@ module DPL
       context.shell("npm install -g #{name}", retry: true) if `which #{command}`.chop.empty?
     end
 
-    def self.snap(name, command = name, classic: false, channel: nil)
-      install_command = "sudo snap install #{name}"
-
-      if classic
-        install_command += " --classic"
-      end
-
-      unless channel.nil?
-        install_command += " --channel=#{channel}"
-      end
-
-      context.shell(install_command, retry: true) if `which #{command}`.chop.empty?
-    end
-
     def self.class_of(filename)
       GEM_NAME_OF.keys.detect { |p| p.to_s.downcase == filename }
     end

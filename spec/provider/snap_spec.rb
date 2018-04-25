@@ -71,7 +71,7 @@ describe DPL::Provider::Snap do
     example "missing snap" do
       provider.options.delete(:snap)
       expect{provider.push_app}.to raise_error(
-        DPL::Error, "Missing snap")
+        DPL::Error, "missing snap")
     end
 
     example "multiple matching snaps should fail" do
