@@ -15,6 +15,27 @@ describe DPL::Provider::PyPI do
     end
   end
 
+  describe "#install_pinned_deploy_dependencies" do
+    example do
+      provider.options.update(:setuptools_version => '1.0.1')
+      provider.options.update(:twine_version => '1.1.0')
+      provider.options.update(:wheel_version => '0.1.0')
+      expect(provider.context).to receive(:shell).with(
+        "wget -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade setuptools==1.0.1 twine==1.1.0 wheel==0.1.0"
+      ).and_return(true)
+      provider.install_deploy_dependencies
+    end
+  end
+
+  describe "#skip_wrong_pinned_versions" do
+    example do
+      provider.options.update(:setuptools_version => '0.0.0-wrong')
+      provider.options.update(:twine_version => '0.0.0-pinned')
+      provider.options.update(:wheel_version => '0.0.0-version')
+      expect{provider.install_deploy_dependencies}.to raise_error(DPL::Error, "Couldn't install pip, setuptools, twine or wheel.")
+    end
+  end
+
   describe "#config" do
     it 'accepts a user and a password' do
       expect(provider.config[:servers]['pypi']).to include 'username: foo'
