@@ -26,7 +26,6 @@ module DPL
       'CloudFoundry'        => 'cloud_foundry',
       'CodeDeploy'          => 'code_deploy',
       'Deis'                => 'deis',
-      'Divshot'             => 'divshot',
       'ElasticBeanstalk'    => 'elastic_beanstalk',
       'EngineYard'          => 'engine_yard',
       'Firebase'            => 'firebase',
