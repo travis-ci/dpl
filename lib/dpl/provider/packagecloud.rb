@@ -6,9 +6,9 @@ module DPL
       def check_auth
         setup_auth
         timeout_options = {
-          connect_timeout: options[:connect_timeout] || 60,
-          read_timeout: options[:read_timeout] || 60,
-          write_timeout: options[:write_timeout] || 180
+          connect_timeout: (options[:connect_timeout] || 60).to_i,
+          read_timeout:    (options[:read_timeout] || 60).to_i,
+          write_timeout:   (options[:write_timeout] || 180.to_i)
         }
         connection = ::Packagecloud::Connection.new("https", "packagecloud.io", "443", timeout_options)
         begin
