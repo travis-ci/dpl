@@ -5,8 +5,15 @@ module DPL
     class Packagecloud < Provider
       def check_auth
         setup_auth
+        timeout_options = {
+          connect_timeout: option(:connect_timeout) || 60,
+          read_timeout: option(:read_timeout) || 60,
+          write_timeout: option(:write_timeout) || 180
+        }
+        connection = ::Packagecloud::Connection.new("https", "packagecloud.io", "443", timeout_options)
         begin
-          @client = ::Packagecloud::Client.new(@creds, "travis-ci")
+          log "Timeout configuration: #{timeout_options.inspect}"
+          @client = ::Packagecloud::Client.new(@creds, "travis-ci dpl #{DPL::VERSION}", connection)
         rescue ::Packagecloud::UnauthenticatedException
           error "Could not authenticate to https://packagecloud.io, please check credentials"
         end
