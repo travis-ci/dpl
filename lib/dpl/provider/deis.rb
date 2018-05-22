@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class Deis < Provider
-      
+
       def install_deploy_dependencies
         install_url = determine_install_url
         context.shell "curl -sSL #{install_url} | bash -x -s #{option(:cli_version)}"
@@ -102,9 +102,7 @@ module DPL
       end
 
       def push_app
-        unless context.shell "bash -c 'git push #{verbose_flag} #{repository_url} HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'"
-          error 'Deploying application failed.'
-        end
+        context.shell "bash -c 'git push #{verbose_flag} #{repository_url} HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'", message: 'Deploying application failed.'
       end
 
       def run(command)

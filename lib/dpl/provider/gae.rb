@@ -88,7 +88,7 @@ module DPL
         command << ' --no-stop-previous-version' unless no_stop_previous_version.to_s.empty?
         unless with_python_2_7(command)
           log 'Deployment failed.'
-          context.shell('find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;')
+          context.shell 'find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;', assert: false
           error ''
         end
       end

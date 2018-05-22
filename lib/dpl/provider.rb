@@ -126,9 +126,10 @@ module DPL
     end
 
     def self.shell(command, options = {})
+      cmd_str = "#{command} " if options[:verbose]
       system(command)
       if !options[:assert] && !$?.success?
-        error "Command #{command} failed with status #{$?.exitstatus}"
+        error(options[:message] || "Command #{cmd_str}failed with status #{$?.exitstatus}")
       end
     end
 

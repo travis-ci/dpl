@@ -52,9 +52,8 @@ module DPL
         puts res.body
         resBody = JSON.parse(res.body)
         if (resBody['status'] == 'fail')
-          raise Error, resBody['message']
+          error resBody['message']
         end
-        return resBody
       end
 
       def get_printable_params params
