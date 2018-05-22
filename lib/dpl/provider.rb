@@ -127,6 +127,9 @@ module DPL
 
     def self.shell(command, options = {})
       system(command)
+      if !options[:assert] && !$?.success?
+        error "Command #{command} failed with status #{$?.exitstatus}"
+      end
     end
 
     def self.apt_get(name, command = name)
