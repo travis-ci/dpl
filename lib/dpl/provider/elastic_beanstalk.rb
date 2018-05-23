@@ -114,6 +114,7 @@ module DPL
         zipfile_name = File.join(directory, archive_name)
 
         Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|
+          zipfile.comment = sha
           files_to_pack.each do |file|
             relative_archive_path = File.join(directory, '/')
             zipfile.add(file.sub(relative_archive_path, ''), file)
