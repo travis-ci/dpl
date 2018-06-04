@@ -50,6 +50,7 @@ module DPL
       'S3'                  => 's3',
       'Scalingo'            => 'scalingo',
       'Script'              => 'script',
+      'Snap'                => 'snap',
       'Surge'               => 'surge',
       'TestFairy'           => 'testfairy',
       'Transifex'           => 'transifex',
