@@ -1,4 +1,5 @@
 require 'octokit'
+require 'shellwords'
 
 module DPL
   class Provider
@@ -49,6 +50,8 @@ module DPL
         @gh_ref = "#{@gh_url}/#{slug}.git"
         @git_push_opts = @keep_history ? '' : ' --force'
         @git_commit_opts = (@allow_empty_commit and @keep_history) ? ' --allow-empty' : ''
+        
+        @commit_message = Shellwords.escape(options[:commit_message]) || "Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}"
 
         print_step "The repo is configured to use committer user and email." if @committer_from_gh
       end
@@ -174,7 +177,7 @@ module DPL
         context.shell "touch \"deployed at `date` by #{committer_name}\"" if @deployment_file
         context.shell "echo '#{@gh_fqdn}' > CNAME" if @gh_fqdn
         context.shell 'git add -A .'
-        context.shell "git commit#{@git_commit_opts} -qm 'Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}'"
+        context.shell "git commit#{@git_commit_opts} -qm '#{@commit_message}'"
         context.shell 'git show --stat-count=10 HEAD'
       end
 
