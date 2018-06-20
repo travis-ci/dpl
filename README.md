@@ -288,6 +288,7 @@ This _overrides_ the `gemspec` option.
   this option to `false`, your deployment fails, unless you specify the server
   that supports this option. See https://github.com/travis-ci/dpl/issues/660
   for details.
+* **skip_remove_build**: Optional. When set to `true`, remaining files in dist is not removed. Defaults to `false`.
 * **docs_dir**: Optional. A path to the directory to upload documentation from. Defaults to 'build/docs'
 * **skip_existing**: Optional. When set to `true`, the deployment will not fail if a file with the same name already exists on the server. It won't be uploaded and will not overwrite the existing file. Defaults to `false`.
 
