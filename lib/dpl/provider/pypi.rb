@@ -26,6 +26,10 @@ module DPL
           '--upload-dir ' + docs_dir
         end
       end
+      
+      def skip_remove_build?
+        options.has_key?(:skip_remove_build) && options[:skip_remove_build]
+      end
 
       def skip_upload_docs?
         ! options.has_key?(:skip_upload_docs) ||
@@ -125,7 +129,9 @@ module DPL
         unless context.shell "twine upload#{pypi_skip_existing_option} -r pypi dist/*"
           error 'PyPI upload failed.'
         end
-        context.shell "rm -rf dist/*"
+        unless skip_remove_build?
+          context.shell "rm -rf dist/*"
+        end
         unless skip_upload_docs?
           log "Uploading documentation (skip with \"skip_upload_docs: true\")"
           context.shell "python setup.py upload_docs #{pypi_docs_dir_option} -r #{pypi_server}"
