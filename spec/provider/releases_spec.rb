@@ -39,7 +39,7 @@ describe DPL::Provider::Releases do
       provider.options.update(:user => 'foo')
       provider.options.update(:password => 'bar')
 
-      expect(::Octokit::Client).to receive(:new).with(:login => 'foo', :password  => 'bar').and_return(api)
+      expect(::Octokit::Client).to receive(:new).with(:login => 'foo', :password  => 'bar', :connection_options=>{:request=>{:timeout=>180, :open_timeout=>180}}).and_return(api)
       expect(provider.api).to eq(api)
     end
   end
