@@ -101,6 +101,9 @@ module DPL
 
           log "Created lambda: #{response.function_name}."
         end
+        if options[:event_source_arn]
+          event_source(function_name)
+        end
       rescue ::Aws::Lambda::Errors::ServiceException => exception
         error(exception.message)
       rescue ::Aws::Lambda::Errors::InvalidParameterValueException => exception
@@ -161,6 +164,33 @@ module DPL
 
         dest_file_path
       end
+      
+      def event_source(function_name)
+        event_source_list = lambda.list_event_source_mappings({
+          event_source_arn: options[:event_source_arn], 
+          function_name: function_name
+        })[:event_source_mappings].first
+        
+        if event_source_list
+          log "Event source for function #{function_name} already exists, updating."
+          response = lambda.update_event_source_mapping({
+            uuid:           event_source_list.uuid,
+            function_name:  function_name,
+            batch_size:     options[:event_source_batch_size]   || default_batch_size,
+            enabled:        event_source_enabled
+          })
+          log "Updated configuration of event source id #{event_source_list.uuid}."
+        else
+          response = lambda.create_event_source_mapping({
+            event_source_arn:             options[:event_source_arn],
+            function_name:                function_name,
+            enabled:                      event_source_enabled,
+            batch_size:                   options[:event_source_batch_size]         || default_batch_size,
+            starting_position:            default_event_source_starting_position
+          })
+          log "Created event source #{response.uuid} for function #{function_name}."
+        end
+      end
 
       def needs_key?
         false
@@ -218,6 +248,14 @@ module DPL
         'index'
       end
 
+      def default_batch_size
+        1
+      end
+      
+      def default_event_source_starting_position
+        'LATEST'
+      end
+
       def publish
         !!options[:publish]
       end
@@ -233,6 +271,10 @@ module DPL
 
       def random_chars(count=8)
         (36**(count-1) + rand(36**count - 36**(count-1))).to_s(36)
+      end
+      
+      def event_source_enabled
+        !options[:event_source_enabled]
       end
 
       def cleanup

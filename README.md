@@ -720,6 +720,9 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **environment_variables**: Optional. List of Environment Variables to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
  * **kms_key_arn**: Optional. KMS key ARN to use to encrypt `environment_variables`.
  * **function_tags**: Optional. List of tags to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
+ * **event_source_arn**: Optional. The ARN of the resource which is to be used as the event source. Current support is only for `LATEST`  as the event source starting position. [More about Event Sources here](https://docs.aws.amazon.com/lambda/latest/dg/invoking-lambda-function.html).
+ * **event_source_enabled**: Optional. If `false` the event source will not trigger the lambda. Default is `true`.
+ * **event_source_batch_size**: Optional. The number of batches to retrieve off the event source. Defaults to 1.
 
  For a list of all [permissions for Lambda, please refer to the documentation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html).
 
@@ -744,6 +747,16 @@ Deploy contents of a specific directory using specific module name:
         --zip="${TRAVIS_BUILD_DIR}/dist"  \
         --module_name="copy" \
         --handler_name="handler";
+```
+Deploy lambda with a event source using default settings:
+```
+    dpl --provider="lambda" \
+        --access_key_id="${AWS_ACCESS_KEY}" \
+        --secret_access_key="${AWS_SECRET_KEY}" \
+        --function_name="test-lambda" \
+        --role="${AWS_LAMBDA_ROLE}" \
+        --handler_name="handler" \
+        --event_source_arn="arn:aws:dynamodb:us-west-2:000000000000:table/test-table";
 ```
 
 ### Launchpad:

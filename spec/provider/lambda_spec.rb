@@ -84,7 +84,7 @@ describe DPL::Provider::Lambda do
       role: 'some-role',
       handler: 'index.handler'
     }
-
+  
     before(:each) do
       old_options = provider.options
       allow(provider).to receive(:options) { old_options.merge(lambda_options) }
@@ -430,5 +430,97 @@ describe DPL::Provider::Lambda do
       end
     end
   end
+  
+  describe '#default_batch_size' do
+    example do
+      expect(provider.default_batch_size).to eq(1)
+    end
+  end
 
+  describe '#default_event_source_starting_position' do
+    example do
+      expect(provider.default_event_source_starting_position).to eq('LATEST')
+    end
+  end
+  
+  describe '#event_source_enabled' do
+    context 'is default turned on' do
+      example do
+        expect(provider.event_source_enabled).to eq(true)
+      end
+    end
+    context 'can be turned off' do
+      before do
+        expect(provider.options).to receive(:[]).with(:event_source_enabled).and_return(false)
+      end
+
+      example do
+        expect(provider.event_source_enabled).to eq(true)
+      end
+    end
+  end
+
+  describe '#event_source' do
+    lambda_options = {
+      function_name: 'test-function',
+      role: 'some-role',
+      module_name: 'index',
+      handler_name: 'handler',
+      event_source_arn: 'arn:dynamodb:region:account-id:table/test-table'
+    }
+
+    uuid = '0a99fc73-e7b1-4a3a-89e1-344227240460'
+    function_name = 'test-function'
+    example_list_with_event_response = {
+      event_source_mappings: [{
+        uuid: uuid,
+        batch_size: 1,
+        event_source_arn: 'arn:dynamodb:region:account-id:table/test-table'
+      }]
+    }
+    
+    example_list_with_no_events_response = {
+      event_source_mappings: []
+    }
+    
+    example_create_event_response = {
+      uuid: uuid,
+      event_source_arn: 'arn:dynamodb:region:account-id:table/test-table',
+      function_arn: function_name,
+      last_modified: Time.now.utc,
+      last_processing_result: 'OK',
+      state: 'Enabled',
+      state_transition_reason: 'User action'
+    }
+    
+    before(:each) do
+      old_options = provider.options
+      allow(provider).to receive(:options) { old_options.merge(lambda_options) }
+    end
+
+    context 'by creating new event source mapping' do
+      before do
+        provider.lambda.stub_responses(:list_event_source_mappings, example_list_with_no_events_response)
+        provider.lambda.stub_responses(:create_event_source_mapping, example_create_event_response)
+      end
+
+      example do
+        expect(provider).to receive(:log).with(/Created event source #{uuid} for function #{function_name}./)
+        provider.event_source(function_name)
+      end      
+    end
+    
+    context 'by creating new event source mapping' do
+      before do
+        provider.lambda.stub_responses(:list_event_source_mappings, example_list_with_event_response)
+        provider.lambda.stub_responses(:create_event_source_mapping, example_create_event_response)
+      end
+
+      example do
+        expect(provider).to receive(:log).with(/Event source for function #{function_name} already exists, updating./)
+        expect(provider).to receive(:log).with(/Updated configuration of event source id #{uuid}./)
+        provider.event_source(function_name)
+      end      
+    end
+  end
 end
