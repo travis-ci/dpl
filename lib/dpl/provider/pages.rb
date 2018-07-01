@@ -50,7 +50,6 @@ module DPL
         @gh_ref = "#{@gh_url}/#{slug}.git"
         @git_push_opts = @keep_history ? '' : ' --force'
         @git_commit_opts = (@allow_empty_commit and @keep_history) ? ' --allow-empty' : ''
-        
         @commit_message = Shellwords.escape(options[:commit_message]) || "Deploy #{@project_name} to #{@gh_ref}:#{@target_branch}"
 
         print_step "The repo is configured to use committer user and email." if @committer_from_gh
