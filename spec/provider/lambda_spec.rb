@@ -431,18 +431,6 @@ describe DPL::Provider::Lambda do
     end
   end
   
-  describe '#default_batch_size' do
-    example do
-      expect(provider.default_batch_size).to eq(1)
-    end
-  end
-
-  describe '#default_event_source_starting_position' do
-    example do
-      expect(provider.default_event_source_starting_position).to eq('LATEST')
-    end
-  end
-  
   describe '#event_source_enabled' do
     context 'is default turned on' do
       example do

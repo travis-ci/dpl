@@ -712,17 +712,19 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **memory_size**: Optional. The amount of memory in MB to allocate to this Lambda. Defaults to 128.
  * **runtime**: Optional. The Lambda runtime to use. Defaults to `node`.
  * **publish**: If `true`, a [new version](http://docs.aws.amazon.com/lambda/latest/dg/versioning-intro.html#versioning-intro-publish-version) of the Lambda function will be created instead of replacing the code of the existing one.
- * **subnet_ids**: Optional. List of subnet IDs to be added to the function. Needs the `ec2:DescribeSubnets` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
- * **security_group_ids**: Optional. List of security group IDs to be added to the function. Needs the `ec2:DescribeSecurityGroups` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
+ * **subnet_ids**: Optional. List of subnet IDs to be added to the function. Needs the `ec2:DescribeSubnets` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work. If set, then security_group_ids must be provided.
+ * **security_group_ids**: Optional. List of security group IDs to be added to the function. Needs the `ec2:DescribeSecurityGroups` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work. If set, then subnet_ids must be provided.
  * **dead_letter_arn**: Optional. ARN to an SNS or SQS resource used for the dead letter queue. [More about DLQs here](https://docs.aws.amazon.com/lambda/latest/dg/dlq.html).
  * **tracing_mode**: Optional. "Active" or "PassThrough" only. Default is "PassThrough".  Needs the `xray:PutTraceSegments` and `xray:PutTelemetryRecords` on the role for this to work. [More on
  Active Tracing here](https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html).
  * **environment_variables**: Optional. List of Environment Variables to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
  * **kms_key_arn**: Optional. KMS key ARN to use to encrypt `environment_variables`.
  * **function_tags**: Optional. List of tags to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
- * **event_source_arn**: Optional. The ARN of the resource which is to be used as the event source. Current support is only for `LATEST`  as the event source starting position. [More about Event Sources here](https://docs.aws.amazon.com/lambda/latest/dg/invoking-lambda-function.html).
+ * **event_source_arn**: Optional. The ARN of the resource which is to be used as the event source. [More about Event Sources here](https://docs.aws.amazon.com/lambda/latest/dg/invoking-lambda-function.html).
  * **event_source_enabled**: Optional. If `false` the event source will not trigger the lambda. Default is `true`.
- * **event_source_batch_size**: Optional. The number of batches to retrieve off the event source. Defaults to 1.
+ * **batch_size**: Optional. The number of batches to retrieve off the event source. Defaults to 1.
+ * **starting_position**: Optional. The position in the DynamoDB or Kinesis stream where AWS Lambda should start reading. Allowed values are `LATEST`, `TRIM_HORIZON` and `AT_TIMESTAMP`
+ * **starting_position_timestamp**: Optional. The timestamp in ISO8601 of the data record from which to start reading. Used with starting_position `AT_TIMESTAMP`.
 
  For a list of all [permissions for Lambda, please refer to the documentation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html).
 

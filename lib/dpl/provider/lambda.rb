@@ -176,7 +176,7 @@ module DPL
           response = lambda.update_event_source_mapping({
             uuid:           event_source_list.uuid,
             function_name:  function_name,
-            batch_size:     options[:event_source_batch_size]   || default_batch_size,
+            batch_size:     batch_size,
             enabled:        event_source_enabled
           })
           log "Updated configuration of event source id #{event_source_list.uuid}."
@@ -185,8 +185,9 @@ module DPL
             event_source_arn:             options[:event_source_arn],
             function_name:                function_name,
             enabled:                      event_source_enabled,
-            batch_size:                   options[:event_source_batch_size]         || default_batch_size,
-            starting_position:            default_event_source_starting_position
+            batch_size:                   batch_size,
+            starting_position:            starting_position,
+            starting_position_timestamp:  starting_position_timestamp,
           })
           log "Created event source #{response.uuid} for function #{function_name}."
         end
@@ -211,7 +212,7 @@ module DPL
       def environment_variables
         options[:environment_variables] ? { :variables => split_string_array_to_hash(options[:environment_variables]) } : nil
       end
-
+      
       def dead_letter_arn
         options[:dead_letter_arn] ? { :target_arn => options[:dead_letter_arn]} : nil
       end
@@ -227,7 +228,19 @@ module DPL
       def function_tags
         options[:function_tags] ? split_string_array_to_hash(options[:function_tags]) : nil
       end
-
+      
+      def batch_size
+        options[:batch_size] ? options[:batch_size] : 1
+      end
+      
+      def starting_position
+        options[:starting_position] ? options[:starting_position] : nil
+      end
+      
+      def starting_position_timestamp
+        options[:starting_position_timestamp] ? Time.parse(options[:starting_position_timestamp]) : nil
+      end
+      
       def default_runtime
         'nodejs'
       end
@@ -246,14 +259,6 @@ module DPL
 
       def default_module_name
         'index'
-      end
-
-      def default_batch_size
-        1
-      end
-      
-      def default_event_source_starting_position
-        'LATEST'
       end
 
       def publish
