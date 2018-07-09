@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class PyPI < Provider
-      DEFAULT_SERVER = 'https://upload.pypi.org/legacy/'
+      DEFAULT_SERVER = 'https://upload.pypi.org/'
       PYPIRC_FILE = '~/.pypirc'
 
       def pypi_user
