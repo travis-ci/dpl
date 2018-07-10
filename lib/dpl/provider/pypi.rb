@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class PyPI < Provider
-      DEFAULT_SERVER = 'https://upload.pypi.org/'
+      DEFAULT_SERVER = false
       PYPIRC_FILE = '~/.pypirc'
 
       def pypi_user
@@ -75,16 +75,19 @@ module DPL
       end
 
       def config
+        servers = {
+            'pypi' => [
+                        "username: #{pypi_user}",
+                        "password: #{pypi_password}",
+                      ]
+          }
+        if pypi_server
+          servers['pypi'].insert("repository: #{pypi_server}")
+        end
         {
           :header => '[distutils]',
           :servers_line => 'index-servers = pypi',
-          :servers => {
-            'pypi' => [
-                         "repository: #{pypi_server}",
-                         "username: #{pypi_user}",
-                         "password: #{pypi_password}",
-                      ]
-          }
+          :servers => servers
         }
       end
 
