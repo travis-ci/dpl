@@ -30,7 +30,7 @@ describe DPL::Provider::Releases do
   describe "#api" do
     example "With API key" do
       api = double(:api)
-      expect(::Octokit::Client).to receive(:new).with(:access_token => '0123445789qwertyuiop0123445789qwertyuiop').and_return(api)
+      expect(::Octokit::Client).to receive(:new).with(:access_token => '0123445789qwertyuiop0123445789qwertyuiop', :connection_options=>{:request=>{:timeout=>180, :open_timeout=>180}}).and_return(api)
       expect(provider.api).to eq(api)
     end
 
@@ -39,7 +39,7 @@ describe DPL::Provider::Releases do
       provider.options.update(:user => 'foo')
       provider.options.update(:password => 'bar')
 
-      expect(::Octokit::Client).to receive(:new).with(:login => 'foo', :password  => 'bar').and_return(api)
+      expect(::Octokit::Client).to receive(:new).with(:login => 'foo', :password  => 'bar', :connection_options=>{:request=>{:timeout=>180, :open_timeout=>180}}).and_return(api)
       expect(provider.api).to eq(api)
     end
   end
