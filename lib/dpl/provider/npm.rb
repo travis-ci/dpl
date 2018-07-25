@@ -49,7 +49,11 @@ module DPL
 
       def npmrc_file_content
         log "NPM version: #{npm_version}"
-        if npm_version =~ /^1/
+
+        auth_option = option(:auth_type)
+        log "Auth option: #{auth_option}"
+        
+        if npm_version =~ /^1/ && auth_option != "authtoken"
           "_auth = ${NPM_API_KEY}\nemail = #{option(:email)}"
         else
           "//#{package_registry}/:_authToken=${NPM_API_KEY}"
