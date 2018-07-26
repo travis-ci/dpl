@@ -53,7 +53,7 @@ module DPL
         auth_option = option(:auth_type)
         log "Auth option: #{auth_option}"
         
-        if npm_version =~ /^1/ && auth_option != "authtoken"
+        if npm_version =~ /^1/ || auth_option == "auth"
           "_auth = ${NPM_API_KEY}\nemail = #{option(:email)}"
         else
           "//#{package_registry}/:_authToken=${NPM_API_KEY}"
