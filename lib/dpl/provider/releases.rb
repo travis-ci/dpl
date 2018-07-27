@@ -112,7 +112,10 @@ module DPL
           release_url = api.create_release(slug, get_tag, options.merge({:draft => true})).rels[:self].href
         end
 
+        log "Files to upload: #{files.join(',')}"
+        
         files.each do |file|
+          log "Processing file: #{file}"
           next unless File.file?(file)
           existing_url = nil
           filename = Pathname.new(file).basename.to_s
@@ -142,6 +145,7 @@ module DPL
           content_type = "application/octet-stream"
         end
         api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
+        log "File was uploaded: #{filename}"
       end
 
       def booleanize!(opts)
