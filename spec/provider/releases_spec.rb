@@ -30,7 +30,7 @@ describe DPL::Provider::Releases do
   describe "#api" do
     example "With API key" do
       api = double(:api)
-      expect(::Octokit::Client).to receive(:new).with(:access_token => '0123445789qwertyuiop0123445789qwertyuiop').and_return(api)
+      expect(::Octokit::Client).to receive(:new).with(:access_token => '0123445789qwertyuiop0123445789qwertyuiop', :connection_options=>{:request=>{:timeout=>180, :open_timeout=>180}}).and_return(api)
       expect(provider.api).to eq(api)
     end
 
@@ -39,7 +39,7 @@ describe DPL::Provider::Releases do
       provider.options.update(:user => 'foo')
       provider.options.update(:password => 'bar')
 
-      expect(::Octokit::Client).to receive(:new).with(:login => 'foo', :password  => 'bar').and_return(api)
+      expect(::Octokit::Client).to receive(:new).with(:login => 'foo', :password  => 'bar', :connection_options=>{:request=>{:timeout=>180, :open_timeout=>180}}).and_return(api)
       expect(provider.api).to eq(api)
     end
   end
@@ -160,6 +160,8 @@ describe DPL::Provider::Releases do
 
       allow(provider).to receive(:releases).and_return([""])
       allow(provider).to receive(:get_tag).and_return("v0.0.0")
+      expect(File).to receive(:file?).with("test/foo.bar").and_return(true)
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       provider.releases.map do |release|
         allow(release).to receive(:tag_name).and_return("v0.0.0")
@@ -186,6 +188,8 @@ describe DPL::Provider::Releases do
 
       allow(provider).to receive(:releases).and_return([""])
       allow(provider).to receive(:get_tag).and_return("v0.0.0")
+      expect(File).to receive(:file?).with("test/foo.bar").and_return(true)
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       provider.releases.map do |release|
         allow(release).to receive(:tag_name).and_return("v0.0.0")
@@ -213,6 +217,7 @@ describe DPL::Provider::Releases do
 
       allow(provider).to receive(:releases).and_return([""])
       allow(provider).to receive(:get_tag).and_return("v0.0.0")
+      expect(File).to receive(:file?).with("exists.txt").and_return(true)
 
       provider.releases.map do |release|
         allow(release).to receive(:tag_name).and_return("v0.0.0")
@@ -238,6 +243,8 @@ describe DPL::Provider::Releases do
       provider.options.update(:file => ["test/foo.bar", "bar.txt"])
 
       allow(provider).to receive(:releases).and_return([""])
+      expect(File).to receive(:file?).with("test/foo.bar").and_return(true)
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       provider.releases.map do |release|
         allow(release).to receive(:tag_name).and_return("foo")
@@ -268,6 +275,7 @@ describe DPL::Provider::Releases do
       provider.options.update(:release_number => "1234")
 
       allow(provider).to receive(:slug).and_return("foo/bar")
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       allow(provider.api).to receive(:release)
       allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
@@ -286,8 +294,8 @@ describe DPL::Provider::Releases do
       provider.options.update(:file => ["bar.txt"])
       provider.options.update(:release_number => "1234")
       provider.options.update(:draft => true)
-
       allow(provider).to receive(:slug).and_return("foo/bar")
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
 
       allow(provider.api).to receive(:release)
       allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
@@ -296,6 +304,47 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
       expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => true))
+
+      provider.push_app
+    end
+
+    example "When prerelease is 'true'" do
+      allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["bar.txt"])
+      provider.options.update(:release_number => "1234")
+      provider.options.update(:prerelease => 'true')
+      allow(provider).to receive(:slug).and_return("foo/bar")
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
+
+      allow(provider.api).to receive(:release)
+      allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
+      allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => nil})
+      allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
+
+      expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:prerelease => true))
+
+      provider.push_app
+    end
+
+    example "When release name is 'true'" do
+      allow_message_expectations_on_nil
+
+      provider.options.update(:file => ["bar.txt"])
+      provider.options.update(:release_number => "1234")
+      provider.options.update(:prerelease => 'true')
+      provider.options.update(:name => 'true')
+      allow(provider).to receive(:slug).and_return("foo/bar")
+      expect(File).to receive(:file?).with("bar.txt").and_return(true)
+
+      allow(provider.api).to receive(:release)
+      allow(provider.api.release).to receive(:rels).and_return({:assets => nil})
+      allow(provider.api.release.rels[:assets]).to receive(:get).and_return({:data => nil})
+      allow(provider.api.release.rels[:assets].get).to receive(:data).and_return([])
+
+      expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
+      expect(provider.api).to receive(:update_release).with(anything, hash_including(:prerelease => true, :name => 'true'))
 
       provider.push_app
     end

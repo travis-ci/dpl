@@ -1,9 +1,8 @@
+require 'packagecloud'
+
 module DPL
   class Provider
     class Packagecloud < Provider
-      requires 'json_pure', :version => '< 2.0', :load => 'json/pure'
-      requires 'packagecloud-ruby', :version => "1.0.5", :load => 'packagecloud'
-
       def check_auth
         setup_auth
         begin
@@ -49,7 +48,7 @@ module DPL
         if ext.nil?
           error "filename: #{filename} has no extension!"
         end
-        ["rpm", "deb", "dsc", "whl", "egg", "egg-info", "gz", "zip", "tar", "bz2", "z"].include?(ext.downcase)
+        ["rpm", "deb", "dsc", "whl", "egg", "egg-info", "gz", "zip", "tar", "bz2", "z", "tgz"].include?(ext.downcase)
       end
 
       def error_if_dist_required(filename)
@@ -88,6 +87,7 @@ module DPL
       end
 
       def push_app
+        forced = options.fetch(:force, nil)
         packages = []
         glob_args = Array(options.fetch(:package_glob, '**/*'))
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
@@ -109,6 +109,16 @@ module DPL
         end
 
         packages.each do |package|
+          if forced
+            log "Deleting package: #{package.filename}"
+            distro, distro_release = @dist.split("/")
+            result = @client.delete_package(@repo, distro, distro_release, package.filename)
+            if result.succeeded
+              log "Successfully deleted #{package.filename} on #{@dist}"
+            else
+              error "Error #{result.response}"
+            end
+          end
           log "Pushing package: #{package.filename}"
           if dist_required?(package.filename)
             result = @client.put_package(@repo, package, get_distro(@dist))

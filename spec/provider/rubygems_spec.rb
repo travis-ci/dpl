@@ -35,6 +35,7 @@ describe DPL::Provider::RubyGems do
   describe "#check_app" do
     example do
       expect(::Gems).to receive(:info).with('example').and_return({'name' => 'example'})
+      expect(provider).to receive(:log).with("Looking up gem example")
       expect(provider).to receive(:log).with("Found gem example")
       provider.check_app
     end
@@ -49,30 +50,37 @@ describe DPL::Provider::RubyGems do
 
     example "with options[:app]" do
       provider.options.update(:app => 'example')
-      expect(provider.context).to receive(:shell).with("gem build example.gemspec")
+      expect(provider.context).to receive(:shell).with("for f in example.gemspec; do gem build $f; done")
       expect(Dir).to receive(:glob).with('example-*.gem').and_yield('File')
       expect(::Gems).to receive(:push).with('Test file').and_return('Yes!')
     end
 
     example "with options[:gem]" do
       provider.options.update(:gem => 'example-gem')
-      expect(provider.context).to receive(:shell).with("gem build example-gem.gemspec")
+      expect(provider.context).to receive(:shell).with("for f in example-gem.gemspec; do gem build $f; done")
       expect(Dir).to receive(:glob).with('example-gem-*.gem').and_yield('File')
       expect(::Gems).to receive(:push).with('Test file').and_return('Yes!')
     end
 
     example "with options[:gemspec]" do
       provider.options.update(:gemspec => 'blah.gemspec')
-      expect(provider.context).to receive(:shell).with("gem build blah.gemspec")
+      expect(provider.context).to receive(:shell).with("for f in blah.gemspec; do gem build $f; done")
       expect(Dir).to receive(:glob).with('blah-*.gem').and_yield('File')
       expect(::Gems).to receive(:push).with('Test file').and_return('Yes!')
     end
 
     example "with options[:host]" do
       provider.options.update(:host => 'http://example.com')
-      expect(provider.context).to receive(:shell).with("gem build example.gemspec")
+      expect(provider.context).to receive(:shell).with("for f in example.gemspec; do gem build $f; done")
       expect(Dir).to receive(:glob).with('example-*.gem').and_yield('File')
       expect(::Gems).to receive(:push).with('Test file', host='http://example.com').and_return('Yes!')
+    end
+
+    example "with options[:gemspec_glob]" do
+      provider.options.update(:gemspec_glob => 'example-*.gemspec')
+      expect(provider.context).to receive(:shell).with("for f in example-*.gemspec; do gem build $f; done")
+      expect(Dir).to receive(:glob).with('example-*.gem').and_yield('File')
+      expect(::Gems).to receive(:push).with('Test file').and_return('Yes!')
     end
   end
 

@@ -6,44 +6,35 @@ require 'find'
 module DPL
   class Provider
     class Bintray < Provider
+      DEFAULT_URL = 'https://api.bintray.com'
+
       def check_auth
+        @user ||= option(:user)
+        @key  ||= option(:key)
+        @file ||= option(:file)
       end
 
       def needs_key?
         false
       end
 
+      def url
+        @url ||= URI.parse(options[:url] || DEFAULT_URL)
+      end
+
       attr_accessor :test_mode
-      attr_reader :user
-      attr_reader :key
-      attr_reader :file
+      attr_reader :user, :key, :file
       attr_reader :passphrase
-      attr_reader :url
       attr_reader :dry_run
       attr_reader :descriptor
 
       def initialize(*args)
         super(*args)
         @test_mode = false
-        @user = options[:user]
-        @key = options[:key]
-        @url = options[:url]
-        @file = options[:file]
+
         @passphrase = options[:passphrase]
         @dry_run = options[:dry_run]
 
-        if @user.nil?
-          abort("The 'user' argument is required")
-        end
-        if @key.nil?
-          abort("The 'key' argument is required")
-        end
-        if @file.nil?
-          abort("The 'file' argument is required")
-        end
-        if @url.nil?
-          @url = 'https://api.bintray.com'
-        end
         if @dry_run.nil?
           @dry_run = false
         end
@@ -59,7 +50,6 @@ module DPL
       end
 
       def head_request(path)
-        url = URI.parse(self.url)
         req = Net::HTTP::Head.new(path)
         req.basic_auth user, key
 
@@ -78,7 +68,6 @@ module DPL
           req.body = body.to_json
         end
 
-        url = URI.parse(self.url)
         sock = Net::HTTP.new(url.host, url.port)
         sock.use_ssl = true
         res = sock.start {|http| http.request(req) }
@@ -86,7 +75,6 @@ module DPL
       end
 
       def put_file_request(local_file_path, upload_path, matrix_params)
-        url = URI.parse(self.url)
 
         file = File.open(local_file_path, 'rb')
         data = file.read()
@@ -439,7 +427,7 @@ module DPL
         return upload_files
       end
 
-      def deploy
+      def push_app
         read_descriptor
         check_and_create_package
         check_and_create_version

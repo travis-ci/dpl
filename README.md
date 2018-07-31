@@ -1,18 +1,18 @@
 # Dpl [![Build Status](https://travis-ci.org/travis-ci/dpl.svg?branch=master)](https://travis-ci.org/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Gem Version](https://badge.fury.io/rb/dpl.png)](http://badge.fury.io/rb/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github)](https://coveralls.io/github/travis-ci/dpl?branch=master)
 
-## Writing and Testing a New Deployment Provider and new functionalities
+## Writing and Testing a New Deployment Provider and new functionality
 
-See [TESTING.md](TESTING.md).
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ## Supported Providers:
 Dpl supports the following providers:
 
 * [Anynines](#anynines)
-* [AppFog](#appfog)
 * [Atlas by HashiCorp](#atlas)
 * [AWS CodeDeploy](#aws-codedeploy)
 * [AWS Elastic Beanstalk](#elastic-beanstalk)
 * [AWS OpsWorks](#opsworks)
+* [AWS S3](#s3)
 * [Azure Web Apps](#azure-web-apps)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
@@ -25,7 +25,6 @@ Dpl supports the following providers:
 * [Deis](#deis)
 * [Divshot.io](#divshotio)
 * [Engine Yard](#engine-yard)
-* [ExoScale](#exoscale)
 * [Firebase](#firebase)
 * [Github Pages](#github-pages)
 * [Github Releases](#github-releases)
@@ -44,7 +43,6 @@ Dpl supports the following providers:
 * [PyPi](#pypi)
 * [Rackspace Cloud Files](#rackspace-cloud-files)
 * [RubyGems](#rubygems)
-* [S3](#s3)
 * [Scalingo](#scalingo)
 * [Script](#script)
 * [Surge.sh](#surgesh)
@@ -54,16 +52,16 @@ Dpl supports the following providers:
 
 Dpl is published to rubygems.
 
-* Dpl requires ruby with a version greater than 1.9.3
+* Dpl requires ruby 2.2 and later.
 * To install: `gem install dpl`
 
 ## Usage:
 
-###Security Warning:
+### Security Warning:
 
 Running dpl in a terminal that saves history is insecure as your password/api key will be saved as plain text by it.
 
-###Global Flags
+### Global Flags
 * `--provider=<provider>` sets the provider you want to deploy to. Every provider has slightly different flags, which are documented in the section about your provider following.
 *  Dpl will deploy by default from the latest commit. Use the `--skip_cleanup`  flag to deploy from the current file state. Note that many providers deploy by git and could ignore this option.
 
@@ -71,15 +69,14 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 
 #### Options:
 * **api-key**: Heroku API Key
-* **strategy**: Deployment strategy for Dpl. Defaults to `api`. Other options are `git`, `git ssh`, and `git deploykey`.
+* **strategy**: Deployment strategy for Dpl. Defaults to `api`. The other option is `git`.
 * **app**: Heroku app name. Defaults to the name of your git repo.
 * **username**: heroku username. Not necessary if api-key is used. Requires git strategy.
 * **password**: heroku password. Not necessary if api-key is used. Requires git strategy.
 
-#### API vs Git vs Anvil Deploy:
+#### API vs Git Deploy:
 * API deploy will tar up the current directory (minus the git repo) and send it to Heroku.
 * Git deploy will send the contents of the git repo only, so may not contain any local changes.
-* Anvil deploys are no longer supported since Heroku shut down the Anvil service.
 * The Git strategy allows using *user* and *password* instead of *api-key*.
 * When using Git, Heroku might send you an email for every deploy, as it adds a temporary SSH key to your account.
 
@@ -260,7 +257,7 @@ For authentication you can also use Travis CI secure environment variable:
 * **domain**: Openshift Application Domain.
 * **app**: Openshift Application. Defaults to git repo's name.
 
-####Examples:
+#### Examples:
 
     dpl --provider=openshift --user=<username> --password=<password> --domain=<domain>
     dpl --provider=openshift --user=<username> --password=<password> --domain=<domain> --app=<app>
@@ -270,6 +267,9 @@ For authentication you can also use Travis CI secure environment variable:
 #### Options:
 
 * **api-key**: Rubygems Api Key.
+* **gemspec**: Optional. The name of the `gemspec` file to use to build the gem.
+* **gemspec_glob**: Optional. A glob pattern to search for gemspec files when multiple gems are generated in the repository.
+This _overrides_ the `gemspec` option.
 
 #### Examples:
 
@@ -281,10 +281,15 @@ For authentication you can also use Travis CI secure environment variable:
 
 * **user**: PyPI Username.
 * **password**: PyPI Password.
-* **server**: Optional. Only required if you want to release to a different index. Follows the form of 'https://mypackageindex.com/index'. Defaults to 'https://pypi.python.org/pypi'.
+* **server**: Optional. Only required if you want to release to a different index. Follows the form of 'https://mypackageindex.com/index'. Defaults to 'https://upload.pypi.org/legacy/'.
 * **distributions**: Optional. A space-separated list of distributions to be uploaded to PyPI. Defaults to 'sdist'.
-* **skip_upload_docs**: Optional. When set to `true`, documentation is not uploaded. Defaults to `false`.
+* **skip_upload_docs**: Optional. When set to `false`, documentation is uploaded. Defaults to `true`.
+  Note that upload.pypi.org does not support document uploading. If you set
+  this option to `false`, your deployment fails, unless you specify the server
+  that supports this option. See https://github.com/travis-ci/dpl/issues/660
+  for details.
 * **docs_dir**: Optional. A path to the directory to upload documentation from. Defaults to 'build/docs'
+* **skip_existing**: Optional. When set to `true`, the deployment will not fail if a file with the same name already exists on the server. It won't be uploaded and will not overwrite the existing file. Defaults to `false`.
 
 #### Environment variables:
 
@@ -329,6 +334,7 @@ For authentication you can also use Travis CI secure environment variable:
 * **dot_match**: When set to `true`, upload files starting a `.`.
 * **index_document_suffix**: Set the index document of a S3 website.
 * **default_text_charset**: Set the default character set to append to the content-type of text files you are uploading.
+* **max_threads**: The number of threads to use for S3 file uploads. Default is 5, and the absolute maximum is 15.
 
 #### File-specific `Cache-Control` and `Expires` headers
 
@@ -348,7 +354,7 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public_read
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999 --expires="2012-12-21 00:00:00 -0000"
-    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir= BUILD --upload-dir=BUILDS
+    dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir=BUILD --upload-dir=BUILDS
 
 ### Elastic Beanstalk:
 
@@ -385,6 +391,7 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 * **layer-ids**: A layer id. (Use this option multiple times to specify multiple layer ids. Default: [])
 * **migrate**: Migrate the database. (Default: false)
 * **wait-until-deployed**: Wait until the app is deployed and return the deployment status. (Default: false)
+* **update-on-success**: When **wait-until-deployed** and **updated-on-success** are both `true`, application source is updated to the current SHA. Ignored when **wait-until-deployed** is false. (Default: false)
 * **custom_json**: Override custom_json options. If using this, default configuration will be overriden. See the code [here](https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/ops_works.rb#L43). More about `custom_json` [here](http://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook-json.html).
 
 #### Environment variables:
@@ -409,19 +416,6 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
 #### Examples:
 
     dpl --provider=anynines --username=<username> --password=<password> --organization=<organization> --space=<space>
-
-### Appfog:
-
-#### Options:
-
-* **email**: Appfog Email.
-* **password**: Appfog Password.
-* **app**: Appfog App. Defaults to git repo's name.
-
-#### Examples:
-
-    dpl --provider=appfog --email=<email> --password=<password>
-    dpl --provider=appfog --email=<email> --password=<password> --app=<app>
 
 ### Atlas:
 
@@ -517,11 +511,16 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **github-token**: GitHub oauth token with `repo` permission.
 * **repo**: Repo slug, defaults to current one.
 * **target-branch**: Branch to push force to, defaults to gh-pages.
+* **keep-history**: Optional, create incremental commit instead of doing push force, defaults to false.
+* **allow-empty-commit**: Optional, defaults to false. Enabled if only keep-history is true.
+* **committer-from-gh**: Optional, defaults to false. Allows to use token's owner name and email for commit. Overrides `email` and `name` options.
+* **verbose**: Optional, be verbose about internal steps, defaults to false.
 * **local-dir**: Directory to push to GitHub Pages, defaults to current.
 * **fqdn**: Optional, no default, sets a main domain for your website.
 * **project-name**: Defaults to fqdn or repo slug, used for metadata.
-* **email**: Optional, comitter info, defaults to deploy@travis-ci.org.
-* **name**: Optional, comitter, defaults to Deployment Bot.
+* **email**: Optional, committer info, defaults to deploy@travis-ci.org.
+* **name**: Optional, committer, defaults to Deployment Bot.
+* **deployment-file**: Optional, defaults to false, enables creation of deployment-info files
 
 #### Examples:
 
@@ -539,6 +538,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **file_glob**: If files should be interpreted as globs (\* and \*\* wildcards). Defaults to false.
 * **overwrite**: If files with the same name should be overwritten. Defaults to false.
 * **release-number**: Overide automatic release detection, set a release manually.
+* **prerelease**: Identify the release as a prerelease.
 
 Additionally, options can be passed to [Octokit](https://github.com/octokit/octokit.rb) client.
 These are documented in https://github.com/octokit/octokit.rb/blob/master/lib/octokit/client/releases.rb.
@@ -641,7 +641,8 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **token**: Required. The [packagecloud.io api token](https://packagecloud.io/docs/api#api_tokens).
  * **repository**: Required. The repository to push to.
  * **local_dir**: Optional. The sub-directory of the built assets for deployment. Default to current path.
- * **dist**: Required for deb and rpm. The complete list of supported strings can be found on the [packagecloud.io docs](https://packagecloud.io/docs#os_distro_version)
+ * **dist**: Required for debian, rpm, and node.js packages. The complete list of supported strings can be found on the [packagecloud.io docs](https://packagecloud.io/docs#os_distro_version). For node.js packages, simply use "node".
+ * **force**: Optional. Whether package has to be (re)uploaded / deleted before upload
 
 #### Examples:
 
@@ -703,6 +704,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **function_name**: Required. The name of the Lambda being created / updated.
  * **role**: Required. The ARN of the IAM role to assign to this Lambda function.
  * **handler_name**: Required. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module.
+ * **dot_match**: Optional. When `true`, the zipped archive will include the hidden `.*` files. Defaults to `false`.
  * **module_name**: Optional. The name of the module that exports the handler. Defaults to `index`.
  * **zip**: Optional. Either a path to an existing packaged (zipped) Lambda, a directory to package, or a single file to package. Defaults to `Dir.pwd`.
  * **description**: Optional. The description of the Lambda being created / updated. Defaults to "Deploy build #{context.env['TRAVIS_BUILD_NUMBER']} to AWS Lambda via Travis CI"
@@ -710,6 +712,16 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **memory_size**: Optional. The amount of memory in MB to allocate to this Lambda. Defaults to 128.
  * **runtime**: Optional. The Lambda runtime to use. Defaults to `node`.
  * **publish**: If `true`, a [new version](http://docs.aws.amazon.com/lambda/latest/dg/versioning-intro.html#versioning-intro-publish-version) of the Lambda function will be created instead of replacing the code of the existing one.
+ * **subnet_ids**: Optional. List of subnet IDs to be added to the function. Needs the `ec2:DescribeSubnets` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
+ * **security_group_ids**: Optional. List of security group IDs to be added to the function. Needs the `ec2:DescribeSecurityGroups` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
+ * **dead_letter_arn**: Optional. ARN to an SNS or SQS resource used for the dead letter queue. [More about DLQs here](https://docs.aws.amazon.com/lambda/latest/dg/dlq.html).
+ * **tracing_mode**: Optional. "Active" or "PassThrough" only. Default is "PassThrough".  Needs the `xray:PutTraceSegments` and `xray:PutTelemetryRecords` on the role for this to work. [More on
+ Active Tracing here](https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html).
+ * **environment_variables**: Optional. List of Environment Variables to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
+ * **kms_key_arn**: Optional. KMS key ARN to use to encrypt `environment_variables`.
+ * **function_tags**: Optional. List of tags to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
+
+ For a list of all [permissions for Lambda, please refer to the documentation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-api-permissions-ref.html).
 
 #### Examples:
 
@@ -761,9 +773,6 @@ and your testers can start testing your app.
 * **api-key**: TestFairy API Key (https://app.testfairy.com/settings/) run "travis encrypt --add deploy.api-key" on your repo.
 * **app-file**: Path to the app file that will be generated after the build (APK/IPA).
 * **symbols-file**: Path to the symbols file.
-* **keystore-file**: Path to your keystore-file (must, only for android). http://docs.travis-ci.com/user/encrypting-files/
-* **storepass**: storepass (must, only for android).
-* **alias**: alias (must, only for android).
 * **testers-groups**: You can set a tester group to be notified about this build (group1,group1).
 * **notify**: If true, an email you a changelog will be sent to your users.
 * **auto-update**: If true, all the previous installations of this app will be automatically all upgraded to this version.
@@ -785,36 +794,25 @@ and your testers can start testing your app.
 
 #### Options:
 
-* **access-key-id**: AWS Access Key.
+* **access_key_id**: AWS Access Key.
 * **secret_access_key**: AWS Secret Access Key.
 * **application**: CodeDeploy Application Name.
 * **deployment_group**: CodeDeploy Deployment Group Name.
 * **revision_type**: CodeDeploy Revision Type (S3 or GitHub).
 * **commit_id**: Commit ID in case of GitHub.
 * **repository**: Repository Name in case of GitHub.
+* **bucket**: S3 bucket in case of S3.
 * **region**: AWS Availability Zone.
-* **wait-until-deployed**: Wait until the app is deployed and return the deployment status (Optional, Default false).
+* **wait_until_deployed**: Wait until the app is deployed and return the deployment status (Optional, Default false).
 
 #### Environment variables:
 
- * **AWS_ACCESS_KEY_ID**: AWS Access Key ID. Used if the `access-key-id` option is omitted.
- * **AWS_SECRET_ACCESS_KEY**: AWS Secret Key. Used if the `secret-access-key` option is omitted.
+ * **AWS_ACCESS_KEY_ID**: AWS Access Key ID. Used if the `access_key_id` option is omitted.
+ * **AWS_SECRET_ACCESS_KEY**: AWS Secret Key. Used if the `secret_access_key` option is omitted.
 
 #### Examples:
 
-    dpl --provider=codedeploy --access-key-id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait-until-deployed=<true>
-
-### ExoScale:
-
-#### Options:
-
-* **email**: ExoScale email or Organization ID.
-* **password**: ExoScale password.
-* **deployment**: ExoScale Deployment. Follows the format "APP_NAME/DEP_NAME".
-
-#### Examples:
-
-    dpl --provider=exoscale --email=<email> --password<password> --deployment=`APP_NAME/DEP_NAME`
+    dpl --provider=codedeploy --access_key_id=<aws access key> --secret_access_key=<aws secret access key> --application=<application name> --deployment_group=<deployment group> --revision_type=<s3/github> --bucket=<bucket name> --commit_id=<commit ID> --repository=<repo name> --region=<AWS availability zone> --wait_until_deployed=<true>
 
 ### Scalingo:
 
@@ -889,10 +887,11 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 
 * **token**: Your Firebase CI access token (generate with `firebase login:ci`)
 * **project**: Deploy to a different Firebase project than specified in your `firebase.json` (e.g. `myapp-staging`)
+* **message**: Optional. The message describing this deploy.
 
 #### Examples:
 
-    dpl --provider=firebase --token=<token> --project=<project>
+    dpl --provider=firebase --token=<token> --project=<project> --message=<message>
 
 
 
@@ -920,11 +919,22 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 * **password**: Bluemix password.
 * **organization**: Bluemix target organization.
 * **space**: Bluemix target space
-* **region**: Bluemix region [ng, eu-gb, au-syd]. Optional, default US region (ng).
+* **region**: Bluemix region [ng, eu-gb, eu-de, au-syd]. Optional, default US region (ng).
 * **api**: Bluemix api URL. Optional for Bluemix dedicated. Explicit **api** setting precedence over **region** setting.
 * **manifest**: Path to manifest file. Optional.
 * **skip_ssl_validation**: Skip ssl validation. Optional.
 
 #### Examples:
 
-    dpl --provider=bluemixcf --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
+    dpl --provider=bluemixcloudfoundry --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
+
+## `dpl` and `sudo`
+
+`dpl` installs deployment provider code as the user invoking
+`dpl` at run time, if it is not available.
+This causes [a problem](https://github.com/travis-ci/dpl/issues/769)
+if you invoke `dpl` via `dpl`, where the process instaling the
+provider code may not have sufficient permissions.
+
+In this case, you can install the provider gem (of the same version as
+`dpl`) with `sudo` beforehand to work around this issue.

@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'dpl/provider/anynines'
+require 'dpl/provider/azure_webapps'
 
 
 describe DPL::Provider::AzureWebApps do
