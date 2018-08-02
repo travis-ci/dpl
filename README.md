@@ -706,7 +706,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **handler_name**: Required. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module.
  * **dot_match**: Optional. When `true`, the zipped archive will include the hidden `.*` files. Defaults to `false`.
  * **module_name**: Optional. The name of the module that exports the handler. Defaults to `index`.
- * **zip**: Optional. Either a path to an existing packaged (zipped) Lambda, a directory to package, or a single file to package. Defaults to `Dir.pwd`.
+ * **zip**: Optional. Either a path to an existing packaged (zipped or jar file) Lambda, a directory to package, or a single file to package. Defaults to `Dir.pwd`.
  * **description**: Optional. The description of the Lambda being created / updated. Defaults to "Deploy build #{context.env['TRAVIS_BUILD_NUMBER']} to AWS Lambda via Travis CI"
  * **timeout**: Optional. The function execution time at which Lambda should terminate the function. Defaults to 3 (seconds).
  * **memory_size**: Optional. The amount of memory in MB to allocate to this Lambda. Defaults to 128.
