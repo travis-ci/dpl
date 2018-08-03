@@ -82,7 +82,9 @@ module DPL
         command << ' --quiet'
         command << " --verbosity \"#{verbosity}\""
         command << " --project \"#{project}\""
-        command << " app deploy \"#{config}\""
+        command << " app deploy"
+        command << " \"#{config}\"" if config.kind_of?(String)
+        config.each { |c| command << " \"#{c}\"" } if config.kind_of?(Array)
         command << " --version \"#{version}\"" unless version.to_s.empty?
         command << " --#{no_promote ? 'no-' : ''}promote"
         command << ' --no-stop-previous-version' unless no_stop_previous_version.to_s.empty?
