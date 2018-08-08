@@ -29,10 +29,16 @@ module DPL
       end
 
       def api
+        connection_options = {
+          :request => {
+            :timeout => 180,
+            :open_timeout => 180
+          }
+        }
         if options[:user] and options[:password]
-          @api ||= Octokit::Client.new(:login => options[:user], :password => options[:password])
+          @api ||= Octokit::Client.new(:login => options[:user], :password => options[:password], :connection_options => connection_options)
         else
-          @api ||= Octokit::Client.new(:access_token => option(:api_key))
+          @api ||= Octokit::Client.new(:access_token => option(:api_key), :connection_options => connection_options)
         end
       end
 
