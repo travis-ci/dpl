@@ -6,6 +6,11 @@ module DPL
     class Releases < Provider
       require 'pathname'
 
+      BOOLEAN_PARAMS = %w(
+        draft
+        prerelease
+      )
+
       def travis_tag
         # Check if $TRAVIS_TAG is unset or set but empty
         if context.env.fetch('TRAVIS_TAG','') == ''
@@ -24,10 +29,16 @@ module DPL
       end
 
       def api
+        connection_options = {
+          :request => {
+            :timeout => 180,
+            :open_timeout => 180
+          }
+        }
         if options[:user] and options[:password]
-          @api ||= Octokit::Client.new(:login => options[:user], :password => options[:password])
+          @api ||= Octokit::Client.new(:login => options[:user], :password => options[:password], :connection_options => connection_options)
         else
-          @api ||= Octokit::Client.new(:access_token => option(:api_key))
+          @api ||= Octokit::Client.new(:access_token => option(:api_key), :connection_options => connection_options)
         end
       end
 
@@ -82,6 +93,8 @@ module DPL
         tag_matched = false
         release_url = nil
 
+        booleanize!(options)
+
         if options[:release_number]
           tag_matched = true
           release_url = "https://api.github.com/repos/" + slug + "/releases/" + options[:release_number]
@@ -100,6 +113,7 @@ module DPL
         end
 
         files.each do |file|
+          next unless File.file?(file)
           existing_url = nil
           filename = Pathname.new(file).basename.to_s
           api.release(release_url).rels[:assets].get.data.each do |existing_file|
@@ -128,6 +142,23 @@ module DPL
           content_type = "application/octet-stream"
         end
         api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
+      end
+
+      def booleanize!(opts)
+        opts.map do |k,v|
+          opts[k] = if BOOLEAN_PARAMS.include?(k.to_s.squeeze.downcase)
+            case v.to_s.downcase
+            when 'true'
+              true
+            when 'false'
+              false
+            else
+              v
+            end
+          else
+            v
+          end
+        end
       end
     end
   end
