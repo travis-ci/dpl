@@ -1,7 +1,6 @@
 language: ruby
 rvm:
 # These rubies are in active use
-- "2.2.1"
 - "2.2.5"
 - "2.2.6"
 - "2.2.7"
