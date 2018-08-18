@@ -70,7 +70,7 @@ module DPL
           opt_lower = super.option(:provider).to_s.downcase
           opt = opt_lower.gsub(/[^a-z0-9]/, '')
           class_name = class_of(opt)
-          raise Error, "could not find provider %p" % opt unless class_name
+          raise Error, "could not find provider %p. Please find all providers at https://github.com/travis-ci/dpl#supported-providers and check your spelling." % opt unless class_name
           require "dpl/provider/#{GEM_NAME_OF[class_name]}"
           provider = const_get(class_name).new(context, options)
         rescue NameError, LoadError => e
