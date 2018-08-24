@@ -31,6 +31,7 @@ Dpl supports the following providers:
 * [Google App Engine (experimental)](#google-app-engine)
 * [Google Cloud Storage](#google-cloud-storage)
 * [Hackage](#hackage)
+* [Hephy](#hephy)
 * [Heroku](#heroku)
 * [Lambda](#lambda)
 * [Launchpad](#launchpad)
@@ -586,6 +587,20 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=deis --controller=deis.deisapps.com --username=travis --password=secret --app=example
+
+### Hephy:
+
+#### Options:
+
+* **controller**: Hephy controller e.g. hephy.hephyapps.com
+* **username**: Hephy username
+* **password**: Hephy password
+* **app**: Hephy app
+* **cli_version**: Install a specific hephy cli version
+
+#### Examples:
+
+    dpl --provider=hephy --controller=hephy.hephyapps.com --username=travis --password=secret --app=example
 
 ### Google Cloud Storage:
 
