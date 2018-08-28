@@ -36,7 +36,8 @@ describe DPL::Provider::Firebase do
       expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --token 'abc123'").and_return(true)
       provider.push_app
     end
-    it 'fails when cabal complains' do
+
+    it 'should report an error when deployment fails' do
       expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --token 'abc123'").and_return(false)
       expect {
         provider.push_app
