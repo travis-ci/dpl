@@ -53,3 +53,8 @@ before_script:
 
 script:
   - rake
+
+deploy:
+  provider: elasticbeanstalk
+  edge:
+    branch: eb-updates
