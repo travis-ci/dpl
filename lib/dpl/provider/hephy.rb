@@ -1,6 +1,6 @@
 module DPL
   class Provider
-    class Deis < Provider
+    class Hephy < Provider
       
       def install_deploy_dependencies
         install_url = determine_install_url
