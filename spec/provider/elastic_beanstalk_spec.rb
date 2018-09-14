@@ -206,4 +206,24 @@ describe DPL::Provider::ElasticBeanstalk do
 
     end
   end
+
+  describe '#create_zip' do
+    let(:dummy_sha) { SecureRandom.hex(40) }
+    let(:mock_zip_file) { double(Zip::File) }
+
+    before do
+      allow(Zip::File).to receive(:new).and_return(mock_zip_file)
+      allow(mock_zip_file).to receive(:add)
+      allow(mock_zip_file).to receive(:comment=)
+      allow(mock_zip_file).to receive(:close)
+    end
+
+    it "sets the zip file's comment to the current SHA" do
+      allow(provider).to receive(:sha).and_return(dummy_sha)
+
+      provider.send(:create_zip)
+
+      expect(mock_zip_file).to have_received(:comment=).with(dummy_sha)
+    end
+  end
 end
