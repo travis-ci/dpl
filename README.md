@@ -324,6 +324,7 @@ This _overrides_ the `gemspec` option.
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **bucket**: S3 Bucket.
 * **region**: S3 Region. Defaults to us-east-1.
+* **endpoint**: S3 Endpoint. Default is computed for you.
 * **upload-dir**: S3 directory to upload to. Defaults to root directory.
 * **storage-class**: S3 storage class to upload as. Defaults to "STANDARD". Other values are "STANDARD_IA" or "REDUCED_REDUNDANCY". Details can be found [here](https://aws.amazon.com/s3/storage-classes/).
 * **server-side-encryption**: When set to `true`, use S3 Server Side Encryption (SSE-AES256). Defaults to `false`.
@@ -356,6 +357,12 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public_read
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999 --expires="2012-12-21 00:00:00 -0000"
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir=BUILD --upload-dir=BUILDS
+
+### Using S3-compatible Object Storage
+
+By overriding the `endpoint` option, you can use an S3-compatible object storage such as [Digital Ocean Spaces](https://www.digitalocean.com/products/object-storage/).
+
+For example: `--endpoint=https://nyc3.digitaloceanspaces.com`
 
 ### Elastic Beanstalk:
 
