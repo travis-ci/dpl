@@ -1,6 +1,6 @@
 module DPL
   class Provider
-    class Deis < Provider
+    class Hephy < Provider
       
       def install_deploy_dependencies
         context.shell "curl -sSL #{install_url} | bash -x -s #{option(:cli_version)}"

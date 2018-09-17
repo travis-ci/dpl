@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'dpl/provider/deis'
+require 'dpl/provider/hephy'
 
-describe DPL::Provider::Deis do
+describe DPL::Provider::Hephy do
   let(:options) do
     {
       :app => 'example',
