@@ -23,6 +23,9 @@ module DPL
         @max_threads
       end
 
+      def check_app
+      end
+      
       def needs_key?
         false
       end
@@ -36,10 +39,14 @@ module DPL
       end
 
       def s3_options
-        {
+        defaults = {
           region:      options[:region] || 'us-east-1',
           credentials: ::Aws::Credentials.new(access_key_id, secret_access_key)
         }
+
+        defaults[:endpoint] = options[:endpoint] if options[:endpoint]
+
+        defaults
       end
 
       def check_auth

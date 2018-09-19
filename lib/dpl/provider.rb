@@ -33,6 +33,7 @@ module DPL
       'GAE'                 => 'gae',
       'GCS'                 => 'gcs',
       'Hackage'             => 'hackage',
+      'Hephy'               => 'hephy',
       'Heroku'              => 'heroku',
       'Lambda'              => 'lambda',
       'Launchpad'           => 'launchpad',
