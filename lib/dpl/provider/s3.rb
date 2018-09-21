@@ -1,6 +1,7 @@
 require 'json'
 require 'aws-sdk'
 require 'mime-types'
+require 'uri'
 
 Aws.eager_autoload!
 
@@ -45,11 +46,12 @@ module DPL
         }
 
         if options[:endpoint]
-          if options[:endpoint].start_with?('https://', 'http://')
-            defaults[:endpoint] = options[:endpoint]
-          else
-            defaults[:endpoint] = "https://#{options[:endpoint]}"
+          uri = URI.parse(options[:endpoint])
+          unless uri.scheme
+            log "S3 endpoint does not specify scheme; defaulting to HTTPS"
+            uri = URI("https://#{options[:endpoint]}")
           end
+          defaults[:endpoint] = uri.to_s
         end
 
         defaults
