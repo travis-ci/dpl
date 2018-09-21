@@ -44,7 +44,13 @@ module DPL
           credentials: ::Aws::Credentials.new(access_key_id, secret_access_key)
         }
 
-        defaults[:endpoint] = options[:endpoint] if options[:endpoint]
+        if options[:endpoint]
+          if options[:endpoint].start_with?('https://', 'http://')
+            defaults[:endpoint] = options[:endpoint]
+          else
+            defaults[:endpoint] = "https://#{options[:endpoint]}"
+          end
+        end
 
         defaults
       end
