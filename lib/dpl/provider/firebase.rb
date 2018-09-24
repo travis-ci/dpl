@@ -20,7 +20,7 @@ module DPL
         command << " --project #{options[:project]}" if options[:project]
         command << " --message '#{options[:message]}'" if options[:message]
         command << " --token '#{options[:token]}'" if options[:token]
-        context.shell command
+        context.shell command or raise Error, "Firebase deployment failed"
       end
     end
   end
