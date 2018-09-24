@@ -9,7 +9,7 @@ module DPL
       def check_auth
         initial_go_tools_install
         context.shell "./cf api #{option(:api)} #{'--skip-ssl-validation' if options[:skip_ssl_validation]}"
-        context.shell "./cf login -u #{option(:username)} -p #{option(:password)} -o #{option(:organization)} -s #{option(:space)}"
+        options[:client_id] ? check_client_auth : check_basic_auth
       end
 
       def check_app
@@ -37,6 +37,17 @@ module DPL
 
       def manifest
         options[:manifest].nil? ? "" : " -f #{options[:manifest]}"
+      end
+
+      private
+
+      def check_basic_auth
+        context.shell "./cf login -u #{option(:username)} -p #{option(:password)} -o '#{option(:organization)}' -s '#{option(:space)}'"
+      end
+
+      def check_client_auth
+        context.shell "./cf auth #{option(:client_id)} #{option(:client_secret)} --client-credentials"
+        context.shell "./cf target -o '#{option(:organization)}' -s '#{option(:space)}'"
       end
     end
   end
