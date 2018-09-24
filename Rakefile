@@ -4,6 +4,7 @@ require 'pathname'
 require 'logger'
 require './lib/dpl/version'
 require 'highline'
+require 'faraday'
 
 include Term::ANSIColor
 
@@ -36,11 +37,27 @@ def confirm(verb = "release")
   end
 end
 
+def dpl_bin
+  File.join(Gem.bindir, 'dpl')
+end
+
 gemspecs = FileList[File.join(top, "dpl-*.gemspec")]
 
 providers = gemspecs.map { |f| /dpl-(?<provider>.*)\.gemspec/ =~ f && provider }
 
-task :default => [:spec, :install] do
+desc "Build dpl gem"
+file "dpl-#{gem_version}.gem" do
+  logger.info green("Building dpl gem")
+  ruby "-S gem build dpl.gemspec"
+end
+
+desc "Install dpl gem"
+file dpl_bin => "dpl-#{gem_version}.gem" do
+  logger.info green("Installing dpl gem")
+  ruby "-S gem install dpl-#{gem_version}.gem"
+end
+
+task :default => [:spec, Rake::FileTask[dpl_bin]] do
   Rake::Task["spec_providers"].invoke
   Rake::Task["check_providers"].invoke
 end
@@ -66,12 +83,46 @@ task :build => "dpl-#{gem_version}.gem" do
   end
 end
 
+desc "Uninstall all gems"
+task :uninstall do
+  providers.each do |provider|
+    Rake::Task["uninstall-#{provider}"].invoke
+  end
+  logger.info red("Uninstalling dpl")
+  sh "gem uninstall -aIx dpl"
+end
+
 desc "Release all gems"
 task :release do
   confirm
-  threads = []
-  providers.each { |provider| threads << Thread.new { Rake::Task["release-#{provider}"].invoke } }
-  threads.each { |thr| thr.join }
+  released = []
+  providers.each do |provider|
+    while !released.include? provider
+      logger.info "checking dpl-#{provider}"
+
+      cli = Faraday.new url: 'https://rubygems.org'
+
+      begin
+        response = cli.get("/api/v2/rubygems/dpl-#{provider}/versions/#{gem_version}.json")
+        if response.success?
+          released << provider
+          logger.info green("dpl-#{provider} #{gem_version} exists")
+          next
+        else
+          begin
+            if Rake::Task["release-#{provider}"].invoke
+              released << provider
+            end
+          rescue => e
+            Rake::Task["release-#{provider}"].reenable
+          end
+        end
+      rescue Faraday::Error => e
+        logger.info yellow("connection failed. retrying")
+        retry
+      end
+    end
+  end
   logger.info green("Pushing dpl-#{gem_version}.gem")
   sh "gem push dpl-#{gem_version}.gem"
 end
@@ -82,9 +133,9 @@ task :yank, [:version] do |t, args|
   confirm "yank"
   logger.info green("Yanking `dpl` version #{version}")
   sh "gem yank dpl -v #{version}"
-  threads = []
-  providers.each { |provider| threads << Thread.new { Rake::Task["yank-#{provider}"].invoke } }
-  threads.each { |thr| thr.join }
+  providers.each do |provider|
+    Rake::Task["yank-#{provider}"].invoke
+  end
 end
 
 task :deep_clean do
@@ -95,23 +146,13 @@ end
 task :clean do
   rm_rf "stubs"
   rm_rf "vendor"
+  rm_rf "dpl-*.gem"
+  Rake::Task[:uninstall].invoke
 end
 
 desc "Run dpl specs"
 task :spec do
   ruby '-S rspec spec/cli_spec.rb spec/provider_spec.rb'
-end
-
-desc "Build dpl gem"
-file "dpl-#{gem_version}.gem" do
-  logger.info green("Building dpl gem")
-  ruby "-S gem build dpl.gemspec"
-end
-
-desc "Install dpl gem"
-task :install => "dpl-#{gem_version}.gem" do
-  logger.info green("Installing dpl gem")
-  ruby "-S gem install dpl-#{gem_version}.gem"
 end
 
 providers.each do |provider|
@@ -123,12 +164,13 @@ providers.each do |provider|
   end
 
   desc %Q(Run dpl-#{provider} specs)
-  task "spec-#{provider}" => [:install, "Gemfile-#{provider}"] do
+  task "spec-#{provider}", [:lines] => [Rake::FileTask[dpl_bin], "Gemfile-#{provider}"] do |_t, args|
+    tail = args.lines ? ":#{args.lines}" : ""
     sh "rm -f $HOME/.npmrc"
     logger.info green("Running `bundle install` for #{provider}")
     sh 'bash', '-cl', "bundle install --gemfile=Gemfile-#{provider} --path=vendor/cache/dpl-#{provider} --retry=3 --binstubs=stubs"
     logger.info green("Running specs for #{provider}")
-    sh "env BUNDLE_GEMFILE=Gemfile-#{provider} ./stubs/rspec spec/provider/#{provider}_spec.rb"
+    sh "env BUNDLE_GEMFILE=Gemfile-#{provider} ./stubs/rspec spec/provider/#{provider}_spec.rb#{tail}"
   end
 
   desc "Build dpl-#{provider} gem"
@@ -138,11 +180,17 @@ providers.each do |provider|
   end
 
   desc "Test dpl-#{provider} gem"
-  task "check-#{provider}" => [:install, "dpl-#{provider}-#{gem_version}.gem"] do
+  task "check-#{provider}" => [Rake::FileTask[dpl_bin], "dpl-#{provider}-#{gem_version}.gem"] do
     logger.info green("Installing dpl-#{provider} gem")
     sh "gem install --no-post-install-message dpl-#{provider}-#{gem_version}.gem"
     logger.info green("Testing dpl-#{provider} loads correctly")
     ruby "-S dpl --provider=#{provider} --skip-cleanup=true --no-deploy"
+  end
+
+  desc "Uninstall dpl-#{provider}"
+  task "uninstall-#{provider}" do
+    logger.info red("Uninstalling dpl-#{provider}")
+    sh "gem uninstall -aIx dpl-#{provider}"
   end
 
   desc "Release dpl-#{provider} gem"

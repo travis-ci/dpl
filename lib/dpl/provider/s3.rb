@@ -1,20 +1,34 @@
 require 'json'
 require 'aws-sdk'
 require 'mime-types'
+require 'uri'
+
+Aws.eager_autoload!
 
 module DPL
   class Provider
     class S3 < Provider
+      DEFAULT_MAX_THREADS = 5
+      MAX_THREADS = 15
+
       def api
         @api ||= ::Aws::S3::Resource.new(s3_options)
       end
 
-      def needs_key?
-        false
+      def max_threads
+        return @max_threads if @max_threads
+        if (@max_threads = threads_wanted = options.fetch(:max_threads, DEFAULT_MAX_THREADS)) > MAX_THREADS
+          log "Desired thread count #{threads_wanted} is too large. Using #{MAX_THREADS}."
+          @max_threads = MAX_THREADS
+        end
+        @max_threads
       end
 
       def check_app
-        log 'Warning: The endpoint option is no longer used and can be removed.' if options[:endpoint]
+      end
+      
+      def needs_key?
+        false
       end
 
       def access_key_id
@@ -26,10 +40,21 @@ module DPL
       end
 
       def s3_options
-        {
+        defaults = {
           region:      options[:region] || 'us-east-1',
           credentials: ::Aws::Credentials.new(access_key_id, secret_access_key)
         }
+
+        if options[:endpoint]
+          uri = URI.parse(options[:endpoint])
+          unless uri.scheme
+            log "S3 endpoint does not specify scheme; defaulting to HTTPS"
+            uri = URI("https://#{options[:endpoint]}")
+          end
+          defaults[:endpoint] = uri.to_s
+        end
+
+        defaults
       end
 
       def check_auth
@@ -41,23 +66,13 @@ module DPL
       end
 
       def push_app
+        old_pwd = Dir.pwd
+        cwd = options.fetch(:local_dir, Dir.pwd)
+        Dir.chdir(cwd)
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
-        Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
-          Dir.glob(*glob_args) do |filename|
-            opts                          = content_data_for(filename)
-            opts[:cache_control]          = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]
-            opts[:acl]                    = options[:acl].gsub(/_/, '-') if options[:acl]
-            opts[:expires]                = get_option_value_by_filename(options[:expires], filename) if options[:expires]
-            opts[:storage_class]          = options[:storage_class] if options[:storage_class]
-            opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
-            unless File.directory?(filename)
-              log "uploading #{filename.inspect} with #{opts.inspect}"
-              result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
-              warn "error while uploading #{filename.inspect}" unless result
-            end
-          end
-        end
+        files = Dir.glob(*glob_args).reject {|f| File.directory?(f)}
+        upload_multithreaded(files)
 
         if suffix = options[:index_document_suffix]
           api.bucket(option(:bucket)).website.put(
@@ -68,6 +83,41 @@ module DPL
             }
           )
         end
+
+        Dir.chdir(old_pwd)
+      end
+
+      def upload_multithreaded(files)
+        file_number = 0
+        mutex = Mutex.new
+        threads = []
+        log "Beginning upload of #{files.length} files with #{max_threads} threads."
+
+        max_threads.times do |i|
+          threads[i] = Thread.new {
+            until files.empty?
+              mutex.synchronize do
+                file_number += 1
+                Thread.current["file_number"] = file_number
+              end
+              filename = files.pop rescue nil
+              next unless filename
+
+              opts  = content_data_for(filename)
+              opts[:cache_control]          = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]
+              opts[:acl]                    = options[:acl].gsub(/_/, '-') if options[:acl]
+              opts[:expires]                = get_option_value_by_filename(options[:expires], filename) if options[:expires]
+              opts[:storage_class]          = options[:storage_class] if options[:storage_class]
+              opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
+              unless File.directory?(filename)
+                log "uploading #{filename.inspect} with #{opts.inspect}"
+                result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
+                warn "error while uploading #{filename.inspect}" unless result
+              end
+            end
+          }
+        end
+        threads.each { |t| t.join }
       end
 
       def deploy

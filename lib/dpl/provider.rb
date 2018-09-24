@@ -33,6 +33,7 @@ module DPL
       'GAE'                 => 'gae',
       'GCS'                 => 'gcs',
       'Hackage'             => 'hackage',
+      'Hephy'               => 'hephy',
       'Heroku'              => 'heroku',
       'Lambda'              => 'lambda',
       'Launchpad'           => 'launchpad',
@@ -50,6 +51,7 @@ module DPL
       'S3'                  => 's3',
       'Scalingo'            => 'scalingo',
       'Script'              => 'script',
+      'Snap'                => 'snap',
       'Surge'               => 'surge',
       'TestFairy'           => 'testfairy',
       'Transifex'           => 'transifex',
@@ -220,7 +222,7 @@ module DPL
       context.shell "mv .dpl ~/dpl"
       log "Cleaning up git repository with `git stash --all`. " \
         "If you need build artifacts for deployment, set `deploy.skip_cleanup: true`. " \
-        "See https://docs.travis-ci.com/user/deployment/#Uploading-Files."
+        "See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup."
       context.shell "git stash --all"
       context.shell "mv ~/dpl .dpl"
     end

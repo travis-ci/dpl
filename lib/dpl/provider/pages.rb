@@ -95,7 +95,7 @@ module DPL
 
         return @api if @api
 
-        api_opts = { :access_token => @gh_token }
+        api_opts = { :access_token => gh_token }
         api_opts[:api_endpoint] = @gh_url == 'github.com' ? "https://api.github.com/" : "https://#{@gh_url}/api/v3/"
 
         @api = Octokit::Client.new(api_opts)
@@ -136,7 +136,7 @@ module DPL
         end
 
         print_step "Trying to clone a single branch #{@target_branch} from existing repo..."
-        unless context.shell "git clone --quiet --branch='#{@target_branch}' --depth=1 '#{@gh_remote_url}' '#{target_dir}' > /dev/null 2>&1"
+        unless context.shell "git clone --quiet --branch='#{@target_branch}' --depth=1 '#{gh_remote_url}' '#{target_dir}' > /dev/null 2>&1"
           # if such branch doesn't exist at remote, init it from scratch
           print_step "Cloning #{@target_branch} branch failed"
           Dir.mkdir(target_dir)  # Restore dir destroyed by failed `git clone`
@@ -155,7 +155,7 @@ module DPL
       end
 
       def identify_preferred_committer
-        if @committer_from_gh and @gh_token
+        if @committer_from_gh and gh_token
           return (user.name or @gh_name), (user.email or @gh_email)
         end
         return @gh_name, @gh_email
@@ -180,7 +180,7 @@ module DPL
 
       def github_deploy
         print_step "Doing the git push (workdir: #{Dir.pwd})..."
-        unless context.shell "git push#{@git_push_opts} --quiet '#{@gh_remote_url}' '#{@target_branch}':'#{@target_branch}' > /dev/null 2>&1"
+        unless context.shell "git push#{@git_push_opts} --quiet '#{gh_remote_url}' '#{@target_branch}':'#{@target_branch}' > /dev/null 2>&1"
           error "Couldn't push the build to #{@gh_ref}:#{@target_branch}"
         end
       end

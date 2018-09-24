@@ -32,9 +32,42 @@ module DPL
           (options.has_key?(:skip_upload_docs) && options[:skip_upload_docs])
       end
 
+      def pypi_skip_existing_option
+          if options.fetch(:skip_existing, false)
+            ' --skip-existing'
+          end
+      end
+
+      def pypi_setuptools_arg
+        setuptools_version = options[:setuptools_version] || context.env['SETUPTOOLS_VERSION'] || ''
+        if setuptools_version[/\A\d+(?:\.\d+)*\z/]
+          'setuptools==' + setuptools_version
+        else
+          'setuptools'
+        end
+      end
+
+      def pypi_twine_arg
+        twine_version = options[:twine_version] || context.env['TWINE_VERSION'] || ''
+        if twine_version[/\A\d+(?:\.\d+)*\z/]
+          'twine==' + twine_version
+        else
+          'twine'
+        end
+      end
+
+      def pypi_wheel_arg
+        wheel_version = options[:wheel_version] || context.env['WHEEL_VERSION'] || ''
+        if wheel_version[/\A\d+(?:\.\d+)*\z/]
+          'wheel==' + wheel_version
+        else
+          'wheel'
+        end
+      end
+
       def install_deploy_dependencies
         unless context.shell "wget -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && " \
-                             "pip install --upgrade setuptools twine wheel"
+                             "pip install --upgrade #{pypi_setuptools_arg} #{pypi_twine_arg} #{pypi_wheel_arg}"
           error "Couldn't install pip, setuptools, twine or wheel."
         end
       end
@@ -89,7 +122,7 @@ module DPL
 
       def push_app
         context.shell "python setup.py #{pypi_distributions}"
-        unless context.shell "twine upload -r pypi dist/*"
+        unless context.shell "twine upload#{pypi_skip_existing_option} -r pypi dist/*"
           error 'PyPI upload failed.'
         end
         context.shell "rm -rf dist/*"

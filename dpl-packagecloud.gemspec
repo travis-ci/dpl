@@ -1,3 +1,3 @@
 require './gemspec_helper'
 
-gemspec_for 'packagecloud', [['packagecloud-ruby', '1.0.5']]
+gemspec_for 'packagecloud', [['packagecloud-ruby', '1.0.8']]

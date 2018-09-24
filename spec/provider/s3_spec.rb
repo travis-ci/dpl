@@ -23,6 +23,24 @@ describe DPL::Provider::S3 do
         expect(options[:region]).to eq(region)
       end
     end
+
+    context 'with endpoint no https' do
+      example do
+        endpoint = 'myendpoint.com'
+        provider.options.update(:endpoint => endpoint)
+        options = provider.s3_options
+        expect(options[:endpoint]).to eq("https://#{endpoint}")
+      end
+    end
+
+    context 'with endpoint with https' do
+      example do
+        endpoint = 'https://myendpoint.com'
+        provider.options.update(:endpoint => endpoint)
+        options = provider.s3_options
+        expect(options[:endpoint]).to eq(endpoint)
+      end
+    end
   end
 end
 
@@ -48,7 +66,9 @@ describe DPL::Provider::S3 do
   end
 
   before :each do
-    provider.stub(:s3_options).and_return(client_options)
+    allow(provider).to receive(:s3_options).and_return(client_options)
+    allow_any_instance_of(::Aws::S3::Object).to receive(:upload_file).and_return(true)
+    allow(provider).to receive(:log).with(anything).and_return(true)
   end
 
   describe "#check_auth" do
@@ -80,15 +100,12 @@ describe DPL::Provider::S3 do
   end
 
   describe "#push_app" do
-    example "Without local_dir" do
-      expect(Dir).to receive(:chdir).with(Dir.pwd)
-      provider.push_app
-    end
-
     example "With local_dir" do
-      provider.options.update(:local_dir => 'BUILD')
-
-      expect(Dir).to receive(:chdir).with('BUILD')
+      someDir = "/some/dir/"
+      provider.options.update(:local_dir => someDir)
+      allow(Dir).to receive(:chdir).with(someDir).and_return(true)
+      allow(Dir).to receive(:chdir).with(Dir.pwd).and_return(true)
+      expect(Dir).to receive(:glob).with("**/*").and_return([__FILE__])
       provider.push_app
     end
 
@@ -99,14 +116,14 @@ describe DPL::Provider::S3 do
     end
 
     example "Sends MIME type" do
-      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect(Dir).to receive(:glob).and_return([__FILE__])
       expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:content_type => 'application/x-ruby'))
       provider.push_app
     end
 
     example "Sets Cache and Expiration" do
       provider.options.update(:cache_control => "max-age=99999999", :expires => "2012-12-21 00:00:00 -0000")
-      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect(Dir).to receive(:glob).and_return([__FILE__])
       expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:cache_control => 'max-age=99999999', :expires => '2012-12-21 00:00:00 -0000'))
       provider.push_app
     end
@@ -114,7 +131,7 @@ describe DPL::Provider::S3 do
     example "Sets different Cache and Expiration" do
       option_list = []
       provider.options.update(:cache_control => ["max-age=99999999", "no-cache" => ["foo.html", "bar.txt"], "max-age=9999" => "*.txt"], :expires => ["2012-12-21 00:00:00 -0000", "1970-01-01 00:00:00 -0000" => "*.html"])
-      expect(Dir).to receive(:glob).and_yield("foo.html").and_yield("bar.txt").and_yield("baz.js")
+      expect(Dir).to receive(:glob).and_return(%w(foo.html bar.txt baz.js))
       allow_any_instance_of(Aws::S3::Object).to receive(:upload_file) do |obj, _data, options|
         option_list << { key: obj.key, options: options }
       end
@@ -128,28 +145,28 @@ describe DPL::Provider::S3 do
 
     example "Sets ACL" do
       provider.options.update(:acl => "public_read")
-      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect(Dir).to receive(:glob).and_return([__FILE__])
       expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:acl => "public-read"))
       provider.push_app
     end
 
     example "Sets Storage Class" do
       provider.options.update(:storage_class => "STANDARD_AI")
-      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect(Dir).to receive(:glob).and_return([__FILE__])
       expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:storage_class => "STANDARD_AI"))
       provider.push_app
     end
 
     example "Sets SSE" do
       provider.options.update(:server_side_encryption => true)
-      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect(Dir).to receive(:glob).and_return([__FILE__])
       expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:server_side_encryption => "AES256"))
       provider.push_app
     end
 
     example "Sets Website Index Document" do
       provider.options.update(:index_document_suffix => "test/index.html")
-      expect(Dir).to receive(:glob).and_yield(__FILE__)
+      expect(Dir).to receive(:glob).and_return([__FILE__])
       expect_any_instance_of(Aws::S3::BucketWebsite).to receive(:put).with(:website_configuration => { :index_document => { :suffix => "test/index.html" } })
       provider.push_app
     end
@@ -157,7 +174,7 @@ describe DPL::Provider::S3 do
     example "when detect_encoding is set" do
       path = 'foo.js'
       provider.options.update(:detect_encoding => true)
-      expect(Dir).to receive(:glob).and_yield(path)
+      expect(Dir).to receive(:glob).and_return([path])
       expect(provider).to receive(:`).at_least(1).times.with("file '#{path}'").and_return('gzip compressed')
       expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_including(:content_encoding => 'gzip'))
       provider.push_app
@@ -165,16 +182,23 @@ describe DPL::Provider::S3 do
 
     example "when dot_match is set" do
       provider.options.update(:dot_match => true)
-      expect(Dir).to receive(:glob).with("**/*", File::FNM_DOTMATCH)
+      expect(Dir).to receive(:glob).with("**/*", File::FNM_DOTMATCH).and_return([__FILE__])
       provider.push_app
     end
-  end
 
-  describe "#check_app" do
-    example "With Endpoint" do
-      provider.options.update(:endpoint => 's3test.com.s3-website-us-west-2.amazonaws.com')
-      expect(provider).to receive(:log).with('Warning: The endpoint option is no longer used and can be removed.')
-      provider.check_app
+    example "when max_threads is set" do
+      provider.options.update(:max_threads => 10)
+      expect(Dir).to receive(:glob).with("**/*").and_return([__FILE__])
+      expect(provider).to receive(:log).with("Beginning upload of 1 files with 10 threads.")
+      provider.push_app
+    end
+
+    example "when max_threads is too large" do
+      provider.options.update(:max_threads => 100)
+      expect(Dir).to receive(:glob).with("**/*").and_return([__FILE__])
+      expect(provider).to receive(:log).with("Beginning upload of 1 files with 15 threads.")
+      expect(provider).to receive(:log).with("Desired thread count 100 is too large. Using 15.")
+      provider.push_app
     end
   end
 end
