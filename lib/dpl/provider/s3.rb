@@ -26,17 +26,17 @@ module DPL
 
       def check_app
       end
-      
+
       def needs_key?
         false
       end
 
       def access_key_id
-        options[:access_key_id] || context.env['AWS_ACCESS_KEY_ID'] || raise(Error, "missing access_key_id")
+        options[:access_key_id] || context.env['AWS_ACCESS_KEY_ID']
       end
 
       def secret_access_key
-        options[:secret_access_key] || context.env['AWS_SECRET_ACCESS_KEY'] || raise(Error, "missing secret_access_key")
+        options[:secret_access_key] || context.env['AWS_SECRET_ACCESS_KEY']
       end
 
       def s3_options
@@ -59,6 +59,11 @@ module DPL
 
       def check_auth
         log "Logging in with Access Key: #{access_key_id[-4..-1].rjust(20, '*')}"
+        unless api
+          error "Authentication failed. Check options access_key_id and secret_access_key, " \
+            "environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY, " \
+            "and credentials stored in ~/.aws/credentials."
+        end
       end
 
       def upload_path(filename)
