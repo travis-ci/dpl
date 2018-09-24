@@ -30,6 +30,7 @@ Dpl supports the following providers:
 * [Google App Engine (experimental)](#google-app-engine)
 * [Google Cloud Storage](#google-cloud-storage)
 * [Hackage](#hackage)
+* [Hephy](#hephy)
 * [Heroku](#heroku)
 * [Lambda](#lambda)
 * [Launchpad](#launchpad)
@@ -322,6 +323,7 @@ This _overrides_ the `gemspec` option.
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **bucket**: S3 Bucket.
 * **region**: S3 Region. Defaults to us-east-1.
+* **endpoint**: S3 Endpoint. Default is computed for you.
 * **upload-dir**: S3 directory to upload to. Defaults to root directory.
 * **storage-class**: S3 storage class to upload as. Defaults to "STANDARD". Other values are "STANDARD_IA" or "REDUCED_REDUNDANCY". Details can be found [here](https://aws.amazon.com/s3/storage-classes/).
 * **server-side-encryption**: When set to `true`, use S3 Server Side Encryption (SSE-AES256). Defaults to `false`.
@@ -354,6 +356,12 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public_read
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999 --expires="2012-12-21 00:00:00 -0000"
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir=BUILD --upload-dir=BUILDS
+
+### Using S3-compatible Object Storage
+
+By overriding the `endpoint` option, you can use an S3-compatible object storage such as [Digital Ocean Spaces](https://www.digitalocean.com/products/object-storage/).
+
+For example: `--endpoint=https://nyc3.digitaloceanspaces.com`
 
 ### Elastic Beanstalk:
 
@@ -574,6 +582,20 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
     dpl --provider=deis --controller=deis.deisapps.com --username=travis --password=secret --app=example
 
+### Hephy:
+
+#### Options:
+
+* **controller**: Hephy controller e.g. hephy.hephyapps.com
+* **username**: Hephy username
+* **password**: Hephy password
+* **app**: Hephy app
+* **cli_version**: Install a specific hephy cli version
+
+#### Examples:
+
+    dpl --provider=hephy --controller=hephy.hephyapps.com --username=travis --password=secret --app=example
+
 ### Google Cloud Storage:
 
 #### Options:
@@ -702,8 +724,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **publish**: If `true`, a [new version](http://docs.aws.amazon.com/lambda/latest/dg/versioning-intro.html#versioning-intro-publish-version) of the Lambda function will be created instead of replacing the code of the existing one.
  * **subnet_ids**: Optional. List of subnet IDs to be added to the function. Needs the `ec2:DescribeSubnets` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
  * **security_group_ids**: Optional. List of security group IDs to be added to the function. Needs the `ec2:DescribeSecurityGroups` and `ec2:DescribeVpcs` permission for the user of the access/secret key to work.
- * **dead_letter_arn**: Optional. ARN to an SNS or SQS resource used for the dead letter queue. [More about DLQs here](https://docs.aws.amazon
- .com/lambda/latest/dg/dlq.html).
+ * **dead_letter_arn**: Optional. ARN to an SNS or SQS resource used for the dead letter queue. [More about DLQs here](https://docs.aws.amazon.com/lambda/latest/dg/dlq.html).
  * **tracing_mode**: Optional. "Active" or "PassThrough" only. Default is "PassThrough".  Needs the `xray:PutTraceSegments` and `xray:PutTelemetryRecords` on the role for this to work. [More on
  Active Tracing here](https://docs.aws.amazon.com/lambda/latest/dg/lambda-x-ray.html).
  * **environment_variables**: Optional. List of Environment Variables to add to the function, needs to be in the format of `KEY=VALUE`. Can be encrypted for added security.
@@ -856,10 +877,10 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 * **project**: [Project ID](https://developers.google.com/console/help/new/#projectnumber) used to identify the project on Google Cloud.
 * **keyfile**: Path to the JSON file containing your [Service Account](https://developers.google.com/console/help/new/#serviceaccounts) credentials in [JSON Web Token](https://tools.ietf.org/html/rfc7519) format. To be obtained via the [Google Developers Console](https://console.developers.google.com/project/_/apiui/credential). Defaults to `"service-account.json"`. Note that this file should be handled with care as it contains authorization keys.
 * **config**: Path to your module configuration file. Defaults to `"app.yaml"`. This file is runtime dependent ([Go](https://cloud.google.com/appengine/docs/go/config/appconfig), [Java](https://cloud.google.com/appengine/docs/java/configyaml/appconfig_yaml), [PHP](https://developers.google.com/console/help/new/#projectnumber), [Python](https://cloud.google.com/appengine/docs/python/config/appconfig))
-* **version**: The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you. See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
-* **no_promote**: Flag to not promote the deployed version. See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
+* **version**: The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you. See [`gcloud app deploy`](https://cloud.google.com/sdk/gcloud/reference/app/deploy)
+* **no_promote**: Flag to not promote the deployed version. See [`gcloud app deploy`](https://cloud.google.com/sdk/gcloud/reference/app/deploy)
 * **verbosity**: Let's you adjust the verbosity when invoking `"gcloud"`. Defaults to `"warning"`. See [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/).
-* **no_stop_previous_version**: Flag to prevent your deployment from stopping the previously promoted version. This is from the future, so might not work (yet). See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
+* **no_stop_previous_version**: Flag to prevent your deployment from stopping the previously promoted version. This is from the future, so might not work (yet). See [`gcloud app deploy`](https://cloud.google.com/sdk/gcloud/reference/app/deploy)
 
 #### Environment variables:
 

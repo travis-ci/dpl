@@ -29,10 +29,16 @@ module DPL
       end
 
       def api
+        connection_options = {
+          :request => {
+            :timeout => 180,
+            :open_timeout => 180
+          }
+        }
         if options[:user] and options[:password]
-          @api ||= Octokit::Client.new(:login => options[:user], :password => options[:password])
+          @api ||= Octokit::Client.new(:login => options[:user], :password => options[:password], :auto_paginate => true, :connection_options => connection_options)
         else
-          @api ||= Octokit::Client.new(:access_token => option(:api_key))
+          @api ||= Octokit::Client.new(:access_token => option(:api_key), :auto_paginate => true, :connection_options => connection_options)
         end
       end
 
@@ -110,7 +116,7 @@ module DPL
           next unless File.file?(file)
           existing_url = nil
           filename = Pathname.new(file).basename.to_s
-          api.release(release_url).rels[:assets].get.data.each do |existing_file|
+          api.release_assets(release_url).each do |existing_file|
             if existing_file.name == filename
               existing_url = existing_file.url
             end
