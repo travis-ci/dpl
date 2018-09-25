@@ -305,6 +305,20 @@ describe DPL::Provider::Lambda do
         provider.zip_file(dest, target)
       end
     end
+
+    context 'when zip is an existing jar file' do
+      dir = '/some/target'
+      target = File.join(dir, 'file.js')
+
+      before do
+        expect(File).to receive(:extname).with(target).and_return('.jar')
+        expect(FileUtils).to receive(:cp).with(target, dest)
+      end
+
+      example do
+        provider.zip_file(dest, target)
+      end
+    end
   end
 
   describe '#zip_directory' do
