@@ -110,7 +110,7 @@ describe DPL::Provider::S3 do
     end
 
     example "Skip setting MIME type if unknown" do
-      expect(Dir).to receive(:glob).and_yield('foobar')
+      expect(Dir).to receive(:glob).and_return(['foobar'])
       expect_any_instance_of(Aws::S3::Object).to receive(:upload_file).with(anything(), hash_excluding(:content_type => ''))
       provider.push_app
     end
