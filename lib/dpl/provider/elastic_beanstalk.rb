@@ -94,7 +94,7 @@ module DPL
       end
 
       def eb
-        @eb ||= Aws::ElasticBeanstalk::Client.new
+        @eb ||= Aws::ElasticBeanstalk::Client.new(retry_limit:10)
       end
 
       def bucket_exists?
