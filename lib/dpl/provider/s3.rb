@@ -26,7 +26,7 @@ module DPL
 
       def check_app
       end
-      
+
       def needs_key?
         false
       end
@@ -72,7 +72,7 @@ module DPL
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         files = Dir.glob(*glob_args).reject {|f| File.directory?(f)}
-        upload_multithreaded(files)
+        result = upload_multithreaded(files)
 
         if suffix = options[:index_document_suffix]
           api.bucket(option(:bucket)).website.put(
@@ -85,6 +85,7 @@ module DPL
         end
 
         Dir.chdir(old_pwd)
+        result
       end
 
       def upload_multithreaded(files)
@@ -92,6 +93,7 @@ module DPL
         mutex = Mutex.new
         threads = []
         log "Beginning upload of #{files.length} files with #{max_threads} threads."
+        failures = []
 
         max_threads.times do |i|
           threads[i] = Thread.new {
@@ -110,14 +112,18 @@ module DPL
               opts[:storage_class]          = options[:storage_class] if options[:storage_class]
               opts[:server_side_encryption] = "AES256" if options[:server_side_encryption]
               unless File.directory?(filename)
-                log "uploading #{filename.inspect} with #{opts.inspect}"
+                log "uploading #{filename.inspect} with #{opts.inspect}" unless quiet?
                 result = api.bucket(option(:bucket)).object(upload_path(filename)).upload_file(filename, opts)
-                warn "error while uploading #{filename.inspect}" unless result
+                unless result
+                  warn "error while uploading #{filename.inspect}" unless result
+                  failures << filename
+                end
               end
             end
           }
         end
         threads.each { |t| t.join }
+        failures.empty?
       end
 
       def deploy
@@ -166,6 +172,10 @@ module DPL
         end
         preferred_value = option_values.select {|value| value.kind_of?(String) }.last if preferred_value.nil?
         return preferred_value
+      end
+
+      def quiet?
+        options[:quiet]
       end
     end
   end
