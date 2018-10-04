@@ -23,7 +23,6 @@ module DPL
       """
 
       require 'tmpdir'
-      experimental 'GitHub Pages'
 
       def initialize(context, options)
         super
