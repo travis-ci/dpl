@@ -23,7 +23,6 @@ Dpl supports the following providers:
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [Deis](#deis)
-* [Divshot.io](#divshotio)
 * [Engine Yard](#engine-yard)
 * [Firebase](#firebase)
 * [Github Pages](#github-pages)
@@ -470,17 +469,6 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --slot=dplsite-test --verbose
-
-### Divshot.io:
-
-#### Options:
-
-* **api-key**: Divshot.io API key
-* **environment**: Which environment (development, staging, production) to deploy to
-
-#### Examples:
-
-    dpl --provider=divshot --api-key=<api-key> --environment=<environment>
 
 ### Cloud Foundry:
 
