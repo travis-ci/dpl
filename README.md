@@ -45,6 +45,7 @@ Dpl supports the following providers:
 * [RubyGems](#rubygems)
 * [Scalingo](#scalingo)
 * [Script](#script)
+* [Snap](#snap)
 * [Surge.sh](#surgesh)
 * [TestFairy](#testfairy)
 
@@ -902,6 +903,22 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Examples:
 
     dpl --provider=firebase --token=<token> --project=<project> --message=<message>
+
+
+
+### Snap
+
+Deploys built snaps to the [snap store](https://snapcraft.io/).
+
+#### Options:
+
+* **snap** Path (glob) of the snap to be pushed
+* **channel** Optional. Channel into which the snap will be released (defaults to `edge`)
+* **token** Optional. Login token for the store (generate with `snapcraft export-login`). Falls back to the `$SNAP_TOKEN` environment variable
+
+#### Examples:
+
+    dpl --provider=snap --token=<token> --snap=my.snap --channel=edge
 
 
 
