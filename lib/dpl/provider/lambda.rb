@@ -41,20 +41,26 @@ module DPL
 
           # Options defined at
           #   https://docs.aws.amazon.com/sdkforruby/api/Aws/Lambda/Client.html#update_function_configuration-instance_method
-          response = lambda.update_function_configuration({
-	                      function_name:        function_name,
-	                      description:          options[:description]    || default_description,
-	                      timeout:              options[:timeout]        || default_timeout,
-	                      memory_size:          options[:memory_size]    || default_memory_size,
-	                      role:                 option(:role),
-	                      handler:              handler,
-	                      runtime:              options[:runtime]        || default_runtime,
-	                      vpc_config:           vpc_config,
-	                      environment:          environment_variables,
-	                      dead_letter_config:   dead_letter_arn,
-	                      kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
-	                      tracing_config:       tracing_mode
-	                    })
+          opts = {
+            function_name:        function_name,
+            description:          options[:description]    || default_description,
+            timeout:              options[:timeout]        || default_timeout,
+            memory_size:          options[:memory_size]    || default_memory_size,
+            runtime:              options[:runtime]        || default_runtime,
+            vpc_config:           vpc_config,
+            environment:          environment_variables,
+            dead_letter_config:   dead_letter_arn,
+            kms_key_arn:          options[:kms_key_arn] || default_kms_key_arn,
+            tracing_config:       tracing_mode
+	        }
+          if options[:role]
+            opts.merge!({role: options[:role]})
+          end
+          if options[:handler_name]
+            opts.merge!({handler: handler})
+          end
+
+          response = lambda.update_function_configuration(opts)
 
           log "Updated configuration of function: #{response.function_name}."
 

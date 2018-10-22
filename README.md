@@ -724,8 +724,8 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **secret_access_key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
  * **region**: AWS Region the Lambda function is running in. Defaults to 'us-east-1'.
  * **function_name**: Required. The name of the Lambda being created / updated.
- * **role**: Required. The ARN of the IAM role to assign to this Lambda function.
- * **handler_name**: Required. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module.
+ * **role**: Required when creating a new function. The ARN of the IAM role to assign to this Lambda function. If omitted when updating the Lambda, existing role is used.
+ * **handler_name**: Required for creating a new function. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module. If omitted when updating the Lambda, it defaults to "module_name.handler_name".
  * **dot_match**: Optional. When `true`, the zipped archive will include the hidden `.*` files. Defaults to `false`.
  * **module_name**: Optional. The name of the module that exports the handler. Defaults to `index`.
  * **zip**: Optional. Either a path to an existing packaged (zipped or jar file) Lambda, a directory to package, or a single file to package. Defaults to `Dir.pwd`.
