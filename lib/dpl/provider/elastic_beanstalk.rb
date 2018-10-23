@@ -106,7 +106,14 @@ module DPL
       end
 
       def files_to_pack
-        `git ls-files -z`.split("\x0")
+        exclude_flag = ''
+        if File.exist? '.ebignore'
+          exclude_flag = ' --exclude-from=.ebignore'
+        elsif File.exist? '.gitignore'
+          exclude_flag = ' --exclude-standard'
+        end
+
+        `git ls-files #{exclude_flag} -z`.split("\x0")
       end
 
       def create_zip
