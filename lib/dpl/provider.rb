@@ -37,7 +37,6 @@ module DPL
       'Heroku'              => 'heroku',
       'Lambda'              => 'lambda',
       'Launchpad'           => 'launchpad',
-      'Modulus'             => 'modulus',
       'Nodejitsu'           => 'nodejitsu',
       'NPM'                 => 'npm',
       'Openshift'           => 'openshift',
