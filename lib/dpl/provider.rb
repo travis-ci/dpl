@@ -25,6 +25,7 @@ module DPL
       'CloudFiles'          => 'cloud_files',
       'CloudFoundry'        => 'cloud_foundry',
       'CodeDeploy'          => 'code_deploy',
+      'Cargo'               => 'cargo',
       'Deis'                => 'deis',
       'ElasticBeanstalk'    => 'elastic_beanstalk',
       'EngineYard'          => 'engine_yard',

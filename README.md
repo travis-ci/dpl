@@ -18,6 +18,7 @@ Dpl supports the following providers:
 * [BitBalloon](#bitballoon)
 * [Bluemix Cloud Foundry](#bluemix-cloud-foundry)
 * [Boxfuse](#boxfuse)
+* [cargo](#cargo)
 * [Catalyze](#catalyze)
 * [Chef Supermarket](#chef-supermarket)
 * [Cloud 66](#cloud-66)
@@ -486,6 +487,16 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space> --skip-ssl-validation
+
+### cargo:
+
+#### Options:
+
+* **token**: Your cargo registry API token, for crates.io generate at <https://crates.io/me>
+
+#### Examples:
+
+    dpl --provider=cargo --token=<token>
 
 ### Rackspace Cloud Files:
 
