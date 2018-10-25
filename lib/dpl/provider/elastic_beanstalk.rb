@@ -115,7 +115,7 @@ module DPL
           exclude_flag = ' --exclude-standard'
         end
 
-        `git ls-files #{exclude_flag} -z`.split("\x0")
+        `git ls-files #{exclude_flag} --recurse-submodules -z`.split("\x0")
       end
 
       def create_zip
