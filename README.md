@@ -366,6 +366,13 @@ For example: `--endpoint=https://nyc3.digitaloceanspaces.com`
  * **bucket_path**: Location within Bucket to upload app to.
  * **only_create_app_version**: only create the app version, don't actually deploy it.
 
+If `.ebignore` file exists, the files matching the patterns in this file will be
+ignored during the application upload.
+Similarly, if `.ebignore` does not exist but `.gitignore` does, the files matching
+the standard `.gitignore` rules will be excluded from the upload.
+See [AWS CLI documentation](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-configuration.html)
+for more information.
+
 #### Environment variables:
 
  * **ELASTIC_BEANSTALK_ENV**: Elastic Beanstalk environment name which will be updated. Is only used if `env` option is omitted.
