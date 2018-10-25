@@ -1,6 +1,8 @@
 require 'time'
-require 'aws-sdk'
 require 'zip'
+require 'aws-sdk-core'
+require 'aws-sdk-s3'
+require 'aws-sdk-elasticbeanstalk'
 
 module DPL
   class Provider
