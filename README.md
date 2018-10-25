@@ -35,7 +35,6 @@ Dpl supports the following providers:
 * [Heroku](#heroku)
 * [Lambda](#lambda)
 * [Launchpad](#launchpad)
-* [Modulus](#modulus)
 * [Nodejitsu](#nodejitsu)
 * [NPM](#npm)
 * [OpenShift](#openshift)
@@ -220,18 +219,6 @@ For authentication you can also use Travis CI secure environment variable:
 
 #### Examples:
     dpl --provider=nodejitsu --username=<username> --api-key=<api-key>
-
-
-### Modulus
-
-#### Options:
-
-* **api-key** Modulus Authentication Token
-* **project-name** Modulus Project to Deploy
-
-#### Example:
-    dpl --provider=modulus --api-key=<api-key> --project-name=<project-name>
-
 
 ### Engine Yard:
 
