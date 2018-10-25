@@ -9,6 +9,7 @@ describe DPL::Provider::ElasticBeanstalk do
   let(:secret_access_key) { 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz' }
   let(:region) { 'us-west-2' }
   let(:app) { 'example-app' }
+  let(:label) { 'dummy-label' }
   let(:env) { 'live' }
   let(:bucket_name) { "travis-elasticbeanstalk-test-builds-#{region}" }
   let(:bucket_path) { "some/app"}
@@ -37,7 +38,7 @@ describe DPL::Provider::ElasticBeanstalk do
   subject :provider do
     described_class.new(
       DummyContext.new, :access_key_id => access_key_id, :secret_access_key => secret_access_key,
-      :region => region, :app => app, :env => env, :bucket_name => bucket_name, :bucket_path => bucket_path,
+      :region => region, :app => app, :env => env, :label => label, :bucket_name => bucket_name, :bucket_path => bucket_path,
       :only_create_app_version => only_create_app_version,
       :wait_until_deployed => wait_until_deployed
     )
@@ -46,7 +47,7 @@ describe DPL::Provider::ElasticBeanstalk do
   subject :provider_without_bucket_path do
     described_class.new(
       DummyContext.new, :access_key_id => access_key_id, :secret_access_key => secret_access_key,
-      :region => region, :app => app, :env => env, :bucket_name => bucket_name
+      :region => region, :app => app, :env => env, :label => label, :bucket_name => bucket_name
     )
   end
 

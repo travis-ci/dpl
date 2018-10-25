@@ -66,7 +66,7 @@ module DPL
       end
 
       def version_label
-        context.env['ELASTIC_BEANSTALK_LABEL'] || "travis-#{sha}-#{Time.now.to_i}"
+        options[:label] || context.env['ELASTIC_BEANSTALK_LABEL'] || "travis-#{sha}-#{Time.now.to_i}"
       end
 
       def version_description
