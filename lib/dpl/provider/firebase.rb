@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class Firebase < Provider
-      npm_g 'firebase-tools@^3.0', 'firebase'
+      npm_g 'firebase-tools@^5.0', 'firebase'
 
       def check_auth
         raise Error, "must supply token option or FIREBASE_TOKEN environment variable" if !options[:token] && !context.env['FIREBASE_TOKEN']
@@ -20,7 +20,7 @@ module DPL
         command << " --project #{options[:project]}" if options[:project]
         command << " --message '#{options[:message]}'" if options[:message]
         command << " --token '#{options[:token]}'" if options[:token]
-        context.shell command
+        context.shell command or raise Error, "Firebase deployment failed"
       end
     end
   end

@@ -22,19 +22,26 @@ describe DPL::Provider::Firebase do
   describe "#push_app" do
     it 'should include the project specified' do
       provider.options.update(:project => 'myapp-dev')
-      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --project myapp-dev --token 'abc123'")
+      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --project myapp-dev --token 'abc123'").and_return(true)
       provider.push_app
     end
 
     it 'should include the message specified' do
       provider.options.update(:message => 'test message')
-      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --message 'test message' --token 'abc123'")
+      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --message 'test message' --token 'abc123'").and_return(true)
       provider.push_app
     end
 
     it 'should default to no project override' do
-      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --token 'abc123'")
+      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --token 'abc123'").and_return(true)
       provider.push_app
+    end
+
+    it 'should report an error when deployment fails' do
+      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --token 'abc123'").and_return(false)
+      expect {
+        provider.push_app
+      }.to raise_error(DPL::Error)
     end
   end
 end

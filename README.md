@@ -18,12 +18,12 @@ Dpl supports the following providers:
 * [BitBalloon](#bitballoon)
 * [Bluemix Cloud Foundry](#bluemix-cloud-foundry)
 * [Boxfuse](#boxfuse)
+* [cargo](#cargo)
 * [Catalyze](#catalyze)
 * [Chef Supermarket](#chef-supermarket)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [Deis](#deis)
-* [Divshot.io](#divshotio)
 * [Engine Yard](#engine-yard)
 * [Firebase](#firebase)
 * [Github Pages](#github-pages)
@@ -31,6 +31,7 @@ Dpl supports the following providers:
 * [Google App Engine (experimental)](#google-app-engine)
 * [Google Cloud Storage](#google-cloud-storage)
 * [Hackage](#hackage)
+* [Hephy](#hephy)
 * [Heroku](#heroku)
 * [Lambda](#lambda)
 * [Launchpad](#launchpad)
@@ -45,6 +46,7 @@ Dpl supports the following providers:
 * [RubyGems](#rubygems)
 * [Scalingo](#scalingo)
 * [Script](#script)
+* [Snap](#snap)
 * [Surge.sh](#surgesh)
 * [TestFairy](#testfairy)
 
@@ -324,6 +326,7 @@ This _overrides_ the `gemspec` option.
 * **secret-access-key**: AWS Secret Key. Can be obtained from [here](https://console.aws.amazon.com/iam/home?#security_credential).
 * **bucket**: S3 Bucket.
 * **region**: S3 Region. Defaults to us-east-1.
+* **endpoint**: S3 Endpoint. Default is computed for you.
 * **upload-dir**: S3 directory to upload to. Defaults to root directory.
 * **storage-class**: S3 storage class to upload as. Defaults to "STANDARD". Other values are "STANDARD_IA" or "REDUCED_REDUNDANCY". Details can be found [here](https://aws.amazon.com/s3/storage-classes/).
 * **server-side-encryption**: When set to `true`, use S3 Server Side Encryption (SSE-AES256). Defaults to `false`.
@@ -356,6 +359,12 @@ It is possible to set file-specific `Cache-Control` and `Expires` headers using 
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public_read
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999 --expires="2012-12-21 00:00:00 -0000"
     dpl --provider=s3 --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --region=us-west-2 --local-dir=BUILD --upload-dir=BUILDS
+
+### Using S3-compatible Object Storage
+
+By overriding the `endpoint` option, you can use an S3-compatible object storage such as [Digital Ocean Spaces](https://www.digitalocean.com/products/object-storage/).
+
+For example: `--endpoint=https://nyc3.digitaloceanspaces.com`
 
 ### Elastic Beanstalk:
 
@@ -464,17 +473,6 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 
     dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --slot=dplsite-test --verbose
 
-### Divshot.io:
-
-#### Options:
-
-* **api-key**: Divshot.io API key
-* **environment**: Which environment (development, staging, production) to deploy to
-
-#### Examples:
-
-    dpl --provider=divshot --api-key=<api-key> --environment=<environment>
-
 ### Cloud Foundry:
 
 #### Options:
@@ -490,6 +488,16 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space> --skip-ssl-validation
+
+### cargo:
+
+#### Options:
+
+* **token**: Your cargo registry API token, for crates.io generate at <https://crates.io/me>
+
+#### Examples:
+
+    dpl --provider=cargo --token=<token>
 
 ### Rackspace Cloud Files:
 
@@ -586,6 +594,20 @@ For accounts using two factor authentication, you have to use an oauth token as 
 #### Examples:
 
     dpl --provider=deis --controller=deis.deisapps.com --username=travis --password=secret --app=example
+
+### Hephy:
+
+#### Options:
+
+* **controller**: Hephy controller e.g. hephy.hephyapps.com
+* **username**: Hephy username
+* **password**: Hephy password
+* **app**: Hephy app
+* **cli_version**: Install a specific hephy cli version
+
+#### Examples:
+
+    dpl --provider=hephy --controller=hephy.hephyapps.com --username=travis --password=secret --app=example
 
 ### Google Cloud Storage:
 
@@ -707,7 +729,7 @@ For accounts using two factor authentication, you have to use an oauth token as 
  * **handler_name**: Required. The function that Lambda calls to begin execution. For NodeJS, it is exported function for the module.
  * **dot_match**: Optional. When `true`, the zipped archive will include the hidden `.*` files. Defaults to `false`.
  * **module_name**: Optional. The name of the module that exports the handler. Defaults to `index`.
- * **zip**: Optional. Either a path to an existing packaged (zipped) Lambda, a directory to package, or a single file to package. Defaults to `Dir.pwd`.
+ * **zip**: Optional. Either a path to an existing packaged (zipped or jar file) Lambda, a directory to package, or a single file to package. Defaults to `Dir.pwd`.
  * **description**: Optional. The description of the Lambda being created / updated. Defaults to "Deploy build #{context.env['TRAVIS_BUILD_NUMBER']} to AWS Lambda via Travis CI"
  * **timeout**: Optional. The function execution time at which Lambda should terminate the function. Defaults to 3 (seconds).
  * **memory_size**: Optional. The amount of memory in MB to allocate to this Lambda. Defaults to 128.
@@ -868,10 +890,10 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 * **project**: [Project ID](https://developers.google.com/console/help/new/#projectnumber) used to identify the project on Google Cloud.
 * **keyfile**: Path to the JSON file containing your [Service Account](https://developers.google.com/console/help/new/#serviceaccounts) credentials in [JSON Web Token](https://tools.ietf.org/html/rfc7519) format. To be obtained via the [Google Developers Console](https://console.developers.google.com/project/_/apiui/credential). Defaults to `"service-account.json"`. Note that this file should be handled with care as it contains authorization keys.
 * **config**: Path to your module configuration file. Defaults to `"app.yaml"`. This file is runtime dependent ([Go](https://cloud.google.com/appengine/docs/go/config/appconfig), [Java](https://cloud.google.com/appengine/docs/java/configyaml/appconfig_yaml), [PHP](https://developers.google.com/console/help/new/#projectnumber), [Python](https://cloud.google.com/appengine/docs/python/config/appconfig))
-* **version**: The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you. See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
-* **no_promote**: Flag to not promote the deployed version. See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
+* **version**: The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you. See [`gcloud app deploy`](https://cloud.google.com/sdk/gcloud/reference/app/deploy)
+* **no_promote**: Flag to not promote the deployed version. See [`gcloud app deploy`](https://cloud.google.com/sdk/gcloud/reference/app/deploy)
 * **verbosity**: Let's you adjust the verbosity when invoking `"gcloud"`. Defaults to `"warning"`. See [`gcloud`](https://cloud.google.com/sdk/gcloud/reference/).
-* **no_stop_previous_version**: Flag to prevent your deployment from stopping the previously promoted version. This is from the future, so might not work (yet). See [`gcloud preview app deploy`](https://cloud.google.com/sdk/gcloud/reference/preview/app/deploy)
+* **no_stop_previous_version**: Flag to prevent your deployment from stopping the previously promoted version. This is from the future, so might not work (yet). See [`gcloud app deploy`](https://cloud.google.com/sdk/gcloud/reference/app/deploy)
 
 #### Environment variables:
 
@@ -893,6 +915,22 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 #### Examples:
 
     dpl --provider=firebase --token=<token> --project=<project> --message=<message>
+
+
+
+### Snap
+
+Deploys built snaps to the [snap store](https://snapcraft.io/).
+
+#### Options:
+
+* **snap** Path (glob) of the snap to be pushed
+* **channel** Optional. Channel into which the snap will be released (defaults to `edge`)
+* **token** Optional. Login token for the store (generate with `snapcraft export-login`). Falls back to the `$SNAP_TOKEN` environment variable
+
+#### Examples:
+
+    dpl --provider=snap --token=<token> --snap=my.snap --channel=edge
 
 
 
