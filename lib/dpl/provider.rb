@@ -158,7 +158,7 @@ module DPL
 
     def initialize(context, options)
       @context, @options = context, options
-      context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
+      context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/]) if needs_git_http_user_agent?
     end
 
     def user_agent(*strings)
@@ -303,6 +303,10 @@ module DPL
 
     def error(message)
       raise Error, message
+    end
+
+    def needs_git_http_user_agent?
+      true
     end
   end
 end

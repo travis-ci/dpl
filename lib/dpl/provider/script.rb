@@ -21,6 +21,10 @@ module DPL
       def script
         options[:script]
       end
+
+      def needs_git_http_user_agent?
+        false
+      end
     end
   end
 end

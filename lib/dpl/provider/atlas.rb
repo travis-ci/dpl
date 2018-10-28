@@ -60,9 +60,7 @@ module DPL
       private
 
       def install_atlas_upload
-        without_git_http_user_agent do
-          context.shell ATLAS_UPLOAD_INSTALL_SCRIPT
-        end
+        context.shell ATLAS_UPLOAD_INSTALL_SCRIPT
       end
 
       def assert_app_present!
@@ -97,12 +95,9 @@ module DPL
         @atlas_app ||= options.fetch(:app).to_s
       end
 
-      def without_git_http_user_agent(&block)
-        git_http_user_agent = ENV.delete("GIT_HTTP_USER_AGENT")
-        yield
-        ENV["GIT_HTTP_USER_AGENT"] = git_http_user_agent
+      def needs_git_http_user_agent?
+        false
       end
-
     end
   end
 end
