@@ -131,7 +131,10 @@ module DPL
     end
 
     def self.apt_get(name, command = name)
-      context.shell("sudo apt-get -qq install #{name}", retry: true) if `which #{command}`.chop.empty?
+      if `which #{command}`.chop.empty?
+        context.shell("sudo apt-get update -qq", retry: true) 
+        context.shell("sudo apt-get -qq install #{name}", retry: true)
+      end
     end
 
     def self.pip(name, command = name, version = nil)
