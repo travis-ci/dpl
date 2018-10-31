@@ -132,8 +132,9 @@ module DPL
       end
 
       def zip_file(dest_file_path, target_file_path)
-        if File.extname(target_file_path) == '.zip'
-          # Just copy it to the destination right away, since it is already a zip.
+        # Test .zip or .jar file extensions.
+        if %w[.zip .jar].include?(File.extname(target_file_path))
+          # Just copy it to the destination right away, since it is already a zip or jar.
           FileUtils.cp(target_file_path, dest_file_path)
           dest_file_path
         else
