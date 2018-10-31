@@ -36,7 +36,7 @@ module DPL
       end
 
       def app_name
-        options[:app_name].nil? ? "" : " #{options[:app_name]}"
+        options[:app_name].nil? ? "" : " '#{options[:app_name]}'"
       end
 
       def manifest
