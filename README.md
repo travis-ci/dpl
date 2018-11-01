@@ -468,6 +468,7 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **organization**: Cloud Foundry target organization.
 * **api**: Cloud Foundry api URL
 * **space**: Cloud Foundry target space
+* **app_name**: Application name. Optional.
 * **manifest**: Path to manifest file. Optional.
 * **skip_ssl_validation**: Skip ssl validation. Optional.
 
@@ -946,6 +947,7 @@ Deploys built snaps to the [snap store](https://snapcraft.io/).
 * **space**: Bluemix target space
 * **region**: Bluemix region [ng, eu-gb, eu-de, au-syd]. Optional, default US region (ng).
 * **api**: Bluemix api URL. Optional for Bluemix dedicated. Explicit **api** setting precedence over **region** setting.
+* **app_name**: Application name. Optional.
 * **manifest**: Path to manifest file. Optional.
 * **skip_ssl_validation**: Skip ssl validation. Optional.
 
