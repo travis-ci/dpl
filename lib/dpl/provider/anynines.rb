@@ -29,7 +29,7 @@ module DPL
       end
 
       def push_app
-        error 'Failed to push app' unless context.shell("./cf push#{manifest}")
+        error 'Failed to push app' unless context.shell("./cf push#{app_name}#{manifest}")
 
       ensure
         context.shell "./cf logout"
@@ -39,6 +39,10 @@ module DPL
       end
 
       def uncleanup
+      end
+
+      def app_name
+        options[:app_name].nil? ? "" : " '#{options[:app_name]}'"
       end
 
       def manifest
