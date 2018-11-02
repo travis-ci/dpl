@@ -408,6 +408,7 @@ For example: `--endpoint=https://nyc3.digitaloceanspaces.com`
 * **password**: anynines password.
 * **organization**: anynines target organization.
 * **space**: anynines target space
+* **app_name**: Application name. Optional.
 
 #### Examples:
 
