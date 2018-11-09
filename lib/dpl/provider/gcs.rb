@@ -38,11 +38,10 @@ module DPL
             opts[:acl] = options[:acl] if options[:acl]
 
             bucket = client.bucket(option(:bucket))
-            local_file = bucket.file(filename)
+            remote_file = bucket.create_file filename
 
-            file.copy bucket, file.name, opts
-            file.content_type = MIME::Types.type_for(filename).first.to_s
-            file.cache_control = options[:cache_control] if options[:cache_control]
+            remote_file.content_type = MIME::Types.type_for(filename).first.to_s
+            remote_file.cache_control = options[:cache_control] if options[:cache_control]
           end
         end
       end
