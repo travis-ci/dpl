@@ -31,6 +31,7 @@ module DPL
       end
 
       def push_app
+        log "" # for accentuation
         glob_args = ["**/*"]
         glob_args << File::FNM_DOTMATCH if options[:dot_match]
         Dir.chdir(options.fetch(:local_dir, Dir.pwd)) do
