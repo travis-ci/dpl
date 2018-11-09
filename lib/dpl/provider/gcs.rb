@@ -40,10 +40,10 @@ module DPL
             opts[:acl] = options[:acl] if options[:acl]
 
             bucket = client.bucket(option(:bucket))
-            remote_file = bucket.create_file filename
-
-            remote_file.content_type = MIME::Types.type_for(filename).first.to_s
-            remote_file.cache_control = options[:cache_control] if options[:cache_control]
+            if remote_file = bucket.create_file(upload_path(filename))
+              log "Uploaded #{filename}"
+              remote_file.cache_control = options[:cache_control] if options[:cache_control]
+            end
           end
         end
       end
