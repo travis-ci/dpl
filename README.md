@@ -601,23 +601,17 @@ For accounts using two factor authentication, you have to use an oauth token as 
 
 #### Options:
 
-* **access-key-id**: GCS Interoperable Access Key ID. Info about Interoperable Access Key from [here](https://developers.google.com/storage/docs/migrating).
-* **secret-access-key**: GCS Interoperable Access Secret.
-* **bucket**: GCS Bucket.
-* **upload-dir**: GCS directory to upload to. Defaults to root directory.
-* **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
+* **credentials**: Path to the JSON file containing the GCS credentials. The account specified in the file needs "Storage Admin" role assigned to it.
+* **bucket**: GCS Bucket name.
+* **upload-dir**: GCS directory to upload to. Defaults to root directory of the bucket.
+* **local-dir**: Local directory to upload from. Defaults to the repository root.
 * **dot_match**: When set to `true`, upload files starting a `.`.
-* **detect-encoding**: Set HTTP header `Content-Encoding` for files compressed with `gzip` and `compress` utilities. Defaults to not set.
 * **cache_control**: Set HTTP header `Cache-Control` to suggest that the browser cache the file. Defaults to not set. Info is [here](https://developers.google.com/storage/docs/reference-headers#cachecontrol)
 * **acl**: Sets the access control for the uploaded objects. Defaults to not set. Info is [here](https://developers.google.com/storage/docs/reference-headers#xgoogacl)
 
 #### Examples:
 
-    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket>
-    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir= BUILD
-    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --acl=public-read
-    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --detect-encoding --cache_control=max-age=99999
-    dpl --provider=gcs --access-key-id=<access-key-id> --secret-access-key=<secret-access-key> --bucket=<bucket> --local-dir=BUILD --upload-dir=BUILDS
+    dpl --provider=gcs --credentials=my_bucket_credentials.json --bucket=<bucket> --local-dir=BUILD --upload-dir=BUILDS
 
 ### BitBalloon:
 
