@@ -17,8 +17,12 @@ module DPL
         error "Unable to initialize GCS API client. Please check your project_id and credentials file"
       end
 
+      def bucket
+        @bucket ||= client.bucket(option(:bucket))
+      end
+
       def check_auth
-        client && client.bucket(option(:bucket))
+        client && bucket
       rescue Google::Cloud::PermissionDeniedError
         error "Unable to access bucket #{option(:bucket)}. Ensure #{client.service_account_email} has 'Storage Admin' role assigned."
       end
@@ -41,7 +45,6 @@ module DPL
             opts[:acl] = options[:acl] if options[:acl]
             opts[:cache_control] = options[:cache_control] if options[:cache_control]
 
-            bucket = client.bucket(option(:bucket))
             if remote_file = bucket.create_file(upload_path(filename), opts)
               log "Uploaded #{filename}"
             end
