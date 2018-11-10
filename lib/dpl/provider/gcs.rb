@@ -39,11 +39,11 @@ module DPL
             next if File.directory?(filename)
             opts = {}
             opts[:acl] = options[:acl] if options[:acl]
+            opts[:cache_control] = options[:cache_control] if options[:cache_control]
 
             bucket = client.bucket(option(:bucket))
-            if remote_file = bucket.create_file(upload_path(filename))
+            if remote_file = bucket.create_file(upload_path(filename), opts)
               log "Uploaded #{filename}"
-              remote_file.cache_control = options[:cache_control] if options[:cache_control]
             end
           end
         end
