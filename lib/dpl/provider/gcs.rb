@@ -19,12 +19,12 @@ module DPL
 
       def bucket
         @bucket ||= client.bucket(option(:bucket))
+      rescue Google::Cloud::PermissionDeniedError
+        error "Unable to access bucket #{option(:bucket)}. Ensure #{client.service_account_email} has 'Storage Admin' role assigned."
       end
 
       def check_auth
         client && bucket
-      rescue Google::Cloud::PermissionDeniedError
-        error "Unable to access bucket #{option(:bucket)}. Ensure #{client.service_account_email} has 'Storage Admin' role assigned."
       end
 
       def check_app
