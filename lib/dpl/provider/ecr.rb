@@ -81,8 +81,9 @@ module DPL
 
       def push_image(aws_region, repo_tag)
         endpoint = endpoints[aws_region].sub(/^https?:\/\//, '')
-        repo_tag = "#{endpoint}/#{repo_tag}"
-        image.push(nil, repo_tag: repo_tag, &method(:present_progress))
+        repo, tag = repo_tag.split(':')
+        image.tag(repo: "#{endpoint}/#{repo}", tag: tag, force: true)
+        image.push(nil, repo_tag: "#{endpoint}/#{repo_tag}", &method(:present_progress))
         log("Pushed image #{image.id} to #{repo_tag}")
       end
 

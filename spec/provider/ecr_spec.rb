@@ -29,6 +29,7 @@ describe DPL::Provider::Ecr do
   let(:image) do
     double(:image, id: 'ze-id').tap do |i|
       allow(i).to receive(:push)
+      allow(i).to receive(:tag)
     end
   end
 
@@ -232,6 +233,7 @@ describe DPL::Provider::Ecr do
     context 'with minimal options' do
       it 'pushes the image to ecr' do
         provider.push_app
+        expect(image).to have_received(:tag).with(repo: 'north-endpoint/target/repo', tag: nil, force: true)
         expect(image).to have_received(:push).with(nil, repo_tag: 'north-endpoint/target/repo')
       end
     end
@@ -243,7 +245,9 @@ describe DPL::Provider::Ecr do
 
       it 'pushes the image to both registries', :aggregate_failures do
         provider.push_app
+        expect(image).to have_received(:tag).with(repo: 'central-endpoint/target/repo', tag: nil, force: true)
         expect(image).to have_received(:push).with(nil, repo_tag: 'central-endpoint/target/repo')
+        expect(image).to have_received(:tag).with(repo: 'south-endpoint/target/repo', tag: nil, force: true)
         expect(image).to have_received(:push).with(nil, repo_tag: 'south-endpoint/target/repo')
       end
     end
@@ -255,7 +259,9 @@ describe DPL::Provider::Ecr do
 
       it 'pushes the image with both tags', :aggregate_failures do
         provider.push_app
+        expect(image).to have_received(:tag).with(repo: 'north-endpoint/target/repo', tag: '1.0', force: true)
         expect(image).to have_received(:push).with(nil, repo_tag: 'north-endpoint/target/repo:1.0')
+        expect(image).to have_received(:tag).with(repo: 'north-endpoint/target/repo', tag: 'latest', force: true)
         expect(image).to have_received(:push).with(nil, repo_tag: 'north-endpoint/target/repo:latest')
       end
     end
