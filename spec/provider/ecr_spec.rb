@@ -27,7 +27,7 @@ describe DPL::Provider::Ecr do
   end
 
   let(:image) do
-    double(:image).tap do |i|
+    double(:image, id: 'ze-id').tap do |i|
       allow(i).to receive(:push)
     end
   end
@@ -39,7 +39,9 @@ describe DPL::Provider::Ecr do
   end
 
   subject :provider do
-    described_class.new(DummyContext.new, **options)
+    described_class.new(DummyContext.new, **options).tap do |p|
+      allow(p).to receive(:log)
+    end
   end
 
   around do |example|

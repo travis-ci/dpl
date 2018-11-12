@@ -1,5 +1,6 @@
 require 'aws-sdk'
 require 'docker-api'
+require 'json'
 require 'net/http'
 
 module DPL
@@ -31,7 +32,9 @@ module DPL
       end
 
       def push_app
-        aws_regions.product([*options[:target]]).each do |aws_region, repo_tag|
+        targets = [*options[:target]]
+        log("Pushing image to regions #{aws_regions} as #{targets}")
+        aws_regions.product(targets).each do |aws_region, repo_tag|
           push_image(aws_region, repo_tag)
         end
       end
@@ -69,6 +72,7 @@ module DPL
           serveraddress: registry_auth.proxy_endpoint,
         )
         endpoints[aws_region] = registry_auth.proxy_endpoint
+        log("Authenticated with #{registry_auth.proxy_endpoint}")
       end
 
       def image
@@ -78,7 +82,23 @@ module DPL
       def push_image(aws_region, repo_tag)
         endpoint = endpoints[aws_region].sub(/^https?:\/\//, '')
         repo_tag = "#{endpoint}/#{repo_tag}"
-        image.push(nil, repo_tag: repo_tag)
+        image.push(nil, repo_tag: repo_tag, &method(:present_progress))
+        log("Pushed image #{image.id} to #{repo_tag}")
+      end
+
+      def present_progress(events)
+        events.split("\r\n").each do |raw_event|
+          event = JSON.parse(raw_event)
+          if err = event['error']
+            error(err)
+          elsif ['Preparing', 'Pushing'].include?(event['status'])
+            nil
+          elsif event['id']
+            log("#{event['status']} [#{event['id']}]")
+          elsif event['status']
+            log(event['status'])
+          end
+        end
       end
     end
   end
