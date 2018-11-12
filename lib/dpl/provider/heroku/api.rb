@@ -54,7 +54,7 @@ module DPL
           loop do
             response = faraday.get("/apps/#{option(:app)}/builds/#{build_id}")
             status = JSON.parse(response.body)['status']
-            if status.blank? || status == 'pending'
+            if status.empty? || status == 'pending'
               log "heroku build still pending"
               sleep 5
               next
