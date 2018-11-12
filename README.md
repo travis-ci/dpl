@@ -24,6 +24,7 @@ Dpl supports the following providers:
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [Deis](#deis)
+* [ECR](#ecr)
 * [Engine Yard](#engine-yard)
 * [Firebase](#firebase)
 * [Github Pages](#github-pages)
@@ -219,6 +220,21 @@ For authentication you can also use Travis CI secure environment variable:
 
 #### Examples:
     dpl --provider=nodejitsu --username=<username> --api-key=<api-key>
+
+### Ecr
+
+#### Options
+
+- **source**: You can use the repository id (e.g. `1f47fade220d`) or the repository name and optional tag (`mysql:5.6`).
+- **target**: One or more partial repository names to push to ECR (i.e. a YAML string or a list). Note that you enter `ze-image:latest` to push to `<account-id>.dkr.ecr.<region>.amazonaws.com/ze-image:latest`; the provider abstracts away the need to tell the Docker daemon which registry to push to.
+- **aws_region**: One or more regions to push the image to (i.e. a YAML list or a string). Overrides `AWS_REGION` environment variable.
+- **aws_account_id**: If the repository is owned by a different account than the IAM user, specify it here. Overrides `AWS_ACCOUNT_ID`.
+- **aws_access_key_id**: The access key to use when authenticating. Overrides `AWS_ACCESS_KEY_ID`.
+- **aws_secret_access_key**: The secret to use when authenticating. Overrides `AWS_SECRET_ACCESS_KEY`.
+
+#### Examples
+
+    dpl --provider=ecr --source=<local-image> --aws_region=eu-west-1 --target=<ecr-repo> --aws-access-key-id=<access-key> --aws-secret-access-key=<secret>
 
 ### Engine Yard:
 
