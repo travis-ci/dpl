@@ -52,16 +52,16 @@ module DPL
 
         def verify_build
           loop do
-            response = faraday.get("/apps/#{option(:app)}/builds/#{build_id}/result")
-            exit_code = JSON.parse(response.body)['exit_code']
-            if exit_code.nil?
+            response = faraday.get("/apps/#{option(:app)}/builds/#{build_id}")
+            status = JSON.parse(response.body)['status']
+            if status.blank? || status == 'pending'
               log "heroku build still pending"
               sleep 5
               next
-            elsif exit_code == 0
+            elsif status == 'succeeded'
               break
             else
-              error "deploy failed, build exited with code #{exit_code}"
+              error "deploy failed, build exited with status #{status}"
             end
           end
         end

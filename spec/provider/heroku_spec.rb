@@ -11,7 +11,7 @@ RSpec.shared_context 'with faraday' do
         stub.get("/account") {|env| [200, response_headers, account_response_body]}
         stub.get("/apps/example") {|env| [200, response_headers, app_response_body]}
         stub.post("/apps/example/builds") {|env| [201, response_headers, builds_response_body]}
-        stub.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef/result") {|env| [200, response_headers, build_result_response_body]}
+        stub.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef") {|env| [200, response_headers, builds_response_body]}
         stub.post("/sources") {|env| [201, response_headers, source_response_body] }
         stub.post("/apps/example/dynos") {|env| [201, response_headers, dynos_create_response_body]}
         stub.delete("/apps/example/dynos") {|env| [202, response_headers, '{}'] }
@@ -132,6 +132,72 @@ RSpec.shared_context 'with faraday' do
     }'
   }
 
+  let(:builds_pending_response_body) {
+    '{
+      "app": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "buildpacks": [
+        {
+          "url": "https://github.com/heroku/heroku-buildpack-ruby"
+        }
+      ],
+      "created_at": "2012-01-01T12:00:00Z",
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef",
+      "source_blob": {
+        "checksum": "SHA256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "url": "https://example.com/source.tgz?token=xyz",
+        "version": "v1.3.0"
+      },
+      "release": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "slug": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "status": "pending",
+      "updated_at": "2012-01-01T12:00:00Z",
+      "user": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "email": "username@example.com"
+      }
+    }'
+  }
+
+  let(:builds_failed_response_body) {
+    '{
+      "app": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "buildpacks": [
+        {
+          "url": "https://github.com/heroku/heroku-buildpack-ruby"
+        }
+      ],
+      "created_at": "2012-01-01T12:00:00Z",
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef",
+      "source_blob": {
+        "checksum": "SHA256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "url": "https://example.com/source.tgz?token=xyz",
+        "version": "v1.3.0"
+      },
+      "release": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "slug": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "status": "failed",
+      "updated_at": "2012-01-01T12:00:00Z",
+      "user": {
+        "id": "01234567-89ab-cdef-0123-456789abcdef",
+        "email": "username@example.com"
+      }
+    }'
+  }
+
   let(:source_response_body) {
     '{
       "source_blob": {
@@ -160,56 +226,6 @@ RSpec.shared_context 'with faraday' do
       "state": "up",
       "type": "run",
       "updated_at": "2012-01-01T12:00:00Z"
-    }'
-  }
-
-  let(:build_result_response_body) {
-  '{
-      "build": {
-      "id": "01234567-89ab-cdef-0123-456789abcdef",
-      "status": "succeeded",
-      "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
-    },
-    "exit_code": 0,
-    "lines": [
-      {
-        "line": "-----> Ruby app detected\n",
-        "stream": "STDOUT"
-      }
-    ]
-  }'
-  }
-
-  let(:build_result_response_body_failure) {
-    '{
-        "build": {
-        "id": "01234567-89ab-cdef-0123-456789abcdef",
-        "status": "failed",
-        "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
-      },
-      "exit_code": 1,
-      "lines": [
-        {
-          "line": "-----> Ruby app detected\n",
-          "stream": "STDOUT"
-        }
-      ]
-    }'
-  }
-
-  let(:build_result_response_body_in_progress) {
-    '{
-        "build": {
-        "id": "01234567-89ab-cdef-0123-456789abcdef",
-        "status": "failed",
-        "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
-      },
-      "lines": [
-        {
-          "line": "-----> Ruby app detected\n",
-          "stream": "STDOUT"
-        }
-      ]
     }'
   }
 end
@@ -295,19 +311,47 @@ describe DPL::Provider::Heroku, :api do
     end
 
     context 'when build fails' do
+      let(:faraday) {
+        Faraday.new do |builder|
+          builder.adapter :test, stubs do |stub|
+            stub.get("/account") {|env| [200, response_headers, account_response_body]}
+            stub.get("/apps/example") {|env| [200, response_headers, app_response_body]}
+            stub.post("/apps/example/builds") {|env| [201, response_headers, builds_response_body]}
+            stub.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef") {|env| [200, response_headers, builds_failed_response_body]}
+            stub.post("/sources") {|env| [201, response_headers, source_response_body] }
+            stub.post("/apps/example/dynos") {|env| [201, response_headers, dynos_create_response_body]}
+            stub.delete("/apps/example/dynos") {|env| [202, response_headers, '{}'] }
+          end
+        end
+      }
+
       example do
         expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
         expect(provider).to receive(:build_id).at_least(:once).and_return('01234567-89ab-cdef-0123-456789abcdef')
-        stubs.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef/result") {|env| [200, response_headers, build_result_response_body_failure]}
-        expect{ provider.verify_build }.to raise_error("deploy failed, build exited with code 1")
+        stubs.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef") {|env| [200, response_headers, builds_failed_response_body]}
+        expect{ provider.verify_build }.to raise_error("deploy failed, build exited with status failed")
       end
     end
 
     context 'when build is pending, then succeeds' do
+      let(:faraday) {
+        Faraday.new do |builder|
+          builder.adapter :test, stubs do |stub|
+            stub.get("/account") {|env| [200, response_headers, account_response_body]}
+            stub.get("/apps/example") {|env| [200, response_headers, app_response_body]}
+            stub.post("/apps/example/builds") {|env| [201, response_headers, builds_response_body]}
+            stub.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef") {|env| [200, response_headers, builds_pending_response_body]}
+            stub.post("/sources") {|env| [201, response_headers, source_response_body] }
+            stub.post("/apps/example/dynos") {|env| [201, response_headers, dynos_create_response_body]}
+            stub.delete("/apps/example/dynos") {|env| [202, response_headers, '{}'] }
+          end
+        end
+      }
+
       example do
         expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
         expect(provider).to receive(:build_id).at_least(:once).and_return('01234567-89ab-cdef-0123-456789abcdef')
-        stubs.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef/result") {|env| [200, response_headers, build_result_response_body_in_progress]}
+        stubs.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef") {|env| [200, response_headers, builds_pending_response_body]}
         expect(provider).to receive(:sleep).with(5).and_return(true)
         expect{ provider.verify_build }.not_to raise_error
       end
