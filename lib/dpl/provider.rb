@@ -27,6 +27,7 @@ module DPL
       'CodeDeploy'          => 'code_deploy',
       'Cargo'               => 'cargo',
       'Deis'                => 'deis',
+      'Ecr'                 => 'ecr',
       'ElasticBeanstalk'    => 'elastic_beanstalk',
       'EngineYard'          => 'engine_yard',
       'Firebase'            => 'firebase',
