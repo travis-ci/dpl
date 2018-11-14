@@ -72,10 +72,6 @@ module DPL
         false
       end
 
-      def needs_git_http_user_agent?
-        false
-      end
-
       def check_app
         log "Deploying to repo: #{slug}"
 
