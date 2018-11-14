@@ -30,6 +30,10 @@ module DPL
 
       experimental 'Atlas'
 
+      def self.new(context, options)
+        super(context, options.merge!({needs_git_http_user_agent: false}))
+      end
+
       def deploy
         assert_app_present!
         install_atlas_upload
@@ -93,10 +97,6 @@ module DPL
 
       def atlas_app
         @atlas_app ||= options.fetch(:app).to_s
-      end
-
-      def needs_git_http_user_agent?
-        false
       end
     end
   end

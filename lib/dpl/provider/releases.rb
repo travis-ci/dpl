@@ -11,6 +11,10 @@ module DPL
         prerelease
       )
 
+      def self.new(context, options)
+        super(context, options.merge!({needs_git_http_user_agent: false}))
+      end
+
       def travis_tag
         # Check if $TRAVIS_TAG is unset or set but empty
         if context.env.fetch('TRAVIS_TAG','') == ''
