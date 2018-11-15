@@ -147,8 +147,8 @@ module DPL
           options[:tag_name] = get_tag.tap {|tag| log "Setting tag_name to #{tag}"}
         end
 
-        unless options.key?(:target_committish)
-          options[:target_committish] = sha
+        unless options.key?(:target_commitish)
+          options[:target_commitish] = sha.tap {|commitish| log "Setting target_commitish to #{commitish}"}
         end
 
         api.update_release(release_url, {:draft => false}.merge(options))
