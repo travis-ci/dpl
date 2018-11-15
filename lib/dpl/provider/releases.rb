@@ -143,8 +143,8 @@ module DPL
           end
         end
 
-        unless options.key?(:tag_name)
-          options[:tag_name] = get_tag
+        if ! options.key?(:tag_name) && options[:draft]
+          options[:tag_name] = get_tag.tap {|tag| log "Setting tag_name to #{tag}"}
         end
 
         unless options.key?(:target_committish)
