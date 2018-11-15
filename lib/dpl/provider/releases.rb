@@ -117,7 +117,14 @@ module DPL
         end
 
         files.each do |file|
-          next unless File.file?(file)
+          unless File.exist?(file)
+            log "#{file} does not exist."
+            next
+          end
+          unless File.file?(file)
+            log "#{file} is not a regular file. Skipping."
+            next
+          end
           existing_url = nil
           filename = Pathname.new(file).basename.to_s
           api.release_assets(release_url).each do |existing_file|
