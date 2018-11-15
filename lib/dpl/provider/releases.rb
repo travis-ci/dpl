@@ -143,6 +143,14 @@ module DPL
           end
         end
 
+        unless options.key?(:tag_name)
+          options[:tag_name] = get_tag
+        end
+
+        unless options.key?(:target_committish)
+          options[:target_committish] = sha
+        end
+
         api.update_release(release_url, {:draft => false}.merge(options))
       end
 
