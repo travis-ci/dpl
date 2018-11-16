@@ -65,7 +65,7 @@ describe DPL::Provider::RubyGems do
     example "with options[:gemspec]" do
       provider.options.update(:gemspec => 'blah.gemspec')
       expect(provider.context).to receive(:shell).with("for f in blah.gemspec; do gem build $f; done")
-      expect(Dir).to receive(:glob).with('blah-*.gem').and_yield('File')
+      expect(Dir).to receive(:glob).with('example-*.gem').and_yield('File')
       expect(::Gems).to receive(:push).with('Test file').and_return('Yes!')
     end
 
