@@ -32,6 +32,7 @@ module DPL
 
         command = "env NPM_API_KEY=#{option(:api_key)} npm publish"
         command << " --tag #{option(:tag)}" if options[:tag]
+        command << " --access #{option(:access)}" if options[:access]
         context.shell "#{command}"
         FileUtils.rm(File.expand_path(NPMRC_FILE))
       end
