@@ -11,6 +11,10 @@ module DPL
         prerelease
       )
 
+      def self.new(context, options)
+        super(context, options.merge!({needs_git_http_user_agent: false}))
+      end
+
       def travis_tag
         # Check if $TRAVIS_TAG is unset or set but empty
         if context.env.fetch('TRAVIS_TAG','') == ''
@@ -113,7 +117,14 @@ module DPL
         end
 
         files.each do |file|
-          next unless File.file?(file)
+          unless File.exist?(file)
+            log "#{file} does not exist."
+            next
+          end
+          unless File.file?(file)
+            log "#{file} is not a regular file. Skipping."
+            next
+          end
           existing_url = nil
           filename = Pathname.new(file).basename.to_s
           api.release_assets(release_url).each do |existing_file|
@@ -130,6 +141,14 @@ module DPL
           else
             log "#{filename} already exists, skipping."
           end
+        end
+
+        if ! options.key?(:tag_name) && options[:draft]
+          options[:tag_name] = get_tag.tap {|tag| log "Setting tag_name to #{tag}"}
+        end
+
+        unless options.key?(:target_commitish)
+          options[:target_commitish] = sha.tap {|commitish| log "Setting target_commitish to #{commitish}"}
         end
 
         api.update_release(release_url, {:draft => false}.merge(options))

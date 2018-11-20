@@ -158,7 +158,11 @@ module DPL
 
     def initialize(context, options)
       @context, @options = context, options
-      context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
+      if options.key?(:needs_git_http_user_agent) && !options[:needs_git_http_user_agent]
+        context.env.delete 'GIT_HTTP_USER_AGENT'
+      else
+        context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
+      end
     end
 
     def user_agent(*strings)

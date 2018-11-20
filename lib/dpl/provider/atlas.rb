@@ -30,6 +30,10 @@ module DPL
 
       experimental 'Atlas'
 
+      def self.new(context, options)
+        super(context, options.merge!({needs_git_http_user_agent: false}))
+      end
+
       def deploy
         assert_app_present!
         install_atlas_upload
@@ -60,9 +64,7 @@ module DPL
       private
 
       def install_atlas_upload
-        without_git_http_user_agent do
-          context.shell ATLAS_UPLOAD_INSTALL_SCRIPT
-        end
+        context.shell ATLAS_UPLOAD_INSTALL_SCRIPT
       end
 
       def assert_app_present!
@@ -96,13 +98,6 @@ module DPL
       def atlas_app
         @atlas_app ||= options.fetch(:app).to_s
       end
-
-      def without_git_http_user_agent(&block)
-        git_http_user_agent = ENV.delete("GIT_HTTP_USER_AGENT")
-        yield
-        ENV["GIT_HTTP_USER_AGENT"] = git_http_user_agent
-      end
-
     end
   end
 end
