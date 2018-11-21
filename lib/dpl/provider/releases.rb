@@ -147,7 +147,7 @@ module DPL
           options[:tag_name] = get_tag.tap {|tag| log "Setting tag_name to #{tag}"}
         end
 
-        unless options.key?(:target_commitish)
+        if same_repo? && !options.key?(:target_commitish)
           options[:target_commitish] = sha.tap {|commitish| log "Setting target_commitish to #{commitish}"}
         end
 
@@ -161,6 +161,10 @@ module DPL
           content_type = "application/octet-stream"
         end
         api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
+      end
+
+      def same_repo?
+        slug == context.env['TRAVIS_REPO_SLUG']
       end
 
       def booleanize!(opts)
