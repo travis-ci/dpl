@@ -26,7 +26,7 @@ module DPL
 
         def upload_archive
           log "uploading application archive"
-          context.shell "curl#{curl_options} #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' -H 'Accept: application/vnd.heroku+json; version=3' --data-binary @#{archive_file}"
+          context.shell "curl#{curl_options} #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' -H 'Accept: application/vnd.heroku+json; version=3' -H 'User-Agent: #{user_agent}' --data-binary @#{archive_file}"
         end
 
         def trigger_build
@@ -44,7 +44,7 @@ module DPL
           if response.success?
             @build_id  = JSON.parse(response.body)['id']
             output_stream_url = JSON.parse(response.body)['output_stream_url']
-            context.shell "curl#{curl_options} #{Shellwords.escape(output_stream_url)} -H 'Accept: application/vnd.heroku+json; version=3'"
+            context.shell "curl#{curl_options} #{Shellwords.escape(output_stream_url)} -H 'Accept: application/vnd.heroku+json; version=3' -H 'User-Agent: #{user_agent}'"
           else
             handle_error_response(response)
           end
