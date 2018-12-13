@@ -28,6 +28,7 @@ Dpl supports the following providers:
 * [Firebase](#firebase)
 * [Github Pages](#github-pages)
 * [Github Releases](#github-releases)
+* [Gleis](#gleis)
 * [Google App Engine (experimental)](#google-app-engine)
 * [Google Cloud Storage](#google-cloud-storage)
 * [Hackage](#hackage)
@@ -955,6 +956,22 @@ Deploys built snaps to the [snap store](https://snapcraft.io/).
 #### Examples:
 
     dpl --provider=bluemixcloudfoundry --username=<username> --password=<password> --organization=<organization> --region=<region> --space=<space> --skip-ssl-validation
+
+### Gleis:
+
+The Gleis provider uses the [Gleis CLI Ruby gem](https://rubygems.org/gems/gleis) in order to deploy your Ruby on Rails app to the Gleis cloud.
+
+#### Options:
+
+* **username**: Gleis username.
+* **password**: Gleis password.
+* **app**: Gleis application name. Defaults to git repo's name. Optional.
+* **verbose**: Be verbose about push app process. Defaults to false. Optional.
+
+#### Examples:
+
+    dpl --provider=gleis --username=<username> --password=<password>
+    dpl --provider=gleis --username=<username> --password=<password> --app=<application>
 
 ## `dpl` and `sudo`
 

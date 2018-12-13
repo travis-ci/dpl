@@ -32,6 +32,7 @@ module DPL
       'Firebase'            => 'firebase',
       'GAE'                 => 'gae',
       'GCS'                 => 'gcs',
+      'Gleis'               => 'gleis',
       'Hackage'             => 'hackage',
       'Hephy'               => 'hephy',
       'Heroku'              => 'heroku',
