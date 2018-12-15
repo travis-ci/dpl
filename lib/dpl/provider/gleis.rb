@@ -33,7 +33,7 @@ module DPL
       def push_app
         git_url = repository_url
         error 'Git repo URL is empty' unless git_url
-        error 'Deploying application failed' unless context.shell "git push #{verbose_flag} #{git_url} HEAD:refs/heads/master"
+        error 'Deploying application failed' unless context.shell "git push #{verbose_flag} -f #{git_url} HEAD:refs/heads/master"
       end
 
       def cleanup; end

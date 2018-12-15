@@ -77,7 +77,7 @@ describe DPL::Provider::Gleis do
 
     example do
       expect(provider.context).to receive(:shell).with(
-        'git push  git://something HEAD:refs/heads/master'
+        'git push  -f git://something HEAD:refs/heads/master'
       ).and_return(true)
       expect(provider.context).to receive(:shell).with(
         "gleis app git -a #{options[:app]} -q > .dpl/git-url"
