@@ -33,7 +33,7 @@ describe DPL::Provider::Gleis do
   describe "#check_auth" do
     example do
       expect(provider.context).to receive(:shell).with(
-        'gleis auth login user@domain.tld secret'
+        'gleis auth login user@domain.tld secret --skip-keygen'
       ).and_return(true)
       provider.check_auth
     end

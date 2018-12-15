@@ -10,7 +10,7 @@ module DPL
       end
 
       def check_auth
-        error 'Login failed' unless context.shell "gleis auth login #{option(:username)} #{option(:password)}"
+        error 'Login failed' unless context.shell "gleis auth login #{option(:username)} #{option(:password)} --skip-keygen"
       end
 
       def check_app
