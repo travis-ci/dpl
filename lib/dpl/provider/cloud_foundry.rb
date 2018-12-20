@@ -2,6 +2,9 @@ module DPL
   class Provider
     class CloudFoundry < Provider
 
+      V2_PUSH_COMMAND='push'
+      V3_PUSH_COMMAND='v3-push'
+
       def initial_go_tools_install
         context.shell 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz'
       end
@@ -23,10 +26,14 @@ module DPL
       end
 
       def push_app
-        error 'Failed to push app' unless context.shell("./cf push#{app_name}#{manifest}")
+        error 'Failed to push app' unless context.shell("./cf #{push_cmd}#{app_name}#{manifest}")
 
       ensure
         context.shell "./cf logout"
+      end
+
+      def push_cmd
+        options[:v3_push] ? V3_PUSH_COMMAND : V2_PUSH_COMMAND
       end
 
       def cleanup

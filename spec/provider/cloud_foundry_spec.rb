@@ -64,6 +64,26 @@ describe DPL::Provider::CloudFoundry do
     end
   end
 
+  describe "#push_cmd" do
+    example "with v3 not specified" do
+      provider.options.delete(:v3_push)
+
+      expect(provider.push_cmd).to eq("push")
+    end
+
+    example "with v3 set to false" do
+      provider.options.update(:v3_push => false)
+
+      expect(provider.push_cmd).to eq("push")
+    end
+
+    example "with v3 set to true" do
+      provider.options.update(:v3_push => true)
+
+      expect(provider.push_cmd).to eq("v3-push")
+    end
+  end
+
   describe "#push_app" do
     before do
       allow(provider.context).to receive(:shell).and_return(true)
