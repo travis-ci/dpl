@@ -45,14 +45,14 @@ describe DPL::Provider::CloudFoundry do
   describe "#check_app" do
     context 'when the manifest file exists' do
       example do
-        File.stub(:exists?).with('worker-manifest.yml').and_return(true)
+        allow(File).to receive(:exists?).and_return(true)
         expect{provider.check_app}.not_to raise_error
       end
     end
 
     context 'when the manifest file exists' do
       example do
-        File.stub(:exists?).with('worker-manifest.yml').and_return(false)
+        allow(File).to receive(:exists?).and_return(false)
         expect{provider.check_app}.to raise_error('Application must have a manifest.yml for unattended deployment')
       end
     end
