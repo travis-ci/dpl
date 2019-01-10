@@ -151,7 +151,7 @@ module DPL
           options[:target_commitish] = sha.tap {|commitish| log "Setting target_commitish to #{commitish}"}
         end
 
-        api.update_release(release_url, {:draft => false}.merge(options))
+        api.update_release(release_url, {:draft => false}.merge(options).tap {log "options: #{options}"})
       end
 
       def upload_file(file, filename, release_url)
