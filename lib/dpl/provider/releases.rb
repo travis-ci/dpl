@@ -151,6 +151,8 @@ module DPL
           options[:target_commitish] = sha.tap {|commitish| log "Setting target_commitish to #{commitish}"}
         end
 
+        options[:body] = "\"#{options[:body]}\"".undump
+
         api.update_release(release_url, {:draft => false}.merge(options).tap {log "options: #{options}"})
       end
 
