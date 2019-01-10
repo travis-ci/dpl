@@ -1,5 +1,6 @@
 require 'octokit'
 require 'mime-types'
+require 'string_undump'
 
 module DPL
   class Provider
@@ -150,6 +151,8 @@ module DPL
         if same_repo? && !options.key?(:target_commitish)
           options[:target_commitish] = sha.tap {|commitish| log "Setting target_commitish to #{commitish}"}
         end
+
+        options[:body] = "\"#{options[:body]}\"".undump
 
         api.update_release(release_url, {:draft => false}.merge(options).tap {log "options: #{options}"})
       end
