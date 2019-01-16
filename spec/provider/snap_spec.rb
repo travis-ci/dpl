@@ -80,7 +80,7 @@ describe DPL::Provider::Snap do
       provider.options[:snap] = "*.snap"
       expect{provider.push_app}.to raise_error(
         DPL::Error,
-        /^Multiple snaps found matching '\*.snap': /
+        /^Multiple snaps found matching '\*.snap': /)
     end
 
     example "missing channel should default to edge" do
