@@ -48,6 +48,7 @@ Dpl supports the following providers:
 * [Snap](#snap)
 * [Surge.sh](#surgesh)
 * [TestFairy](#testfairy)
+* [VSCE (Visual Studio Code Extensions)](#vsce)
 
 ## Installation:
 
@@ -800,6 +801,16 @@ and your testers can start testing your app.
 #### Examples:
 
     dpl --provider=testfairy --api-key=<api-key> --app-file="out/Sample.apk" --keystore-file="out/keystore" --storepass=<storepass> --alias=<alias>
+
+### VSCE
+
+#### Options:
+
+* **token**: Your VSCode Extension MarketPlace personal access token. Create one at <https://code.visualstudio.com/api/working-with-extensions/publishing-extension#get-a-personal-access-token>
+
+#### Examples:
+
+    dpl --provider=vsce --token=<token>
 
 ### AWS CodeDeploy:
 

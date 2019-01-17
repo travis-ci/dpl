@@ -54,6 +54,7 @@ module DPL
       'Surge'               => 'surge',
       'TestFairy'           => 'testfairy',
       'Transifex'           => 'transifex',
+      'VSCE'                => 'vsce',
     }
 
     def self.new(context, options)
