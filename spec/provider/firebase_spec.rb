@@ -32,6 +32,12 @@ describe DPL::Provider::Firebase do
       provider.push_app
     end
 
+    it 'should include force if specified' do
+      provider.options.update(:force => true)
+      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --force --token 'abc123'").and_return(true)
+      provider.push_app
+    end
+
     it 'should default to no project override' do
       expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --token 'abc123'").and_return(true)
       provider.push_app
