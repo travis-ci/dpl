@@ -82,6 +82,8 @@ module DPL
           if convox_create
             log "Creating new application #{option(:app)} on rack #{option(:rack)}"
             convox_exec "apps create #{option(:app)} --generation #{convox_gen} --rack #{option(:rack)} --wait"
+          else
+            error 'Cannot deploy to inexistent app.'
           end
         end
       end
