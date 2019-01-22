@@ -42,7 +42,7 @@ module DPL
 
       def cf_options
         defaults = {
-          region: options[:region] || 'us-east-1',
+          region: options[:region] || context.env['AWS_REGION'] || 'us-east-1',
           credentials: ::Aws::Credentials.new(access_key_id, secret_access_key)
         }
 
