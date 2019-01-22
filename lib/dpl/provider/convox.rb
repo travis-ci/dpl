@@ -24,12 +24,13 @@ module DPL
       end
 
       def convox_host
-        options[:host] || 'console.convox.com'
+        options[:host] || context.env['CONVOX_HOST'] || 'console.convox.com'
       end
 
       def convox_pass
-        error 'Console/Rack password required.' if options[:password].nil?
-        options[:password]
+        pwd = options[:password] || context.env["CONVOX_PASSWORD"]
+        error 'Console/Rack password required.' if pwd.nil?
+        pwd
       end
 
       def cli_vars
