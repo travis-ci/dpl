@@ -64,6 +64,13 @@ module DPL
         end
       end
 
+      # Disable cleanup - we need our binary
+      def cleanup
+      end
+
+      def uncleanup
+      end
+
       # Pre-Install
       def install_deploy_dependencies
         context.shell "curl -sL #{install_url} -o #{convox_cli} && chmod 0755 #{convox_cli}"
