@@ -74,6 +74,20 @@ module DPL
         return res
       end
 
+      def put_request(path, body)
+        req = Net::HTTP::Put.new(path)
+        req.add_field('Content-Type', 'application/json')
+        req.basic_auth user, key
+        if !body.nil?
+          req.body = body.to_json
+        end
+
+        sock = Net::HTTP.new(url.host, url.port)
+        sock.use_ssl = true
+        res = sock.start {|http| http.request(req) }
+        return res
+      end
+
       def put_file_request(local_file_path, upload_path, matrix_params)
 
         file = File.open(local_file_path, 'rb')
@@ -302,6 +316,7 @@ module DPL
         files.each do |key, artifact|
           upload_file(artifact)
         end
+        return files
       end
 
       def publish_version
@@ -373,7 +388,7 @@ module DPL
       # Fills a map with Artifact objects which match
       # the include pattern and do not match the exclude pattern.
       # The artifacts are files collected from the file system.
-      def fill_files_map(map, include_pattern, exclude_pattern, upload_pattern, matrix_params)
+      def fill_files_map(map, include_pattern, exclude_pattern, upload_pattern, list_in_downloads, matrix_params)
         # Get the root path from which to start collecting the files.
         root_path = root_path(include_pattern)
         if root_path.nil?
@@ -382,11 +397,11 @@ module DPL
 
         # Start scanning the root path recursively.
         Find.find(root_path) do |path|
-          add_if_matches(map, path, include_pattern, exclude_pattern, upload_pattern, matrix_params)
+          add_if_matches(map, path, include_pattern, exclude_pattern, upload_pattern, list_in_downloads, matrix_params)
         end
       end
 
-      def add_if_matches(map, path, include_pattern, exclude_pattern, upload_pattern, matrix_params)
+      def add_if_matches(map, path, include_pattern, exclude_pattern, upload_pattern, list_in_downloads, matrix_params)
         res = path.match(/#{include_pattern}/)
 
         # If the file matches the include pattern and it is not a directory.
@@ -401,7 +416,7 @@ module DPL
             for i in 0..groups.size-1
               replaced_upload_pattern = replaced_upload_pattern.gsub("$#{i+1}", groups[i])
             end
-            map[path] = Artifact.new(path, replaced_upload_pattern, matrix_params)
+            map[path] = Artifact.new(path, replaced_upload_pattern, list_in_downloads, matrix_params)
           end
         end
       end
@@ -421,19 +436,42 @@ module DPL
               patterns["includePattern"],
               patterns["excludePattern"],
               patterns["uploadPattern"],
+              patterns["listInDownloads"],
               patterns["matrixParams"])
         }
 
         return upload_files
       end
 
+      # Mark required artifacts to appear in the download list
+      # This can be done only for artifacts in a published version
+      def list_artifacts_in_downloads(files)
+        publish = descriptor["publish"]
+        return unless publish
+
+        package = descriptor["package"]
+        repo = package["repo"]
+        subject = package["subject"]
+
+        files.each do |_, artifact|
+          next unless artifact.list_in_downloads
+
+          log "Marking #{artifact.upload_path} to appear in download list"
+          path = "/file_metadata/#{subject}/#{repo}/#{artifact.upload_path}"
+          body = { "list_in_downloads": true }
+          res = put_request(path, body)
+          log_bintray_response(res)
+        end
+      end
+
       def push_app
         read_descriptor
         check_and_create_package
         check_and_create_version
-        upload_files
+        files = upload_files
         gpg_sign_version
         publish_version
+        list_artifacts_in_downloads(files)
       end
 
       # Copies a key from one map to another, if the key exists there.
@@ -462,9 +500,10 @@ module DPL
 
       # This class represents an artifact (file) to be uploaded to Bintray.
       class Artifact
-        def initialize(local_path, upload_path, matrix_params)
+        def initialize(local_path, upload_path, list_in_downloads, matrix_params)
           @local_path = local_path
           @upload_path = upload_path
+          @list_in_downloads = list_in_downloads
           @matrix_params = matrix_params
         end
 
@@ -478,6 +517,7 @@ module DPL
 
         attr_reader :local_path
         attr_reader :upload_path
+        attr_reader :list_in_downloads
         attr_reader :matrix_params
       end
 

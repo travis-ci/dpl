@@ -194,17 +194,19 @@ describe DPL::Provider::Bintray do
           'p2' => 'b'
       }
 
-      provider.add_if_matches(files_to_upload, 'build/files/a.gem', 'build/files/(.*.gem)', 'exclude', 'a/b/$1', nil)
-      provider.add_if_matches(files_to_upload, 'build/files/b.gem', 'build/files/(.*.gem)', nil, 'a/b/$1', matrix_params)
-      provider.add_if_matches(files_to_upload, 'build/files/c.gem', 'build/files/(.*.gem)', '.*files.*', 'a/b/$1', nil)
-      provider.add_if_matches(files_to_upload, 'build/files/c.txt', 'build/files/(.*.gem)', 'exclude', 'a/b/$1', nil)
+      provider.add_if_matches(files_to_upload, 'build/files/a.gem', 'build/files/(.*.gem)', 'exclude', 'a/b/$1', false, nil)
+      provider.add_if_matches(files_to_upload, 'build/files/b.gem', 'build/files/(.*.gem)', nil, 'a/b/$1', true, matrix_params)
+      provider.add_if_matches(files_to_upload, 'build/files/c.gem', 'build/files/(.*.gem)', '.*files.*', 'a/b/$1', true, nil)
+      provider.add_if_matches(files_to_upload, 'build/files/c.txt', 'build/files/(.*.gem)', 'exclude', 'a/b/$1', false, nil)
 
       expect(files_to_upload["build/files/a.gem"]).not_to eq(nil)
       expect(files_to_upload["build/files/a.gem"].upload_path).to eq('a/b/a.gem')
+      expect(files_to_upload["build/files/a.gem"].list_in_downloads).to eq(false)
       expect(files_to_upload["build/files/a.gem"].matrix_params).to eq(nil)
 
       expect(files_to_upload["build/files/b.gem"]).not_to eq(nil)
       expect(files_to_upload["build/files/b.gem"].upload_path).to eq('a/b/b.gem')
+      expect(files_to_upload["build/files/b.gem"].list_in_downloads).to eq(true)
       expect(files_to_upload["build/files/b.gem"].matrix_params).to eq(matrix_params)
 
       expect(files_to_upload["build/files/c.gem"]).to eq(nil)

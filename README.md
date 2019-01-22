@@ -151,12 +151,14 @@ Running dpl in a terminal that saves history is insecure as your password/api ke
 	The files will be uploaded to Bintray under the gems folder.
 	2. All files under build/docs. The files will be uploaded to Bintray under the docs folder.
 
-	Note: Regular expressions defined as part of the includePattern property must be wrapped with brackets. */
+	Note: Regular expressions defined as part of the includePattern property must be wrapped with brackets.
+    
+    If listInDownloads is set to true matching artifact will appear in the 'Download list'. This can be done only on published version, so publish should be set to true to be taken into account. */
 
 	"files":
 		[
 		{"includePattern": "build/bin(.*)*/(.*\.gem)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gems/$2"},
-		{"includePattern": "build/docs/(.*)", "uploadPattern": "docs/$1"}
+		{"includePattern": "build/docs/(.*)", "uploadPattern": "docs/$1", "listInDownloads": true}
 		],
 	"publish": true
 }
