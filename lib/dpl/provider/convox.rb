@@ -15,6 +15,10 @@ module DPL
         options[:update_cli] || false
       end
 
+      def convox_create
+        options[:create] || false
+      end
+
       def convox_gen
         options[:generation] || '2'
       end
@@ -28,7 +32,7 @@ module DPL
       end
 
       def convox_pass
-        pwd = options[:password] || context.env["CONVOX_PASSWORD"]
+        pwd = options[:password] || context.env['CONVOX_PASSWORD']
         error 'Console/Rack password required.' if pwd.nil?
         pwd
       end
@@ -41,16 +45,14 @@ module DPL
       end
 
       def convox_promote
-        unless options[:promote].nil?
-          return options[:promote]
-        end
+        return options[:promote] unless options[:promote].nil?
 
         # Default
         true
       end
 
       def convox_exec(cmd)
-        cli_vars.each do |k,v|
+        cli_vars.each do |k, v|
           ENV[k.to_s] = v
         end
         context.shell "#{convox_cli} #{cmd}"
@@ -75,18 +77,21 @@ module DPL
 
       def check_app
         unless convox_exec "apps info --rack #{option(:rack)} --app #{option(:app)}"
-          log 'Application doesn\'t exist. Creating a new one.'
+          log 'Application doesn\'t exist.'
           # Create new app and wait
-          convox_exec "apps create #{option(:app)} --generation #{convox_gen} --rack #{option(:rack)} --wait"
+          if convox_create
+            log "Creating new application #{option(:app)} on rack #{option(:rack)}"
+            convox_exec "apps create #{option(:app)} --generation #{convox_gen} --rack #{option(:rack)} --wait"
+          end
         end
       end
 
       def push_app
         if convox_promote
-          log "Building and promoting application"
+          log 'Building and promoting application'
           convox_deploy
         else
-          log "Building application only"
+          log 'Building application only'
           convox_build
         end
       end
