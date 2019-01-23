@@ -465,12 +465,13 @@ module DPL
           log_bintray_response(res)
           code = res.code.to_i
 
-          # Sometimes it makes time for the version to be published so retry it
-          if code == 400 && tries < 400
-            log "Bintray error let's retry in few seconds"
-            sleep 1
-            redo
-          end
+          next if code < 400
+          # It makes time for the version to be published so retry it
+          raise "Failed to list artifact #{artifact.upload_path} in download list" if tries > 10
+
+          log "Bintray Bad Request error. It may take some time for a version to be published, let's retry in few seconds..."
+          sleep 6
+          redo
         end
       end
 
