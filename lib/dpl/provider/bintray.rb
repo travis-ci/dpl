@@ -453,14 +453,23 @@ module DPL
         repo = package["repo"]
         subject = package["subject"]
 
+        tries = 0
         files.each do |_, artifact|
           next unless artifact.list_in_downloads
 
+          tries += 1
           log "Marking #{artifact.upload_path} to appear in download list"
           path = "/file_metadata/#{subject}/#{repo}/#{artifact.upload_path}"
           body = { "list_in_downloads": true }
           res = put_request(path, body)
           log_bintray_response(res)
+          code = res.code.to_i
+
+          # Sometimes it makes time for the version to be published so retry it
+          if code == 400 && tries < 4
+            sleep 1
+            redo
+          end
         end
       end
 
