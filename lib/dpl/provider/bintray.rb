@@ -466,7 +466,8 @@ module DPL
           code = res.code.to_i
 
           # Sometimes it makes time for the version to be published so retry it
-          if code == 400 && tries < 4
+          if code == 400 && tries < 400
+            log "Bintray error let's retry in few seconds"
             sleep 1
             redo
           end
