@@ -58,7 +58,9 @@ module DPL
       end
 
       def wait
-        options[:wait] || true
+        return options[:wait].to_s == 'true' unless options[:wait].nil?
+
+        true
       end
 
       def wait_timeout
@@ -66,7 +68,7 @@ module DPL
       end
 
       def promote
-        return options[:promote].to_s == 'true' if options[:promote]
+        return options[:promote].to_s == 'true' unless options[:promote].nil?
 
         false
       end
@@ -145,13 +147,15 @@ module DPL
                                        ))
 
         started_at = Time.now
-        client.wait_until(:change_set_create_complete,
-                          { change_set_name: ccs.id },
-                          max_attempts: nil,
-                          delay: 5,
-                          before_wait: lambda { |_a, _r|
-                                         throw :failure if Time.now - started_at > wait_timeout
-                                       })
+        if wait
+          client.wait_until(:change_set_create_complete,
+                            { change_set_name: ccs.id },
+                            max_attempts: nil,
+                            delay: 5,
+                            before_wait: lambda { |_a, _r|
+                                           throw :failure if Time.now - started_at > wait_timeout
+                                         })
+        end
         log 'Changeset created'
       rescue Aws::Waiters::Errors::FailureStateError => e
         cs = client.describe_change_set(change_set_name: ccs.id)
@@ -168,12 +172,23 @@ module DPL
         }
         p[:role_arn] = options[:role_arn] if options[:role_arn]
 
+        cap = options[:capabilities]
+        if cap
+          p[:capabilities] = if cap.is_a?(String)
+                               [cap]
+                             else
+                               cap
+                             end
+        end
+
         # Set either template url or body
         if options[:template_url]
           p[:template_url] = options[:template_url]
         else
           p[:template_body] = template_body
         end
+
+        p
       end
 
       def stack_exists?
