@@ -57,6 +57,16 @@ module DPL
         options[:wait_timeout] || 3600
       end
 
+      def promote
+        return options[:promote].to_s == 'true' if options[:promote]
+
+        false
+      end
+
+      def travis_build_number
+        context.env['TRAVIS_BUILD_NUMBER']
+      end
+
       def parameters
         params = options[:parameters] || {}
         output = []
@@ -76,23 +86,43 @@ module DPL
       end
 
       def push_app
-        log 'Trying to update stack... '
+        if stack_exists?
+          cf_update
+        else
+          cf_create
+        end
+      end
 
-        w = client.update_stack(
-          stack_name: stack_name, # required
-          template_body: template_body,
-          parameters: parameters
-        )
-        cf_stream_events_wait(stack_name, :stack_update_complete) if wait
+      def cf_update
+        if promote
+          log 'Updating stack... '
 
-        log 'Update finished.'
+          client.update_stack(
+            stack_name: stack_name, # required
+            template_body: template_body,
+            parameters: parameters
+          )
+          cf_stream_events_wait(stack_name, :stack_update_complete) if wait
+
+          log 'Update finished.'
+        else
+          # Create changeset
+          log 'Creating update changeset...'
+          cf_create_change_set 'UPDATE'
+        end
       rescue Aws::CloudFormation::Errors::ValidationError => e
         if e.message.start_with?('No updates are to be performed')
           log 'Stack already up-to-date'
-          w = nil
-        elsif e.message.end_with?('does not exist')
-          log 'Stack does not exist. Creating stack...'
-          w = client.create_stack(
+        else
+          raise e
+        end
+      end
+
+      def cf_create
+        if promote
+          log 'Creating stack...'
+
+          client.create_stack(
             stack_name: stack_name, # required
             template_body: template_body,
             timeout_in_minutes: 1,
@@ -101,8 +131,45 @@ module DPL
           )
           cf_stream_events_wait(stack_name, :stack_create_complete) if wait
         else
-          raise e
+          log 'Creating create changeset...'
+          cf_create_change_set 'CREATE'
         end
+      end
+
+      def cf_create_change_set(type)
+        current_timestamp = Time.now.strftime('%Y%m%d%H%M')
+        change_set_name = "travis-job-#{travis_build_number}-#{current_timestamp}"
+        ccs = client.create_change_set(
+          stack_name: stack_name,
+          template_body: template_body,
+          change_set_name: change_set_name,
+          change_set_type: type,
+          parameters: parameters,
+          description: "Changeset created by Travis job for build number ##{travis_build_number}/commit #{context.env['TRAVIS_COMMIT']}"
+        )
+
+        started_at = Time.now
+        client.wait_until(:change_set_create_complete,
+                          { change_set_name: ccs.id },
+                          max_attempts: nil,
+                          delay: 5,
+                          before_wait: lambda { |_a, _r|
+                                         throw :failure if Time.now - started_at > wait_timeout
+                                       })
+        log 'Changeset created'
+      rescue Aws::Waiters::Errors::FailureStateError => e
+        cs = client.describe_change_set(change_set_name: ccs.id)
+        raise e unless cs.status_reason.start_with?('The submitted information didn\'t contain changes')
+
+        log 'There are no changes in stack. Removing changeset.'
+        client.delete_change_set(change_set_name: ccs.id)
+      end
+
+      def stack_exists?
+        stacks = client.describe_stacks(stack_name: stack_name)
+        return true unless stacks.empty?
+
+        false
       end
 
       def show_events(events)
@@ -156,14 +223,13 @@ module DPL
         end
 
         started_at = Time.now
-        client.wait_until(_condition, { stack_name: stack_name }, {
-          max_attempts: nil,
-          delay: 5,
-          before_wait: ->(a,r){
-            throw :failure if Time.now - started_at > wait_timeout
-          }
-        })
-      rescue Aws::CloudFormation::Waiter
+        client.wait_until(_condition, { stack_name: stack_name },
+                          max_attempts: nil,
+                          delay: 5,
+                          before_wait: lambda { |_a, _r|
+                                         throw :failure if Time.now - started_at > wait_timeout
+                                       })
+      rescue Aws::CloudFormation::Waiters
         stopm.synchronize { stop = true }
         event_streamer.join
       rescue Error => e
