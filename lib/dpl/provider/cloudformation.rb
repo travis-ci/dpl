@@ -49,6 +49,14 @@ module DPL
         defaults
       end
 
+      def timeout_in_minutes
+        options[:timeout_in_minutes] || 60
+      end
+
+      def role_arn
+        options[:role_arn]
+      end
+
       def wait
         options[:wait] || true
       end
@@ -97,11 +105,7 @@ module DPL
         if promote
           log 'Updating stack... '
 
-          client.update_stack(
-            stack_name: stack_name, # required
-            template_body: template_body,
-            parameters: parameters
-          )
+          client.update_stack(common_parameters)
           cf_stream_events_wait(stack_name, :stack_update_complete) if wait
 
           log 'Update finished.'
@@ -111,24 +115,19 @@ module DPL
           cf_create_change_set 'UPDATE'
         end
       rescue Aws::CloudFormation::Errors::ValidationError => e
-        if e.message.start_with?('No updates are to be performed')
-          log 'Stack already up-to-date'
-        else
-          raise e
-        end
+        raise e unless e.message.start_with?('No updates are to be performed')
+
+        log 'Stack already up-to-date'
       end
 
       def cf_create
         if promote
           log 'Creating stack...'
 
-          client.create_stack(
-            stack_name: stack_name, # required
-            template_body: template_body,
-            timeout_in_minutes: 1,
-            on_failure: 'ROLLBACK', # accepts DO_NOTHING, ROLLBACK, DELETE
-            parameters: parameters
-          )
+          client.create_stack(common_parameters.merge(
+                                timeout_in_minutes: timeout_in_minutes,
+                                on_failure: 'ROLLBACK' # accepts DO_NOTHING, ROLLBACK, DELETE
+                              ))
           cf_stream_events_wait(stack_name, :stack_create_complete) if wait
         else
           log 'Creating create changeset...'
@@ -139,14 +138,11 @@ module DPL
       def cf_create_change_set(type)
         current_timestamp = Time.now.strftime('%Y%m%d%H%M')
         change_set_name = "travis-job-#{travis_build_number}-#{current_timestamp}"
-        ccs = client.create_change_set(
-          stack_name: stack_name,
-          template_body: template_body,
-          change_set_name: change_set_name,
-          change_set_type: type,
-          parameters: parameters,
-          description: "Changeset created by Travis job for build number ##{travis_build_number}/commit #{context.env['TRAVIS_COMMIT']}"
-        )
+        ccs = client.create_change_set(common_parameters.merge(
+                                         change_set_name: change_set_name,
+                                         change_set_type: type,
+                                         description: "Changeset created by Travis job for build number ##{travis_build_number}/commit #{context.env['TRAVIS_COMMIT']}"
+                                       ))
 
         started_at = Time.now
         client.wait_until(:change_set_create_complete,
@@ -163,6 +159,21 @@ module DPL
 
         log 'There are no changes in stack. Removing changeset.'
         client.delete_change_set(change_set_name: ccs.id)
+      end
+
+      def common_parameters
+        p = {
+          stack_name: stack_name,
+          parameters: parameters
+        }
+        p[:role_arn] = options[:role_arn] if options[:role_arn]
+
+        # Set either template url or body
+        if options[:template_url]
+          p[:template_url] = options[:template_url]
+        else
+          p[:template_body] = template_body
+        end
       end
 
       def stack_exists?
