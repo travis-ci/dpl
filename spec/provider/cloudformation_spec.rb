@@ -215,3 +215,48 @@ describe DPL::Provider::CloudFormation do
     end
   end
 end
+
+describe DPL::Provider::CloudFormation do
+  subject :provider do
+    described_class.new(DummyContext.new, {})
+  end
+
+  describe '#parameters' do
+    it 'should return empty list if no parameters' do
+      provider.options.delete(:parameters)
+      expect(provider.parameters).to match_array []
+    end
+
+    it 'should return single-array parameter if string given' do
+      provider.options.update(parameters: 'MyOnlyParameter=IsLonely')
+      expect(provider.parameters).to be_an Array
+      expect(provider.parameters.size).to eq(1)
+      expect(provider.parameters[0]).to eq(
+        parameter_key: 'MyOnlyParameter',
+        parameter_value: 'IsLonely'
+      )
+    end
+
+    it 'should return array of parameters if array given' do
+      provider.options.update(parameters: [
+                                'SomeParam1=AnotherValue1',
+                                'Lalala=Lelele',
+                                'MyResourceName=IsAwesome'
+                              ])
+      expect(provider.parameters).to be_an Array
+      expect(provider.parameters.size).to eq(3)
+      expect(provider.parameters).to include(
+        parameter_key: 'SomeParam1',
+        parameter_value: 'AnotherValue1'
+      )
+      expect(provider.parameters).to include(
+        parameter_key: 'Lalala',
+        parameter_value: 'Lelele'
+      )
+      expect(provider.parameters).to include(
+        parameter_key: 'MyResourceName',
+        parameter_value: 'IsAwesome'
+      )
+    end
+  end
+end
