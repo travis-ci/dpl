@@ -47,15 +47,15 @@ describe DPL::Provider::CloudFormation do
 
   before :each do
     allow(provider).to receive(:cf_options).and_return(client_options)
-    # allow_any_instance_of(::Aws::CloudFormation::).to receive(:upload_file).and_return(true)
-    allow(provider).to receive(:log).with(anything).and_return(true) # TODO: ???
+    allow(provider).to receive(:log).with(anything).and_return(true)
     allow(provider.client).to receive(:wait_until).and_return(true)
     provider.options.update(template_url: 's3://template-url')
   end
 
   describe '#check_auth' do
     example do
-      expect(provider).to receive(:log).with('Logging in with Access Key: ****************jklz')
+      expect(provider).to receive(:log)
+        .with('Logging in with Access Key: ****************jklz')
       provider.check_auth
     end
   end
