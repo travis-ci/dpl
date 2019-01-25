@@ -78,7 +78,8 @@ module DPL
       end
 
       def parameters
-        params = options[:parameters] || {}
+        params = options[:parameters] || []
+        params = [params] if params.is_a?(String)
         output = []
         params.each do |ik, iv|
           (ik, iv) = ik.split('=') if ik.is_a?(String) && ik.include?('=')
