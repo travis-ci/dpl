@@ -48,7 +48,7 @@ module DPL
         return options[:promote] unless options[:promote].nil?
 
         # Default
-        true
+        false
       end
 
       def convox_exec(cmd)
