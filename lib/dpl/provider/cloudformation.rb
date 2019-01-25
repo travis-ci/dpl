@@ -196,6 +196,10 @@ module DPL
         return true unless stacks.empty?
 
         false
+      rescue Aws::CloudFormation::Errors::ValidationError => e
+        return false if e.message.include?('does not exist')
+
+        raise e
       end
 
       def show_events(events)
