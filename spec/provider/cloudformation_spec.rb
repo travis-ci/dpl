@@ -24,6 +24,38 @@ describe DPL::Provider::CloudFormation do
         expect(options[:region]).to eq(region)
       end
     end
+
+    it 'should use provided access_key_id and secret_access_key if use_sts_assume is not set' do
+      provider.options.update(region: 'eu-west-1')
+      provider.options.delete(:use_sts_assume)
+      opts = provider.cf_options
+      expect(opts[:region]).to eq('eu-west-1')
+      expect(opts[:credentials].access_key_id).to eq('qwertyuiopasdfghjklz')
+      expect(opts[:credentials].secret_access_key)
+        .to eq('qwertyuiopasdfghjklzqwertyuiopasdfghjklz')
+      expect(opts[:credentials].session_token).to be nil
+    end
+
+    it 'should call STS when use_sts_assume is true and role_arn is set' do
+      provider.options.update(region: 'us-north-1')
+      provider.options.update(use_sts_assume: true)
+      provider.options.update(role_arn: 'arn:::role/magic_role')
+      sts_dbl = double
+      allow(sts_dbl).to receive(:assume_role)
+        .and_return(Aws::Credentials.new(
+                      'assumed12345678',
+                      'role345678900123459876543',
+                      'credentials_and_token'
+                    ))
+      allow(Aws::STS::Client).to receive(:new).and_return(sts_dbl)
+
+      opts = provider.cf_options
+      expect(opts[:region]).to eq('us-north-1')
+      expect(opts[:credentials].access_key_id).to eq('assumed12345678')
+      expect(opts[:credentials].secret_access_key)
+        .to eq('role345678900123459876543')
+      expect(opts[:credentials].session_token).to eq('credentials_and_token')
+    end
   end
 end
 

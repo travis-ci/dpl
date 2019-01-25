@@ -18,11 +18,19 @@ module DPL
       end
 
       def access_key_id
-        options[:access_key_id] || context.env['AWS_ACCESS_KEY_ID'] || raise(Error, 'missing access_key_id')
+        options[:access_key_id] ||
+          context.env['AWS_ACCESS_KEY_ID'] ||
+          raise(Error, 'missing access_key_id')
       end
 
       def secret_access_key
-        options[:secret_access_key] || context.env['AWS_SECRET_ACCESS_KEY'] || raise(Error, 'missing secret_access_key')
+        options[:secret_access_key] ||
+          context.env['AWS_SECRET_ACCESS_KEY'] ||
+          raise(Error, 'missing secret_access_key')
+      end
+
+      def session_token
+        options[:session_token] || context.env['AWS_SESSION_TOKEN'] || nil
       end
 
       def filepath
@@ -40,13 +48,25 @@ module DPL
         stack_name_prefix + sn
       end
 
+      def sts_get_credentials(aws_params)
+        if role_arn && options[:use_sts_assume]
+          sts_client = Aws::STS::Client.new(aws_params)
+          aws_params.update(credentials: sts_client.assume_role(
+            role_arn: role_arn,
+            role_session_name: "travis-build-#{travis_build_number}"
+          ))
+          return aws_params
+        end
+        nil
+      end
+
       def cf_options
-        defaults = {
+        base_params = {
           region: options[:region] || context.env['AWS_REGION'] || 'us-east-1',
-          credentials: ::Aws::Credentials.new(access_key_id, secret_access_key)
+          credentials: ::Aws::Credentials.new(access_key_id, secret_access_key, session_token)
         }
 
-        defaults
+        sts_get_credentials(base_params) || base_params
       end
 
       def timeout_in_minutes
@@ -171,7 +191,7 @@ module DPL
           stack_name: stack_name,
           parameters: parameters
         }
-        p[:role_arn] = options[:role_arn] if options[:role_arn]
+        p[:role_arn] = role_arn if role_arn && !options[:use_sts_assume]
 
         cap = options[:capabilities]
         if cap
