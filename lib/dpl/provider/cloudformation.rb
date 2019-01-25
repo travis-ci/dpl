@@ -49,10 +49,10 @@ module DPL
       end
 
       def sts_get_credentials(aws_params)
-        if role_arn && options[:use_sts_assume]
+        if options[:sts_assume_role]
           sts_client = Aws::STS::Client.new(aws_params)
           aws_params.update(credentials: sts_client.assume_role(
-            role_arn: role_arn,
+            role_arn: options[:sts_assume_role],
             role_session_name: "travis-build-#{travis_build_number}"
           ))
           return aws_params
@@ -191,7 +191,7 @@ module DPL
           stack_name: stack_name,
           parameters: parameters
         }
-        p[:role_arn] = role_arn if role_arn && !options[:use_sts_assume]
+        p[:role_arn] = role_arn if role_arn
 
         cap = options[:capabilities]
         if cap

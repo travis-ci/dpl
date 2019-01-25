@@ -25,9 +25,9 @@ describe DPL::Provider::CloudFormation do
       end
     end
 
-    it 'should use provided access_key_id and secret_access_key if use_sts_assume is not set' do
+    it 'should use provided access_key_id and secret_access_key if sts_assume_role is not set' do
       provider.options.update(region: 'eu-west-1')
-      provider.options.delete(:use_sts_assume)
+      provider.options.delete(:sts_assume_role)
       opts = provider.cf_options
       expect(opts[:region]).to eq('eu-west-1')
       expect(opts[:credentials].access_key_id).to eq('qwertyuiopasdfghjklz')
@@ -36,10 +36,9 @@ describe DPL::Provider::CloudFormation do
       expect(opts[:credentials].session_token).to be nil
     end
 
-    it 'should call STS when use_sts_assume is true and role_arn is set' do
+    it 'should call STS when sts_assume_role is set' do
       provider.options.update(region: 'us-north-1')
-      provider.options.update(use_sts_assume: true)
-      provider.options.update(role_arn: 'arn:::role/magic_role')
+      provider.options.update(sts_assume_role: 'arn:::role/magic_role')
       sts_dbl = double
       allow(sts_dbl).to receive(:assume_role)
         .and_return(Aws::Credentials.new(
