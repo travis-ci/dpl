@@ -45,10 +45,7 @@ module DPL
       end
 
       def convox_promote
-        return options[:promote] unless options[:promote].nil?
-
-        # Default
-        false
+        options[:promote] || false
       end
 
       def convox_exec(cmd)
@@ -62,6 +59,19 @@ module DPL
         unless convox_exec "deploy --rack #{option(:rack)} --app #{option(:app)} --wait --id"
           error 'Convox application deployment failed'
         end
+      end
+
+      def convox_build
+        unless convox_exec "build --rack #{option(:rack)} --app #{option(:app)} --wait --id"
+          error 'Convox application deployment failed'
+        end
+      end
+
+      def update_envs
+        cenvs = options[:environment] || []
+        cenvs = [cenvs] if cenvs.is_a? String
+
+        convox_exec("env set #{cenvs.join(' ')} --rack #{option(:rack)} --app #{option(:app)} --replace")
       end
 
       # Disable cleanup - we need our binary
@@ -96,6 +106,8 @@ module DPL
       end
 
       def push_app
+        update_envs if options[:environment]
+
         if convox_promote
           log 'Building and promoting application'
           convox_deploy
