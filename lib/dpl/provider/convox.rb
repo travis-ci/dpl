@@ -49,7 +49,7 @@ module DPL
       end
 
       def build_description
-        "Travis job ##{context.env['TRAVIS_BUILD_NUMBER']}/commit #{context.env['TRAVIS_COMMIT']}"
+        options[:description] || "Travis job ##{context.env['TRAVIS_BUILD_NUMBER']}/commit #{context.env['TRAVIS_COMMIT']}"
       end
 
       def convox_exec(cmd)

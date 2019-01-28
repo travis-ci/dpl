@@ -487,13 +487,14 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **promote**: Optional (default: `false`). Flag to decide either you want to build and deploy(`true`) or only build (`false`) convox app.
 * **environment**: Optional. Environment variables list. If not set env variables will be not updated (Currently doesn't work with convox deploy keys).
 * **generation**: Optional (default: `2`). Convox app generation.
+* **description**: Optional (defaults to travis job number and commit hash). Convox build description.
 * **create**: Optional (default: `false`). Flag to decide either you want to create application if it doesn't exist (`true`) or not (`false`). Keep in mind that deploy keys doesn't support app creation.
 * **install_url**: Optional (default: `https://convox.com/cli/linux/convox`). Convox CLI URL. For intensive usage keep it on your S3 bucket (or other hosting service) for faster deployments.
 * **update_cli**: Optional (default: `false`). Either you want travis to perform `convox update` during installation step.
 
 #### Examples:
 
-    dpl --provider=cloudfoundry --password=some-api-or-rack-key-here --rack=myorg/myrack --app=example-app
+    dpl --provider=convox --password=some-api-or-rack-key-here --rack=myorg/myrack --app=example-app
 
 
 ### cargo:
