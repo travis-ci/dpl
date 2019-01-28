@@ -23,6 +23,7 @@ Dpl supports the following providers:
 * [Chef Supermarket](#chef-supermarket)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
+* [Convox](#convox)
 * [Deis](#deis)
 * [Engine Yard](#engine-yard)
 * [Firebase](#firebase)
@@ -476,6 +477,24 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space> --skip-ssl-validation
+
+### Convox:
+
+#### Options:
+
+* **password**: Convox password. Can be either user api key, deploy key or rack password.
+* **host**: Optional (default: `console.convox.com`). Convox console or rack hostname.
+* **promote**: Optional (default: `false`). Flag to decide either you want to build and deploy(`true`) or only build (`false`) convox app.
+* **environment**: Optional. Environment variables list. If not set env variables will be not updated (Currently doesn't work with convox deploy keys).
+* **generation**: Optional (default: `2`). Convox app generation.
+* **create**: Optional (default: `false`). Flag to decide either you want to create application if it doesn't exist (`true`) or not (`false`). Keep in mind that deploy keys doesn't support app creation.
+* **install_url**: Optional (default: `https://convox.com/cli/linux/convox`). Convox CLI URL. For intensive usage keep it on your S3 bucket (or other hosting service) for faster deployments.
+* **update_cli**: Optional (default: `false`). Either you want travis to perform `convox update` during installation step.
+
+#### Examples:
+
+    dpl --provider=cloudfoundry --password=some-api-or-rack-key-here --rack=myorg/myrack --app=example-app
+
 
 ### cargo:
 
