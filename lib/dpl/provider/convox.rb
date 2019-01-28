@@ -48,6 +48,10 @@ module DPL
         options[:promote] || false
       end
 
+      def build_description
+        "Travis job ##{context.env['TRAVIS_BUILD_NUMBER']}/commit #{context.env['TRAVIS_COMMIT']}"
+      end
+
       def convox_exec(cmd)
         cli_vars.each do |k, v|
           ENV[k.to_s] = v
@@ -56,13 +60,13 @@ module DPL
       end
 
       def convox_deploy
-        unless convox_exec "deploy --rack #{option(:rack)} --app #{option(:app)} --wait --id"
+        unless convox_exec "deploy --rack #{option(:rack)} --app #{option(:app)} --wait --id --description \"#{build_description}\""
           error 'Convox application deployment failed'
         end
       end
 
       def convox_build
-        unless convox_exec "build --rack #{option(:rack)} --app #{option(:app)} --wait --id"
+        unless convox_exec "build --rack #{option(:rack)} --app #{option(:app)} --id --description \"#{build_description}\""
           error 'Convox application deployment failed'
         end
       end
