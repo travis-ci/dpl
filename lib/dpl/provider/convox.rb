@@ -74,16 +74,15 @@ module DPL
       def update_envs
         cenvs = options[:environment] || []
         cenvs = [cenvs] if cenvs.is_a? String
+        cenvs.map! { |entry| "'" + entry.gsub(%('), %('"'"')) + "'" }
 
         convox_exec("env set #{cenvs.join(' ')} --rack #{option(:rack)} --app #{option(:app)} --replace")
       end
 
       # Disable cleanup - we need our binary
-      def cleanup
-      end
+      def cleanup; end
 
-      def uncleanup
-      end
+      def uncleanup; end
 
       # Pre-Install
       def install_deploy_dependencies

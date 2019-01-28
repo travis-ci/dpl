@@ -69,20 +69,22 @@ describe DPL::Provider::Convox do
   describe '#push_app' do
     it 'only builds app if promote is set to false' do
       provider.options.update(promote: false)
+      provider.options.update(description: 'MySuperDescription')
       allow(provider).to receive(:update_envs)
       expect(provider).not_to receive(:convox_deploy)
       expect(provider.context).to receive(:shell)
-        .with('./convox build --rack sample/rack --app example-app --wait --id')
+        .with('./convox build --rack sample/rack --app example-app --id --description "MySuperDescription"')
         .and_return(true)
       provider.push_app
     end
 
     it 'builds and promotes app if promote is set to true' do
       provider.options.update(promote: true)
+      provider.options.update(description: 'MySuperDescription')
       allow(provider).to receive(:update_envs)
       expect(provider).not_to receive(:convox_build)
       expect(provider.context).to receive(:shell)
-        .with('./convox deploy --rack sample/rack --app example-app --wait --id')
+        .with('./convox deploy --rack sample/rack --app example-app --wait --id --description "MySuperDescription"')
         .and_return(true)
       provider.push_app
     end
@@ -130,7 +132,7 @@ describe DPL::Provider::Convox do
     it 'should set environments when string provided' do
       provider.options.update(environment: 'VAR1=someVarValue')
       expect(provider.context).to receive(:shell)
-        .with('./convox env set VAR1=someVarValue --rack sample/rack --app example-app --replace')
+        .with(%(./convox env set 'VAR1=someVarValue' --rack sample/rack --app example-app --replace))
         .and_return(true)
       provider.update_envs
     end
@@ -139,10 +141,18 @@ describe DPL::Provider::Convox do
       provider.options.update(environment: [
                                 'VAR1=someVarValue',
                                 'SOME_VAR=this_is_a_value',
-                                'VAR_WITH_SPACES=there_should_be_spaces_here'
+                                'VAR_WITH_SPACES=there should be spaces here'
                               ])
       expect(provider.context).to receive(:shell)
-        .with('./convox env set VAR1=someVarValue SOME_VAR=this_is_a_value VAR_WITH_SPACES=there_should_be_spaces_here --rack sample/rack --app example-app --replace')
+        .with(%(./convox env set 'VAR1=someVarValue' 'SOME_VAR=this_is_a_value' 'VAR_WITH_SPACES=there should be spaces here' --rack sample/rack --app example-app --replace))
+        .and_return(true)
+      provider.update_envs
+    end
+
+    it 'should escape single-quotes' do
+      provider.options.update(environment: %(SINGLE_QUOTE=myPass'Word''has single quotes))
+      expect(provider.context).to receive(:shell)
+        .with(%(./convox env set 'SINGLE_QUOTE=myPass'"'"'Word'"'"''"'"'has single quotes' --rack sample/rack --app example-app --replace))
         .and_return(true)
       provider.update_envs
     end
