@@ -23,6 +23,7 @@ Dpl supports the following providers:
 * [Chef Supermarket](#chef-supermarket)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
+* [Cloudformation](#cloudformation)
 * [Deis](#deis)
 * [Engine Yard](#engine-yard)
 * [Firebase](#firebase)
@@ -476,6 +477,43 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space> --skip-ssl-validation
+
+### Cloudformation:
+
+#### Options:
+
+* **access_key_id**: AWS Access Key ID
+* **secret_access_key**: AWS Secret Access Key
+* **session_token**: Optional, AWS Session Access Token if using STS assume role. Not recommended for CI/CD.
+* **region**: Optional (default `us-east-1`), AWS region to deploy stack on.
+* **template_url**: Conditionally Optional, S3 URL to cloudformation template file.
+* **filepath**: Conditionally Optional, Path to cloudformation template file.
+* **stack_name**: CloudFormation Stack Name.
+* **stack_name_prefix**: Optional, CloudFormation Stack Name Prefix.
+* **promote**: Boolean (default `false`), if true changes are deployed otherwise change set is created.
+* **role_arn**: Optional, AWS Role ARN (assumed by cloudformation).
+* **sts_assume_role**: Optional, AWS Role ARN for cross account deployments (assumed by travis using given AWS credentials).
+* **capabilities**: Optional, Cloudformation allowed capabilities (allowed values: `CAPABILITY_IAM`, `CAPABILITY_NAMED_IAM`, `CAPABILITY_AUTO_EXPAND`; see [official documentation](https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateStack.html) for more information).
+* **wait**: Boolean (default `true`), should Travis wait to for cloudformation to complete stack creation/update. If true, cloudformation stack events will be streamed and displayed in logs.
+* **wait_timeout**: Optional (default `3600` seconds), How many seconds should we wait for stack creation/update.
+* **timeout_in_minutes**: Optional (default `60`), The amount of time that can pass before the stack status becomes `CREATE_FAILED` (Valid only when creating stack).
+
+#### Environment Variables
+
+Listed environment variables are default values for options. Below is mapping of `EnvironmentVariable: options_name`.
+
+* **AWS_ACCESS_KEY_ID**: `access_key_id`
+* **AWS_SECRET_ACCESS_KEY**: `secret_access_key`
+* **AWS_SESSION_TOKEN**: `session_token`
+* **AWS_REGION**: `region`
+* **STACK_NAME_PREFIX**: `stack_name_prefix`
+
+
+
+#### Examples:
+
+    dpl --provider=cloudformation --access_key_id=<ACCESS_KEY_ID> --secret_access_key=<SECRET_ACCESS_KEY> --filepath=<cf_template_file> --stack_name=<stack_name> --promote=<boolean> --parameters {ExampleParameter1=value1,ParamSqsName=example-name}
+
 
 ### cargo:
 
