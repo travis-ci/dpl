@@ -214,6 +214,7 @@ module DPL
 
       def stack_exists?
         stacks = client.describe_stacks(stack_name: stack_name)
+        puts stacks
         return true unless stacks.empty?
 
         false
