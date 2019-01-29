@@ -3,13 +3,24 @@
 module DPL
   class Provider
     class Convox < Provider
+      def install_url
+        options[:install_url] || 'https://convox.com/cli/linux/convox'
+      end
+
+      CONVOX_INSTALL_CLI = <<-SHELL.gsub(/^ {8}/, '').strip
+        if ! command -v convox &>/dev/null ; then
+          mkdir -p $HOME/bin
+          export PATH="$HOME/bin:$PATH"
+
+          curl -sL -o $HOME/bin/convox $INSTALL_URL
+          chmod +x $HOME/bin/convox
+        fi
+      SHELL
+
       def needs_key?
         false
       end
 
-      def install_url
-        options[:install_url] || 'https://convox.com/cli/linux/convox'
-      end
 
       def update_cli
         options[:update_cli] || false
@@ -24,7 +35,7 @@ module DPL
       end
 
       def convox_cli
-        './convox'
+        'convox'
       end
 
       def convox_host
@@ -86,7 +97,7 @@ module DPL
 
       # Pre-Install
       def install_deploy_dependencies
-        context.shell "curl -sL #{install_url} -o #{convox_cli} && chmod 0755 #{convox_cli}"
+        context.shell CONVOX_INSTALL_CLI
         context.shell "#{convox_cli} update" if update_cli
       end
 
