@@ -181,11 +181,20 @@ describe DPL::Provider::CloudFormation do
       end
     end
 
-    it 'should run create stack when one does not exist' do
+    it 'should run create stack when describe_stacks return empty list' do
       provider.options.update(promote: true)
       expect(provider.client).to receive(:describe_stacks)
         .with(stack_name: 'some-test-stack-name')
         .and_return([])
+      expect(provider.client).to receive(:create_stack).and_return(true)
+      provider.push_app
+    end
+
+    it 'should run create stack when one does not exist' do
+      provider.options.update(promote: true)
+      expect(provider.client).to receive(:describe_stacks)
+        .with(stack_name: 'some-test-stack-name')
+        .and_raise(Aws::CloudFormation::Errors.error_class('ValidationError').new('ValidationError', 'Stack [some-test-stack-name] does not exist'))
       expect(provider.client).to receive(:create_stack).and_return(true)
       provider.push_app
     end
