@@ -62,6 +62,7 @@ describe DPL::Provider::CloudFormation do
   access_key_id = 'qwertyuiopasdfghjklz'
   secret_access_key = 'qwertyuiopasdfghjklzqwertyuiopasdfghjklz'
   region = 'us-east-1'
+  aws_validation_error = Aws::CloudFormation::Errors.error_class('ValidationError')
 
   client_options = {
     stub_responses: true,
@@ -170,7 +171,7 @@ describe DPL::Provider::CloudFormation do
         provider.options.update(filepath: t.path)
         expect(provider.client).to receive(:describe_stacks)
           .with(stack_name: 'some-test-stack-name')
-          .and_return([])
+          .and_raise(aws_validation_error.new('ValidationError', 'Stack [some-test-stack-name] does not exist'))
         expect(provider.client).to receive(:create_stack)
           .with(hash_including(
                   stack_name: 'some-test-stack-name',
@@ -185,7 +186,7 @@ describe DPL::Provider::CloudFormation do
       provider.options.update(promote: true)
       expect(provider.client).to receive(:describe_stacks)
         .with(stack_name: 'some-test-stack-name')
-        .and_return([])
+        .and_raise(aws_validation_error.new('ValidationError', 'Stack [some-test-stack-name] does not exist'))
       expect(provider.client).to receive(:create_stack).and_return(true)
       provider.push_app
     end
@@ -194,17 +195,33 @@ describe DPL::Provider::CloudFormation do
       provider.options.update(promote: true)
       expect(provider.client).to receive(:describe_stacks)
         .with(stack_name: 'some-test-stack-name')
-        .and_raise(Aws::CloudFormation::Errors.error_class('ValidationError').new('ValidationError', 'Stack [some-test-stack-name] does not exist'))
+        .and_raise(aws_validation_error.new('ValidationError', 'Stack [some-test-stack-name] does not exist'))
       expect(provider.client).to receive(:create_stack).and_return(true)
       provider.push_app
     end
 
     it 'should run update stack when one does exist' do
+      ss = { stacks: [double] }
+      allow(ss[:stacks][0]).to receive(:stack_id) { 'some-test-stack-name' }
+      allow(ss[:stacks][0]).to receive(:stack_status) { 'CREATE_COMPLETE' }
+
       provider.options.update(promote: true)
       expect(provider.client).to receive(:describe_stacks)
         .with(stack_name: 'some-test-stack-name')
-        .and_return([{ stack_id: 'some-stack-id' }])
+        .and_return(ss)
       expect(provider.client).to receive(:update_stack).and_return(true)
+      provider.push_app
+    end
+
+    it 'should run create stack when stack exists in REVIEW_IN_PROGRESS state' do
+      ss = { stacks: [double] }
+      allow(ss[:stacks][0]).to receive(:stack_id) { 'some-test-stack-name' }
+      allow(ss[:stacks][0]).to receive(:stack_status) { 'REVIEW_IN_PROGRESS' }
+
+      provider.options.update(promote: true)
+      expect(provider.client).to receive(:describe_stacks)
+        .with(stack_name: 'some-test-stack-name')
+        .and_return(ss)
       provider.push_app
     end
 
@@ -215,7 +232,7 @@ describe DPL::Provider::CloudFormation do
       provider.options.update(promote: false)
       expect(provider.client).to receive(:describe_stacks)
         .with(stack_name: 'some-test-stack-name')
-        .and_return([])
+        .and_raise(aws_validation_error.new('ValidationError', 'Stack [some-test-stack-name] does not exist'))
       expect(provider.client).to receive(:create_change_set)
         .with(hash_including(
                 stack_name: 'some-test-stack-name',
@@ -228,11 +245,14 @@ describe DPL::Provider::CloudFormation do
     it 'should run create change set with type UPDATE when stack exists' do
       ccs = double
       allow(ccs).to receive(:id) { 'some-changeset-id' }
+      ss = { stacks: [double] }
+      allow(ss[:stacks][0]).to receive(:stack_id) { 'some-test-stack-name' }
+      allow(ss[:stacks][0]).to receive(:stack_status) { 'CREATE_COMPLETE' }
 
       provider.options.update(promote: false)
       expect(provider.client).to receive(:describe_stacks)
         .with(stack_name: 'some-test-stack-name')
-        .and_return([{ stack_id: 'some-stack-id' }])
+        .and_return(ss)
       expect(provider.client).to receive(:create_change_set)
         .with(hash_including(
                 stack_name: 'some-test-stack-name',
@@ -244,12 +264,14 @@ describe DPL::Provider::CloudFormation do
 
     it 'should skip event streaming when wait is false' do
       provider.options.update(wait: false)
+      expect(provider).to receive(:stack_exists?).and_return(true)
       expect(provider.client).not_to receive(:wait_until)
       provider.push_app
     end
 
     it 'should run event streaming when wait is true' do
       provider.options.update(wait: true)
+      expect(provider).to receive(:stack_exists?).and_return(true)
       expect(provider.client).to receive(:wait_until).and_return(true)
       provider.push_app
     end

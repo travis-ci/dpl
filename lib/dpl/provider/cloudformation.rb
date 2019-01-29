@@ -214,7 +214,7 @@ module DPL
 
       def stack_exists?
         stacks = client.describe_stacks(stack_name: stack_name)
-        return true unless stacks.empty?
+        return true unless stacks.empty? || stacks[:stacks][0].stack_status == 'REVIEW_IN_PROGRESS'
 
         false
       rescue Aws::CloudFormation::Errors::ValidationError => e
