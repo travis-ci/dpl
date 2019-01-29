@@ -10,11 +10,14 @@ module DPL
       def convox_install_cli
         <<-SHELL.gsub(/^ {10}/, '').strip
           if ! command -v convox &>/dev/null ; then
+            echo "Downloading convox CLI"
             mkdir -p $HOME/bin
             export PATH="$HOME/bin:$PATH"
 
             curl -sL -o $HOME/bin/convox #{install_url}
             chmod +x $HOME/bin/convox
+          else
+            echo "Convox CLI exists. Skipping installation"
           fi
         SHELL
       end
