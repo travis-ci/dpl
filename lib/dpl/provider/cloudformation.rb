@@ -11,8 +11,6 @@ module DPL
         @client ||= ::Aws::CloudFormation::Client.new(cf_options)
       end
 
-      def check_app; end
-
       def needs_key?
         false
       end
@@ -110,18 +108,6 @@ module DPL
           output.push(ob)
         end
         output
-      end
-
-      def check_auth
-        log "Logging in with Access Key: #{access_key_id[-4..-1].rjust(20, '*')}"
-      end
-
-      def push_app
-        if stack_exists?
-          cf_update
-        else
-          cf_create
-        end
       end
 
       def cf_update
@@ -295,6 +281,20 @@ module DPL
         super
       rescue ::Aws::CloudFormation::Errors::InvalidAccessKeyId
         raise Error, 'Invalid Access Key Id, Stopping Deploy'
+      end
+
+      def check_app; end
+
+      def check_auth
+        log "Logging in with Access Key: #{access_key_id[-4..-1].rjust(20, '*')}"
+      end
+
+      def push_app
+        if stack_exists?
+          cf_update
+        else
+          cf_create
+        end
       end
     end
   end
