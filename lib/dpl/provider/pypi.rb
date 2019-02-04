@@ -82,7 +82,7 @@ module DPL
                       ]
           }
         if pypi_server
-          servers['pypi'].insert("repository: #{pypi_server}")
+          servers['pypi'].insert(0, "repository: #{pypi_server}")
         end
         {
           :header => '[distutils]',
