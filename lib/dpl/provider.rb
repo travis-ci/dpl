@@ -25,18 +25,18 @@ module DPL
       'CloudFiles'          => 'cloud_files',
       'CloudFoundry'        => 'cloud_foundry',
       'CodeDeploy'          => 'code_deploy',
+      'Cargo'               => 'cargo',
       'Deis'                => 'deis',
-      'Divshot'             => 'divshot',
       'ElasticBeanstalk'    => 'elastic_beanstalk',
       'EngineYard'          => 'engine_yard',
       'Firebase'            => 'firebase',
       'GAE'                 => 'gae',
       'GCS'                 => 'gcs',
       'Hackage'             => 'hackage',
+      'Hephy'               => 'hephy',
       'Heroku'              => 'heroku',
       'Lambda'              => 'lambda',
       'Launchpad'           => 'launchpad',
-      'Modulus'             => 'modulus',
       'Nodejitsu'           => 'nodejitsu',
       'NPM'                 => 'npm',
       'Openshift'           => 'openshift',
@@ -158,7 +158,11 @@ module DPL
 
     def initialize(context, options)
       @context, @options = context, options
-      context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
+      if options.key?(:needs_git_http_user_agent) && !options[:needs_git_http_user_agent]
+        context.env.delete 'GIT_HTTP_USER_AGENT'
+      else
+        context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
+      end
     end
 
     def user_agent(*strings)

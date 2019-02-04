@@ -12,7 +12,10 @@ module DPL
 
         def faraday
           return @conn if @conn
-          headers = { "Accept" => "application/vnd.heroku+json; version=3" }
+          headers = {
+            "Accept" => "application/vnd.heroku+json; version=3",
+            "User-Agent" => user_agent,
+          }
 
           if options[:user] and options[:password]
             # no-op

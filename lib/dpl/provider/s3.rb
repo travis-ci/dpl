@@ -1,6 +1,7 @@
 require 'json'
 require 'aws-sdk'
 require 'mime-types'
+require 'uri'
 
 Aws.eager_autoload!
 
@@ -23,6 +24,9 @@ module DPL
         @max_threads
       end
 
+      def check_app
+      end
+      
       def needs_key?
         false
       end
@@ -36,10 +40,21 @@ module DPL
       end
 
       def s3_options
-        {
+        defaults = {
           region:      options[:region] || 'us-east-1',
           credentials: ::Aws::Credentials.new(access_key_id, secret_access_key)
         }
+
+        if options[:endpoint]
+          uri = URI.parse(options[:endpoint])
+          unless uri.scheme
+            log "S3 endpoint does not specify scheme; defaulting to HTTPS"
+            uri = URI("https://#{options[:endpoint]}")
+          end
+          defaults[:endpoint] = uri.to_s
+        end
+
+        defaults
       end
 
       def check_auth

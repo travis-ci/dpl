@@ -23,6 +23,24 @@ describe DPL::Provider::S3 do
         expect(options[:region]).to eq(region)
       end
     end
+
+    context 'with endpoint no https' do
+      example do
+        endpoint = 'myendpoint.com'
+        provider.options.update(:endpoint => endpoint)
+        options = provider.s3_options
+        expect(options[:endpoint]).to eq("https://#{endpoint}")
+      end
+    end
+
+    context 'with endpoint with https' do
+      example do
+        endpoint = 'https://myendpoint.com'
+        provider.options.update(:endpoint => endpoint)
+        options = provider.s3_options
+        expect(options[:endpoint]).to eq(endpoint)
+      end
+    end
   end
 end
 

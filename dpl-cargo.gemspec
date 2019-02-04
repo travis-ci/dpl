@@ -1,3 +1,3 @@
 require './gemspec_helper'
 
-gemspec_for 'divshot'
+gemspec_for 'cargo'

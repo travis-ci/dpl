@@ -11,6 +11,10 @@ module DPL
         prerelease
       )
 
+      def self.new(context, options)
+        super(context, options.merge!({needs_git_http_user_agent: false}))
+      end
+
       def travis_tag
         # Check if $TRAVIS_TAG is unset or set but empty
         if context.env.fetch('TRAVIS_TAG','') == ''
@@ -29,10 +33,16 @@ module DPL
       end
 
       def api
+        connection_options = {
+          :request => {
+            :timeout => 180,
+            :open_timeout => 180
+          }
+        }
         if options[:user] and options[:password]
-          @api ||= Octokit::Client.new(:login => options[:user], :password => options[:password])
+          @api ||= Octokit::Client.new(:login => options[:user], :password => options[:password], :auto_paginate => true, :connection_options => connection_options)
         else
-          @api ||= Octokit::Client.new(:access_token => option(:api_key))
+          @api ||= Octokit::Client.new(:access_token => option(:api_key), :auto_paginate => true, :connection_options => connection_options)
         end
       end
 
@@ -107,10 +117,17 @@ module DPL
         end
 
         files.each do |file|
-          next unless File.file?(file)
+          unless File.exist?(file)
+            log "#{file} does not exist."
+            next
+          end
+          unless File.file?(file)
+            log "#{file} is not a regular file. Skipping."
+            next
+          end
           existing_url = nil
           filename = Pathname.new(file).basename.to_s
-          api.release(release_url).rels[:assets].get.data.each do |existing_file|
+          api.release_assets(release_url).each do |existing_file|
             if existing_file.name == filename
               existing_url = existing_file.url
             end
@@ -126,6 +143,14 @@ module DPL
           end
         end
 
+        if ! options.key?(:tag_name) && options[:draft]
+          options[:tag_name] = get_tag.tap {|tag| log "Setting tag_name to #{tag}"}
+        end
+
+        if same_repo? && !options.key?(:target_commitish)
+          options[:target_commitish] = sha.tap {|commitish| log "Setting target_commitish to #{commitish}"}
+        end
+
         api.update_release(release_url, {:draft => false}.merge(options))
       end
 
@@ -136,6 +161,10 @@ module DPL
           content_type = "application/octet-stream"
         end
         api.upload_asset(release_url, file, {:name => filename, :content_type => content_type})
+      end
+
+      def same_repo?
+        slug == context.env['TRAVIS_REPO_SLUG']
       end
 
       def booleanize!(opts)

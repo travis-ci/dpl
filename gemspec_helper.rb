@@ -39,7 +39,7 @@ def gemspec_for(provider_name=nil, runtime_dependencies=[])
 
     # set up files
     if provider_name
-      s.files       = `git ls-files`.split("\n").grep(Regexp.new provider_name.to_s)
+      s.files       = `git ls-files`.split("\n").grep(Regexp.new provider_name.to_s) + ["lib/dpl/version.rb"]
       s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n").grep(Regexp.new provider_name.to_s)
     else
       s.files      = `git ls-files`.split("\n").reject {|f| f =~ Regexp.new("provider/")}

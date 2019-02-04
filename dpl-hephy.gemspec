@@ -1,3 +1,3 @@
 require './gemspec_helper'
 
-gemspec_for 'modulus'
+gemspec_for 'hephy'
