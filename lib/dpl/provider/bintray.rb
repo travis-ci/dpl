@@ -462,15 +462,21 @@ module DPL
           path = "/file_metadata/#{subject}/#{repo}/#{artifact.upload_path}"
           body = { "list_in_downloads": true }
           res = put_request(path, body)
-          log_bintray_response(res)
           code = res.code.to_i
 
-          next if code < 400
-          # It makes time for the version to be published so retry it
-          raise "Failed to list artifact #{artifact.upload_path} in download list" if tries > 10
+          if code < 400
+            log_bintray_response(res)
+            next
+          end
 
-          log "Bintray Bad Request error. It may take some time for a version to be published, let's retry in few seconds..."
-          sleep 6
+          # It makes time for the version to be published so retry it
+          if tries > 5
+            log_bintray_response(res)
+            raise "Failed to list artifact #{artifact.upload_path} in download list"
+          end
+
+          log "Received Bad Request response from Bintray. It may take some time for a version to be published, let's retry in few seconds... (#{tries}/5)"
+          sleep 10
           redo
         end
       end
