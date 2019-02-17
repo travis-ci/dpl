@@ -150,7 +150,7 @@ module DPL
 
       def get_option_value_by_filename(option_values, filename)
         return option_values if !option_values.include? ": "
-        options = option_values.split(",")
+        options = option_values.split(/,(?=(?:[^'"]|'[^']*'|"[^"]*")*$)/)
 
         valueChain = 0
         value = ""
