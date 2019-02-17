@@ -149,6 +149,7 @@ module DPL
       end
 
       def get_option_value_by_filename(option_values, filename)
+        return option_values if !option_values.include? ": "
         options = option_values.split(": ")
 
         file = (options[1]).split(',').map(&:strip)
