@@ -124,7 +124,7 @@ describe DPL::Provider::S3 do
 
     example "Sets different Cache and Expiration" do
       option_list = []
-      provider.options.update(:cache_control => ["max-age=99999999", "no-cache" => ["foo.html", "bar.txt"], "max-age=9999" => "*.txt"], :expires => ["2012-12-21 00:00:00 -0000", "1970-01-01 00:00:00 -0000" => "*.html"])
+      provider.options.update(:cache_control => "max-age=99999999, no-cache: foo.html, bar.txt, max-age=9999: *.txt", :expires => "\"2012-12-21 00:00:00 -0000\", \"1970-01-01 00:00:00 -0000\": *.html")
       expect(Dir).to receive(:glob).and_return(%w(foo.html bar.txt baz.js))
       allow_any_instance_of(Aws::S3::Object).to receive(:upload_file) do |obj, _data, options|
         option_list << { key: obj.key, options: options }
