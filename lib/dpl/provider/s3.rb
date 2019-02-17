@@ -149,22 +149,18 @@ module DPL
       end
 
       def get_option_value_by_filename(option_values, filename)
-        return option_values if !option_values.kind_of?(Array)
+        options = option_values.split(": ")
+
+        file = (options[1]).split(',').map(&:strip)
+        value = options[0].gsub(/"/, "")
+
         preferred_value = nil
-        hashes = option_values.select {|value| value.kind_of?(Hash) }
-        hashes.each do |hash|
-          hash.each do |value, patterns|
-            unless patterns.kind_of?(Array)
-              patterns = [patterns]
-            end
-            patterns.each do |pattern|
-              if File.fnmatch?(pattern, filename)
-                preferred_value = value
-              end
-            end
+        file.each do |pattern|
+          if File.fnmatch?(pattern, filename)
+            preferred_value = value
           end
         end
-        preferred_value = option_values.select {|value| value.kind_of?(String) }.last if preferred_value.nil?
+
         return preferred_value
       end
     end
