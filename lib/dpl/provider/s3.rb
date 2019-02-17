@@ -150,14 +150,29 @@ module DPL
 
       def get_option_value_by_filename(option_values, filename)
         return option_values if !option_values.include? ": "
-        options = option_values.split(": ")
+        options = option_values.split(",")
 
-        file = (options[1]).split(',').map(&:strip)
-        value = options[0].gsub(/"/, "")
+        valueChain = 0
+        value = ""
+        dict = Hash.new
+
+        options.each do |opt|
+          if !opt.include? ": "
+              if valueChain == 0
+                dict["*"] = opt.gsub(/"/, "")
+              else
+                dict[opt.strip] = value.strip.gsub(/"/, "")
+              end
+          else
+            valueChain = 1
+            value = opt.split(": ")[0]
+            dict[opt.split(": ")[1]] = value.strip.gsub(/"/, "")
+          end
+        end
 
         preferred_value = nil
-        file.each do |pattern|
-          if File.fnmatch?(pattern, filename)
+        dict.each do |name, value|
+          if File.fnmatch?(name, filename)
             preferred_value = value
           end
         end
