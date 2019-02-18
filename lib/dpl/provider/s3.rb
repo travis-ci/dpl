@@ -149,23 +149,23 @@ module DPL
       end
 
       def get_option_value_by_filename(option_values, filename)
-        return option_values if !option_values.include? ": "
-        options = option_values.split(/,(?=(?:[^'"]|'[^']*'|"[^"]*")*$)/)
+        return option_values if !option_values.include? ": "                # Includes only default assignment, "cache_control: max-age=99999999"
+        options = option_values.split(/,(?=(?:[^'"]|'[^']*'|"[^"]*")*$)/)   # Respect quoted values, e.g. "cache_control: "\"public, max-age=31536000\": *.jpg"
 
-        valueChain = 0
+        defaultValue = 1
         value = ""
         dict = Hash.new
 
-        options.each do |opt|
+        options.each do |opt|                                               # Iterate through comma-separated list
           if !opt.include? ": "
-              if valueChain == 0
-                dict["*"] = opt.gsub(/"/, "")
+              if defaultValue == 1
+                dict["*"] = opt.gsub(/"/, "")                               # Identified the default value, e.g. "max-age=99999999, ..."
               else
-                dict[opt.strip] = value.strip.gsub(/"/, "")
+                dict[opt.strip] = value.strip.gsub(/"/, "")                 # Additional file patterns in a value-chain, e.g. "..., bar.txt, ..."
               end
           else
-            valueChain = 1
-            value = opt.split(": ")[0]
+            defaultValue = 0
+            value = opt.split(": ")[0]                                      # Beginning of a value-chain, e.g. "no-cache: foo.html, ..."
             dict[opt.split(": ")[1]] = value.strip.gsub(/"/, "")
           end
         end
