@@ -32,6 +32,12 @@ describe DPL::Provider::Firebase do
       provider.push_app
     end
 
+    it 'should include only condition specified' do
+      provider.options.update(:only => 'hosting:target')
+      expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --only 'hosting:target' --token 'abc123'").and_return(true)
+      provider.push_app
+    end
+
     it 'should default to no project override' do
       expect(provider.context).to receive(:shell).with("firebase deploy --non-interactive --token 'abc123'").and_return(true)
       provider.push_app
