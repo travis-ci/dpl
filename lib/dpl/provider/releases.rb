@@ -195,7 +195,9 @@ module DPL
       end
 
       def filter_options(options)
-        options.slice(*GITHUB_API_RELEASE_KEYS)
+        options.dup.delete_if do |k,v|
+          ! GITHUB_API_RELEASE_KEYS.include? k
+        end
       end
     end
   end
