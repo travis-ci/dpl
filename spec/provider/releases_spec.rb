@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'dpl/provider/releases'
 require 'octokit'
 
+RSpec::Matchers.define_negated_matcher :excluding, :include
+
 describe DPL::Provider::Releases do
   subject :provider do
     described_class.new(DummyContext.new, :api_key => '0123445789qwertyuiop0123445789qwertyuiop', :file => 'blah.txt')
@@ -175,7 +177,7 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:upload_asset).with(anything, "test/foo.bar", {:name=>"foo.bar", :content_type=>"application/octet-stream"})
       expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
-      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
+      expect(provider.api).to receive(:update_release).with(anything, a_hash_including(:draft => false).and(excluding(:file => ["test/foo.bar", "bar.txt"])))
 
       provider.push_app
     end
@@ -202,7 +204,7 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
       allow(provider).to receive(:log)
-      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
+      expect(provider.api).to receive(:update_release).with(anything, a_hash_including(:draft => false).and(excluding(:file => ["test/foo.bar", "bar.txt"])))
 
       provider.push_app
     end
@@ -228,7 +230,7 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:delete_release_asset).with("release-url").and_return(true)
       expect(provider.api).to receive(:upload_asset).with(anything, "exists.txt", {:name=>"exists.txt", :content_type=>"text/plain"})
-      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
+      expect(provider.api).to receive(:update_release).with(anything, a_hash_including(:draft => false).and(excluding(:file => ["exists.txt"])))
 
       provider.push_app
     end
@@ -258,7 +260,7 @@ describe DPL::Provider::Releases do
 
       expect(provider.api).to receive(:upload_asset).with(anything, "test/foo.bar", {:name=>"foo.bar", :content_type=>"application/octet-stream"})
       expect(provider.api).to receive(:upload_asset).with(anything, "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
-      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
+      expect(provider.api).to receive(:update_release).with(anything, a_hash_including(:draft => false).and(excluding(:file => ["test/foo.bar", "bar.txt"])))
 
       provider.push_app
     end
@@ -276,7 +278,7 @@ describe DPL::Provider::Releases do
       allow(provider.api).to receive(:release_assets).and_return([])
 
       expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
-      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => false))
+      expect(provider.api).to receive(:update_release).with(anything, a_hash_including(:draft => false).and(excluding(:file => ["bar.txt"])))
 
       provider.push_app
     end
@@ -294,7 +296,7 @@ describe DPL::Provider::Releases do
       allow(provider.api).to receive(:release_assets).and_return([])
 
       expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
-      expect(provider.api).to receive(:update_release).with(anything, hash_including(:draft => true))
+      expect(provider.api).to receive(:update_release).with(anything, a_hash_including(:draft => true).and(excluding(:file => ["bar.txt"])))
 
       provider.push_app
     end
@@ -312,7 +314,7 @@ describe DPL::Provider::Releases do
       allow(provider.api).to receive(:release_assets).and_return([])
 
       expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
-      expect(provider.api).to receive(:update_release).with(anything, hash_including(:prerelease => true))
+      expect(provider.api).to receive(:update_release).with(anything, a_hash_including(:prerelease => true).and(excluding(:file => ["bar.txt"])))
 
       provider.push_app
     end
@@ -331,7 +333,7 @@ describe DPL::Provider::Releases do
       allow(provider.api).to receive(:release_assets).and_return([])
 
       expect(provider.api).to receive(:upload_asset).with("https://api.github.com/repos/foo/bar/releases/1234", "bar.txt", {:name=>"bar.txt", :content_type=>"text/plain"})
-      expect(provider.api).to receive(:update_release).with(anything, hash_including(:prerelease => true, :name => 'true'))
+      expect(provider.api).to receive(:update_release).with(anything, a_hash_including(:prerelease => true, :name => 'true').and(excluding(:file => ["bar.txt"])))
 
       provider.push_app
     end

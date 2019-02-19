@@ -11,6 +11,16 @@ module DPL
         prerelease
       )
 
+      GITHUB_API_RELEASE_KEYS = %i(
+        tag_name
+        target_commitish
+        name
+        body
+        draft
+        prerelease
+        label
+      )
+
       def self.new(context, options)
         super(context, options.merge!({needs_git_http_user_agent: false}))
       end
@@ -151,7 +161,7 @@ module DPL
           options[:target_commitish] = sha.tap {|commitish| log "Setting target_commitish to #{commitish}"}
         end
 
-        api.update_release(release_url, {:draft => false}.merge(options))
+        api.update_release(release_url, {:draft => false}.merge(filter_options(options)))
       end
 
       def upload_file(file, filename, release_url)
@@ -182,6 +192,10 @@ module DPL
             v
           end
         end
+      end
+
+      def filter_options(options)
+        options.slice(*GITHUB_API_RELEASE_KEYS)
       end
     end
   end
