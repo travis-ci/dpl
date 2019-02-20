@@ -18,7 +18,6 @@ module DPL
         body
         draft
         prerelease
-        label
       )
 
       def self.new(context, options)
