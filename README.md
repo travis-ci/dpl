@@ -535,10 +535,16 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **file_glob**: If files should be interpreted as globs (\* and \*\* wildcards). Defaults to false.
 * **overwrite**: If files with the same name should be overwritten. Defaults to false.
 * **release-number**: Overide automatic release detection, set a release manually.
-* **prerelease**: Identify the release as a prerelease.
 
-Additionally, options can be passed to [Octokit](https://github.com/octokit/octokit.rb) client.
+The following flags can be passed to [Octokit](https://github.com/octokit/octokit.rb) client.
 These are documented in https://github.com/octokit/octokit.rb/blob/master/lib/octokit/client/releases.rb.
+
+* **tag_name**: Override the tag name.
+* **target_commitish**: Override the commit associated with the release.
+* **name**: Name of the release.
+* **body**: Release body text. Formatting is not preserved.
+* **draft**: Boolean. Whether or not the release is a draft. Defaults to `false`.
+* **prerelease**: Identify the release as a prerelease. Defaults to `false`.
 
 #### GitHub Two Factor Authentication
 
