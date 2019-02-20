@@ -122,7 +122,7 @@ module DPL
 
         #If for some reason GitHub hasn't already created a release for the tag, create one
         if tag_matched == false
-          release_url = api.create_release(slug, get_tag, options.merge({:draft => true})).rels[:self].href
+          release_url = api.create_release(slug, get_tag, filter_options(options.merge({:draft => true}))).rels[:self].href
         end
 
         files.each do |file|
