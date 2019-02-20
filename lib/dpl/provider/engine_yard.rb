@@ -71,7 +71,7 @@ module DPL
         until deployment.finished?
           sleep 5
           #TODO: configurable timeout?
-          print deployment.output
+          print deployment.output.string
           deployment = EY::CloudClient::Deployment.get(api, deployment.app_environment, deployment.id)
         end
         puts "DONE: https://cloud.engineyard.com/apps/#{deployment.app.id}/environments/#{deployment.environment.id}/deployments/#{deployment.id}/pretty"
