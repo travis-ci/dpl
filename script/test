@@ -4,21 +4,16 @@ if [ -z $TRAVIS_COMMIT_RANGE ]; then
   exit $?
 fi
 
-changes=$(git log --name-only --pretty=oneline --full-index $TRAVIS_COMMIT_RANGE | perl -ne '!/^[0-9a-f]{40}/ && /provider\/([^\/]+)(_spec)?\.rb$/ && print $1') | grep --only [^_] | sort | uniq
+changes=$(git log --name-only --pretty=oneline --full-index $TRAVIS_COMMIT_RANGE | perl -ne '!/^[0-9a-f]{40}/ && /provider\/([^\/]+)(_spec)?\.rb$/ && print $1' | grep --only [^_] | sort | uniq)
 status=0
-run_rake=1
-
-for p in ${changes}; do
-  if [ -n $p ]; then
-    run_rake=0
+if [ -n $changes ]; then
+  for p in ${changes}; do
     rake spec-$p
     if [ $? -ne 0 ]; then
       status=1
     fi
-  fi
-done
-
-if [ $run_rake -eq 1 ]; then
+  done
+else
   rake
   status=$?
 fi
