@@ -4,7 +4,7 @@ if [ -z $TRAVIS_COMMIT_RANGE ]; then
   exit $?
 fi
 
-changes=$(git log --name-only --pretty=oneline --full-index $TRAVIS_COMMIT_RANGE | perl -ne '!/^[0-9a-f]{40}/ && /provider\/([^\/]+)(_spec)?\.rb$/ && print $1,"\n"') | grep --only [^_] | sort | uniq
+changes=$(git log --name-only --pretty=oneline --full-index $TRAVIS_COMMIT_RANGE | perl -ne '!/^[0-9a-f]{40}/ && /provider\/([^\/]+)(_spec)?\.rb$/ && print $1') | grep --only [^_] | sort | uniq
 status=0
 if [ -n $changes ]; then
   for p in ${changes}; do
