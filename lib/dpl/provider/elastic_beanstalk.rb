@@ -177,6 +177,9 @@ module DPL
 
           break if environment[:status] == "Ready"
           sleep 5
+        rescue Aws::Errors::ServiceError => e
+          log "Caught #{e}: #{e.message}"
+          log "Continuing..."
         end
 
         if errorEvents > 0 then error("Deployment failed.") end
