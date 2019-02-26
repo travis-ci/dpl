@@ -154,32 +154,34 @@ module DPL
         events = []
 
         loop do
-          environment = eb.describe_environments({
-            :application_name  => app_name,
-            :environment_names => [env_name]
-          })[:environments].first
+          begin
+            environment = eb.describe_environments({
+              :application_name  => app_name,
+              :environment_names => [env_name]
+            })[:environments].first
 
-          eb.describe_events({
-            :environment_name  => env_name,
-            :start_time        => @start_time.utc.iso8601,
-          })[:events].reverse.each do |event|
-            message = "#{event[:event_date]} [#{event[:severity]}] #{event[:message]}"
-            unless events.include?(message)
-              events.push(message)
-              if event[:severity] == "ERROR"
-                errorEvents += 1
-                warn(message)
-              else
-                log(message)
+            eb.describe_events({
+              :environment_name  => env_name,
+              :start_time        => @start_time.utc.iso8601,
+            })[:events].reverse.each do |event|
+              message = "#{event[:event_date]} [#{event[:severity]}] #{event[:message]}"
+              unless events.include?(message)
+                events.push(message)
+                if event[:severity] == "ERROR"
+                  errorEvents += 1
+                  warn(message)
+                else
+                  log(message)
+                end
               end
             end
-          end
 
-          break if environment[:status] == "Ready"
-          sleep 5
-        rescue Aws::Errors::ServiceError => e
-          log "Caught #{e}: #{e.message}"
-          log "Continuing..."
+            break if environment[:status] == "Ready"
+            sleep 5
+          rescue Aws::Errors::ServiceError => e
+            log "Caught #{e}: #{e.message}"
+            log "Continuing..."
+          end
         end
 
         if errorEvents > 0 then error("Deployment failed.") end
