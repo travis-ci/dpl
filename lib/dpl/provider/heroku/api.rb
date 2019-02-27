@@ -26,7 +26,7 @@ module DPL
 
         def upload_archive
           log "uploading application archive"
-          context.shell "curl #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' -H 'Accept: application/vnd.heroku+json; version=3' --data-binary @#{archive_file}"
+          context.shell "curl#{curl_options} #{Shellwords.escape(put_url)} -X PUT -H 'Content-Type:' -H 'Accept: application/vnd.heroku+json; version=3' -H 'User-Agent: #{user_agent}' --data-binary @#{archive_file}"
         end
 
         def trigger_build
@@ -44,7 +44,7 @@ module DPL
           if response.success?
             @build_id  = JSON.parse(response.body)['id']
             output_stream_url = JSON.parse(response.body)['output_stream_url']
-            context.shell "curl #{Shellwords.escape(output_stream_url)} -H 'Accept: application/vnd.heroku+json; version=3'"
+            context.shell "curl#{curl_options} #{Shellwords.escape(output_stream_url)} -H 'Accept: application/vnd.heroku+json; version=3' -H 'User-Agent: #{user_agent}'"
           else
             handle_error_response(response)
           end
@@ -52,16 +52,18 @@ module DPL
 
         def verify_build
           loop do
-            response = faraday.get("/apps/#{option(:app)}/builds/#{build_id}/result")
-            exit_code = JSON.parse(response.body)['exit_code']
-            if exit_code.nil?
+            response = faraday.get("/apps/#{option(:app)}/builds/#{build_id}")
+            body = JSON.parse(response.body)
+
+            case body['status']
+            when 'pending'
               log "heroku build still pending"
               sleep 5
               next
-            elsif exit_code == 0
+            when 'succeeded'
               break
             else
-              error "deploy failed, build exited with code #{exit_code}"
+              error "deploy failed"
             end
           end
         end
@@ -88,6 +90,10 @@ module DPL
 
         def version
           @version ||= options[:version] || context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
+        end
+
+        def curl_options
+          $stdout.isatty ? '' : ' -sS'
         end
 
       end

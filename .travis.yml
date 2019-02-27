@@ -3,8 +3,7 @@ rvm:
 - "2.2.9"
 - "2.3.6"
 - "2.4"
-- "2.5.0"
-- "2.5"
+- "2.5.3"
 
 jobs:
   include:
@@ -29,7 +28,6 @@ jobs:
             repo: travis-ci/dpl
           if: branch = master AND NOT type IN (pull_request)
   allow_failures:
-    - rvm: "2.5"
 
 env:
   global:
@@ -55,4 +53,3 @@ before_script:
 
 script:
   - rake
-

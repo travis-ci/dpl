@@ -15,7 +15,7 @@ describe DPL::Provider::CloudFoundry do
   describe "#check_auth" do
     context 'when basic credentials are provided' do
       example do
-        expect(provider.context).to receive(:shell).with('test x$TRAVIS_OS_NAME = "xlinux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz')
+        expect(provider.context).to receive(:shell).with('test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz')
         expect(provider.context).to receive(:shell).with('./cf api api.run.awesome.io --skip-ssl-validation')
         expect(provider.context).to receive(:shell).with('./cf login -u mallomar -p myreallyawesomepassword -o \'myorg\' -s \'outer\'')
         provider.check_auth
@@ -33,7 +33,7 @@ describe DPL::Provider::CloudFoundry do
       end
 
       example do
-        expect(provider.context).to receive(:shell).with('test x$TRAVIS_OS_NAME = "xlinux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz')
+        expect(provider.context).to receive(:shell).with('test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz')
         expect(provider.context).to receive(:shell).with('./cf api api.run.awesome.io --skip-ssl-validation')
         expect(provider.context).to receive(:shell).with('./cf auth craw myreallyawesomesecret --client-credentials')
         expect(provider.context).to receive(:shell).with('./cf target -o \'myorg\' -s \'outer\'')

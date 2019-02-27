@@ -1,6 +1,10 @@
 module DPL
   class Provider
     class Script < Provider
+      def self.new(context, options)
+        super(context, options.merge!({needs_git_http_user_agent: false}))
+      end
+
       def check_auth
       end
 

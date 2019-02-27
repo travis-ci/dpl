@@ -11,7 +11,7 @@ RSpec.shared_context 'with faraday' do
         stub.get("/account") {|env| [200, response_headers, account_response_body]}
         stub.get("/apps/example") {|env| [200, response_headers, app_response_body]}
         stub.post("/apps/example/builds") {|env| [201, response_headers, builds_response_body]}
-        stub.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef/result") {|env| [200, response_headers, build_result_response_body]}
+        stub.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef") {|env| [200, response_headers, build_response_body]}
         stub.post("/sources") {|env| [201, response_headers, source_response_body] }
         stub.post("/apps/example/dynos") {|env| [201, response_headers, dynos_create_response_body]}
         stub.delete("/apps/example/dynos") {|env| [202, response_headers, '{}'] }
@@ -163,53 +163,27 @@ RSpec.shared_context 'with faraday' do
     }'
   }
 
-  let(:build_result_response_body) {
+  let(:build_response_body) {
   '{
-      "build": {
-      "id": "01234567-89ab-cdef-0123-456789abcdef",
-      "status": "succeeded",
-      "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
-    },
-    "exit_code": 0,
-    "lines": [
-      {
-        "line": "-----> Ruby app detected\n",
-        "stream": "STDOUT"
-      }
-    ]
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "status": "succeeded",
+    "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
   }'
   }
 
-  let(:build_result_response_body_failure) {
+  let(:build_response_body_failure) {
     '{
-        "build": {
-        "id": "01234567-89ab-cdef-0123-456789abcdef",
-        "status": "failed",
-        "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
-      },
-      "exit_code": 1,
-      "lines": [
-        {
-          "line": "-----> Ruby app detected\n",
-          "stream": "STDOUT"
-        }
-      ]
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "status": "failed",
+      "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
     }'
   }
 
-  let(:build_result_response_body_in_progress) {
+  let(:build_response_body_in_progress) {
     '{
-        "build": {
-        "id": "01234567-89ab-cdef-0123-456789abcdef",
-        "status": "failed",
-        "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
-      },
-      "lines": [
-        {
-          "line": "-----> Ruby app detected\n",
-          "stream": "STDOUT"
-        }
-      ]
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "status": "pending",
+      "output_stream_url": "https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef"
     }'
   }
 end
@@ -257,9 +231,31 @@ describe DPL::Provider::Heroku, :api do
       expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
       expect(provider).to receive(:get_url).and_return 'http://example.com/source.tgz'
       expect(provider).to receive(:version).and_return 'v1.3.0'
-      expect(provider.context).to receive(:shell).with("curl https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef -H 'Accept: application/vnd.heroku+json; version=3'")
+      expect(provider.context).to receive(:shell).with("curl https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef -H 'Accept: application/vnd.heroku+json; version=3' -H 'User-Agent: dpl/#{DPL::VERSION}'")
       provider.trigger_build
       expect(provider.build_id).to eq('01234567-89ab-cdef-0123-456789abcdef')
+    end
+
+    context 'when $stdout is not a TTY' do
+      before do
+        @old_stdout = $stdout
+        $stdout = StringIO.new
+      end
+
+      after do
+        $stdout = @old_stdout
+      end
+
+      example do
+        expect(provider).to receive(:log).with('triggering new deployment')
+        expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
+        expect(provider).to receive(:get_url).and_return 'http://example.com/source.tgz'
+        expect(provider).to receive(:version).and_return 'v1.3.0'
+        expect(provider.context).to receive(:shell).with("curl -sS https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef -H 'Accept: application/vnd.heroku+json; version=3' -H 'User-Agent: dpl/#{DPL::VERSION}'")
+        provider.trigger_build
+        expect(provider.build_id).to eq('01234567-89ab-cdef-0123-456789abcdef')
+      end
+
     end
   end
 
@@ -276,8 +272,8 @@ describe DPL::Provider::Heroku, :api do
       example do
         expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
         expect(provider).to receive(:build_id).at_least(:once).and_return('01234567-89ab-cdef-0123-456789abcdef')
-        stubs.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef/result") {|env| [200, response_headers, build_result_response_body_failure]}
-        expect{ provider.verify_build }.to raise_error("deploy failed, build exited with code 1")
+        stubs.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef") {|env| [200, response_headers, build_response_body_failure]}
+        expect{ provider.verify_build }.to raise_error("deploy failed")
       end
     end
 
@@ -285,7 +281,7 @@ describe DPL::Provider::Heroku, :api do
       example do
         expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
         expect(provider).to receive(:build_id).at_least(:once).and_return('01234567-89ab-cdef-0123-456789abcdef')
-        stubs.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef/result") {|env| [200, response_headers, build_result_response_body_in_progress]}
+        stubs.get("/apps/example/builds/01234567-89ab-cdef-0123-456789abcdef") {|env| [200, response_headers, build_response_body_in_progress]}
         expect(provider).to receive(:sleep).with(5).and_return(true)
         expect{ provider.verify_build }.not_to raise_error
       end

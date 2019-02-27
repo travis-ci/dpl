@@ -18,12 +18,12 @@ Dpl supports the following providers:
 * [BitBalloon](#bitballoon)
 * [Bluemix Cloud Foundry](#bluemix-cloud-foundry)
 * [Boxfuse](#boxfuse)
+* [cargo](#cargo)
 * [Catalyze](#catalyze)
 * [Chef Supermarket](#chef-supermarket)
 * [Cloud 66](#cloud-66)
 * [Cloud Foundry](#cloud-foundry)
 * [Deis](#deis)
-* [Divshot.io](#divshotio)
 * [Engine Yard](#engine-yard)
 * [Firebase](#firebase)
 * [Github Pages](#github-pages)
@@ -35,7 +35,6 @@ Dpl supports the following providers:
 * [Heroku](#heroku)
 * [Lambda](#lambda)
 * [Launchpad](#launchpad)
-* [Modulus](#modulus)
 * [Nodejitsu](#nodejitsu)
 * [NPM](#npm)
 * [OpenShift](#openshift)
@@ -46,6 +45,7 @@ Dpl supports the following providers:
 * [RubyGems](#rubygems)
 * [Scalingo](#scalingo)
 * [Script](#script)
+* [Snap](#snap)
 * [Surge.sh](#surgesh)
 * [TestFairy](#testfairy)
 
@@ -219,18 +219,6 @@ For authentication you can also use Travis CI secure environment variable:
 
 #### Examples:
     dpl --provider=nodejitsu --username=<username> --api-key=<api-key>
-
-
-### Modulus
-
-#### Options:
-
-* **api-key** Modulus Authentication Token
-* **project-name** Modulus Project to Deploy
-
-#### Example:
-    dpl --provider=modulus --api-key=<api-key> --project-name=<project-name>
-
 
 ### Engine Yard:
 
@@ -420,6 +408,7 @@ For example: `--endpoint=https://nyc3.digitaloceanspaces.com`
 * **password**: anynines password.
 * **organization**: anynines target organization.
 * **space**: anynines target space
+* **app_name**: Application name. Optional.
 
 #### Examples:
 
@@ -471,17 +460,6 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 
     dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --slot=dplsite-test --verbose
 
-### Divshot.io:
-
-#### Options:
-
-* **api-key**: Divshot.io API key
-* **environment**: Which environment (development, staging, production) to deploy to
-
-#### Examples:
-
-    dpl --provider=divshot --api-key=<api-key> --environment=<environment>
-
 ### Cloud Foundry:
 
 #### Options:
@@ -491,12 +469,23 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **organization**: Cloud Foundry target organization.
 * **api**: Cloud Foundry api URL
 * **space**: Cloud Foundry target space
+* **app_name**: Application name. Optional.
 * **manifest**: Path to manifest file. Optional.
 * **skip_ssl_validation**: Skip ssl validation. Optional.
 
 #### Examples:
 
     dpl --provider=cloudfoundry --username=<username> --password=<password> --organization=<organization> --api=<api> --space=<space> --skip-ssl-validation
+
+### cargo:
+
+#### Options:
+
+* **token**: Your cargo registry API token, for crates.io generate at <https://crates.io/me>
+
+#### Examples:
+
+    dpl --provider=cargo --token=<token>
 
 ### Rackspace Cloud Files:
 
@@ -917,6 +906,22 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 
 
 
+### Snap
+
+Deploys built snaps to the [snap store](https://snapcraft.io/).
+
+#### Options:
+
+* **snap** Path (glob) of the snap to be pushed
+* **channel** Optional. Channel into which the snap will be released (defaults to `edge`)
+* **token** Optional. Login token for the store (generate with `snapcraft export-login`). Falls back to the `$SNAP_TOKEN` environment variable
+
+#### Examples:
+
+    dpl --provider=snap --token=<token> --snap=my.snap --channel=edge
+
+
+
 ### Surge.sh
 
 #### Options:
@@ -943,6 +948,7 @@ In order to use this provider, please make sure you have the [App Engine Admin A
 * **space**: Bluemix target space
 * **region**: Bluemix region [ng, eu-gb, eu-de, au-syd]. Optional, default US region (ng).
 * **api**: Bluemix api URL. Optional for Bluemix dedicated. Explicit **api** setting precedence over **region** setting.
+* **app_name**: Application name. Optional.
 * **manifest**: Path to manifest file. Optional.
 * **skip_ssl_validation**: Skip ssl validation. Optional.
 

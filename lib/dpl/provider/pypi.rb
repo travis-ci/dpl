@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class PyPI < Provider
-      DEFAULT_SERVER = 'https://upload.pypi.org/legacy/'
+      DEFAULT_SERVER = false
       PYPIRC_FILE = '~/.pypirc'
 
       def pypi_user
@@ -66,23 +66,28 @@ module DPL
       end
 
       def install_deploy_dependencies
-        unless context.shell "wget -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && " \
+        # --user likely fails inside virtualenvs but is needed outside to avoid needing sudo.
+        unless context.shell "if [ -z ${VIRTUAL_ENV+x} ]; then export PIP_USER=yes; fi && " \
+                             "wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && " \
                              "pip install --upgrade #{pypi_setuptools_arg} #{pypi_twine_arg} #{pypi_wheel_arg}"
           error "Couldn't install pip, setuptools, twine or wheel."
         end
       end
 
       def config
+        servers = {
+            'pypi' => [
+                        "username: #{pypi_user}",
+                        "password: #{pypi_password}",
+                      ]
+          }
+        if pypi_server
+          servers['pypi'].insert(0, "repository: #{pypi_server}")
+        end
         {
           :header => '[distutils]',
           :servers_line => 'index-servers = pypi',
-          :servers => {
-            'pypi' => [
-                         "repository: #{pypi_server}",
-                         "username: #{pypi_user}",
-                         "password: #{pypi_password}",
-                      ]
-          }
+          :servers => servers
         }
       end
 

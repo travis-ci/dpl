@@ -3,7 +3,7 @@ module DPL
     class CloudFoundry < Provider
 
       def initial_go_tools_install
-        context.shell 'test x$TRAVIS_OS_NAME = "xlinux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz'
+        context.shell 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz'
       end
 
       def check_auth
@@ -23,7 +23,7 @@ module DPL
       end
 
       def push_app
-        error 'Failed to push app' unless context.shell("./cf push#{manifest}")
+        error 'Failed to push app' unless context.shell("./cf push#{app_name}#{manifest}")
 
       ensure
         context.shell "./cf logout"
@@ -33,6 +33,10 @@ module DPL
       end
 
       def uncleanup
+      end
+
+      def app_name
+        options[:app_name].nil? ? "" : " '#{options[:app_name]}'"
       end
 
       def manifest
