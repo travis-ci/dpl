@@ -14,6 +14,7 @@ Dpl supports the following providers:
 * [AWS OpsWorks](#opsworks)
 * [AWS S3](#s3)
 * [Azure Web Apps](#azure-web-apps)
+* [Azure Storage](#azure-storage)
 * [Bintray](#bintray)
 * [BitBalloon](#bitballoon)
 * [Bluemix Cloud Foundry](#bluemix-cloud-foundry)
@@ -459,6 +460,20 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 #### Examples:
 
     dpl --provider=AzureWebApps --username=depluser --password=deplp@ss --site=dplsite --slot=dplsite-test --verbose
+
+### Azure Storage:
+
+Before deploying your app, follow [here](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website) to enable static web hosting of your azure storage account.
+Be sure that you have a container named '$web' in your storage which azure hosts your website.
+
+* **account-name**: Storage account name.
+* **account-key**: Storage account key.
+* **local-dir**: Local directory to upload from. Can be set from a global perspective (~/travis/build) or relative perspective (build) Defaults to project root.
+* **dot_match**: When set to `true`, upload files starting a `.`.
+
+#### Examples:
+
+    dpl --provider=AzureStorage --account-name=<storage account name> --account-key=<storage account key>
 
 ### Cloud Foundry:
 

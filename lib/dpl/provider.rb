@@ -15,6 +15,7 @@ module DPL
       'Appfog'              => 'appfog',
       'Atlas'               => 'atlas',
       'AzureWebApps'        => 'azure_webapps',
+      'AzureStorage'        => 'azure_storage',
       'Bintray'             => 'bintray',
       'BitBalloon'          => 'bitballoon',
       'BluemixCloudFoundry' => 'bluemix_cloud_foundry',
