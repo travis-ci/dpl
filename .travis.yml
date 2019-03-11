@@ -52,4 +52,4 @@ before_script:
   - rm -f $(ruby -r rubygems -e "puts Gem.bindir")/dpl
 
 script:
-  - rake
+  - bash -x script/test
