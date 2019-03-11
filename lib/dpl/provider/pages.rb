@@ -138,7 +138,7 @@ module DPL
         unless context.shell "git clone --quiet --branch='#{@target_branch}' --depth=1 '#{gh_remote_url}' '#{target_dir}' > /dev/null 2>&1"
           # if such branch doesn't exist at remote, init it from scratch
           print_step "Cloning #{@target_branch} branch failed"
-          Dir.mkdir(target_dir)  # Restore dir destroyed by failed `git clone`
+          FileUtils.mkdir_p(target_dir)  # Restore dir destroyed by failed `git clone`
           github_init(target_dir)
         end
       end
