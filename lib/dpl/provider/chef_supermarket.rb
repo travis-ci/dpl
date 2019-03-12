@@ -1,4 +1,5 @@
 require 'chef'
+require 'chef/cookbook/metadata'
 
 module DPL
   class Provider
@@ -20,8 +21,16 @@ module DPL
         error "#{options[:client_key]} does not exist" unless ::File.exist?(options[:client_key])
       end
 
+      def cookbook_metadata
+        # credit: https://coderwall.com/p/wwt0sw/easiest-way-to-parse-a-cookbook-s-metadata-file
+        metadata_file = 'metadata.rb'
+        # read in metadata
+        @metadata = Chef::Cookbook::Metadata.new
+        @metadata.from_file(metadata_file)
+      end
+
       def check_app
-        @cookbook_name = options[:cookbook_name] || options[:app]
+        @cookbook_name = options[:cookbook_name] || options[:app] || @metadata.name
         @cookbook_category = options[:cookbook_category]
         unless cookbook_category
           error "Missing cookbook_category option\n" +
