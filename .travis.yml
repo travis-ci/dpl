@@ -53,3 +53,14 @@ before_script:
 
 script:
   - rake
+
+dist: xenial
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  edge:
+    source: biodranik/dpl
+    branch: fix-xenial-pages-error
+  on:
+    all_branches: true
