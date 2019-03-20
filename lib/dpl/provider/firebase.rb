@@ -1,7 +1,7 @@
 module DPL
   class Provider
     class Firebase < Provider
-      npm_g 'firebase-tools@^6.1', 'firebase'
+      npm_g 'firebase-tools@^6.3', 'firebase'
 
       def check_auth
         raise Error, "must supply token option or FIREBASE_TOKEN environment variable" if !options[:token] && !context.env['FIREBASE_TOKEN']
