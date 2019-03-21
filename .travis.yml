@@ -52,4 +52,12 @@ before_script:
   - rm -f $(ruby -r rubygems -e "puts Gem.bindir")/dpl
 
 script:
-  - rake
+  - |
+    if [[ $TRAVIS_EVENT_TYPE = 'pull_request' ]]; then
+      for provider in $(git diff $TRAVIS_COMMIT_RANGE --name-only | grep '^(spec|lib)' | sed -e 's:.*/::' | sed -e 's/\(_spec\)\{0,1\}\.rb$//' | sort | uniq); do
+        echo $provider
+        rake spec-$provider
+      done
+    else
+      rake
+    fi
