@@ -17,7 +17,7 @@ module DPL
 
       def max_threads
         return @max_threads if @max_threads
-        if (@max_threads = threads_wanted = options.fetch(:max_threads, DEFAULT_MAX_THREADS)) > MAX_THREADS
+        if (@max_threads = threads_wanted = options.fetch(:max_threads, DEFAULT_MAX_THREADS).to_i) > MAX_THREADS
           log "Desired thread count #{threads_wanted} is too large. Using #{MAX_THREADS}."
           @max_threads = MAX_THREADS
         end
