@@ -152,8 +152,15 @@ module DPL
       def wait_until_deployed
         errorEvents = 0 # errors counter, should remain 0 for successful deployment
         events = []
+        tries = 0
+        max_tries = 10
 
         loop do
+          if tries >= max_tries
+            log "Too many failures"
+            break
+          end
+          
           begin
             environment = eb.describe_environments({
               :application_name  => app_name,
@@ -181,6 +188,8 @@ module DPL
           rescue Aws::Errors::ServiceError => e
             log "Caught #{e}: #{e.message}"
             log "Continuing..."
+          ensure
+            tries += 1
           end
         end
 
