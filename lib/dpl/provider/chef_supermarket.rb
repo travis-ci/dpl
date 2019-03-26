@@ -1,4 +1,8 @@
 require 'chef'
+require 'chef/config'
+require 'chef/cookbook_loader'
+require 'chef/cookbook_uploader'
+require 'chef/cookbook_site_streaming_uploader'
 
 module DPL
   class Provider
