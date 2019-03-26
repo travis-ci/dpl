@@ -1,7 +1,4 @@
 require 'spec_helper'
-require 'chef/cookbook_loader'
-require 'chef/cookbook_uploader'
-require 'chef/cookbook_site_streaming_uploader'
 require 'dpl/provider/chef_supermarket'
 
 describe DPL::Provider::ChefSupermarket do
