@@ -37,7 +37,7 @@ module DPL
         # So we assume cookbook path is '..'
         cl = ::Chef::CookbookLoader.new '..'
         @cookbook = cl[cookbook_name]
-        cl.validate_cookbooks
+        ::Chef::CookbookUploader.new(cookbook).validate_cookbooks
       end
 
       def push_app
