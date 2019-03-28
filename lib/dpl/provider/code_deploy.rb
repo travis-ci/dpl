@@ -102,6 +102,7 @@ module DPL
         return unless options[:wait_until_deployed]
         print "Deploying "
         deployment = wait_until_deployed(data[:deployment_id])
+        log "file_exists_behavior #{deployment[:file_exists_behavior]}."
         print "\n"
         if deployment[:status] == 'Succeeded'
           log "Deployment successful."
@@ -117,7 +118,6 @@ module DPL
         loop do
           result = code_deploy.get_deployment(deployment_id: deployment_id)
           deployment = result[:deployment_info]
-          log "file_exists_behavior #{deployment[:file_exists_behavior]}."
           break if deployment[:status] == "Succeeded" || deployment[:status] == "Failed" || deployment[:status] == "Stopped"
           print "."
           sleep 5
