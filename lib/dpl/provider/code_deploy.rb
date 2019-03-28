@@ -98,7 +98,7 @@ module DPL
           description:            options[:description]      || default_description,
           file_exists_behavior:   options[:file_exists_behavior] || default_file_exists_behavior,
         })
-        log "file_exists_behavior #{code_deploy.get_deployment(deployment_id: data.deployment_id.inspect)[:deployment_info][:file_exists_behavior]}."
+        log "file_exists_behavior #{code_deploy.get_deployment(deployment_id: data.deployment_id)[:deployment_info][:file_exists_behavior]}."
         log "Triggered deployment #{data.deployment_id.inspect}."
         return unless options[:wait_until_deployed]
         print "Deploying "
