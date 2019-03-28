@@ -95,7 +95,8 @@ module DPL
           revision:               revision,
           application_name:       options[:application]      || option(:application_name),
           deployment_group_name:  options[:deployment_group] || option(:deployment_group_name),
-          description:            options[:description]      || default_description
+          description:            options[:description]      || default_description,
+          file_exists_behavior:   options[:file_exists_behavior] || default_file_exists_behavior,
         })
         log "Triggered deployment #{data.deployment_id.inspect}."
         return unless options[:wait_until_deployed]
@@ -137,6 +138,10 @@ module DPL
 
       def default_description
         "Deploy build #{context.env['TRAVIS_BUILD_NUMBER']} via Travis CI"
+      end
+          
+      def default_file_exists_behavior
+        "DISALLOW"
       end
 
       def check_auth
