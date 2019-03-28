@@ -90,7 +90,7 @@ module DPL
             description:            options[:description] || default_description
           })
         end
-
+        log "file_exists_behavior #{options[:file_exists_behavior] || default_file_exists_behavior}."
         data = code_deploy.create_deployment({
           revision:               revision,
           application_name:       options[:application]      || option(:application_name),
