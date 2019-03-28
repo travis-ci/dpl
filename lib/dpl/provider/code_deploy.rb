@@ -90,7 +90,7 @@ module DPL
             description:            options[:description] || default_description
           })
         end
-        log "file_exists_behavior #{options[:file_exists_behavior] || default_file_exists_behavior}."
+        
         data = code_deploy.create_deployment({
           revision:               revision,
           application_name:       options[:application]      || option(:application_name),
@@ -117,6 +117,7 @@ module DPL
         loop do
           result = code_deploy.get_deployment(deployment_id: deployment_id)
           deployment = result[:deployment_info]
+          log "file_exists_behavior #{deployment[:file_exists_behavior]}."
           break if deployment[:status] == "Succeeded" || deployment[:status] == "Failed" || deployment[:status] == "Stopped"
           print "."
           sleep 5
