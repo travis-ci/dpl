@@ -9,7 +9,7 @@ module DPL
 
       VERSION = "0.2"
       TAG = "-TestFairy-"
-      SERVER = "http://api.testfairy.com"
+      SERVER = "https://api.testfairy.com"
       UPLOAD_URL_PATH = "/api/upload";
 
       def check_auth
