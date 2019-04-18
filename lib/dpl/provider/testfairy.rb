@@ -2,7 +2,7 @@ module DPL
   class Provider
     class TestFairy < Provider
 
-      require "net/http"
+      require 'net/http'
       require 'net/http/post/multipart'
       require 'json'
 
@@ -46,7 +46,7 @@ module DPL
         puts "Upload parameters = #{get_printable_params params} \nto #{url}"
         uri = URI.parse(url)
         request = Net::HTTP::Post::Multipart.new(uri.path, params, 'User-Agent' => "Travis plugin version=#{VERSION}")
-        res = Net::HTTP.start(uri.host, uri.port) do |http|
+        res = Net::HTTP.start(uri.host, 443) do |http|
           http.request(request)
         end
         puts res.body
