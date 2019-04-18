@@ -46,6 +46,7 @@ module DPL
         puts "Upload parameters = #{get_printable_params params} \nto #{url}"
         uri = URI.parse(url)
         request = Net::HTTP::Post::Multipart.new(uri.path, params, 'User-Agent' => "Travis plugin version=#{VERSION}")
+        request.use_ssl = true
         res = Net::HTTP.start(uri.host, 443) do |http|
           http.request(request)
         end
