@@ -103,7 +103,7 @@ module DPL
               filename = files.pop rescue nil
               next unless filename
 
-              if !options[:overwrite] && api.bucket(option(:bucket)).object(upload_path(filename)).exists?
+              if !!options[:overwrite] && api.bucket(option(:bucket)).object(upload_path(filename)).exists?
                 log "skipping #{filename.inspect}, already exists on s3"
                 next
               end
