@@ -26,7 +26,7 @@ module DPL
 
       def check_app
       end
-      
+
       def needs_key?
         false
       end
@@ -102,6 +102,11 @@ module DPL
               end
               filename = files.pop rescue nil
               next unless filename
+
+              if !options[:overwrite] && api.bucket(option(:bucket)).object(upload_path(filename)).exists?
+                log "skipping #{filename.inspect}, already exists on s3"
+                next
+              end
 
               opts  = content_data_for(filename)
               opts[:cache_control]          = get_option_value_by_filename(options[:cache_control], filename) if options[:cache_control]

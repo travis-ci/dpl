@@ -325,6 +325,7 @@ This _overrides_ the `gemspec` option.
 * **index_document_suffix**: Set the index document of a S3 website.
 * **default_text_charset**: Set the default character set to append to the content-type of text files you are uploading.
 * **max_threads**: The number of threads to use for S3 file uploads. Default is 5, and the absolute maximum is 15.
+* **overwrite**: When set to `false`, it will skip uploading the files that already exists on the S3 bucket. Defaults to `true`
 
 #### File-specific `Cache-Control` and `Expires` headers
 
