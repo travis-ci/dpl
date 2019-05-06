@@ -1,2 +1,4 @@
+--default-path spec2
+--require spec_helper
 --color
 --tty
