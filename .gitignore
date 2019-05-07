@@ -1,5 +1,6 @@
 Gemfile-*
 Gemfile.lock
+NOTES.md
 .bundle
 .coverage
 coverage

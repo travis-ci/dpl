@@ -4,39 +4,52 @@ module Dpl
       env :catalyze
 
       opt '--target TARGET', 'The git remote repository to deploy to', required: true
-      opt '--path PATH', 'If using --skip_cleanup to deploy from current state, you can optionally specify path for the files to deploy. If not specified then all files are deployed.', default: '.'
+      opt '--path PATH', 'Path to files to deploy', default: '.'
 
       # fold deploy: 'Deploying to Catalyze: %{target}'
 
+      CMDS = {
+        git_push:     'git push --force %{target} HEAD:master',
+        git_checkout: 'git checkout HEAD',
+        git_add:      'git add %{path} --all --force',
+        git_commit:   'git commit -m "%{message}" --quiet'
+      }
+
+      MSGS = {
+        skip_cleanup: 'Using build files for deployment'
+      }
+
       def setup
-        skip_cleanup if skip_cleanup?
+        commit if skip_cleanup?
       end
 
       def deploy
-        shell "git push --force #{target} HEAD:master"
+        shell :git_push
       end
 
-      def skip_cleanup
-        info 'Using build files for deployment'
-        shell 'git checkout HEAD'
-        shell "git add #{path} --all --force"
-        shell %(git commit -m "#{message}" --quiet)
-      end
+      private
 
-      def message
-        vars.empty? ? 'Local build' : 'Build #%s (%s) of %s@%s' % vars
-      end
+        def commit
+          info :skip_cleanup
+          shell :git_checkout
+          shell :git_add
+          shell :git_commit
+        end
 
-      VARS = %w(
-        TRAVIS_BUILD_NUMBER
-        TRAVIS_COMMIT
-        TRAVIS_REPO_SLUG
-        TRAVIS_BRANCH
-      )
+        def message
+          vars.empty? ? 'Local build' : 'Build #%s (%s) of %s@%s' % vars
+        end
 
-      def vars
-        @vars ||= ENV.values_at(*VARS).compact
-      end
+        VARS = %w(
+          TRAVIS_BUILD_NUMBER
+          TRAVIS_COMMIT
+          TRAVIS_REPO_SLUG
+          TRAVIS_BRANCH
+        )
+
+        def vars
+          @vars ||= ENV.values_at(*VARS).compact
+        end
     end
   end
 end

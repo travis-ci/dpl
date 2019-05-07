@@ -1,4 +1,7 @@
 require 'chef'
+require 'chef/cookbook_uploader'
+require 'chef/cookbook_site_streaming_uploader'
+require 'chef/knife/cookbook_metadata'
 
 module Dpl
   module Providers
@@ -11,26 +14,31 @@ module Dpl
 
       opt '--user_id ID',            'Chef Supermarket user name', required: true
       opt '--client_key KEY',        'Client API key file name', required: true
-      opt '--cookbook_name NAME',    'Cookbook name. Defaults to the current working dir basename'
-      opt '--cookbook_category CAT', 'Cookbook category in Supermarket. See: https://docs.getchef.com/knife_cookbook_site.html#id12', required: true
+      opt '--cookbook_name NAME',    'Cookbook name', default: :repo_name
+      opt '--cookbook_category CAT', 'Cookbook category in Supermarket', required: true, see: 'https://docs.getchef.com/knife_cookbook_site.html#id12'
 
       URL = "https://supermarket.chef.io/api/v1/cookbooks"
+
+      MSGS = {
+        validate:       'Validating cookbook %{name}',
+        upload:         'Uploading cookbook %{name} to %{url}',
+        missing_key:    '%{client_key} does not exist',
+        unknown_error:  'Unknown error while sharing cookbook: %s',
+        version_exists: 'The same version of this cookbook already exists on the Opscode Cookbook Site.'
+      }
 
       def setup
         Chef::Config[:client_key] = client_key
       end
 
       def check_auth
-        error "#{client_key} does not exist" unless File.exist?(client_key)
-      end
-
-      def check_app
-        info "Validating cookbook #{name}"
-        uploader.validate_cookbooks
+        error :missing_key unless File.exist?(client_key)
       end
 
       def deploy
-        info "Uploading cookbook #{name} to #{URL}"
+        info :validate
+        uploader.validate_cookbooks
+        info :upload
         upload
       end
 
@@ -41,15 +49,12 @@ module Dpl
       private
 
         def upload
-          res = upload
+          res = Chef::CookbookSiteStreamingUploader.post(URL, user_id, client_key, params)
           handle_error(res.body) if res.code.to_i != 201
         end
 
-        def post
-          Chef::CookbookSiteStreamingUploader.post(URL, user_id, client_key,
-            cookbook: json(category: cookbook_category),
-            tarball:  tarball
-          )
+        def params
+          { cookbook: json(category: cookbook_category), tarball:  tarball }
         end
 
         def tarball
@@ -66,7 +71,7 @@ module Dpl
         end
 
         def uploader
-          Chef::CookbookUploader.new(cookbook, '..')
+          Chef::CookbookUploader.new(cookbook)
         end
 
         def loader
@@ -77,6 +82,10 @@ module Dpl
           @dir ||= Chef::CookbookSiteStreamingUploader.create_build_dir(cookbook)
         end
 
+        def url
+          URL
+        end
+
         def handle_error(res)
           res = JSON.parse(res)
           unknown_error(res) unless res['error_messages']
@@ -85,11 +94,11 @@ module Dpl
         end
 
         def unknown_error(msg)
-          error "Unknown error while sharing cookbook\nServer response: #{msg}"
+          error :unknown_error, msg
         end
 
         def version_exists
-          error "The same version of this cookbook already exists on the Opscode Cookbook Site."
+          error :version_exists
         end
 
         def json(obj)

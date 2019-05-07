@@ -11,13 +11,11 @@ module Dpl
 
       opt '--user USER'
       opt '--secret SECRET'
-      opt '--config_file FILE', deprecated: '--configfile'
-      opt '--configfile FILE' # move this to Cl?
+      opt '--config_file FILE', alias: :configfile, deprecated: :configfile
       opt '--payload PAYLOAD'
       opt '--image IMAGE'
       opt '--env ENV'
-      opt '--args ARGS', deprecated: '--extra_args'
-      opt '--extra_args ARGS' # move this to Cl?
+      opt '--args ARGS', alias: :extra_args, deprecated: :extra_args
 
       URL = 'https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/latest/boxfuse-commandline-latest-linux-x64.tar.gz'
 
@@ -29,20 +27,8 @@ module Dpl
         opts = %i(user secret payload image env)
         cmd = ['boxfuse/boxfuse run', *opts_for(opts)]
         cmd << "--configfile=#{config_file}" if config_file?
-        cmd << args if args? || extra_args?
+        cmd << args if args?
         cmd.compact.join(' ')
-      end
-
-      def config_file?
-        opts.key?(:config_file) || opts.key?(:configfile)
-      end
-
-      def config_file
-        opts[:config_file] || deprectated_opt(:configfile, :config_file)
-      end
-
-      def args
-        opts[:args] || deprectated_opt(:extra_args, :args)
       end
     end
   end

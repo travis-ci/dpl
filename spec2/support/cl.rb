@@ -7,13 +7,15 @@ module Support
 
     def args_from_description(e)
       str = e.example_group.description
-      str.include?('given') ? str.sub('given', '').strip.split(' ') : []
+      return [] unless str.include?('given')
+      strs = str.sub('given', '').strip.split(/\s(?=(?:[^"]|"[^"]*")*$)/)
+      strs.map { |str| str.gsub('"', '') }
     end
 
     def runner(args = nil)
       args ||= respond_to?(:args) ? self.args : args_from_description
       args = [described_class.registry_key.to_s, *args]
-      ::Cl.new(ctx, 'dpl').runner(args)
+      Dpl::Cli.new(ctx, 'dpl').runner(args)
     end
 
     def cmd(args = nil)

@@ -7,7 +7,7 @@ module Support
 
       def matches?(cmd)
         @cmd = cmd
-        cmd.ctx.cmds.any? { |cmd| cmd =~ /deprecated option.*#{opt},/ }
+        cmd.ctx.cmds.any? { |cmd| cmd =~ /deprecated option.*#{opt} / }
       end
 
       def description

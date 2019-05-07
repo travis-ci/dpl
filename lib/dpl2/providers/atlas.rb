@@ -19,9 +19,7 @@ module Dpl
       opt '--args ARGS',     'Args to pass to the atlas-upload CLI'
       opt '--debug',         'Turn on debug output'
 
-      # experimental
-      # git_http_user_agent false
-      # needs_key false
+      experimental 'Atlas'
 
       def setup
         ENV['ATLAS_TOKEN'] = token
@@ -32,22 +30,20 @@ module Dpl
       end
 
       def deploy
-        paths.each { |path| upload(path) }
+        path.each { |path| upload(path) }
       end
 
-      def upload(path)
-        shell ['atlas-upload', args, app, path].compact.join(' ')
-      end
+      private
 
-      def paths
-        Array(opts[:path])
-      end
+        def upload(path)
+          shell ['atlas-upload', args, app, path].compact.join(' ')
+        end
 
-      ARGS = %i(address exclude include metadata vcs debug)
+        ARGS = %i(address exclude include metadata vcs debug)
 
-      def args
-        opts[:args] || opts_for(ARGS, '-')
-      end
+        def args
+          super || opts_for(ARGS, prefix: '-')
+        end
     end
   end
 end

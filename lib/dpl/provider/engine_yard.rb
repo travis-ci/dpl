@@ -6,6 +6,8 @@ module DPL
     class EngineYard < Provider
       def token
         options[:api_key] ||= if options[:email] and options[:password]
+          # as far as i can tell this class method has not ever existed, at least since Aug 2013
+          # https://github.com/engineyard/engineyard-cloud-client/blob/master/lib/engineyard-cloud-client.rb
           EY::CloudClient.authenticate(options[:email], options[:password])
         else
           option(:api_key) # will raise
@@ -68,14 +70,15 @@ module DPL
       end
 
       def poll_for_result(deployment)
-        until deployment.finished?
-          sleep 5
-          #TODO: configurable timeout?
-          print "."
-          deployment = EY::CloudClient::Deployment.get(api, deployment.app_environment, deployment.id)
-        end
-        puts "DONE: https://cloud.engineyard.com/apps/#{deployment.app.id}/environments/#{deployment.environment.id}/deployments/#{deployment.id}/pretty"
+        deployment = fetch(deployment) until deployment.finished?
+        info "DONE: https://cloud.engineyard.com/apps/#{deployment.app.id}/environments/#{deployment.environment.id}/deployments/#{deployment.id}/pretty"
         deployment
+      end
+
+      def fetch(deployment)
+        print "."
+        sleep 5
+        EY::CloudClient::Deployment.get(api, deployment.app_environment, deployment.id)
       end
 
       def deploy

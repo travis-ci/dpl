@@ -16,30 +16,47 @@ module Dpl
 
       API = 'https://api.aws.ie.a9s.eu'
 
+      CMDS = {
+        install: 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz',
+        api:     './cf api %{url}',
+        login:   './cf login -u %{username} -p %{password} -o %{organization} -s %{space}',
+        push:    './cf push %{args}',
+        logout:  './cf logout'
+      }
+
+      ASSERT = {
+        push: 'Failed to push app'
+      }
+
       def install
-        shell 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz'
+        shell :install
       end
 
       def check_auth
-        shell "./cf api #{API}"
-        shell "./cf login -u #{username} -p #{password} -o #{organization} -s #{space}"
+        shell :api
+        shell :login
       end
 
       def deploy
-        shell "./cf push #{args}".strip, assert: 'Failed to push app'
+        shell :push , assert: true
       end
 
       def finish
-        shell "./cf logout"
-        super
+        shell :logout
       end
 
-      def args
-        args = []
-        args << quote(app_name)  if app_name?
-        args << "-f #{manifest}" if manifest?
-        args.join(' ')
-      end
+      private
+
+        def url
+          API
+        end
+
+        def args
+          args = []
+          args << quote(app_name)  if app_name?
+          args << "-f #{manifest}" if manifest?
+          args.join(' ')
+        end
     end
   end
 end
