@@ -1,8 +1,8 @@
-require 'dpl2/provider/base'
+require 'dpl2/provider'
 
 module Dpl
-  module Provider
-    class BitBalloon < Base
+  module Providers
+    class BitBalloon < Provider
       summary 'BitBallon deployment provider'
 
       description <<~str

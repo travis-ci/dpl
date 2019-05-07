@@ -1,4 +1,4 @@
-describe Dpl::Provider::BitBalloon, 'acceptance' do
+describe Dpl::Providers::BitBalloon, 'acceptance' do
   before { subject.run }
 
   describe 'by default' do
