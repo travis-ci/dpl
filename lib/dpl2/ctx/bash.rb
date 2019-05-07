@@ -1,4 +1,5 @@
 require 'cl'
+require 'dpl2/ctx/script'
 
 module Dpl
   module Ctx
@@ -8,37 +9,40 @@ module Dpl
       end
 
       def fold(name)
-        cmds << "[fold] #{name}"
-        yield.tap { cmds << "[unfold] #{name}" }
       end
 
       def script(name)
-        cmds << "[script] #{name}"
+        shell Script.new(registry_key, name).read
       end
 
       def shell(cmd, opts = {})
         cmd = "#{cmd} > /dev/null 2>&1" if opts[:silence]
-        cmds << cmd
+        @last_result = system(cmd, only(opts, :chdir))
+        error opts[:assert] if opts[:assert] && !success?
       end
 
       def success?
-        true
+        !!@last_result
       end
 
       def info(msg)
-        cmds << "[info] #{msg}"
+        $stdout.puts(msg)
       end
 
       def warn(msg)
-        cmds << "[warn] #{msg}"
+        $stderr.puts("\e[31;1m#{msg}\e[0m")
+      end
+
+      def error(message)
+        raise Error, message
       end
 
       def deprecate_opt(old, new)
         warn("deprecated option #{old}, please use: #{new}")
       end
 
-      def cmds
-        @cmds ||= []
+      def only(hash, *keys)
+        hash.select { |key, _| keys.include?(key) }.to_h
       end
     end
   end

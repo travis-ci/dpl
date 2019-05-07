@@ -1,28 +1,8 @@
-require 'cl'
+require 'dpl2/provider'
 
 module Dpl
-  module Provider
-    class Base < Cl::Cmd
-      # tell Cl that this is not meant to be an executable command
-
-      abstract
-
-      # common options that are going to be inherited by all commands
-      # (providers), and listed separately in the help output
-
-      opt '--pretend', 'Pretend running the deployment'
-      opt '--quiet',   'Suppress any output'
-
-      # this method is rather useless, and only here so you don't get
-      # confused by the method name registry_key. it's the name of the
-      # provider.
-
-      def name
-        registry_key
-      end
-    end
-
-    class Script < Base
+  module Providers
+    class Script < Provider
       # let's encourage people to describe their stuff
 
       summary 'Elementary provider that executes a custom command'

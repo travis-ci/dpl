@@ -1,10 +1,8 @@
-require 'dpl2/provider/base'
+require 'dpl2/provider'
 
 module Dpl
-  module Provider
-    class Boxfuse < Base
-      INSTALL = 'curl -L https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/latest/boxfuse-commandline-latest-linux-x64.tar.gz | tar xz'
-
+  module Providers
+    class Boxfuse < Provider
       summary 'Boxfuse deployment provider'
 
       description <<~str
@@ -21,13 +19,15 @@ module Dpl
       opt '--args ARGS', deprecated: '--extra_args'
       opt '--extra_args ARGS' # move this to Cl?
 
-      def prepare
-        shell INSTALL
+      URL = 'https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/latest/boxfuse-commandline-latest-linux-x64.tar.gz'
+
+      def install
+        shell "curl -L #{URL} | tar xz"
       end
 
       def cmd
         opts = %i(user secret payload image env)
-        cmd = ['boxfuse/boxfuse run', *to_opts(opts)]
+        cmd = ['boxfuse/boxfuse run', *opts_for(opts)]
         cmd << "--configfile=#{config_file}" if config_file?
         cmd << args if args? || extra_args?
         cmd.compact.join(' ')

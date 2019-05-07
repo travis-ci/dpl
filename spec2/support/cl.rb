@@ -1,12 +1,13 @@
 module Support
   module Cl
     def self.included(base)
-      base.let(:args) do |e|
-        str = e.example_group.description
-        str.include?('given') ? str.sub('given', '').strip.split(' ') : []
-      end
-
+      base.let(:args) { |e| args_from_description(e) }
       base.subject { cmd }
+    end
+
+    def args_from_description(e)
+      str = e.example_group.description
+      str.include?('given') ? str.sub('given', '').strip.split(' ') : []
     end
 
     def runner(args = nil)
