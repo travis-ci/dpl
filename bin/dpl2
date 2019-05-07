@@ -3,4 +3,4 @@ $: << File.expand_path('../../lib', __FILE__)
 
 require 'dpl2'
 
-Cl.new($0).run(ARGV)
+Dpl::Cli.new($0).run(ARGV)

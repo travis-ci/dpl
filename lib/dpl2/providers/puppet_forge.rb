@@ -1,13 +1,45 @@
+require 'json/pure'
+require 'puppet/face'
+require 'puppet_blacksmith'
+
 module Dpl
   module Providers
     class PuppetForge < Provider
-      summary 'PuppetForge deployment provider'
+      summary 'Puppet Forge deployment provider'
 
       description <<~str
         tbd
       str
 
-      opt '--username USER', 'anynines username', required: true
+      opt '--user NAME', 'Puppet Forge user name', required: true
+      opt '--password PASS', 'Puppet Forge password', required: true
+      opt '--url URL', 'Puppet Forge URL to deploy to', default: 'https://forgeapi.puppetlabs.com/'
+
+      MSGS = {
+        upload: 'Uploading to Puppet Forge %s/%s'
+      }
+
+      def validate
+        file.metadata
+      end
+
+      def deploy
+        build
+        info :upload, forge.username, file.name
+        forge.push!(file.name)
+      end
+
+      def file
+        @file ||= Blacksmith::Modulefile.new
+      end
+
+      def build
+        Puppet::Face['module', :current].build('./')
+      end
+
+      def forge
+        @forge ||= Blacksmith::Forge.new(user, password, url)
+      end
     end
   end
 end

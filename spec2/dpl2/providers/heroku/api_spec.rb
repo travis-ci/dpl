@@ -1,0 +1,40 @@
+describe Dpl::Providers::Heroku, memfs: true do
+  let(:args) { |e| %w(--strategy api --api_key key) + args_from_description(e) }
+  let(:user) { JSON.dump(email: 'email') }
+  let(:dyno) { JSON.dump(attach_url: 'attach_url') }
+  let(:urls) { JSON.dump(source_blob: { get_url: 'get_url', put_url: 'put_url' })}
+  let(:build) { JSON.dump(id: 1, output_stream_url: 'output_stream_url', status: 'succeeded') }
+
+  before { stub_request(:get, 'https://api.heroku.com/account').and_return(body: user) }
+  before { stub_request(:post, 'https://api.heroku.com/sources').and_return(body: urls) }
+  before { stub_request(:get, 'https://api.heroku.com/apps/dpl') }
+  before { stub_request(:post, 'https://api.heroku.com/apps/dpl/builds').and_return(body: build) }
+  before { stub_request(:get, 'https://api.heroku.com/apps/dpl/builds/1').and_return(body: build) }
+  before { subject.run }
+
+  # remaining options are tested in heroku/git_spec.rb
+
+  describe 'by default' do
+    it { should have_run '[print] Authenticating ... ' }
+    it { should have_run '[info] success.' }
+    it { should have_run '[print] Checking for app dpl ... ' }
+    it { should have_run '[info] success.' }
+    it { should have_run '[info] Creating application archive' }
+    it { should have_run 'tar -zcf /Users/sven/.dpl.dpl.tgz --exclude .git .' }
+    it { should have_run '[info] Uploading application archive' }
+    it { should have_run 'curl put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: dpl/1.10.8" --data-binary @/Users/sven/.dpl.dpl.tgz' }
+    it { should have_run '[info] triggering new deployment' }
+    it { should have_run 'curl output_stream_url -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: dpl/1.10.8"' }
+    it { should have_run_in_order }
+
+    it { should have_requested :get, 'https://api.heroku.com/account' }
+    it { should have_requested :post, 'https://api.heroku.com/sources' }
+    it { should have_requested :get, 'https://api.heroku.com/apps/dpl' }
+    it { should have_requested(:post, 'https://api.heroku.com/apps/dpl/builds').with(body: { source_blob: { url: 'get_url', version: 'ref: HEAD' } }) }
+    it { should have_requested :get, 'https://api.heroku.com/apps/dpl/builds/1' }
+  end
+
+  describe 'given --version version' do
+    it { should have_requested(:post, 'https://api.heroku.com/apps/dpl/builds').with(body: { source_blob: { url: 'get_url', version: 'version' } }) }
+  end
+end

@@ -7,7 +7,37 @@ module Dpl
         tbd
       str
 
-      opt '--username USER', 'anynines username', required: true
+      apt 'cabal', 'cabal-install'
+
+      opt '--username USER', 'Hackage username', required: true
+      opt '--password USER', 'Hackage password', required: true
+
+      CMDS = {
+        validate: 'cabal check',
+        prepare:  'cabal dist',
+        upload:   'cabal upload %s %s'
+
+      }
+
+      ASSERT = {
+        validate: 'cabal check failed',
+        prepare:  'cabal dist failed',
+        upload:   'cabal upload failed'
+      }
+
+      def validate
+        shell 'cabal check', assert: 'cabal check failed'
+      end
+
+      def prepare
+        shell 'cabal sdist', assert: 'cabal sdist failed'
+      end
+
+      def deploy
+        Dir.glob('dist/*.tar.gz') do |tar|
+          shell :upload, opts_for(%i(username password)), tar, assert: true
+        end
+      end
     end
   end
 end

@@ -3,7 +3,12 @@ module Support
     class HaveRun < Struct.new(:str)
       include Shared
 
+      def self.cmds
+        @cmds ||= []
+      end
+
       def matches?(cmd)
+        self.class.cmds << str
         @cmd = cmd
         cmd.ctx.cmds.any? { |cmd, opts| match?(cmd) }
       end
@@ -21,8 +26,26 @@ module Support
       end
     end
 
+    class HaveRunInOrder
+      include Shared
+
+      def matches?(cmd)
+        @expected = HaveRun.cmds.clear
+        @actual = cmd.ctx.cmds.map { |str| @expected.map { |cmd| cmd if match?(str, cmd) } }.flatten.compact
+        @expected == @actual
+      end
+
+      def description
+        'have run commands in order'
+      end
+    end
+
     def have_run(str)
       HaveRun.new(str)
+    end
+
+    def have_run_in_order
+      HaveRunInOrder.new
     end
   end
 end

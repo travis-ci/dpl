@@ -11,15 +11,16 @@ module Dpl
         This deployment provider helps you deploy to BitBallon easily.
       str
 
-      opt '--local_dir DIR',       'The sub-directory of the built assets for deployment', default: '.'
-      opt '--site_id ID',          'The side id'
-      opt '--access_token TOKEN',  'The access token'
+      opt '--access_token TOKEN', 'The access token', required: true
+      opt '--site_id ID',         'The side id', required: true
+      opt '--local_dir DIR',      'The sub-directory of the built assets for deployment', default: '.'
 
       def cmd
-        cmd = ['bitballoon deploy', local_dir]
-        cmd << "--site-id=#{site_id}"           if site_id?
-        cmd << "--access-token=#{access_token}" if access_token?
-        cmd.compact.join(' ')
+        ['bitballoon deploy', local_dir, cmd_opts].join(' ')
+      end
+
+      def cmd_opts
+        opts_for(%i(site_id access_token), dashed: true)
       end
     end
   end
