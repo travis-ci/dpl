@@ -1,312 +1,315 @@
-require 'dpl/error'
-require 'dpl/version'
+require 'cl'
 require 'fileutils'
+require 'forwardable'
+require 'dpl/provider/env'
+require 'dpl/provider/interpolate'
+require 'dpl/provider/require'
 
-module DPL
-  class Provider
-    include FileUtils
+module Dpl
+  # Providers are encouraged to implement any of the following stages
+  # according to their needs and semantics.
+  #
+  #   * init
+  #   * install
+  #   * login
+  #   * setup
+  #   * prepare
+  #   * validate
+  #   * deploy
+  #   * finish
+  #
+  # The main logic should sit in the :deploy stage. The stage :finish will run
+  # even if previous stages have raised an error, and caused other stages to be
+  # skipped (i.e. the deploy process to be halted).
+  #
+  # The following stages are not meant to be overwritten, but considered
+  # internal:
+  #
+  #   * before_install
+  #   * before_setup
+  #   * before_deploy
+  #   * before_finish
 
-    # map of DPL provider class name constants to their corresponding
-    # file names. There is no simple rule to map them automatically
-    # (camel-cases, snake-cases, call-caps, etc.), so we need an explicit
-    # map.
-    GEM_NAME_OF = {
-      'Anynines'            => 'anynines',
-      'Appfog'              => 'appfog',
-      'Atlas'               => 'atlas',
-      'AzureWebApps'        => 'azure_webapps',
-      'Bintray'             => 'bintray',
-      'BitBalloon'          => 'bitballoon',
-      'BluemixCloudFoundry' => 'bluemix_cloud_foundry',
-      'Boxfuse'             => 'boxfuse',
-      'Catalyze'            => 'catalyze',
-      'ChefSupermarket'     => 'chef_supermarket',
-      'Cloud66'             => 'cloud66',
-      'CloudFiles'          => 'cloud_files',
-      'CloudFoundry'        => 'cloud_foundry',
-      'CodeDeploy'          => 'code_deploy',
-      'Cargo'               => 'cargo',
-      'Deis'                => 'deis',
-      'ElasticBeanstalk'    => 'elastic_beanstalk',
-      'EngineYard'          => 'engine_yard',
-      'Firebase'            => 'firebase',
-      'GAE'                 => 'gae',
-      'GCS'                 => 'gcs',
-      'Hackage'             => 'hackage',
-      'Hephy'               => 'hephy',
-      'Heroku'              => 'heroku',
-      'Lambda'              => 'lambda',
-      'Launchpad'           => 'launchpad',
-      'Nodejitsu'           => 'nodejitsu',
-      'NPM'                 => 'npm',
-      'Openshift'           => 'openshift',
-      'OpsWorks'            => 'ops_works',
-      'Packagecloud'        => 'packagecloud',
-      'Pages'               => 'pages',
-      'PuppetForge'         => 'puppet_forge',
-      'PyPI'                => 'pypi',
-      'Releases'            => 'releases',
-      'RubyGems'            => 'rubygems',
-      'S3'                  => 's3',
-      'Scalingo'            => 'scalingo',
-      'Script'              => 'script',
-      'Snap'                => 'snap',
-      'Surge'               => 'surge',
-      'TestFairy'           => 'testfairy',
-      'Transifex'           => 'transifex',
+  class Provider < Cl::Cmd
+    extend Forwardable
+    include Env, FileUtils
+
+    class << self
+      %i(cleanup deprecated experimental).each do |name|
+        define_method(:"#{name}?") { !!instance_variable_get(:"@#{name}") }
+        define_method(name) { |arg = true| instance_variable_set(:"@#{name}", arg) }
+      end
+
+      %i(apt npm pip).each do |name|
+        define_method(:"#{name}?") { !!instance_variable_get(:"@#{name}") }
+        define_method(name) { |*args| args.any? ? instance_variable_set(:"@#{name}", args) : instance_variable_get(:"@#{name}") }
+      end
+
+      def keep(*paths)
+        paths.any? ? keep.concat(paths) : @keep ||= []
+      end
+
+      def needs?(feature)
+        needs.include?(feature)
+      end
+
+      def needs(*features)
+        features.any? ? needs.concat(features) : @needs ||= []
+      end
+
+      def requires(*paths)
+        paths.any? ? requires.concat(paths) : @requires ||= []
+      end
+
+      def require(ctx)
+        Require.new(ctx, self).run
+      end
+
+      def user_agent(*strs)
+        strs.unshift "dpl/#{Dpl::VERSION}"
+        strs.unshift 'travis/0.1.0' if ENV['TRAVIS']
+        strs = strs.flat_map { |e| Hash === e ? e.map { |k, v| "#{k}/#{v}" } : e }
+        strs.join(' ').gsub(/\s+/, ' ').strip
+      end
+    end
+
+    abstract
+
+    opt '--app NAME',      default: :repo_name
+    opt '--key_name NAME', default: :machine_name
+    opt '--run CMD',       type: :array
+    opt '--skip-cleanup'
+    # opt '--pretend', 'Pretend running the deployment'
+    # opt '--quiet',   'Suppress any output'
+
+    KEEP = [
+      '.dpl'
+    ]
+
+    FILES = {
+      git_ssh: <<~file
+        #!/bin/sh
+        exec ssh -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i %s -- "$@"
+      file
     }
 
-    def self.new(context, options)
-      return super if self < Provider
+    MSGS = {
+      cleanup: <<~'msg',
+        Cleaning up git repository with `git stash --all`.
+        If you need build artifacts for deployment, set `deploy.skip_cleanup: true`.
+        See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup.
+      msg
+      experimental: '%s support is experimental'
+    }
 
-      # when requiring the file corresponding to the provider name
-      # given in the options, the general strategy is to normalize
-      # the option to lower-case alphanumeric, then
-      # use that key to find the file name using the GEM_NAME_OF map.
+    FOLDS = {
+      init:     'Initialize deployment',
+      setup:    'Setup deployment',
+      validate: 'Validate deployment',
+      install:  'Install deployment dependencies',
+      login:    'Authenticate deployment',
+      prepare:  'Prepare deployment',
+      deploy:   'Run deployment',
+      finish:   'Finish deployment',
+    }
 
-      context.fold("Installing deploy dependencies") do
-        begin
-          opt_lower = super.option(:provider).to_s.downcase
-          opt = opt_lower.gsub(/[^a-z0-9]/, '')
-          class_name = class_of(opt)
-          raise Error, "could not find provider %p" % opt unless class_name
-          require "dpl/provider/#{GEM_NAME_OF[class_name]}"
-          provider = const_get(class_name).new(context, options)
-        rescue NameError, LoadError => e
-          if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message
-            provider_gem_name = GEM_NAME_OF[provider_wanted]
-          elsif %r(cannot load such file -- dpl/provider/(?<provider_file_name>\S+)) =~ e.message
-            provider_gem_name = GEM_NAME_OF[class_name]
-          else
-            # don't know what to do with this error
-            raise e
-          end
-          install_cmd = "gem install dpl-#{provider_gem_name || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
+    STAGES = %i(
+      init
+      install
+      login
+      setup
+      prepare
+      validate
+      deploy
+    )
 
-          if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{GEM_NAME_OF[provider_gem_name] || opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
-            install_cmd = "gem install #{local_gem}"
-          end
+    def_delegators :'self.class', :apt, :npm, :pip, :experimental,
+      :experimental?, :keep, :needs?, :user_agent
 
-          context.shell(install_cmd)
-          Gem.clear_paths
+    def_delegators :ctx, :repo_slug, :repo_name, :build_dir, :build_number,
+      :error, :exists?, :script, :sleep, :success?, :git_tag, :remotes,
+      :git_rev_parse, :commit_msg, :sha, :npm_version, :which, :encoding,
+      :machine_name, :ssh_keygen, :logger, :tmpdir, :rendezvous,
+      :apt_get, :npm_install, :pip_install
 
-          require "dpl/provider/#{GEM_NAME_OF[class_name]}"
-          provider = const_get(class_name).new(context, options)
-        rescue DPL::Error
-          if opt_lower
-            provider = const_get(opt.capitalize).new(context, options)
-          else
-            raise Error, 'missing provider'
-          end
-        end
-
-        if options[:no_deploy]
-          def provider.deploy; end
-        else
-          provider.install_deploy_dependencies if provider.respond_to? :install_deploy_dependencies
-        end
-
-        provider
-      end
-    end
-
-    def self.experimental(name)
-      puts "", "!!! #{name} support is experimental !!!", ""
-    end
-
-    def self.deprecated(*lines)
-      puts ''
-      lines.each do |line|
-        puts "\e[31;1m#{line}\e[0m"
-      end
-      puts ''
-    end
-
-    def self.context
-      self
-    end
-
-    def self.shell(command, options = {})
-      system(command)
-    end
-
-    def self.apt_get(name, command = name)
-      context.shell("sudo apt-get -qq install #{name}", retry: true) if `which #{command}`.chop.empty?
-    end
-
-    def self.pip(name, command = name, version = nil)
-      if version
-        puts "pip install --user #{name}==#{version}"
-        context.shell("pip uninstall --user -y #{name}") unless `which #{command}`.chop.empty?
-        context.shell("pip install --user #{name}==#{version}", retry: true)
-      else
-        puts "pip install --user #{name}"
-        context.shell("pip install --user #{name}", retry: true) if `which #{command}`.chop.empty?
-      end
-      context.shell("export PATH=$PATH:$HOME/.local/bin")
-    end
-
-    def self.npm_g(name, command = name)
-      context.shell("npm install -g #{name}", retry: true) if `which #{command}`.chop.empty?
-    end
-
-    def self.class_of(filename)
-      GEM_NAME_OF.keys.detect { |p| p.to_s.downcase == filename }
-    end
-
-    attr_reader :context, :options
-
-    def initialize(context, options)
-      @context, @options = context, options
-      if options.key?(:needs_git_http_user_agent) && !options[:needs_git_http_user_agent]
-        context.env.delete 'GIT_HTTP_USER_AGENT'
-      else
-        context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
-      end
-    end
-
-    def user_agent(*strings)
-      strings.unshift "dpl/#{DPL::VERSION}"
-      strings.unshift "travis/0.1.0" if context.env['TRAVIS']
-      strings = strings.flat_map { |e| Hash === e ? e.map { |k,v| "#{k}/#{v}" } : e }
-      strings.join(" ").gsub(/\s+/, " ").strip
-    end
-
-    def option(name, *alternatives)
-      options.fetch(name) do
-        alternatives.any? ? option(*alternatives) : raise(Error, "missing #{name}")
-      end
-    end
-
-    def deploy
-      setup_git_credentials
-      rm_rf ".dpl"
-      mkdir_p ".dpl"
-
-      context.fold("Preparing deploy") do
-        check_auth
-        check_app
-
-        if needs_key?
-          create_key(".dpl/id_rsa")
-          setup_key(".dpl/id_rsa.pub")
-          setup_git_ssh(".dpl/git-ssh", ".dpl/id_rsa")
-        end
-
-        cleanup
-      end
-
-      context.fold("Deploying application") { push_app }
-
-      Array(options[:run]).each do |command|
-        if command == 'restart'
-          context.fold("Restarting application") { restart }
-        else
-          context.fold("Running %p" % command) { run(command) }
-        end
-      end
+    def run
+      run_stages
+      run_cmds
     ensure
-      if needs_key?
-        remove_key rescue nil
+      run_stage(:finish)
+    end
+
+    def run_stages
+      STAGES.each do |stage|
+        run_stage(stage) if run_stage?(stage)
       end
-      uncleanup
     end
 
-    def sha
-      @sha ||= context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
+    def run_stage?(stage)
+      respond_to?(:"before_#{stage}") || respond_to?(stage)
     end
 
-    def commit_msg
-      @commit_msg ||= %x{git log #{sha} -n 1 --pretty=%B}.strip
+    def run_stage(stage)
+      fold(stage) do
+        send(:"before_#{stage}") if respond_to?(:"before_#{stage}")
+        send(stage) if respond_to?(stage)
+      end
+    end
+
+    def before_init
+      warn MSGS[:experimental] % experimental if experimental?
+      deprecated_opts.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
+      self.class.require(ctx)
+    end
+
+    def before_install
+      info 'Installing deployment dependencies' if apt || npm || pip
+      apt_get *apt if apt
+      npm_install *npm if npm
+      pip_install *pip if pip
+    end
+
+    def before_setup
+      info 'Setting the build environment up for the deployment'
+      setup_dpl_dir
+      setup_ssh_key if needs?(:ssh_key)
+      setup_git_config if needs?(:git)
+      setup_git_http_user_agent
+    end
+
+    def before_prepare
+      cleanup unless skip_cleanup?
+    end
+
+    def run_cmds
+      Array(opts[:run]).each do |cmd|
+        cmd == 'restart' ? restart : run_cmd(cmd)
+      end
+    end
+
+    def run_cmd(cmd)
+      cmd == 'restart' ? restart : shell(cmd)
+    end
+
+    def before_finish
+      remove_key if needs?(:ssh_key)
+      uncleanup unless skip_cleanup?
     end
 
     def cleanup
-      return if options[:skip_cleanup]
-      context.shell "mv .dpl ~/dpl"
-      log "Cleaning up git repository with `git stash --all`. " \
-        "If you need build artifacts for deployment, set `deploy.skip_cleanup: true`. " \
-        "See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup."
-      context.shell "git stash --all"
-      context.shell "mv ~/dpl .dpl"
+      info MSGS[:cleanup]
+      keep.each { |path| shell "mv ./#{path} ~/#{path}" }
+      shell 'git stash --all'
+      keep.each { |path| shell "mv ~/#{path} ./#{path}" }
     end
 
     def uncleanup
-      return if options[:skip_cleanup]
-      context.shell "git stash pop"
+      shell 'git stash pop'
     end
 
-    def needs_key?
-      true
+    def name
+      registry_key
     end
 
-    def check_app
+    def setup_dpl_dir
+      rm_rf '.dpl'
+      mkdir_p '.dpl'
     end
 
-    def create_key(file)
-      context.shell "ssh-keygen -t rsa -N \"\" -C #{option(:key_name)} -f #{file}"
+    def setup_ssh_key
+      ssh_keygen(key_name, '.dpl/id_rsa')
+      setup_git_ssh('.dpl/id_rsa') if needs?(:git)
+      add_key('.dpl/id_rsa.pub')
     end
 
-    def setup_git_credentials
-      context.shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost"
-      context.shell "git config user.name >/dev/null 2>/dev/null || git config user.name `whoami`@localhost"
+    def setup_git_config
+      shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost"
+      shell "git config user.name  >/dev/null 2>/dev/null || git config user.name  `whoami`"
     end
 
-    def setup_git_ssh(path, key_path)
-      key_path = File.expand_path(key_path)
-      path     = File.expand_path(path)
+    def setup_git_ssh(key)
+      info 'Setting up git-ssh'
+      file, key = File.expand_path('.dpl/git-ssh'), File.expand_path(key)
+      File.open(file, 'w+') { |file| file.write(FILES[:git_ssh] % key) }
+      chmod(0740, file)
+      ENV['GIT_SSH'] = file
+    end
 
-      File.open(path, 'w') do |file|
-        file.write "#!/bin/sh\n"
-        file.write "exec ssh -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i #{key_path} -- \"$@\"\n"
+    def ssh_keygen(*args)
+      info 'Generating SSH key'
+      ctx.ssh_keygen(*args)
+    end
+
+    def setup_git_http_user_agent
+      return ENV.delete('GIT_HTTP_USER_AGENT') unless needs?(:git_http_user_agent)
+      info 'Setting up git HTTP user agent'
+      ENV['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
+    end
+
+    def wait_for_ssh_access(host, port)
+      info "Git remote is #{host} at port #{port}"
+      1.upto(30) { try_ssh_access(host, port) && break || sleep(1) }
+      success? ? info('SSH connection established.') : error('Failed to establish SSH connection.')
+    end
+
+    def try_ssh_access(host, port)
+      info 'Waiting for SSH connection ...'
+      shell "#{ENV['GIT_SSH']} #{host} -p #{port}  2>&1 | grep -c 'PTY allocation request failed' > /dev/null"
+    end
+
+    def fold(name, &block)
+      title = FOLDS[name] || "deploy.#{name}"
+      ctx.fold(title, &block)
+    end
+
+    def shell(cmd, *args)
+      opts = args.last.is_a?(Hash) ? args.pop : {}
+      opts[:assert] = interpolate(self.class::ASSERT[cmd], args) if opts[:assert].is_a?(TrueClass)
+      cmd = interpolate(self.class::CMDS[cmd], args).strip if cmd.is_a?(Symbol)
+      ctx.shell(cmd, opts)
+    end
+
+    %i(print info warn error).each do |level|
+      define_method(level) do |msg, *args|
+        msg = interpolate(self.class::MSGS[msg], args) if msg.is_a?(Symbol)
+        ctx.send(level, msg)
       end
-
-      chmod(0740, path)
-      context.env['GIT_SSH'] = path
     end
 
-    def detect_encoding?
-      options[:detect_encoding]
+    def interpolate(str, args = [])
+      args = Interpolate.new(self) if args.empty?
+      str % args
     end
 
-    def default_text_charset?
-      options[:default_text_charset]
+    def quote(str)
+      %("#{str}")
     end
 
-    def default_text_charset
-      options[:default_text_charset].downcase
+    def obfuscate(str)
+      str[-4, 4].to_s.rjust(20, '*')
     end
 
-    def install_deploy_dependencies
+    def opts_for(keys, opts = {})
+      strs = Array(keys).map { |key| opt_for(key, opts) if send(:"#{key}?") }.compact
+      strs.join(' ') if strs.any?
     end
 
-    def encoding_for(path)
-      file_cmd_output = `file '#{path}'`
-      case file_cmd_output
-      when /gzip compressed/
-        'gzip'
-      when /compress'd/
-        'compress'
-      when /text/
-        'text'
-      when /data/
-        # Shrugs?
+    def opt_for(key, opts = {})
+      case value = send(key)
+      when String then "#{opt_key(key, opts)}=#{value.inspect}"
+      when Array  then value.map { |value| "#{opt_key(key, opts)}=#{value.inspect}" }
+      else opt_key(key, opts)
       end
     end
 
-    def log(message)
-      $stderr.puts(message)
+    def opt_key(key, opts)
+      "#{opts[:prefix] || '--'}#{opts[:dashed] ? key.to_s.gsub('_', '-') : key}"
     end
 
-    def warn(message)
-      log "\e[31;1m#{message}\e[0m"
-    end
-
-    def run(command)
-      error "running commands not supported"
-    end
-
-    def error(message)
-      raise Error, message
+    def compact(hash)
+      hash.reject { |_, value| value.nil? }
     end
   end
 end
+
+require 'dpl/providers'

@@ -9,7 +9,6 @@ coverage
 google_appengine/*
 google_appengine_*.zip
 npm-debug.log
-play
 setuptools*.zip
 stubs
 vendor

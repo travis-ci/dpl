@@ -4,7 +4,7 @@ require 'dpl/version'
 
 def gemspec_for(name, runtime_dependencies = [])
   Gem::Specification.new do |s|
-    s.version       = ENV['DPL_VERSION'] || DPL::VERSION
+    s.version       = ENV['DPL_VERSION'] || Dpl::VERSION
     s.name          = ['dpl', name].uniq.join('-')
     s.authors       = ['Konstantin Haase', 'Hiro Asari', 'Sven Fuchs']
     s.email         = ['konstantin@travis-ci.com', 'hiro@travis-ci.com', 'sven@travis-ci.com']
