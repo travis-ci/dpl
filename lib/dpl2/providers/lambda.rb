@@ -33,8 +33,17 @@ module Dpl
       opt '--kms_key_arn ARN',            'KMS key ARN to use to encrypt environment_variables.'
       opt '--function_tags TAGS',         'List of tags to add to the function, needs to be in the format of KEY=VALUE. Can be encrypted for added security.', type: :array
 
+      MSGS = {
+        login:           'Using Access Key: %{obfuscated_access_key_id}',
+        create_function: 'Creating function %{function_name}.',
+        update_config:   'Updating existing function %{function_name}.',
+        update_tags:     'Updating tags.',
+        update_code:     'Updating code.',
+        description:     'Deploy build %{build_number} to AWS Lambda via Travis CI',
+      }
+
       def login
-        info "Using Access Key: #{obfuscate(access_key_id)}"
+        info :login
       end
 
       def deploy
@@ -43,129 +52,123 @@ module Dpl
         error e.message
       end
 
-      def exists?
-        !!client.get_function(function_name: function_name)
-      rescue ::Aws::Lambda::Errors::ResourceNotFoundException
-        false
-      end
+      private
 
-      MSGS = {
-        create_function: 'Creating function %{function_name}.',
-        update_config:   'Updating existing function %{function_name}.',
-        update_tags:     'Updating tags.',
-        update_code:     'Updating code.',
-        description:     'Deploy build %{build_number} to AWS Lambda via Travis CI',
-      }
+        def exists?
+          !!client.get_function(function_name: function_name)
+        rescue ::Aws::Lambda::Errors::ResourceNotFoundException
+          false
+        end
 
-      def create
-        info :create_function
-        config = function_config
-        config = config.merge(code: { zip_file: function_zip })
-        config = config.merge(tags: function_tags) if function_tags?
-        client.create_function(config)
-      end
+        def create
+          info :create_function
+          config = function_config
+          config = config.merge(code: { zip_file: function_zip })
+          config = config.merge(tags: function_tags) if function_tags?
+          client.create_function(config)
+        end
 
-      def update
-        arn = update_config
-        update_tags(arn) if function_tags?
-        update_code
-      end
+        def update
+          arn = update_config
+          update_tags(arn) if function_tags?
+          update_code
+        end
 
-      def update_config
-        info :update_config
-        response = client.update_function_configuration(function_config)
-        response.function_arn
-      end
+        def update_config
+          info :update_config
+          response = client.update_function_configuration(function_config)
+          response.function_arn
+        end
 
-      def update_tags(arn)
-        info :update_tags
-        client.tag_resource(tag_resource(arn))
-      end
+        def update_tags(arn)
+          info :update_tags
+          client.tag_resource(tag_resource(arn))
+        end
 
-      def update_code
-        info :update_code
-        client.update_function_code(function_code)
-      end
+        def update_code
+          info :update_code
+          client.update_function_code(function_code)
+        end
 
-      def function_config
-        compact(
-          function_name: function_name,
-          description: description,
-          timeout: timeout,
-          memory_size: memory_size,
-          role: role,
-          handler: handler,
-          runtime: runtime,
-          vpc_config: vpc_config,
-          environment: environment_variables,
-          dead_letter_config: dead_letter_arn,
-          kms_key_arn: kms_key_arn,
-          tracing_config: tracing_mode
-        )
-      end
+        def function_config
+          compact(
+            function_name: function_name,
+            description: description,
+            timeout: timeout,
+            memory_size: memory_size,
+            role: role,
+            handler: handler,
+            runtime: runtime,
+            vpc_config: vpc_config,
+            environment: environment_variables,
+            dead_letter_config: dead_letter_arn,
+            kms_key_arn: kms_key_arn,
+            tracing_config: tracing_mode
+          )
+        end
 
-      def tag_resource(arn)
-        {
-          resource: arn,
-          tags: function_tags
-        }
-      end
+        def tag_resource(arn)
+          {
+            resource: arn,
+            tags: function_tags
+          }
+        end
 
-      def function_code
-        {
-          function_name: function_name,
-          zip_file: function_zip,
-          publish: publish?
-        }
-      end
+        def function_code
+          {
+            function_name: function_name,
+            zip_file: function_zip,
+            publish: publish?
+          }
+        end
 
-      def handler
-        "#{module_name}.#{handler_name}"
-      end
+        def handler
+          "#{module_name}.#{handler_name}"
+        end
 
-      def function_zip
-        Zip.new(zip, tmp_filename, opts).zip
-      end
+        def function_zip
+          Zip.new(zip, tmp_filename, opts).zip
+        end
 
-      def vpc_config
-        compact(subnet_ids: subnet_ids, security_group_ids: security_group_ids)
-      end
+        def vpc_config
+          compact(subnet_ids: subnet_ids, security_group_ids: security_group_ids)
+        end
 
-      def environment_variables
-        { variables: split_vars(super) } if environment_variables?
-      end
+        def environment_variables
+          { variables: split_vars(super) } if environment_variables?
+        end
 
-      def dead_letter_arn
-        { target_arn: super } if dead_letter_arn?
-      end
+        def dead_letter_arn
+          { target_arn: super } if dead_letter_arn?
+        end
 
-      def tracing_mode
-        { mode: super } if tracing_mode?
-      end
+        def tracing_mode
+          { mode: super } if tracing_mode?
+        end
 
-      def function_tags
-        split_vars(super) if function_tags?
-      end
+        def function_tags
+          split_vars(super) if function_tags?
+        end
 
-      def description
-        super || interpolate(MSGS[:description])
-      end
+        def description
+          super || interpolate(MSGS[:description])
+        end
 
-      def client
-        @client ||= Aws::Lambda::Client.new(region: region, credentials: credentials)
-      end
+        def client
+          @client ||= Aws::Lambda::Client.new(region: region, credentials: credentials)
+        end
 
-      def credentials
-        Aws::Credentials.new(access_key_id, secret_access_key)
-      end
+        def credentials
+          Aws::Credentials.new(access_key_id, secret_access_key)
+        end
 
-      def split_vars(vars)
-        vars.map { |var| var.split('=') }.to_h
-      end
+        def split_vars(vars)
+          vars.map { |var| var.split('=') }.to_h
+        end
 
-      def tmp_filename
-        @tmp_filename ||= Dir::Tmpname.make_tmpname(app, 'zip')
-      end
+        def tmp_filename
+          @tmp_filename ||= Dir::Tmpname.make_tmpname(app, 'zip')
+        end
     end
   end
 end

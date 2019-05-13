@@ -35,8 +35,12 @@ module Dpl
       opt '--detect_encoding', 'HTTP header Content-Encoding to set for files compressed with gzip and compress utilities.'
       opt '--cache_control HEADER', 'HTTP header Cache-Control to suggest that the browser cache the file.'
 
+      MSGS = {
+        login: 'Logging in with Access Key: %{obfuscated_access_key_id}'
+      }
+
       def login
-        info "Logging in with Access Key: #{obfuscate(access_key_id)}"
+        info :login
       end
 
       def deploy

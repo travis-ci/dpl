@@ -38,6 +38,7 @@ module Dpl
       }
 
       MSGS = {
+        login:                 'Using Access Key: %{obfuscated_access_key_id}',
         deploy_triggered:      'Deployment triggered: %s',
         register_revision:     'Registering app revision with version=%s, etag=%s',
         waiting_for_deploy:    'Waiting for the deployment to finish ',
@@ -49,8 +50,8 @@ module Dpl
         unknown_bundle_type:   'Unknown bundle type'
       }
 
-      def check_auth
-        info "Using Access Key: #{obfuscate(access_key_id)}"
+      def login
+        info :login
       end
 
       def deploy

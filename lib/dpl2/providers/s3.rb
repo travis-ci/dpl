@@ -39,7 +39,7 @@ module Dpl
       opt '--max_threads NUM', 'The number of threads to use for S3 file uploads', default: 5, max: 15, type: :integer
 
       MSGS = {
-        login:                 'Logging in with Access Key: %s',
+        login:                 'Logging in with Access Key: %{obfuscated_access_key_id}',
         default_uri_schema:    'S3 endpoint does not specify a scheme; defaulting to https',
         access_denied:         'It looks like you tried to write to a bucket that is not yours or does not exist. Please create the bucket before trying to write to it.',
         checksum_error:        'AWS secret key does not match the access key id',
@@ -57,7 +57,7 @@ module Dpl
       end
 
       def login
-        info :login, obfuscate(access_key_id)
+        info :login
       end
 
       def deploy
