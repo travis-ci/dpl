@@ -37,7 +37,7 @@ module Dpl
         shell :install
       end
 
-      def check_opts
+      def validate
         error :manifest_missing if manifest? && manifest_missing?
       end
 
