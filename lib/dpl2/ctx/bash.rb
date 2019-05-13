@@ -16,6 +16,7 @@ module Dpl
       end
 
       def fold(name)
+        yield # TODO
       end
 
       def apt_get(name, cmd)

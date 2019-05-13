@@ -6,8 +6,6 @@ module Dpl
       opt '--target TARGET', 'The git remote repository to deploy to', required: true
       opt '--path PATH', 'Path to files to deploy', default: '.'
 
-      # fold deploy: 'Deploying to Catalyze: %{target}'
-
       CMDS = {
         git_push:     'git push --force %{target} HEAD:master',
         git_checkout: 'git checkout HEAD',
@@ -16,7 +14,8 @@ module Dpl
       }
 
       MSGS = {
-        skip_cleanup: 'Using build files for deployment'
+        commit: 'Committing build files for deployment',
+        deploy: 'Deploying to Catalyze: %{target}',
       }
 
       def setup
@@ -24,13 +23,14 @@ module Dpl
       end
 
       def deploy
+        info :deploy
         shell :git_push
       end
 
       private
 
         def commit
-          info :skip_cleanup
+          info :commit
           shell :git_checkout
           shell :git_add
           shell :git_commit
