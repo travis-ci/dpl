@@ -16,9 +16,7 @@ module Dpl
       opt '--glob GLOB',      'Paths to upload', default: '**/*'
       opt '--dot_match',      'Upload hidden files starting a dot'
 
-      MSGS = {
-        missing_container: 'The specified container does not exist.'
-      }
+      msgs missing_container: 'The specified container does not exist.'
 
       def deploy
         paths.each do |path|

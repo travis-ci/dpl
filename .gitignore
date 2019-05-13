@@ -2,7 +2,6 @@
 .bundle
 .coverage
 .dpl
-Gemfile-*
 Gemfile.lock
 NOTES.md
 coverage

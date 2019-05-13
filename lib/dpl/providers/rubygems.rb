@@ -20,17 +20,13 @@ module Dpl
       opt '--password PASS', 'Rubygems password'
       opt '--host URL'
 
-      MSGS = {
-        login_api_key: 'Authenticating with api key.',
-        login_creds:   'Authenticating with username %{username} and password.',
-        gem_lookup:    'Looking up gem %{gem} ... ',
-        gem_found:     'found.',
-        gem_not_found: 'no such gem.',
-      }
+      msgs login_api_key: 'Authenticating with api key.',
+           login_creds:   'Authenticating with username %{username} and password.',
+           gem_lookup:    'Looking up gem %{gem} ... ',
+           gem_found:     'found.',
+           gem_not_found: 'no such gem.'
 
-      CMDS = {
-        build_gemspecs: 'for gemspec in %{gemspec_glob}; do gem build $gemspec; done'
-      }
+      cmds build_gemspecs: 'for gemspec in %{gemspec_glob}; do gem build $gemspec; done'
 
       def setup
         Gems.host = host if host?

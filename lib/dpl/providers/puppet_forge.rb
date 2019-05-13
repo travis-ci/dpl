@@ -13,9 +13,7 @@ module Dpl
       opt '--password PASS', 'Puppet Forge password', required: true
       opt '--url URL', 'Puppet Forge URL to deploy to', default: 'https://forgeapi.puppetlabs.com/'
 
-      MSGS = {
-        upload: 'Uploading to Puppet Forge %s/%s'
-      }
+      msgs upload: 'Uploading to Puppet Forge %s/%s'
 
       def validate
         file.metadata

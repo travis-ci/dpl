@@ -1,8 +1,10 @@
-describe Dpl::Providers::Pypi, memfs: true do
+describe Dpl::Providers::Pypi, fakefs: true do
   let(:args)   { |e| %w(--username user --password pass) + args_from_description(e) }
   let(:server) { 'https://upload.pypi.org/legacy/' }
 
   # TODO test env mappings
+
+  chdir 'tmp'
 
   let(:pypirc) do
     <<~rc

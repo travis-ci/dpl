@@ -1,4 +1,4 @@
-describe Dpl::Providers::Transifex, memfs: true do
+describe Dpl::Providers::Transifex, fakefs: true do
   let(:args) { |e| %w(--username user --password pass) + args_from_description(e) }
   let(:rc)   { File.read(File.expand_path('~/.transifexrc')) }
 

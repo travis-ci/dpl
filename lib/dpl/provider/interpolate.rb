@@ -7,13 +7,19 @@ module Dpl
       @obj = obj
     end
 
+    MOD = %i(obfuscate escape quote)
+
     def lookup(key)
-      if key.start_with?('obfuscated_')
-        key = key.sub('obfuscated_', '')
-        obj.obfuscate(lookup(key))
+      if mod = modifier(key)
+        key = key.sub("#{mod}d_", '')
+        obj.send(mod, lookup(key))
       else
         obj.send(key).to_s
       end
+    end
+
+    def modifier(key)
+      MOD.detect { |mod| key.start_with?("#{mod}d_") }
     end
   end
 end

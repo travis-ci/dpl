@@ -36,10 +36,6 @@ module Dpl
         '1'
       end
 
-      def script(name)
-        cmds << "[script] #{name}"
-      end
-
       def shell(cmd, opts = {})
         cmd = "#{cmd} > /dev/null 2>&1" if opts[:silence]
         cmd = "[python:#{opts[:python]}] #{cmd}" if opts[:python]

@@ -9,9 +9,7 @@ module Dpl
 
       opt '--redeployment_hook URL', 'The redeployment hook URL', required: true
 
-      MSGS = {
-        failed: 'Redeployment failed (%s)'
-      }
+      msgs failed: 'Redeployment failed (%s)'
 
       def deploy
         response = client.request(request)

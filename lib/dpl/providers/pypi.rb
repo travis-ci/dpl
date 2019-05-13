@@ -22,34 +22,24 @@ module Dpl
       opt '--twine_version VER'
       opt '--wheel_version VER'
 
-      MSGS = {
-        login:        'Authenticated as %{username}',
-        upload_docs:  'Uploading documentation (skip using "skip_upload_docs: true")'
-      }
+      msgs login:        'Authenticated as %{username}',
+           upload_docs:  'Uploading documentation (skip using "skip_upload_docs: true")'
 
-      CMDS = {
-        # make this a script, make sure scripts can be interpolated
-        install:      'if [ -z ${VIRTUAL_ENV+x} ]; then export PIP_USER=yes; fi && ' +
-                      'wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && ' +
-                      'pip install --upgrade %{setuptools_arg} %{twine_arg} %{wheel_arg}',
-        setup_py:     'python setup.py %{distributions}',
-        twine_upload: 'twine upload %{skip_existing_option} -r pypi dist/*',
-        rm_dist:      'rm -rf dist/*',
-        upload_docs:  'python setup.py upload_docs %{docs_dir_option} -r %{server}'
-      }
+      cmds setup_py:     'python setup.py %{distributions}',
+           twine_upload: 'twine upload %{skip_existing_option} -r pypi dist/*',
+           rm_dist:      'rm -rf dist/*',
+           upload_docs:  'python setup.py upload_docs %{docs_dir_option} -r %{server}'
 
-      ASSERT = {
-        install:      'Failed to install pip, setuptools, twine or wheel.',
-        setup_py:     'setup.py failed',
-        twine_upload: 'Twine upload failed.',
-        upload_docs:  'Uploading docs failed.'
-      }
+      errs install:      'Failed to install pip, setuptools, twine or wheel.',
+           setup_py:     'setup.py failed',
+           twine_upload: 'Twine upload failed.',
+           upload_docs:  'Uploading docs failed.'
 
       PYPIRC  = '~/.pypirc'
       VERSION = /\A\d+(?:\.\d+)*\z/ # add format to Cl
 
       def install
-        shell :install, assert: true
+        script :install, assert: true
       end
 
       def login

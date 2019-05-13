@@ -1,6 +1,6 @@
 module Support
   module Fixtures
-    DIR = 'spec2/fixtures/'
+    DIR = ::File.expand_path('../../fixtures', __FILE__)
 
     class << self
       def [](key)
@@ -8,12 +8,8 @@ module Support
       end
 
       def fixtures
-        @fixtures ||= load
-      end
-
-      def load
-        Dir["#{DIR}**/*.json"].map do |path|
-          [path.sub(DIR, '').sub('.json', ''), ::File.read(path)]
+        @fixtures ||= Dir["#{DIR}/**/*.json"].map do |path|
+          [path.sub("#{DIR}/", '').sub('.json', ''), ::File.read(path)]
         end.to_h
       end
     end
@@ -21,5 +17,7 @@ module Support
     def fixture(namespace, key)
       Fixtures["#{namespace}/#{key}"]
     end
+
+    fixtures
   end
 end

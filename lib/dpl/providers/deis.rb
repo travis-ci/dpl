@@ -19,23 +19,19 @@ module Dpl
 
       INSTALL = 'https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh'
 
-      CMDS = {
-        login:      './deis login %{controller} --username=%{username} --password=%{password}',
-        add_key:    './deis keys:add %s',
-        info:       './deis apps:info --app=%{app}',
-        deploy:     "bash -c 'git push %{verbose} %{url} HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'",
-        run:        './deis run -a %s -- %s',
-        remove_key: './deis keys:remove %{key_name}'
-      }
+      cmds login:      './deis login %{controller} --username=%{username} --password=%{password}',
+           add_key:    './deis keys:add %s',
+           validate:   './deis apps:info --app=%{app}',
+           deploy:     "bash -c 'git push %{verbose} %{url} HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'",
+           run:        './deis run -a %s -- %s',
+           remove_key: './deis keys:remove %{key_name}'
 
-      ASSERT = {
-        add_key:    'Adding keys failed.',
-        login:      'Login failed.',
-        info:       'Application could not be verified.',
-        deploy:     'Deploying application failed.',
-        run:        'Running command failed.',
-        remove_key: 'Removing keys failed.'
-      }
+      errs login:      'Login failed.',
+           add_key:    'Adding keys failed.',
+           validate:   'Application could not be verified.',
+           deploy:     'Deploying application failed.',
+           run:        'Running command failed.',
+           remove_key: 'Removing keys failed.'
 
       def install
         shell "curl -sSL #{INSTALL} | bash -x -s #{cli_version}"
@@ -51,7 +47,7 @@ module Dpl
       end
 
       def validate
-        shell :info, assert: true
+        shell :validate, assert: true
       end
 
       def deploy

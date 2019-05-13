@@ -19,27 +19,21 @@ module Dpl
       opt '--no_promote', 'Do not promote the deployed version'
       opt '--no_stop_previous_version', 'Prevent your deployment from stopping the previously promoted version. This is from the future, so might not work (yet).'
 
-      CMDS = {
-        login:     '~/google-cloud-sdk/bin/gcloud -q auth activate-service-account --key-file %{keyfile}',
-        validate:  'python -c "import sys; print(sys.version)"',
-        install:   'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | gzip -d | tar -x -C ~',
-        bootstrap: '~/google-cloud-sdk/bin/bootstrapping/install.py --usage-reporting=false --command-completion=false --path-update=false',
-        cat_logs:  'find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;'
-      }
+      cmds login:     '~/google-cloud-sdk/bin/gcloud -q auth activate-service-account --key-file %{keyfile}',
+           validate:  'python -c "import sys; print(sys.version)"',
+           install:   'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | gzip -d | tar -x -C ~',
+           bootstrap: '~/google-cloud-sdk/bin/bootstrapping/install.py --usage-reporting=false --command-completion=false --path-update=false',
+           cat_logs:  'find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;'
 
-      ASSERT = {
-        login:     'Failed to authentication.',
-        validate:  'Failed to use Python 2.7',
-        install:   'Failed to download Google Cloud SDK.',
-        bootstrap: 'Failed bootstrap Google Cloud SDK.',
-      }
+      errs login:     'Failed to authentication.',
+           validate:  'Failed to use Python 2.7',
+           install:   'Failed to download Google Cloud SDK.',
+           bootstrap: 'Failed bootstrap Google Cloud SDK.'
 
-      MSGS = {
-        validate:  'Python 2.7 Version',
-        install:   'Downloading Google Cloud SDK ...',
-        bootstrap: 'Bootstrapping Google Cloud SDK ...',
-        failed:    'Deployment failed.',
-      }
+      msgs validate:  'Python 2.7 Version',
+           install:   'Downloading Google Cloud SDK ...',
+           bootstrap: 'Bootstrapping Google Cloud SDK ...',
+           failed:    'Deployment failed.'
 
       def install
         return if which 'gcloud'

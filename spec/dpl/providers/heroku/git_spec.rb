@@ -1,4 +1,4 @@
-describe Dpl::Providers::Heroku, memfs: true do
+describe Dpl::Providers::Heroku, fakefs: true do
   let(:args) { |e| %w(--strategy git) + creds + args_from_description(e) }
   let(:user) { JSON.dump(email: 'email') }
   let(:dyno) { JSON.dump(attach_url: 'attach_url') }
@@ -9,6 +9,8 @@ describe Dpl::Providers::Heroku, memfs: true do
   before { stub_request(:post, 'https://api.heroku.com/apps/dpl/dynos').and_return(body: dyno) }
   before { stub_request(:delete, 'https://api.heroku.com/apps/dpl/dynos') }
   before { subject.run }
+
+  after { rm File.expand_path('~/.netrc') } # weird. does FakeFS keep traces of this around?
 
   describe 'using --api_key'  do
     let(:creds) { %w(--api_key key) }

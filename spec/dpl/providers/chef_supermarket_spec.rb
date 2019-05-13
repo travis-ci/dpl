@@ -1,4 +1,4 @@
-describe Dpl::Providers::ChefSupermarket, memfs: true do
+describe Dpl::Providers::ChefSupermarket, fakefs: true do
   let(:uploader) { Chef::CookbookUploader }
   let(:site)     { Chef::CookbookSiteStreamingUploader }
 
@@ -6,14 +6,9 @@ describe Dpl::Providers::ChefSupermarket, memfs: true do
   let(:url)  { 'https://supermarket.chef.io/api/v1/cookbooks' }
   let(:args) { |e| %W(--user_id id --client_key #{key} --cookbook_category cat) + args_from_description(e) }
 
-  file 'validation.pem'
-  dir  'build_dir'
+  file 'chef.validation.pem'
 
   before do
-
-    FileUtils.mkdir_p('tmp') # use memfs, add Support::File
-    FileUtils.touch(key)
-
     # all this stubbing business makes the tests rather ineffective
     allow(File).to receive(:open).and_return 'tarball.tgz'
     allow(uploader).to receive(:new).and_return(double(validate_cookbooks: true))
@@ -36,7 +31,7 @@ describe Dpl::Providers::ChefSupermarket, memfs: true do
   end
 
   describe 'given --cookbook_name dpl.test' do
-    before { FileUtils.mkdir_p('../dpl.test') } # use memfs
+    before { FileUtils.mkdir_p('../dpl.test') } # use fakefs
     after  { FileUtils.rm_rf('../dpl.test') }
 
     # it do

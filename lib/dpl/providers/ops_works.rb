@@ -22,19 +22,17 @@ module Dpl
       opt '--update_on_success', 'When wait-until-deployed and updated-on-success are both not given, application source is updated to the current SHA. Ignored when wait-until-deployed is not given.'
       opt '--custom_json JSON', 'Custom json options override (overwrites default configuration)'
 
-      MSGS = {
-        login:         'Logging in with Access Key: %{obfuscated_access_key_id}',
-        create_deploy: 'Creating deployment ... ',
-        done:          'Done: %s',
-        waiting:       'Deploying ',
-        failed:        'Failed.',
-        success:       'Success.',
-        update_app:    'Updating application source branch/revision setting.',
-        app_not_found: 'App %s not found.',
-        timeout:       'Timeout: failed to finish deployment within 10 minutes.',
-        service_error: 'Deployment failed. OpsWorks service error: %s',
-        comment:       'Deploy build %{build_number} via Travis CI',
-      }
+      msgs login:         'Logging in with Access Key: %{obfuscated_access_key_id}',
+           create_deploy: 'Creating deployment ... ',
+           done:          'Done: %s',
+           waiting:       'Deploying ',
+           failed:        'Failed.',
+           success:       'Success.',
+           update_app:    'Updating application source branch/revision setting.',
+           app_not_found: 'App %s not found.',
+           timeout:       'Timeout: failed to finish deployment within 10 minutes.',
+           service_error: 'Deployment failed. OpsWorks service error: %s',
+           comment:       'Deploy build %{build_number} via Travis CI'
 
       def login
         info :login
@@ -106,7 +104,7 @@ module Dpl
       end
 
       def comment
-        interpolate(MSGS[:comment])
+        interpolate(msg(:comment))
       end
 
       def build_number

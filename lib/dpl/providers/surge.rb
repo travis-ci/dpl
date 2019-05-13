@@ -15,14 +15,10 @@ module Dpl
       opt '--domain NAME', 'Domain to publish to. Not required if the domain is set in the CNAME file in the project folder.'
       opt '--project PAHT', 'Path to project directory relative to repo root', default: '.'
 
-      CMDS = {
-        deploy: 'surge %{project} %{domain}'
-      }
+      cmds deploy: 'surge %{project} %{domain}'
 
-      MSGS = {
-        invalid_project: '%{project} is not a directory',
-        missing_domain:  'Please set the domain in .travis.yml or in a CNAME file in the project directory'
-      }
+      msgs invalid_project: '%{project} is not a directory',
+           missing_domain:  'Please set the domain in .travis.yml or in a CNAME file in the project directory'
 
       def validate
       	error :invalid_project if invalid_project?

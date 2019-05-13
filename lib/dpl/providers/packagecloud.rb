@@ -29,20 +29,18 @@ module Dpl
       # readme (and thus above).
       NEED_DIST = %w(rpm deb dsc whl egg egg-info gz zip tar bz2 z tgz)
 
-      MSGS = {
-        authenticate:       'Logging in to https://packagecloud.io with %{username}:%{obfuscated_token}',
-        timeouts:           'Timeouts: %{timeout_info}',
-        unauthenticated:    'Could not authenticate to https://packagecloud.io, please check the credentials',
-        supported_packages: 'Supported packages: %s',
-        source_packages:    'Source packages: %s',
-        delete_package:     'Deleting package: %s on %s',
-        push_package:       'Pushing package: %s to %s/%s',
-        source_fragment:    'Found source fragment: %s for %s',
-        missing_packages:   'No supported packages found. Perhaps try skip_cleanup: true',
-        missing_dist:       'Distribution needed for rpm, deb, python, and dsc packages (e.g. dist: ubuntu/breezy)',
-        unknown_dist:       'Failed to find distribution %{dist}',
-        error:              'Error: %s',
-      }
+      msgs authenticate:       'Logging in to https://packagecloud.io with %{username}:%{obfuscated_token}',
+           timeouts:           'Timeouts: %{timeout_info}',
+           unauthenticated:    'Could not authenticate to https://packagecloud.io, please check the credentials',
+           supported_packages: 'Supported packages: %s',
+           source_packages:    'Source packages: %s',
+           delete_package:     'Deleting package: %s on %s',
+           push_package:       'Pushing package: %s to %s/%s',
+           source_fragment:    'Found source fragment: %s for %s',
+           missing_packages:   'No supported packages found. Perhaps try skip_cleanup: true',
+           missing_dist:       'Distribution needed for rpm, deb, python, and dsc packages (e.g. dist: ubuntu/breezy)',
+           unknown_dist:       'Failed to find distribution %{dist}',
+           error:              'Error: %s'
 
       def install
         @cwd = Dir.pwd

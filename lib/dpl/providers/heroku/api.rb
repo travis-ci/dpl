@@ -1,56 +1,73 @@
 require 'json'
-require 'shellwords'
 
 module Dpl
   module Providers
     class Heroku
       class Api < Heroku
-        attr_reader :build
+        summary 'Heroku API deployment provider'
+
+        description <<~str
+          tbd
+        str
+
+        # mentioned in the code
+        opt '--version VERSION' # used in triggering a build, not sure this should be exposed?
+
+        msgs pack:    'Creating application archive',
+             upload:  'Uploading application archive',
+             build:   'Triggering Heroku build (deployment)',
+             pending: 'Heroku build still pending',
+             failed:  'Heroku build failed'
+
+        cmds pack:    'tar -zcf %{escaped_archive_file} --exclude .git .',
+             upload:  'curl %{curl_opts} %{escaped_put_url} -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: %{user_agent}" --data-binary @%{archive_file}',
+             log:     'curl %{curl_opts} %{escaped_output_stream_url} -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: %{user_agent}"'
+
+        attr_reader :data
 
         def deploy
-          pack_archive
-          upload_archive
-          trigger_build
-          fetch_log
-          verify_build
+          pack
+          upload
+          build
+          log
+          verify
         end
 
         private
-
-          def pack_archive
-            info "Creating application archive"
-            shell "tar -zcf #{escape(archive_file)} --exclude .git ."
+          def pack
+            info :pack
+            shell :pack
           end
 
-          def upload_archive
-            info "Uploading application archive"
-            shell %(curl#{curl_opts} #{escape(put_url)} -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: #{user_agent}" --data-binary @#{archive_file})
+          def upload
+            info :upload
+            shell :upload
           end
 
-          def trigger_build
-            info "triggering new deployment"
+          def build
+            info :build
             res = http.post("/apps/#{app}/builds") do |req|
               req.headers['Content-Type'] = 'application/json'
               req.body = JSON.dump(source_blob: { url: get_url, version: version })
             end
             handle_error(res) unless res.success?
-            @build = symbolize(JSON.parse(res.body))
+            @data = symbolize(JSON.parse(res.body))
           end
 
-          def fetch_log
-            shell %(curl#{curl_opts} #{escape(output_stream_url)} -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: #{user_agent}")
+          def log
+            shell :log
           end
 
-          def verify_build
+          def verify
             loop do
               case build_status
               when 'pending'
-                info 'Heroku build still pending'
+                info :pending
                 sleep 5
               when 'succeeded'
                 break
               else
-                error 'Heroku build failed'
+                error :failed
               end
             end
           end
@@ -73,10 +90,8 @@ module Dpl
           end
 
           def source
-            # https://devcenter.heroku.com/articles/platform-api-reference#source
-            # says the endpoint /sources is deprecated
-            # https://devcenter.heroku.com/articles/build-and-release-using-the-api#sources-endpoint
-            # says to use /apps/example-app/sources
+            # this says the endpoint /sources is deprecated: https://devcenter.heroku.com/articles/platform-api-reference#source
+            # this says to use /apps/example-app/sources: https://devcenter.heroku.com/articles/build-and-release-using-the-api#sources-endpoint
             @source ||= begin
               res = http.post('/sources')
               handle_error(res) unless res.success?
@@ -85,11 +100,11 @@ module Dpl
           end
 
           def build_id
-            build[:id]
+            data[:id]
           end
 
           def output_stream_url
-            build[:output_stream_url]
+            data[:output_stream_url]
           end
 
           def version
@@ -98,10 +113,6 @@ module Dpl
 
           def curl_opts
             $stdout.isatty ? '' : ' -sS'
-          end
-
-          def escape(str)
-            Shellwords.escape(str)
           end
 
           def symbolize(hash)

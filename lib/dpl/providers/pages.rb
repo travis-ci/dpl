@@ -29,46 +29,40 @@ module Dpl
       opt '--github_url URL', default: 'github.com'
       # how about the octokit options?
 
-      MSGS = {
-        login:             'Logged in as %s (%s)',
-        invalid_token:     'The provided GitHub token is invalid (error: %s)',
-        insufficient_scopes: 'Dpl does not have permission to access %{url} using the provided GitHub token. Please make sure the token have the repo or public_repo scope.',
-        deploy:            'Deploying branch %{target_branch} to %{github_url}',
-        keep_history:      'The deployment is configured to preserve the target branch if it exists on remote.',
-        work_dir:          'Using temporary work directory %{work_dir}',
-        committer_from_gh: 'The repo is configured to use committer user and email.',
-        setup_dir:         'The source dir for deployment is %s',
-        copy_files:        'Copying %{src_dir} contents to %{work_dir}',
-        git_clone:         'Trying to clone the branch %{target_branch} from the remote repo',
-        git_clone_failed:  'Cloning %{target_branch} branch failed',
-        git_init:          'Initializing local git repo in %{cwd}',
-        git_checkout:      'Checking out orphan branch %{target_branch}',
-        git_config:        'Configuring git committer to be %{committer_name} <%{committer_email}>',
-        git_commit:        'Preparing to deploy %{target_branch} branch to gh-pages',
-        git_push:          'Pushing to %{url}',
-      }
+      msgs login:               'Logged in as %s (%s)',
+           invalid_token:       'The provided GitHub token is invalid (error: %s)',
+           insufficient_scopes: 'Dpl does not have permission to access %{url} using the provided GitHub token. Please make sure the token have the repo or public_repo scope.',
+           deploy:              'Deploying branch %{target_branch} to %{github_url}',
+           keep_history:        'The deployment is configured to preserve the target branch if it exists on remote.',
+           work_dir:            'Using temporary work directory %{work_dir}',
+           committer_from_gh:   'The repo is configured to use committer user and email.',
+           setup_dir:           'The source dir for deployment is %s',
+           copy_files:          'Copying %{src_dir} contents to %{work_dir}',
+           git_clone:           'Trying to clone the branch %{target_branch} from the remote repo',
+           git_clone_failed:    'Cloning %{target_branch} branch failed',
+           git_init:            'Initializing local git repo in %{cwd}',
+           git_checkout:        'Checking out orphan branch %{target_branch}',
+           git_config:          'Configuring git committer to be %{committer_name} <%{committer_email}>',
+           git_commit:          'Preparing to deploy %{target_branch} branch to gh-pages',
+           git_push:            'Pushing to %{url}'
 
-      CMDS = {
-        copy_files:        'rsync -r --exclude .git --delete "%{src_dir}/" .',
-        git_clone:         'git clone --quiet --branch="%{target_branch}" --depth=1 "%{url_with_token}" . > /dev/null 2>&1',
-        git_init:          'git init .',
-        git_checkout:      'git checkout --orphan "%{target_branch}"',
-        git_config_email:  'git config user.email "%{committer_email}"',
-        git_config_name:   'git config user.name "%{committer_name}"',
-        deployment_file:   'touch "deployed at %{now} by %{committer_name}"',
-        cname:             'echo "%{fqdn}" > CNAME',
-        git_add:           'git add -A .',
-        git_commit:        'git commit%{git_commit_opts} -qm "Deploy %{project_name} to %{url}:%{target_branch}"',
-        git_show:          'git show --stat-count=10 HEAD',
-        git_push:          'git push%{git_push_opts} --quiet "%{url_with_token}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1',
-      }
+      cmds copy_files:          'rsync -r --exclude .git --delete "%{src_dir}/" .',
+           git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{url_with_token}" . > /dev/null 2>&1',
+           git_init:            'git init .',
+           git_checkout:        'git checkout --orphan "%{target_branch}"',
+           git_config_email:    'git config user.email "%{committer_email}"',
+           git_config_name:     'git config user.name "%{committer_name}"',
+           deployment_file:     'touch "deployed at %{now} by %{committer_name}"',
+           cname:               'echo "%{fqdn}" > CNAME',
+           git_add:             'git add -A .',
+           git_commit:          'git commit%{git_commit_opts} -qm "Deploy %{project_name} to %{url}:%{target_branch}"',
+           git_show:            'git show --stat-count=10 HEAD',
+           git_push:            'git push%{git_push_opts} --quiet "%{url_with_token}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
 
-      ASSERT = {
-        copy_files:        'Failed to copy %{src_dir}.',
-        git_init:          'Failed to create new git repo',
-        git_checkout:      'Failed to create the orphan branch',
-        git_push:          'Failed to push the build to %{url}:%{target_branch}'
-      }
+      errs copy_files:          'Failed to copy %{src_dir}.',
+           git_init:            'Failed to create new git repo',
+           git_checkout:        'Failed to create the orphan branch',
+           git_push:            'Failed to push the build to %{url}:%{target_branch}'
 
       def setup
         debug :setup_dir, src_dir

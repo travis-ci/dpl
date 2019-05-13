@@ -1,6 +1,8 @@
 require 'cl'
 require 'fileutils'
 require 'forwardable'
+require 'shellwords'
+require 'dpl/provider/assets'
 require 'dpl/provider/env'
 require 'dpl/provider/interpolate'
 require 'dpl/provider/require'
@@ -32,7 +34,7 @@ module Dpl
 
   class Provider < Cl::Cmd
     extend Forwardable
-    include Env, FileUtils
+    include Assets, Env, FileUtils
 
     class << self
       %i(cleanup deprecated experimental).each do |name|
@@ -43,6 +45,21 @@ module Dpl
       %i(apt npm pip).each do |name|
         define_method(:"#{name}?") { !!instance_variable_get(:"@#{name}") }
         define_method(name) { |*args| args.any? ? instance_variable_set(:"@#{name}", args) : instance_variable_get(:"@#{name}") }
+      end
+
+      def cmds(cmds = nil)
+        return self.cmds.update(cmds) if cmds
+        @cmds ||= self == Provider ? {} : superclass.cmds.dup
+      end
+
+      def errs(errs = nil)
+        return self.errs.update(errs) if errs
+        @errs ||= self == Provider ? {} : superclass.errs.dup
+      end
+
+      def msgs(msgs = nil)
+        return self.msgs.update(msgs) if msgs
+        @msgs ||= self == Provider ? {} : superclass.msgs.dup
       end
 
       def keep(*paths)
@@ -82,25 +99,17 @@ module Dpl
     # opt '--pretend', 'Pretend running the deployment'
     # opt '--quiet',   'Suppress any output'
 
-    KEEP = [
-      '.dpl'
-    ]
+    msgs cleanup: 'Cleaning up git repository with `git stash --all`. If you need build artifacts for deployment, set `deploy.skip_cleanup: true`. See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup.',
+         experimental: '%s support is experimental'
 
-    FILES = {
-      git_ssh: <<~file
-        #!/bin/sh
-        exec ssh -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i %s -- "$@"
-      file
-    }
+    KEEP = %w(.dpl)
 
-    MSGS = {
-      cleanup: <<~'msg',
-        Cleaning up git repository with `git stash --all`.
-        If you need build artifacts for deployment, set `deploy.skip_cleanup: true`.
-        See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup.
-      msg
-      experimental: '%s support is experimental'
-    }
+    # FILES = {
+    #   git_ssh: <<~file
+    #     #!/bin/sh
+    #     exec ssh -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i %s -- "$@"
+    #   file
+    # }
 
     FOLDS = {
       init:     'Initialize deployment',
@@ -127,10 +136,10 @@ module Dpl
       :experimental?, :keep, :needs?, :user_agent
 
     def_delegators :ctx, :repo_slug, :repo_name, :build_dir, :build_number,
-      :error, :exists?, :script, :sleep, :success?, :git_tag, :remotes,
-      :git_rev_parse, :commit_msg, :sha, :npm_version, :which, :encoding,
-      :machine_name, :ssh_keygen, :logger, :tmpdir, :rendezvous,
-      :apt_get, :npm_install, :pip_install
+      :error, :exists?, :sleep, :success?, :git_tag, :remotes, :git_rev_parse,
+      :commit_msg, :sha, :npm_version, :which, :encoding, :machine_name,
+      :ssh_keygen, :logger, :tmpdir, :rendezvous, :apt_get, :npm_install,
+      :pip_install
 
     def run
       run_stages
@@ -157,7 +166,7 @@ module Dpl
     end
 
     def before_init
-      warn MSGS[:experimental] % experimental if experimental?
+      warn msg(:experimental) % experimental if experimental?
       deprecated_opts.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
       self.class.require(ctx)
     end
@@ -192,12 +201,12 @@ module Dpl
     end
 
     def before_finish
-      remove_key if needs?(:ssh_key)
+      remove_key if needs?(:ssh_key) && respond_to?(:remove_key)
       uncleanup unless skip_cleanup?
     end
 
     def cleanup
-      info MSGS[:cleanup]
+      info :cleanup
       keep.each { |path| shell "mv ./#{path} ~/#{path}" }
       shell 'git stash --all'
       keep.each { |path| shell "mv ~/#{path} ./#{path}" }
@@ -219,7 +228,7 @@ module Dpl
     def setup_ssh_key
       ssh_keygen(key_name, '.dpl/id_rsa')
       setup_git_ssh('.dpl/id_rsa') if needs?(:git)
-      add_key('.dpl/id_rsa.pub')
+      add_key('.dpl/id_rsa.pub') if respond_to?(:add_key)
     end
 
     def setup_git_config
@@ -230,7 +239,7 @@ module Dpl
     def setup_git_ssh(key)
       info 'Setting up git-ssh'
       file, key = File.expand_path('.dpl/git-ssh'), File.expand_path(key)
-      File.open(file, 'w+') { |file| file.write(FILES[:git_ssh] % key) }
+      File.open(file, 'w+') { |file| file.write(asset(:dpl, :git_ssh).read % key) }
       chmod(0740, file)
       ENV['GIT_SSH'] = file
     end
@@ -262,17 +271,30 @@ module Dpl
       ctx.fold(title, &block)
     end
 
+    def script(name, opts = {})
+      opts[:assert] = name if opts[:assert].is_a?(TrueClass)
+      shell(asset(name).read, opts)
+    end
+
     def shell(cmd, *args)
       opts = args.last.is_a?(Hash) ? args.pop : {}
-      opts[:assert] = interpolate(self.class::ASSERT[cmd], args) if opts[:assert].is_a?(TrueClass)
-      cmd = interpolate(self.class::CMDS[cmd], args).strip if cmd.is_a?(Symbol)
+      opts[:assert] = interpolate(err(cmd, opts[:assert]), args) if opts[:assert].is_a?(TrueClass) || opts[:assert].is_a?(Symbol)
+      cmd = interpolate(self.cmd(cmd), args).strip if cmd.is_a?(Symbol)
       ctx.shell(cmd, opts)
     end
 
     %i(print info warn error).each do |level|
       define_method(level) do |msg, *args|
-        msg = interpolate(self.class::MSGS[msg], args) if msg.is_a?(Symbol)
+        msg = interpolate(self.msg(msg), args) if msg.is_a?(Symbol)
         ctx.send(level, msg)
+      end
+    end
+
+    %i(msg cmd err).each do |name|
+      define_method(name) do |*keys|
+        keys = keys.select { |key| key.is_a?(Symbol) }
+        str = keys.map { |key| self.class.send(:"#{name}s")[key] }.first
+        str || raise("Could not find #{name}: #{keys.join(', ')}")
       end
     end
 
@@ -281,12 +303,16 @@ module Dpl
       str % args
     end
 
-    def quote(str)
-      %("#{str}")
+    def escape(str)
+      Shellwords.escape(str)
     end
 
     def obfuscate(str)
       str[-4, 4].to_s.rjust(20, '*')
+    end
+
+    def quote(str)
+      %("#{str}")
     end
 
     def opts_for(keys, opts = {})
