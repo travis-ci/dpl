@@ -26,7 +26,8 @@ module Dpl
       # https://github.com/travis-ci/dpl/commit/58f6c7dd4f0fd49df2e93a8495fd01c7784d4f58#diff-cc5438ae072229825b07abf38951a912R47
       opt '--deployment-file', 'Enable creation of a deployment-info file'
       # not mentioned in the readme
-      opt '--github_url URL', default: 'github.com' # ?
+      opt '--github_url URL', default: 'github.com'
+      # how about the octokit options?
 
       MSGS = {
         login:             'Logged in as %s (%s)',
