@@ -10,8 +10,10 @@ describe Dpl::Providers::ChefSupermarket, memfs: true do
   dir  'build_dir'
 
   before do
+
     FileUtils.mkdir_p('tmp') # use memfs, add Support::File
     FileUtils.touch(key)
+
     # all this stubbing business makes the tests rather ineffective
     allow(File).to receive(:open).and_return 'tarball.tgz'
     allow(uploader).to receive(:new).and_return(double(validate_cookbooks: true))

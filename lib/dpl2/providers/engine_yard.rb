@@ -1,11 +1,10 @@
-require 'engineyard-cloud-client'
-
-# maybe use the cli (https://github.com/engineyard/engineyard) instead, and get
-# rid of the runtime gem dependency (also a lot easier to test).
-
 module Dpl
   module Providers
     class EngineYard < Provider
+      # maybe use the cli (https://github.com/engineyard/engineyard) instead,
+      # and get rid of the runtime gem dependency (also a lot easier to test)
+      requires 'engineyard-cloud-client'
+
       summary 'EngineYard deployment provider'
 
       description <<~str

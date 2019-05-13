@@ -1,10 +1,10 @@
-require 'packagecloud'
-
 # talk to previous contributors about the logic in source_files
 
 module Dpl
   module Providers
     class Packagecloud < Provider
+      requires 'packagecloud'
+
       summary 'Packagecloud deployment provider'
 
       description <<~str

@@ -1,8 +1,8 @@
-require 'octokit'
-
 module Dpl
   module Providers
     class Pages < Provider
+      requires 'octokit'
+
       summary 'GitHub Pages deployment provider'
 
       description <<~str

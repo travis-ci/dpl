@@ -1,9 +1,9 @@
-require 'aws-sdk'
-require 'zip'
 
 module Dpl
   module Providers
     class ElasticBeanstalk < Provider
+      requires 'aws-sdk', 'zip'
+
       summary 'AWS Elastic Beanstalk deployment provider'
 
       description <<~str

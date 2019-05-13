@@ -1,10 +1,8 @@
-require 'json/pure'
-require 'puppet/face'
-require 'puppet_blacksmith'
-
 module Dpl
   module Providers
     class PuppetForge < Provider
+      requires 'puppet/face', 'puppet_blacksmith'
+
       summary 'Puppet Forge deployment provider'
 
       description <<~str

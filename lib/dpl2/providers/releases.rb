@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Releases < Provider
+      requires 'octokit'
+
       summary 'Releases deployment provider'
 
       description <<~str

@@ -1,5 +1,3 @@
-require 'dpl2/provider'
-
 module Dpl
   module Providers
     class Cargo < Provider

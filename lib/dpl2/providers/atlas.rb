@@ -1,5 +1,3 @@
-require 'dpl2/provider'
-
 # in Cl make it so that --path[s] expands to two options? or maybe just add an
 # option :alias
 

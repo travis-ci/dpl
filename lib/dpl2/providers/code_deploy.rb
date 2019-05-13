@@ -1,9 +1,8 @@
-require 'json'
-require 'aws-sdk'
-
 module Dpl
   module Providers
     class CodeDeploy < Provider
+      requires 'aws-sdk'
+
       # split this up to CodeDeploy::Github and CodeDeploy::S3 using the
       # revision_type, in order to make opts more strict
       summary 'CodeDeploy deployment provider'

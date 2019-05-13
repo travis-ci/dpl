@@ -3,6 +3,7 @@ require 'dpl2'
 require 'support'
 
 RSpec.configure do |c|
+  c.before { described_class.require }
   c.include Support::Cl
   c.include Support::Ctx
   c.include Support::Env
