@@ -24,6 +24,7 @@ module Dpl
       opt '--target_commitish STR', 'Commitish value that determines where the Git tag is created from'
       opt '--name NAME', 'Name for the release'
       opt '--body BODY', 'Content for the release notes'
+      # should this have --github_url, like Pages does?
 
       TIMEOUTS = {
         timeout: 180,

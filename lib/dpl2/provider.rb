@@ -6,20 +6,28 @@ require 'dpl2/provider/interpolation'
 require 'dpl2/provider/fold'
 
 module Dpl
-  # Providers are encouraged to implement any of the following stages:
+  # Providers are encouraged to implement any of the following stages
+  # according to their needs and semantics.
   #
+  #   * init
+  #   * install
+  #   * login
   #   * setup
-  #   * check_auth
+  #   * prepare
+  #   * validate
   #   * deploy
   #   * finish
   #
-  # The main logic should sit in the deploy stage.
+  # The main logic should sit in the :deploy stage. The stage :finish will run
+  # even if previous stages have raised an error, and caused other stages to be
+  # skipped (i.e. the deploy process to be halted).
   #
-  # The following stages are not meant to be overwritten, and for applying
-  # default behaviour:
+  # The following stages are not meant to be overwritten, but considered
+  # internal:
   #
+  #   * before_install
   #   * before_setup
-  #   * after_deploy
+  #   * before_deploy
   #   * before_finish
 
   class Provider < Cl::Cmd
@@ -42,6 +50,10 @@ module Dpl
         msg ? @experimental = msg : @experimental
       end
 
+      def needs?(need)
+        needs.include?(need)
+      end
+
       def needs(*features)
         features.any? ? needs.concat(features) : @needs ||= []
       end
@@ -60,9 +72,9 @@ module Dpl
 
     abstract
 
-    opt '--run CMD', type: :array
-    opt '--app NAME', default: :repo_name
+    opt '--app NAME',      default: :repo_name
     opt '--key_name NAME', default: :machine_name
+    opt '--run CMD',       type: :array
     opt '--skip-cleanup'
     # opt '--pretend', 'Pretend running the deployment'
     # opt '--quiet',   'Suppress any output'
@@ -86,6 +98,18 @@ module Dpl
       msg
     }
 
+    STAGES = %i(
+      init
+      install
+      login
+      setup
+      prepare
+      validate
+      deploy
+    )
+
+    def_delegators :'self.class', :keep, :needs?, :user_agent
+
     def_delegators :ctx, :repo_slug, :repo_name, :build_dir, :build_number,
       :error, :exists?, :fold, :script, :sleep, :success?, :git_tag, :remotes,
       :git_rev_parse, :commit_msg, :sha, :apt, :npm, :pip, :npm_version,
@@ -93,23 +117,19 @@ module Dpl
       :rendezvous
 
     def run
-      init
-      before_install
-      install
-      login
-      before_setup
-      setup
-      prepare
-      validate
-      before_deploy
-      deploy
+      run_stages
       run_cmds
     ensure
-      before_finish
-      finish
+      run_stage(:finish)
     end
 
-    def init
+    def run_stages
+      STAGES.each { |stage| run_stage(stage) }
+    end
+
+    def run_stage(stage)
+      send(:"before_#{stage}") if respond_to?(:"before_#{stage}")
+      send(stage) if respond_to?(stage)
     end
 
     def before_install
@@ -119,58 +139,17 @@ module Dpl
       ctx.pip *self.class.pip if self.class.pip
     end
 
-    def install
-    end
-
-    def login
-    end
-
     def before_setup
       setup_dpl_dir
       setup_ssh_key if needs?(:ssh_key)
       setup_git_config if needs?(:git)
-    end
-
-    def setup
-    end
-
-    def validate
+      setup_git_http_user_agent
     end
 
     def before_deploy
       cleanup unless skip_cleanup?
     end
     fold :prepare
-
-    def check_auth
-    end
-
-    def cleanup
-      info MSGS[:cleanup]
-      self.class.keep.each { |path| shell "mv ./#{path} ~/#{path}" }
-      shell 'git stash --all'
-      self.class.keep.each { |path| shell "mv ~/#{path} ./#{path}" }
-    end
-
-    def prepare
-    end
-
-    def deploy
-      raise 'Overwrite this'
-    end
-    fold :deploy
-
-    def before_finish
-      remove_key if needs?(:ssh_key)
-      uncleanup unless skip_cleanup?
-    end
-
-    def uncleanup
-      shell 'git stash pop'
-    end
-
-    def finish
-    end
 
     def run_cmds
       Array(opts[:run]).each do |cmd|
@@ -183,7 +162,20 @@ module Dpl
     end
     fold :run_cmd
 
-    def remove_key
+    def before_finish
+      remove_key if needs?(:ssh_key)
+      uncleanup unless skip_cleanup?
+    end
+
+    def cleanup
+      info MSGS[:cleanup]
+      keep.each { |path| shell "mv ./#{path} ~/#{path}" }
+      shell 'git stash --all'
+      keep.each { |path| shell "mv ~/#{path} ./#{path}" }
+    end
+
+    def uncleanup
+      shell 'git stash pop'
     end
 
     def name
@@ -213,6 +205,11 @@ module Dpl
       ENV['GIT_SSH'] = file
     end
 
+    def setup_git_http_user_agent
+      return ENV.delete('GIT_HTTP_USER_AGENT') unless needs?(:git_http_user_agent)
+      ENV['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
+    end
+
     def wait_for_ssh_access(host, port)
       info "Git remote is #{host} at port #{port}"
       1.upto(30) { try_ssh_access(host, port) && break || sleep(1) }
@@ -224,10 +221,6 @@ module Dpl
       shell "#{ENV['GIT_SSH']} #{host} -p #{port}  2>&1 | grep -c 'PTY allocation request failed' > /dev/null"
     end
 
-    def user_agent
-      self.class.user_agent
-    end
-
     def shell(cmd, *args)
       opts = args.last.is_a?(Hash) ? args.pop : {}
       opts[:assert] = interpolate(self.class::ASSERT[cmd], args) if opts[:assert].is_a?(TrueClass)
@@ -235,33 +228,24 @@ module Dpl
       ctx.shell(cmd, opts)
     end
 
-    def error(msg, *args)
-      msg = interpolate(self.class::MSGS[msg], args) if msg.is_a?(Symbol)
-      ctx.error msg
-    end
-
-    def warn(msg, *args)
-      msg = interpolate(self.class::MSGS[msg], args) if msg.is_a?(Symbol)
-      ctx.warn msg
-    end
-
-    def info(msg, *args)
-      msg = interpolate(self.class::MSGS[msg], args) if msg.is_a?(Symbol)
-      ctx.info msg
-    end
-
-    def print(msg, *args)
-      msg = interpolate(self.class::MSGS[msg], args) if msg.is_a?(Symbol)
-      ctx.print msg
+    %i(print info warn error).each do |level|
+      define_method(level) do |msg, *args|
+        msg = interpolate(self.class::MSGS[msg], args) if msg.is_a?(Symbol)
+        ctx.send(level, msg)
+      end
     end
 
     def interpolate(str, args = [])
-      args = interpolation if args.empty?
+      args = Interpolation.new(self) if args.empty?
       str % args
     end
 
-    def interpolation
-      @interpolation ||= Interpolation.new(self)
+    def quote(str)
+      %("#{str}")
+    end
+
+    def obfuscate(str)
+      str[-4, 4].to_s.rjust(20, '*')
     end
 
     def opts_for(keys, opts = {})
@@ -279,18 +263,6 @@ module Dpl
 
     def opt_key(key, opts)
       "#{opts[:prefix] || '--'}#{opts[:dashed] ? key.to_s.gsub('_', '-') : key}"
-    end
-
-    def quote(str)
-      %("#{str}")
-    end
-
-    def obfuscate(str)
-      str[-4..-1].to_s.rjust(20, '*')
-    end
-
-    def needs?(need)
-      self.class.needs.include?(need)
     end
 
     def compact(hash)
