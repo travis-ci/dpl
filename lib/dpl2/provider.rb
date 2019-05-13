@@ -2,6 +2,7 @@ require 'cl'
 require 'fileutils'
 require 'forwardable'
 require 'dpl2/provider/env'
+require 'dpl2/provider/interpolation'
 require 'dpl2/provider/fold'
 
 module Dpl
@@ -26,11 +27,7 @@ module Dpl
     include Env, Fold, FileUtils
 
     class << self
-      def experimental(msg = nil)
-        msg ? @experimental = msg : @experimental
-      end
-
-      %i(deprecated needs_key).each do |flag|
+      %i(cleanup deprecated needs_key).each do |flag|
         define_method(:"#{flag}?") { !!instance_variable_get(:"@#{flag}") }
         define_method(flag) { instance_variable_set(:"@#{flag}", true) }
       end
@@ -41,6 +38,10 @@ module Dpl
         end
       end
 
+      def experimental(msg = nil)
+        msg ? @experimental = msg : @experimental
+      end
+
       def keep(*paths)
         paths.any? ? keep.concat(paths) : @keep ||= KEEP.dup
       end
@@ -48,7 +49,7 @@ module Dpl
       def user_agent(*strs)
         strs.unshift "dpl/#{DPL::VERSION}"
         strs.unshift 'travis/0.1.0' if ENV['TRAVIS']
-        strs = strs.flat_map { |e| Hash === e ? e.map { |k,v| "#{k}/#{v}" } : e }
+        strs = strs.flat_map { |e| Hash === e ? e.map { |k, v| "#{k}/#{v}" } : e }
         strs.join(' ').gsub(/\s+/, ' ').strip
       end
     end
@@ -88,6 +89,7 @@ module Dpl
       :rendezvous
 
     def run
+      init
       before_install
       install
       check_auth
@@ -102,6 +104,9 @@ module Dpl
     ensure
       before_finish
       finish
+    end
+
+    def init
     end
 
     def before_install
@@ -189,7 +194,7 @@ module Dpl
 
     def setup_ssh
       ssh_keygen(key_name, '.dpl/id_rsa')
-      setup_git_ssh('.dpl/git-ssh', '.dpl/id_rsa')
+      setup_git_ssh('.dpl/id_rsa')
       setup_key('.dpl/id_rsa.pub')
     end
 
@@ -202,8 +207,9 @@ module Dpl
       shell "git config user.name  >/dev/null 2>/dev/null || git config user.name  `whoami`"
     end
 
-    def setup_git_ssh(path, key)
-      path, key = File.expand_path(path), File.expand_path(key)
+    # move to ctx?
+    def setup_git_ssh(key)
+      path, key = File.expand_path('.dpl/git-ssh'), File.expand_path(key)
       File.open(path, 'w+') { |file| file.write(FILES[:git_ssh] % key) }
       chmod(0740, path)
       ENV['GIT_SSH'] = path
@@ -259,8 +265,12 @@ module Dpl
     end
 
     def interpolate(str, args = [])
-      args = Hash.new { |_, key| send(key).to_s } if args.empty?
+      args = interpolation if args.empty?
       str % args
+    end
+
+    def interpolation
+      @interpolation ||= Interpolation.new(self)
     end
 
     def opts_for(keys, opts = {})

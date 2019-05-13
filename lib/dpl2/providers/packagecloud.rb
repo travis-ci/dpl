@@ -30,7 +30,7 @@ module Dpl
       NEED_DIST = %w(rpm deb dsc whl egg egg-info gz zip tar bz2 z tgz)
 
       MSGS = {
-        authenticate:       'Logging in to https://packagecloud.io with %s:%s',
+        authenticate:       'Logging in to https://packagecloud.io with %{username}:%{obfuscated_token}',
         timeouts:           'Timeouts: %{timeout_info}',
         unauthenticated:    'Could not authenticate to https://packagecloud.io, please check the credentials',
         supported_packages: 'Supported packages: %s',
@@ -50,7 +50,7 @@ module Dpl
       end
 
       def login
-        info :authenticate, username, obfuscate(token)
+        info :authenticate
         info :timeouts
         client
       rescue ::Packagecloud::UnauthenticatedException

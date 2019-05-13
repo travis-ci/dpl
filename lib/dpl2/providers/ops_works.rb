@@ -23,7 +23,7 @@ module Dpl
       opt '--custom_json JSON', 'Custom json options override (overwrites default configuration)'
 
       MSGS = {
-        login:         'Logging in with Access Key: %s',
+        login:         'Logging in with Access Key: %{obfuscated_access_key_id}',
         create_deploy: 'Creating deployment ... ',
         done:          'Done: %s',
         waiting:       'Deploying ',
@@ -37,7 +37,7 @@ module Dpl
       }
 
       def login
-        info :login, obfuscate(access_key_id)
+        info :login
       end
 
       def deploy

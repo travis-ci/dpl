@@ -17,17 +17,21 @@ module Dpl
 
       MSGS = {
         version: 'NPM version: %{npm_version}',
-        login:   'Authenticated with email %s and API key %s',
+        login:   'Authenticated with email %{email} and API key %{obfuscated_api_key}',
+      }
+
+      CMDS = {
+        deploy: 'env NPM_API_KEY=%{api_key} npm publish %{publish_opts}'
       }
 
       def login
         info :version
-        info :login, email, obfuscate(api_key)
+        info :login
         write_npmrc
       end
 
       def deploy
-        shell "env NPM_API_KEY=#{api_key} npm publish #{opts_for(:tag)}".strip
+        shell :deploy
       end
 
       def finish
@@ -35,6 +39,10 @@ module Dpl
       end
 
       private
+
+        def publish_opts
+          opts_for(:tag)
+        end
 
         def write_npmrc
           File.open(npmrc_path, 'w+') { |f| f.write(npmrc) }
