@@ -27,7 +27,7 @@ module Dpl
     include Env, Fold, FileUtils
 
     class << self
-      %i(cleanup deprecated needs_key).each do |flag|
+      %i(cleanup deprecated).each do |flag|
         define_method(:"#{flag}?") { !!instance_variable_get(:"@#{flag}") }
         define_method(flag) { instance_variable_set(:"@#{flag}", true) }
       end
@@ -40,6 +40,10 @@ module Dpl
 
       def experimental(msg = nil)
         msg ? @experimental = msg : @experimental
+      end
+
+      def needs(*features)
+        features.any? ? needs.concat(features) : @needs ||= []
       end
 
       def keep(*paths)
@@ -123,8 +127,9 @@ module Dpl
     end
 
     def before_setup
-      setup_dir
-      setup_ssh if needs_key?
+      setup_dpl_dir
+      setup_ssh_key if needs?(:ssh_key)
+      setup_git_config if needs?(:git)
     end
 
     def setup
@@ -161,7 +166,7 @@ module Dpl
     end
 
     def before_finish
-      remove_key if needs_key?
+      remove_key if needs?(:ssh_key)
       uncleanup unless skip_cleanup?
     end
 
@@ -183,36 +188,34 @@ module Dpl
     end
     fold :run_cmd
 
-    def setup_dir
+    def remove_key
+    end
+
+    def name
+      registry_key
+    end
+
+    def setup_dpl_dir
       rm_rf '.dpl'
       mkdir_p '.dpl'
     end
 
-    def needs_key?
-      self.class.needs_key?
-    end
-
-    def setup_ssh
+    def setup_ssh_key
+      setup_git_ssh_file('.dpl/id_rsa') if needs?(:git)
       ssh_keygen(key_name, '.dpl/id_rsa')
-      setup_git_ssh('.dpl/id_rsa')
-      setup_key('.dpl/id_rsa.pub')
+      add_key('.dpl/id_rsa.pub')
     end
 
-    def setup_key
-      # overwrite this
-    end
-
-    def setup_git_credentials
+    def setup_git_config
       shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost"
       shell "git config user.name  >/dev/null 2>/dev/null || git config user.name  `whoami`"
     end
 
-    # move to ctx?
-    def setup_git_ssh(key)
-      path, key = File.expand_path('.dpl/git-ssh'), File.expand_path(key)
-      File.open(path, 'w+') { |file| file.write(FILES[:git_ssh] % key) }
-      chmod(0740, path)
-      ENV['GIT_SSH'] = path
+    def setup_git_ssh_file(key)
+      file, key = File.expand_path('.dpl/git-ssh'), File.expand_path(key)
+      File.open(file, 'w+') { |file| file.write(FILES[:git_ssh] % key) }
+      chmod(0740, file)
+      ENV['GIT_SSH'] = file
     end
 
     def wait_for_ssh_access(host, port)
@@ -224,13 +227,6 @@ module Dpl
     def try_ssh_access(host, port)
       info 'Waiting for SSH connection ...'
       shell "#{ENV['GIT_SSH']} #{host} -p #{port}  2>&1 | grep -c 'PTY allocation request failed' > /dev/null"
-    end
-
-    def remove_key
-    end
-
-    def name
-      registry_key
     end
 
     def user_agent
@@ -296,6 +292,10 @@ module Dpl
 
     def obfuscate(str)
       str[-4..-1].to_s.rjust(20, '*')
+    end
+
+    def needs?(need)
+      self.class.needs.include?(need)
     end
 
     def compact(hash)

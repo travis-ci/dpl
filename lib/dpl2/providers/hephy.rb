@@ -14,6 +14,9 @@ module Dpl
       opt '--cli_version VER', 'Install a specific hephy cli version', default: 'stable'
       opt '--verbose',         'Verbose log output'
 
+      needs :git, :ssh_key
+      keep 'deis'
+
       INSTALL = 'https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh'
 
       CMDS = {
@@ -34,23 +37,20 @@ module Dpl
         remove_key: 'Removing keys failed.'
       }
 
-      needs_key
-      keep 'deis'
-
       def install
         shell "curl -sSL #{INSTALL} | bash -x -s #{cli_version}"
       end
 
-      def setup_key(file)
+      def login
+        shell :login, assert: true
+      end
+
+      def add_key(file)
         shell :add_key, file, assert: true
         wait_for_ssh_access(host, port)
       end
 
-      def check_auth
-        shell :login, assert: true
-      end
-
-      def check_app
+      def validate
         shell :info, assert: true
       end
 

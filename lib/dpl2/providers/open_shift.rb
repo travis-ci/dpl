@@ -16,7 +16,7 @@ module Dpl
       # not mentioned in the readme or docs
       opt '--deployment_branch BRANCH'
 
-      needs_key
+      needs :git, :ssh_key
 
       SERVER = 'openshift.redhat.com'
 
@@ -44,7 +44,7 @@ module Dpl
         info :validate, application.name
       end
 
-      def setup_key(file)
+      def add_key(file)
         type, content, _ = File.read(file).split
         api.add_key(key_name, content, type)
       end
