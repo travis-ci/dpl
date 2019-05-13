@@ -8,16 +8,11 @@ module Dpl
   # Providers are encouraged to implement any of the following stages:
   #
   #   * setup
-  #   * check_opts
   #   * check_auth
   #   * deploy
   #   * finish
   #
   # The main logic should sit in the deploy stage.
-  #
-  # Minimal providers that only need to execute a single command can skip
-  # implementing the `deploy` method, and only implement a method `cmd`, which
-  # will be picked up by the base implemention here.
   #
   # The following stages are not meant to be overwritten, and for applying
   # default behaviour:
@@ -134,13 +129,9 @@ module Dpl
     end
 
     def before_deploy
-      check_opts
       cleanup unless skip_cleanup?
     end
     fold :prepare
-
-    def check_opts
-    end
 
     def check_auth
     end
@@ -156,7 +147,7 @@ module Dpl
     end
 
     def deploy
-      shell cmd
+      raise 'Overwrite this'
     end
     fold :deploy
 

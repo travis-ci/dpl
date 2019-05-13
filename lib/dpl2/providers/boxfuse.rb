@@ -23,13 +23,19 @@ module Dpl
         shell "curl -L #{URL} | tar xz"
       end
 
-      def cmd
-        opts = %i(user secret payload image env)
-        cmd = ['boxfuse/boxfuse run', *opts_for(opts)]
-        cmd << "--configfile=#{config_file}" if config_file?
-        cmd << args if args?
-        cmd.compact.join(' ')
+      def deploy
+        shell deploy_cmd
       end
+
+      private
+
+        def deploy_cmd
+          opts = %i(user secret payload image env)
+          cmd = ['boxfuse/boxfuse run', *opts_for(opts)]
+          cmd << "--configfile=#{config_file}" if config_file?
+          cmd << args if args?
+          cmd.compact.join(' ')
+        end
     end
   end
 end

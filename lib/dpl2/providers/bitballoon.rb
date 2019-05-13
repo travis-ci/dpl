@@ -15,13 +15,15 @@ module Dpl
       opt '--site_id ID',         'The side id', required: true
       opt '--local_dir DIR',      'The sub-directory of the built assets for deployment', default: '.'
 
-      def cmd
-        ['bitballoon deploy', local_dir, cmd_opts].join(' ')
+      def deploy
+        shell "bitballoon deploy #{local_dir} #{deploy_opts}"
       end
 
-      def cmd_opts
-        opts_for(%i(site_id access_token), dashed: true)
-      end
+      private
+
+        def deploy_opts
+          opts_for(%i(site_id access_token), dashed: true)
+        end
     end
   end
 end
