@@ -27,7 +27,7 @@ module Dpl
         write_rc
       end
 
-      def check_auth
+      def login
         shell :status
       end
 

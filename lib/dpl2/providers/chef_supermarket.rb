@@ -31,7 +31,7 @@ module Dpl
         Chef::Config[:client_key] = client_key
       end
 
-      def check_auth
+      def login
         error :missing_key unless File.exist?(client_key)
       end
 
