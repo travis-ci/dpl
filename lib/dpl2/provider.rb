@@ -3,7 +3,6 @@ require 'fileutils'
 require 'forwardable'
 require 'dpl2/provider/env'
 require 'dpl2/provider/interpolation'
-require 'dpl2/provider/fold'
 
 module Dpl
   # Providers are encouraged to implement any of the following stages
@@ -32,7 +31,7 @@ module Dpl
 
   class Provider < Cl::Cmd
     extend Forwardable
-    include Env, Fold, FileUtils
+    include Env, FileUtils
 
     class << self
       %i(cleanup deprecated).each do |flag|
@@ -44,6 +43,10 @@ module Dpl
         define_method(name) do |*args|
           args.any? ? instance_variable_set(:"@#{name}", args) : instance_variable_get(:"@#{name}")
         end
+      end
+
+      def experimental?
+        !!experimental
       end
 
       def experimental(msg = nil)
@@ -96,6 +99,18 @@ module Dpl
         If you need build artifacts for deployment, set `deploy.skip_cleanup: true`.
         See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup.
       msg
+      experimental: '%s support is experimental'
+    }
+
+    FOLDS = {
+      init:     'Initialize deployment',
+      setup:    'Setup deployment',
+      validate: 'Validate deployment',
+      install:  'Install deployment dependencies',
+      login:    'Authenticate deployment',
+      prepare:  'Prepare deployment',
+      deploy:   'Run deployment',
+      finish:   'Finish deployment',
     }
 
     STAGES = %i(
@@ -108,13 +123,14 @@ module Dpl
       deploy
     )
 
-    def_delegators :'self.class', :keep, :needs?, :user_agent
+    def_delegators :'self.class', :apt, :npm, :pip, :experimental,
+      :experimental?, :keep, :needs?, :user_agent
 
     def_delegators :ctx, :repo_slug, :repo_name, :build_dir, :build_number,
-      :error, :exists?, :fold, :script, :sleep, :success?, :git_tag, :remotes,
-      :git_rev_parse, :commit_msg, :sha, :apt, :npm, :pip, :npm_version,
-      :which, :encoding, :machine_name, :ssh_keygen, :logger, :tmpdir,
-      :rendezvous
+      :error, :exists?, :script, :sleep, :success?, :git_tag, :remotes,
+      :git_rev_parse, :commit_msg, :sha, :npm_version, :which, :encoding,
+      :machine_name, :ssh_keygen, :logger, :tmpdir, :rendezvous,
+      :apt_get, :npm_install, :pip_install
 
     def run
       run_stages
@@ -124,32 +140,42 @@ module Dpl
     end
 
     def run_stages
-      STAGES.each { |stage| run_stage(stage) }
+      STAGES.each do |stage|
+        run_stage(stage) if run_stage?(stage)
+      end
+    end
+
+    def run_stage?(stage)
+      respond_to?(:"before_#{stage}") || respond_to?(stage)
     end
 
     def run_stage(stage)
-      send(:"before_#{stage}") if respond_to?(:"before_#{stage}")
-      send(stage) if respond_to?(stage)
+      fold(stage) do
+        send(:"before_#{stage}") if respond_to?(:"before_#{stage}")
+        send(stage) if respond_to?(stage)
+      end
     end
 
     def before_install
+      warn MSGS[:experimental] % experimental if experimental?
       deprecated_opts.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
-      ctx.apt *self.class.apt if self.class.apt
-      ctx.npm *self.class.npm if self.class.npm
-      ctx.pip *self.class.pip if self.class.pip
+      info 'Installing deployment dependencies' if apt || npm || pip
+      apt_get *apt if apt
+      npm_install *npm if npm
+      pip_install *pip if pip
     end
 
     def before_setup
+      info 'Setting the build environment up for the deployment'
       setup_dpl_dir
       setup_ssh_key if needs?(:ssh_key)
       setup_git_config if needs?(:git)
       setup_git_http_user_agent
     end
 
-    def before_deploy
+    def before_prepare
       cleanup unless skip_cleanup?
     end
-    fold :prepare
 
     def run_cmds
       Array(opts[:run]).each do |cmd|
@@ -160,7 +186,6 @@ module Dpl
     def run_cmd(cmd)
       cmd == 'restart' ? restart : shell(cmd)
     end
-    fold :run_cmd
 
     def before_finish
       remove_key if needs?(:ssh_key)
@@ -188,8 +213,8 @@ module Dpl
     end
 
     def setup_ssh_key
-      setup_git_ssh_file('.dpl/id_rsa') if needs?(:git)
       ssh_keygen(key_name, '.dpl/id_rsa')
+      setup_git_ssh('.dpl/id_rsa') if needs?(:git)
       add_key('.dpl/id_rsa.pub')
     end
 
@@ -198,15 +223,22 @@ module Dpl
       shell "git config user.name  >/dev/null 2>/dev/null || git config user.name  `whoami`"
     end
 
-    def setup_git_ssh_file(key)
+    def setup_git_ssh(key)
+      info 'Setting up git-ssh'
       file, key = File.expand_path('.dpl/git-ssh'), File.expand_path(key)
       File.open(file, 'w+') { |file| file.write(FILES[:git_ssh] % key) }
       chmod(0740, file)
       ENV['GIT_SSH'] = file
     end
 
+    def ssh_keygen(*args)
+      info 'Generating SSH key'
+      ctx.ssh_keygen(*args)
+    end
+
     def setup_git_http_user_agent
       return ENV.delete('GIT_HTTP_USER_AGENT') unless needs?(:git_http_user_agent)
+      info 'Setting up git HTTP user agent'
       ENV['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
     end
 
@@ -219,6 +251,11 @@ module Dpl
     def try_ssh_access(host, port)
       info 'Waiting for SSH connection ...'
       shell "#{ENV['GIT_SSH']} #{host} -p #{port}  2>&1 | grep -c 'PTY allocation request failed' > /dev/null"
+    end
+
+    def fold(name, &block)
+      title = FOLDS[name] || "deploy.#{name}"
+      ctx.fold(title, &block)
     end
 
     def shell(cmd, *args)

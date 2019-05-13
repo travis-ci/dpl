@@ -4,6 +4,8 @@ module Dpl
   module Providers
     class Heroku
       class Git < Heroku
+        needs :git_http_user_agent
+
         def prepare
           write_netrc if remote.start_with?('https://')
         end

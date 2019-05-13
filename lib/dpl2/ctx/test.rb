@@ -20,15 +20,15 @@ module Dpl
         yield.tap { cmds << "[unfold] #{name}" }
       end
 
-      def apt(name, cmd)
+      def apt_get(name, cmd)
         cmds << "[apt:get] #{name} (#{cmd})"
       end
 
-      def npm(name, cmd = name)
+      def npm_install(name, cmd = name)
         cmds << "[npm:install] #{name} (#{cmd})"
       end
 
-      def pip(name, cmd = name, version = nil)
+      def pip_install(name, cmd = name, version = nil)
         cmds << "[pip:install] #{name} (#{cmd}, #{version})"
       end
 

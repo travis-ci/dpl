@@ -20,7 +20,7 @@ module Dpl
       }
 
       def install
-        pip 'transifex', 'transifex', cli_version
+        pip_install 'transifex', 'transifex', cli_version
       end
 
       def setup
@@ -37,19 +37,15 @@ module Dpl
 
       private
 
-        def write_rc
-          File.open(rc_path, 'w') { |f| f.write(rc) }
-        end
-
         RC = <<~rc
-          [%{hostname}]
-          hostname = %{hostname}
+          [%{url}]
+          hostname = %{url}
           username = %{username}
           password = %{password}
         rc
 
-        def rc
-          RC % { hostname: url, username: username, password: password }
+        def write_rc
+          File.open(rc_path, 'w') { |f| f.write(interpolate(RC)) }
         end
 
         def rc_path

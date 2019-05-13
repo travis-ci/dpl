@@ -15,7 +15,6 @@ module Dpl
       opt '--slot SLOT',     'Slot name (if your app uses staging deployment)'
       opt '--verbose',       'Print deployment output from Azure. Warning: If authentication fails, Git prints credentials in clear text. Correct credentials remain hidden.'
 
-      # fold deploy: 'Deploying to Azure Web App: %s'
 
       URL = 'https://%s:%s@%s.scm.azurewebsites.net:443/%s.git'
 
@@ -27,7 +26,8 @@ module Dpl
       }
 
       MSGS = {
-        commit: 'Skipping cleanup, committing any changes'
+        commit: 'Skipping cleanup, committing any changes',
+        deploy: 'Deploying to Azure Web App: %{app}'
       }
 
       def setup
@@ -35,6 +35,7 @@ module Dpl
       end
 
       def deploy
+        info :deploy
         shell :git_push, silence: !verbose?
       end
 

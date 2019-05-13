@@ -16,15 +16,16 @@ module Dpl
       opt '--token TOKEN', 'Snap API token', required: true
 
       CMDS = {
-        login:   'snapcraft login --with %{token}',
-        install: 'sudo snap install snapcraft --classic',
-        deploy:  'snapcraft push %s --release=%s'
+        login:          'snapcraft login --with %{token}',
+        install:        'sudo snap install snapcraft --classic',
+        deploy:         'snapcraft push %s --release=%s'
       }
 
       MSGS = {
         login:          'Attemping to login ...',
         no_snaps:       'No snap found matching %{snap}',
-        multiple_snaps: 'Multiple snaps found matching %s: %s'
+        multiple_snaps: 'Multiple snaps found matching %{snap}: %{snap_paths}',
+        deploy:         'Pushing snap %{snap_path}',
       }
 
       def install
@@ -38,13 +39,21 @@ module Dpl
 
       def validate
         error :no_snaps if snaps.empty?
-        error :multiple_snaps, snap, snaps.join(', ') if snaps.size > 1
+        error :multiple_snaps if snaps.size > 1
       end
 
       def deploy
-        shell :deploy, snaps.first, channel
+        info :deploy
+        shell :deploy, snap_path, channel
       end
-      # fold 'Pushing snap'
+
+      def snap_path
+        snaps.first
+      end
+
+      def snap_paths
+        snaps.join(', ')
+      end
 
       def snaps
         @snaps ||= Dir[snap].sort
