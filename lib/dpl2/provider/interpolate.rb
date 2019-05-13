@@ -1,5 +1,5 @@
 module Dpl
-  class Interpolation < Hash
+  class Interpolate < Hash
     attr_reader :obj
 
     def initialize(obj)
