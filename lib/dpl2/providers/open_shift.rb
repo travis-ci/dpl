@@ -1,8 +1,8 @@
-require 'rhc'
-
 module Dpl
   module Providers
     class OpenShift < Provider
+      requires 'rhc'
+
       summary 'Openshift deployment provider'
 
       description <<~str

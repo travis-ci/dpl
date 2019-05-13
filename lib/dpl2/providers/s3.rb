@@ -1,6 +1,3 @@
-require 'json'
-require 'aws-sdk'
-require 'mime-types'
 require 'uri'
 
 # we want this, don't we?
@@ -9,6 +6,8 @@ Thread.abort_on_exception = true
 module Dpl
   module Providers
     class S3 < Provider
+      requires 'aws-sdk', 'mime-types'
+
       summary 'S3 deployment provider'
 
       description <<~str

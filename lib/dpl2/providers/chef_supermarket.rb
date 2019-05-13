@@ -1,11 +1,13 @@
-require 'chef'
-require 'chef/cookbook_uploader'
-require 'chef/cookbook_site_streaming_uploader'
-require 'chef/knife/cookbook_metadata'
-
 module Dpl
   module Providers
     class ChefSupermarket < Provider
+      requires *%w(
+        chef/cookbook_loader
+        chef/cookbook_uploader
+        chef/cookbook_site_streaming_uploader
+        chef/knife/cookbook_metadata
+      )
+
       summary 'Chef Supermarket deployment provider'
 
       description <<~str

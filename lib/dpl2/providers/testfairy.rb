@@ -1,12 +1,14 @@
-require 'net/http'
-require 'net/http/post/multipart'
-require 'json'
 require 'dpl2/version'
+
+require 'json'
+require 'net/http'
 require 'securerandom'
 
 module Dpl
   module Providers
     class Testfairy < Provider
+      requires 'net/http/post/multipart'
+
       summary 'Testfairy deployment provider'
 
       description <<~str

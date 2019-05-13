@@ -34,35 +34,34 @@ module Dpl
     include Env, FileUtils
 
     class << self
-      %i(cleanup deprecated).each do |flag|
-        define_method(:"#{flag}?") { !!instance_variable_get(:"@#{flag}") }
-        define_method(flag) { instance_variable_set(:"@#{flag}", true) }
+      %i(cleanup deprecated experimental).each do |name|
+        define_method(:"#{name}?") { !!instance_variable_get(:"@#{name}") }
+        define_method(name) { |arg = true| instance_variable_set(:"@#{name}", arg) }
       end
 
       %i(apt npm pip).each do |name|
-        define_method(name) do |*args|
-          args.any? ? instance_variable_set(:"@#{name}", args) : instance_variable_get(:"@#{name}")
-        end
+        define_method(:"#{name}?") { !!instance_variable_get(:"@#{name}") }
+        define_method(name) { |*args| args.any? ? instance_variable_set(:"@#{name}", args) : instance_variable_get(:"@#{name}") }
       end
 
-      def experimental?
-        !!experimental
+      def keep(*paths)
+        paths.any? ? keep.concat(paths) : @keep ||= []
       end
 
-      def experimental(msg = nil)
-        msg ? @experimental = msg : @experimental
-      end
-
-      def needs?(need)
-        needs.include?(need)
+      def needs?(feature)
+        needs.include?(feature)
       end
 
       def needs(*features)
         features.any? ? needs.concat(features) : @needs ||= []
       end
 
-      def keep(*paths)
-        paths.any? ? keep.concat(paths) : @keep ||= KEEP.dup
+      def requires(*paths)
+        paths.any? ? requires.concat(paths) : @requires ||= []
+      end
+
+      def require
+        Array(requires).each { |path| Kernel.require(path) }
       end
 
       def user_agent(*strs)
@@ -156,9 +155,13 @@ module Dpl
       end
     end
 
-    def before_install
+    def before_init
+      self.class.require
       warn MSGS[:experimental] % experimental if experimental?
       deprecated_opts.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
+    end
+
+    def before_install
       info 'Installing deployment dependencies' if apt || npm || pip
       apt_get *apt if apt
       npm_install *npm if npm

@@ -1,9 +1,10 @@
-require 'faraday'
 require 'json'
 
 module Dpl
   module Providers
     class Heroku < Provider
+      requires 'faraday'
+
       summary 'Heroku deployment provider'
 
       description <<~str

@@ -1,8 +1,8 @@
-require 'gems'
-
 module Dpl
   module Providers
     class Rubygems < Provider
+      requires 'gems'
+
       summary 'Rubygems deployment provider'
 
       description <<~str

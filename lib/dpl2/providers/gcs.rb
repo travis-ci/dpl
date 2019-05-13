@@ -1,6 +1,4 @@
 require 'kconv'
-require 'gstore'
-require 'mime-types'
 
 # gstore seems dead (it's archived on github)
 #
@@ -9,16 +7,11 @@ require 'mime-types'
 #
 # well, i guess i'm done with the code now anyway :)
 
-class GStore::Client
-  def sign(str)
-    digest = OpenSSL::Digest.new('sha1') # use undeprecated constant
-    b64_hmac = Base64.encode64(OpenSSL::HMAC.digest(digest, @secret_key, str)).gsub("\n","")
-  end
-end
-
 module Dpl
   module Providers
     class Gcs < Provider
+      requires 'gstore', 'mime-types', 'dpl2/support/gstore_patch'
+
       summary 'Gcs deployment provider'
 
       description <<~str
