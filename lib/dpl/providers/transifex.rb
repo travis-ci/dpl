@@ -14,10 +14,8 @@ module Dpl
       opt '--hostname NAME',   'Transifex hostname', default: 'www.transifex.com'
       opt '--cli_version VER', 'CLI version to install', default: '>=0.11'
 
-      CMDS = {
-        status: 'tx status',
-        push:   'tx push --source --no-interactive'
-      }
+      cmds status: 'tx status',
+           push:   'tx push --source --no-interactive'
 
       def install
         pip_install 'transifex', 'transifex', cli_version

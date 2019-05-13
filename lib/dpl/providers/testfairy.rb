@@ -31,7 +31,6 @@ module Dpl
       opt '--record_on_background', 'Collect data while the app is on background.'
       opt '--video', 'Video recording settings', default: true
       opt '--metrics METRICS', 'Comma_separated list of metrics to record', see: 'http://docs.testfairy.com/Upload_API.html'
-
       # mentioned in the readme, but not in the previous implementation
       opt '--icon_watermark', 'Add a small watermark to the app icon'
       opt '--advanced_options OPTS', 'Comma_separated list of advanced options', example: 'option1,option2'
@@ -39,10 +38,8 @@ module Dpl
       URL = 'http://api.testfairy.com/api/upload'
       UA  = "Travis CI dpl version=#{Dpl::VERSION}"
 
-      MSGS = {
-        deploy: 'Uploading to TestFairy: %s',
-        done:   'Done. Check your build at %s'
-      }
+      msgs deploy: 'Uploading to TestFairy: %s',
+           done:   'Done. Check your build at %s'
 
       def deploy
         info :deploy, pretty_print(params)

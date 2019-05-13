@@ -14,9 +14,6 @@ module Dpl
         tbd
       str
 
-      # add to Cl:
-      # enum: ['one', 'two']
-
       env :aws
 
       opt '--access_key_id ID', 'AWS access key id', required: true
@@ -37,17 +34,15 @@ module Dpl
       opt '--default_text_charset CHARSET', 'Default character set to append to the content-type of text files'
       opt '--max_threads NUM', 'The number of threads to use for S3 file uploads', default: 5, max: 15, type: :integer
 
-      MSGS = {
-        login:                 'Logging in with Access Key: %{obfuscated_access_key_id}',
-        default_uri_schema:    'S3 endpoint does not specify a scheme; defaulting to https',
-        access_denied:         'It looks like you tried to write to a bucket that is not yours or does not exist. Please create the bucket before trying to write to it.',
-        checksum_error:        'AWS secret key does not match the access key id',
-        invalid_access_key_id: 'Invalid S3 access key id',
-        upload:                'Uploading %s files with up to %s threads.',
-        upload_file:           'Uploading file %s to %s with %s',
-        upload_failed:         'Failed to upload %s',
-        index_document_suffix: 'Setting index document suffix to %s',
-      }
+      msgs login:                 'Logging in with Access Key: %{obfuscated_access_key_id}',
+           default_uri_schema:    'S3 endpoint does not specify a scheme; defaulting to https',
+           access_denied:         'It looks like you tried to write to a bucket that is not yours or does not exist. Please create the bucket before trying to write to it.',
+           checksum_error:        'AWS secret key does not match the access key id',
+           invalid_access_key_id: 'Invalid S3 access key id',
+           upload:                'Uploading %s files with up to %s threads.',
+           upload_file:           'Uploading file %s to %s with %s',
+           upload_failed:         'Failed to upload %s',
+           index_document_suffix: 'Setting index document suffix to %s'
 
       def setup
         @cwd = Dir.pwd

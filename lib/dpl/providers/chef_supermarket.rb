@@ -21,13 +21,11 @@ module Dpl
 
       URL = "https://supermarket.chef.io/api/v1/cookbooks"
 
-      MSGS = {
-        validate:       'Validating cookbook %{name}',
-        upload:         'Uploading cookbook %{name} to %{url}',
-        missing_key:    '%{client_key} does not exist',
-        unknown_error:  'Unknown error while sharing cookbook: %s',
-        version_exists: 'The same version of this cookbook already exists on the Opscode Cookbook Site.'
-      }
+      msgs validate:       'Validating cookbook %{name}',
+           upload:         'Uploading cookbook %{name} to %{url}',
+           missing_key:    '%{client_key} does not exist',
+           unknown_error:  'Unknown error while sharing cookbook: %s',
+           version_exists: 'The same version of this cookbook already exists on the Opscode Cookbook Site.'
 
       def setup
         Chef::Config[:client_key] = client_key
@@ -69,7 +67,7 @@ module Dpl
         end
 
         def cookbook
-          @cookbook ||= loader[name]
+          @cookbook ||= Dir.chdir('..') { loader[name] }
         end
 
         def uploader
@@ -77,7 +75,7 @@ module Dpl
         end
 
         def loader
-          Chef::CookbookLoader.new('..')
+          Chef::CookbookLoader.new('.')
         end
 
         def dir

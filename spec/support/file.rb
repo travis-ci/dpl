@@ -30,9 +30,8 @@ module Support
       end
     end
 
-    # memfs does not support File.write?
+    # fakefs does not support File.write?
     def file(path, content = '')
-      # path = ::File.expand_path(path.to_s)
       path = path.to_s
       FileUtils.mkdir_p(::File.dirname(path))
       ::File.open(path, 'w+') { |f| f.write(content) }

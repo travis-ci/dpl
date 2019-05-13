@@ -1,4 +1,4 @@
-describe Dpl::Providers::CloudFoundry, memfs: true do
+describe Dpl::Providers::CloudFoundry, fakefs: true do
   let(:args) { |e| %w(--api api.io --username name --password pass --organization org --space space) + args_from_description(e) }
 
   file 'manifest.yml'

@@ -2,7 +2,6 @@ require 'cl'
 require 'logger'
 require 'tmpdir'
 require 'rendezvous'
-require 'dpl/ctx/script'
 
 module Dpl
   module Ctx
@@ -37,10 +36,6 @@ module Dpl
 
       def npm_version
         `npm --version`
-      end
-
-      def script(name, opts = {})
-        shell Script.new(registry_key, name).read, opts
       end
 
       # TODO retry

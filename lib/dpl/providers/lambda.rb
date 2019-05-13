@@ -33,14 +33,12 @@ module Dpl
       opt '--kms_key_arn ARN',            'KMS key ARN to use to encrypt environment_variables.'
       opt '--function_tags TAGS',         'List of tags to add to the function, needs to be in the format of KEY=VALUE. Can be encrypted for added security.', type: :array
 
-      MSGS = {
-        login:           'Using Access Key: %{obfuscated_access_key_id}',
-        create_function: 'Creating function %{function_name}.',
-        update_config:   'Updating existing function %{function_name}.',
-        update_tags:     'Updating tags.',
-        update_code:     'Updating code.',
-        description:     'Deploy build %{build_number} to AWS Lambda via Travis CI',
-      }
+      msgs login:           'Using Access Key: %{obfuscated_access_key_id}',
+           create_function: 'Creating function %{function_name}.',
+           update_config:   'Updating existing function %{function_name}.',
+           update_tags:     'Updating tags.',
+           update_code:     'Updating code.',
+           description:     'Deploy build %{build_number} to AWS Lambda via Travis CI'
 
       def login
         info :login
@@ -151,7 +149,7 @@ module Dpl
         end
 
         def description
-          super || interpolate(MSGS[:description])
+          super || interpolate(msg(:description))
         end
 
         def client

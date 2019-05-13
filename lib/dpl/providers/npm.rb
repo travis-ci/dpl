@@ -15,14 +15,10 @@ module Dpl
       REGISTRY = 'registry.npmjs.org'
       NPMRC = '~/.npmrc'
 
-      MSGS = {
-        version: 'NPM version: %{npm_version}',
-        login:   'Authenticated with email %{email} and API key %{obfuscated_api_key}',
-      }
+      msgs version: 'NPM version: %{npm_version}',
+           login:   'Authenticated with email %{email} and API key %{obfuscated_api_key}'
 
-      CMDS = {
-        deploy: 'env NPM_API_KEY=%{api_key} npm publish %{publish_opts}'
-      }
+      cmds deploy:  'env NPM_API_KEY=%{api_key} npm publish %{publish_opts}'
 
       def login
         info :version

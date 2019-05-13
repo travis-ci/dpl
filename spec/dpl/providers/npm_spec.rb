@@ -1,4 +1,4 @@
-describe Dpl::Providers::Npm, memfs: true do
+describe Dpl::Providers::Npm, fakefs: true do
   let(:args) { |e| %w(--email email --api_key key) + args_from_description(e) }
 
   dir File.expand_path('~')

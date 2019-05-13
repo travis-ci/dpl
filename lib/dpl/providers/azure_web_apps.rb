@@ -15,20 +15,15 @@ module Dpl
       opt '--slot SLOT',     'Slot name (if your app uses staging deployment)'
       opt '--verbose',       'Print deployment output from Azure. Warning: If authentication fails, Git prints credentials in clear text. Correct credentials remain hidden.'
 
-
       URL = 'https://%s:%s@%s.scm.azurewebsites.net:443/%s.git'
 
-      CMDS = {
-        git_push:     'git push --force --quiet %{url} HEAD:refs/heads/master',
-        git_checkout: 'git checkout HEAD',
-        git_add:      'git add . --all --force',
-        git_commit:   'git commit -m "Skip cleanup commit"',
-      }
+      cmds git_push:     'git push --force --quiet %{url} HEAD:refs/heads/master',
+           git_checkout: 'git checkout HEAD',
+           git_add:      'git add . --all --force',
+           git_commit:   'git commit -m "Skip cleanup commit"'
 
-      MSGS = {
-        commit: 'Skipping cleanup, committing any changes',
-        deploy: 'Deploying to Azure Web App: %{app}'
-      }
+      msgs commit: 'Skipping cleanup, committing any changes',
+           deploy: 'Deploying to Azure Web App: %{app}'
 
       def setup
         commit if skip_cleanup?

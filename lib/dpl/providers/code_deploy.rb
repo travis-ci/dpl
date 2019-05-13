@@ -30,24 +30,16 @@ module Dpl
       # mentioned only in the code
       opt '--description DESCR'
 
-      CMDS = {
-      }
-
-      ASSERT = {
-      }
-
-      MSGS = {
-        login:                 'Using Access Key: %{obfuscated_access_key_id}',
-        deploy_triggered:      'Deployment triggered: %s',
-        register_revision:     'Registering app revision with version=%s, etag=%s',
-        waiting_for_deploy:    'Waiting for the deployment to finish ',
-        finished_deploy:       'done: %s.',
-        description:           'Deploy build %s via Travis CI',
-        missing_bucket:        'Missing required bucket for S3 deployment',
-        missing_key:           'Missing required key for S3 deployment',
-        unknown_revision_type: 'Unknown revision type %p',
-        unknown_bundle_type:   'Unknown bundle type'
-      }
+      msgs login:                 'Using Access Key: %{obfuscated_access_key_id}',
+           deploy_triggered:      'Deployment triggered: %s',
+           register_revision:     'Registering app revision with version=%s, etag=%s',
+           waiting_for_deploy:    'Waiting for the deployment to finish ',
+           finished_deploy:       'done: %s.',
+           description:           'Deploy build %{build_number} via Travis CI',
+           missing_bucket:        'Missing required bucket for S3 deployment',
+           missing_key:           'Missing required key for S3 deployment',
+           unknown_revision_type: 'Unknown revision type %p',
+           unknown_bundle_type:   'Unknown bundle type'
 
       def login
         info :login
@@ -156,7 +148,11 @@ module Dpl
       end
 
       def description
-        super || MSGS[:description] % ENV['TRAVIS_BUILD_NUMBER']
+        super || interpolate(msg(:description))
+      end
+
+      def build_number
+        ENV['TRAVIS_BUILD_NUMBER']
       end
 
       def code_deploy

@@ -35,18 +35,16 @@ module Dpl
 
       URL = 'https://api.github.com/repos/%s/releases/%s'
 
-      MSGS = {
-        deploy:               'Deploying to repo: %{slug}',
-        local_tag:            'Current tag is: %{local_tag}',
-        login:                'Logged in as %s',
-        insufficient_scopes:  'Dpl does not have permission to upload assets. Make sure your token has the repo or public_repo scope.',
-        overwrite_existing:   'File %s already exists, overwriting.',
-        skip_existing:        'File %s already exists, skipping.',
-        set_tag_name:         'Setting tag_name to %s',
-        set_target_commitish: 'Setting target_commitish to %s',
-        missing_file:         '%s does not exist.',
-        not_a_file:           '%s is not a file, skipping.'
-      }
+      msgs deploy:               'Deploying to repo: %{slug}',
+           local_tag:            'Current tag is: %{local_tag}',
+           login:                'Logged in as %s',
+           insufficient_scopes:  'Dpl does not have permission to upload assets. Make sure your token has the repo or public_repo scope.',
+           overwrite_existing:   'File %s already exists, overwriting.',
+           skip_existing:        'File %s already exists, skipping.',
+           set_tag_name:         'Setting tag_name to %s',
+           set_target_commitish: 'Setting target_commitish to %s',
+           missing_file:         '%s does not exist.',
+           not_a_file:           '%s is not a file, skipping.'
 
       def validate
         info :deploy

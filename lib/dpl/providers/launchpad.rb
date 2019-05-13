@@ -11,10 +11,8 @@ module Dpl
       opt '--oauth_token TOKEN', 'Launchpad OAuth token'
       opt '--oauth_token_secret SECRET', 'Launchpad OAuth token secret'
 
-      MSGS = {
-        invalid_credentials: 'Invalid credentials (%s)',
-        unknown_error:       'Error: %s (%s)'
-      }
+      msgs invalid_credentials: 'Invalid credentials (%s)',
+           unknown_error:       'Error: %s (%s)'
 
       def deploy
         handle_response(post)

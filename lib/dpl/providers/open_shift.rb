@@ -20,16 +20,12 @@ module Dpl
 
       SERVER = 'openshift.redhat.com'
 
-      MSGS = {
-        login:           'Authenticated as %{user}',
-        validate:        'Found application %s',
-        deploy_branch:   'Deployment branch: %{deployment_branch}'
-      }
+      msgs login:           'Authenticated as %{user}',
+           validate:        'Found application %s',
+           deploy_branch:   'Deployment branch: %{deployment_branch}'
 
-      CMDS = {
-        git_push:        'git push %{git_url} -f',
-        git_push_branch: 'git push %{git_url} -f %{deployment_branch}'
-      }
+      cmds git_push:        'git push %{git_url} -f',
+           git_push_branch: 'git push %{git_url} -f %{deployment_branch}'
 
       def api
         @api ||= ::RHC::Rest::Client.new(user: user, password: password, server: SERVER)

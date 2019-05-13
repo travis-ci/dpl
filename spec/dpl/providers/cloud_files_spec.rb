@@ -1,4 +1,4 @@
-describe Dpl::Providers::CloudFiles, memfs: true do
+describe Dpl::Providers::CloudFiles, fakefs: true do
   let(:storage) { Fog::Storage.new(provider: 'rackspace', rackspace_username: 'user', rackspace_api_key: 'key', rackspace_region: 'ord') }
   let(:args) { |e| %w(--username user --api_key key --region ord --container name) + args_from_description(e) }
   let(:dirs) { storage.directories }
@@ -9,9 +9,6 @@ describe Dpl::Providers::CloudFiles, memfs: true do
   before do
     Fog.mock!
     dirs.create(key: 'name')
-    # memfs doesn't seem to work well with cwd and glob
-    allow(Dir).to receive(:glob).with('**/*').and_return(['one', 'two'])
-    allow(Dir).to receive(:glob).with('one').and_return(['one'])
   end
 
   before { subject.run }

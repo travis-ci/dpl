@@ -12,18 +12,13 @@ module Dpl
       opt '--username USER', 'Hackage username', required: true
       opt '--password USER', 'Hackage password', required: true
 
-      CMDS = {
-        validate: 'cabal check',
-        prepare:  'cabal dist',
-        upload:   'cabal upload %s %s'
+      cmds validate: 'cabal check',
+           prepare:  'cabal dist',
+           upload:   'cabal upload %s %s'
 
-      }
-
-      ASSERT = {
-        validate: 'cabal check failed',
-        prepare:  'cabal dist failed',
-        upload:   'cabal upload failed'
-      }
+      errs validate: 'cabal check failed',
+           prepare:  'cabal dist failed',
+           upload:   'cabal upload failed'
 
       def validate
         shell 'cabal check', assert: 'cabal check failed'

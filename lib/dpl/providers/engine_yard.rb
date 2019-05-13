@@ -21,15 +21,13 @@ module Dpl
       opt '--migrate CMD',     'Engine Yard migration commands'
       opt '--account NAME'
 
-      MSGS = {
-        deploy:          'Deploying ...',
-        invalid_migrate: 'Invalid migration command, try --migrate="rake db:migrate"',
-        authenticated:   'Authenticated as %s',
-        multiple_envs:   "Multiple matches possible, please be more specific: %s",
-        env_entry:       'environment=%s account=%s',
-        deploy_done:     'Done: https://cloud.engineyard.com/apps/%s/environments/%s/deployments/%s/pretty',
-        deploy_failed:   'Deployment failed (see logs on Engine Yard)'
-      }
+      msgs deploy:          'Deploying ...',
+           invalid_migrate: 'Invalid migration command, try --migrate="rake db:migrate"',
+           authenticated:   'Authenticated as %s',
+           multiple_envs:   "Multiple matches possible, please be more specific: %s",
+           env_entry:       'environment=%s account=%s',
+           deploy_done:     'Done: https://cloud.engineyard.com/apps/%s/environments/%s/deployments/%s/pretty',
+           deploy_failed:   'Deployment failed (see logs on Engine Yard)'
 
       attr_reader :env, :token
 
@@ -89,8 +87,8 @@ module Dpl
         end
 
         def multiple_env_matches(envs)
-          envs = envs.map { |env| MSGS[:env_entry] % [env.environment.name, env.environment.account.name] }
-          error MSGS[:multiple_envs] % envs.join(', ')
+          envs = envs.map { |env| msg(:env_entry) % [env.environment.name, env.environment.account.name] }
+          error msg(:multiple_envs) % envs.join(', ')
         end
 
         def poll_for_result(deployment)

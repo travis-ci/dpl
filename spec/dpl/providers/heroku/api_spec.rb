@@ -1,4 +1,4 @@
-describe Dpl::Providers::Heroku, memfs: true do
+describe Dpl::Providers::Heroku, fakefs: true do
   let(:args) { |e| %w(--strategy api --api_key key) + args_from_description(e) }
   let(:user) { JSON.dump(email: 'email') }
   let(:dyno) { JSON.dump(attach_url: 'attach_url') }
@@ -22,9 +22,9 @@ describe Dpl::Providers::Heroku, memfs: true do
     it { should have_run '[info] Creating application archive' }
     it { should have_run 'tar -zcf /Users/sven/.dpl.dpl.tgz --exclude .git .' }
     it { should have_run '[info] Uploading application archive' }
-    it { should have_run 'curl put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: dpl/1.10.8" --data-binary @/Users/sven/.dpl.dpl.tgz' }
-    it { should have_run '[info] triggering new deployment' }
-    it { should have_run 'curl output_stream_url -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: dpl/1.10.8"' }
+    it { should have_run %r(curl  put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: dpl/.*" --data-binary @/Users/sven/.dpl.dpl.tgz) }
+    it { should have_run '[info] Triggering Heroku build (deployment)' }
+    it { should have_run %r(curl  output_stream_url -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: dpl/.*") }
     it { should have_run_in_order }
 
     it { should have_requested :get, 'https://api.heroku.com/account' }

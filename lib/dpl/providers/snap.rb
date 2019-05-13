@@ -15,18 +15,14 @@ module Dpl
       opt '--channel CHAN', 'Channel into which the snap will be released', default: 'edge'
       opt '--token TOKEN', 'Snap API token', required: true
 
-      CMDS = {
-        login:          'snapcraft login --with %{token}',
-        install:        'sudo snap install snapcraft --classic',
-        deploy:         'snapcraft push %s --release=%s'
-      }
+      cmds login:          'snapcraft login --with %{token}',
+           install:        'sudo snap install snapcraft --classic',
+           deploy:         'snapcraft push %s --release=%s'
 
-      MSGS = {
-        login:          'Attemping to login ...',
-        no_snaps:       'No snap found matching %{snap}',
-        multiple_snaps: 'Multiple snaps found matching %{snap}: %{snap_paths}',
-        deploy:         'Pushing snap %{snap_path}',
-      }
+      msgs login:          'Attemping to login ...',
+           no_snaps:       'No snap found matching %{snap}',
+           multiple_snaps: 'Multiple snaps found matching %{snap}: %{snap_paths}',
+           deploy:         'Pushing snap %{snap_path}'
 
       def install
         install_snapcraft unless which 'snapcraft'

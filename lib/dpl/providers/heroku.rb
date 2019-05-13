@@ -3,35 +3,27 @@ require 'json'
 module Dpl
   module Providers
     class Heroku < Provider
-      requires 'faraday'
-
-      summary 'Heroku deployment provider'
-
-      description <<~str
-        tbd
-      str
-
-      required :api_key, [:username, :password]
-
-      # move sub cmd specific opts to the sub command
-      opt '--api_key KEY', 'Heroku API key'
-      opt '--strategy NAME', 'Deployment strategy', default: 'api', enum: %w(api git)
-      opt '--app APP', 'Heroku app name', default: :repo_name
-      # according to the docs it should be --username, but the code uses --user
-      # https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/heroku/generic.rb#L20
-      opt '--username USER', 'Heroku username', alias: :user
-      opt '--password PASS', 'Heroku password'
-      # mentioned in the code
-      opt '--log_level LEVEL'
-      opt '--git URL' # git remote url
-      opt '--version VERSION' # used in triggering a build via api, not sure this should be exposed?
-
       def self.new(ctx, args)
         return super unless registry_key.to_sym == :heroku
         i = args.index('--strategy')
         _, opts = parse(ctx, i ? args[i, 2] : [])
         Provider[:"heroku:#{opts[:strategy]}"].new(ctx, args)
       end
+
+      requires 'faraday'
+
+      opt '--api_key KEY', 'Heroku API key'
+      opt '--strategy NAME', 'Deployment strategy', default: 'api', enum: %w(api git)
+      opt '--app APP', 'Heroku app name', default: :repo_name
+      # mentioned in the code
+      opt '--log_level LEVEL'
+
+      msgs login:     'Authenticating ... ',
+           restart:   'Restarting dynos ... ',
+           validate:  'Checking for app %{app} ... ',
+           run_cmd:   'Running command %s ... ',
+           success:   'success.',
+           api_error: 'API request failed: %s (see %s)'
 
       URL = 'https://api.heroku.com'
 
@@ -43,31 +35,31 @@ module Dpl
       attr_reader :email
 
       def login
-        print 'Authenticating ... '
+        print :login
         res = http.get('/account')
         handle_error(res) unless res.success?
         @email = JSON.parse(res.body)["email"]
-        info 'success.'
+        info :success
       end
 
       def validate
-        print "Checking for app #{app} ... "
+        print :validate
         res = http.get("/apps/#{app}")
         handle_error(res) unless res.success?
-        info 'success.'
+        info :success
       end
 
       def restart
-        print 'Restarting dynos ... '
+        print :restart
         res = http.delete "/apps/#{app}/dynos" do |req|
           req.headers['Content-Type'] = 'application/json'
         end
         handle_error(res) unless res.success?
-        info 'success.'
+        info :success
       end
 
       def run_cmd(cmd)
-        print "Running command #{cmd} ... "
+        print :run_cmd, cmd
         res = http.post "/apps/#{app}/dynos" do |req|
           req.headers['Content-Type'] = 'application/json'
           req.body = { command: cmd, attach: true}.to_json
@@ -101,8 +93,12 @@ module Dpl
 
         def handle_error(response)
           body = JSON.parse(response.body)
-          error "API request failed.\nMessage: #{body['message']}\nReference: #{body['url']}"
+          error :api_error, body['message'], body['url']
         end
+
+        # overwritten in Git, meaningless in Api
+        def username; end
+        def password; end
     end
   end
 end

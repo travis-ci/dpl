@@ -23,7 +23,7 @@ gemspec name: 'dpl-testfairy', path: 'gemspecs'
 # gem 'cl', path: '../../cl'
 
 group :test do
-  gem 'memfs'
+  gem 'fakefs'
   gem 'rspec'
   gem 'webmock'
 end
