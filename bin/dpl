@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 
-require 'dpl/cli'
-DPL::CLI.run(ARGV)
+require 'dpl'
+
+Dpl::Cli.new($0).run(ARGV)
