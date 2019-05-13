@@ -96,7 +96,6 @@ module Dpl
       init
       before_install
       install
-      check_auth
       login
       before_setup
       setup
@@ -104,7 +103,7 @@ module Dpl
       validate
       before_deploy
       deploy
-      after_deploy
+      run_cmds
     ensure
       before_finish
       finish
@@ -161,10 +160,6 @@ module Dpl
     end
     fold :deploy
 
-    def after_deploy
-      run_cmds if run?
-    end
-
     def before_finish
       remove_key if needs?(:ssh_key)
       uncleanup unless skip_cleanup?
@@ -178,13 +173,13 @@ module Dpl
     end
 
     def run_cmds
-      opts[:run].each do |cmd|
+      Array(opts[:run]).each do |cmd|
         cmd == 'restart' ? restart : run_cmd(cmd)
       end
     end
 
     def run_cmd(cmd)
-      shell(cmd)
+      cmd == 'restart' ? restart : shell(cmd)
     end
     fold :run_cmd
 

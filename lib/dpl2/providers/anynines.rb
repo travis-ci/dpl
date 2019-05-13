@@ -32,7 +32,7 @@ module Dpl
         shell :install
       end
 
-      def check_auth
+      def login
         shell :api
         shell :login
       end
