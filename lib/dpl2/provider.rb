@@ -2,7 +2,8 @@ require 'cl'
 require 'fileutils'
 require 'forwardable'
 require 'dpl2/provider/env'
-require 'dpl2/provider/interpolation'
+require 'dpl2/provider/interpolate'
+require 'dpl2/provider/require'
 
 module Dpl
   # Providers are encouraged to implement any of the following stages
@@ -60,12 +61,12 @@ module Dpl
         paths.any? ? requires.concat(paths) : @requires ||= []
       end
 
-      def require
-        Array(requires).each { |path| Kernel.require(path) }
+      def require(ctx)
+        Require.new(ctx, self).run
       end
 
       def user_agent(*strs)
-        strs.unshift "dpl/#{DPL::VERSION}"
+        strs.unshift "dpl/#{Dpl::VERSION}"
         strs.unshift 'travis/0.1.0' if ENV['TRAVIS']
         strs = strs.flat_map { |e| Hash === e ? e.map { |k, v| "#{k}/#{v}" } : e }
         strs.join(' ').gsub(/\s+/, ' ').strip
@@ -156,9 +157,9 @@ module Dpl
     end
 
     def before_init
-      self.class.require
       warn MSGS[:experimental] % experimental if experimental?
       deprecated_opts.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
+      self.class.require(ctx)
     end
 
     def before_install
@@ -276,7 +277,7 @@ module Dpl
     end
 
     def interpolate(str, args = [])
-      args = Interpolation.new(self) if args.empty?
+      args = Interpolate.new(self) if args.empty?
       str % args
     end
 
