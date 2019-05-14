@@ -7,7 +7,7 @@ module Dpl
       # revision_type, in order to make opts more strict
       full_name 'AWS Code Deploy'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

@@ -6,7 +6,7 @@ module Dpl
 
       full_name 'AWS Elastic Beanstalk'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

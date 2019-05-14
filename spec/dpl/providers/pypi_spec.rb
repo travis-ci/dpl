@@ -7,7 +7,7 @@ describe Dpl::Providers::Pypi, fakefs: true do
   chdir 'tmp'
 
   let(:pypirc) do
-    <<~rc
+    sq(<<-rc)
       [distutils]
       index-servers = pypi
           pypi

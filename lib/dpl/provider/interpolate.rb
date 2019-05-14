@@ -1,25 +1,29 @@
 module Dpl
-  class Interpolate < Hash
-    attr_reader :obj
-
-    def initialize(obj)
-      super() { |_, key| lookup(key.to_s) }
-      @obj = obj
+  module Interpolate
+    def interpolate(str, args = [])
+      args.any? ? str % args : Interpolate.new(str, self).apply
     end
 
-    MOD = %i(obfuscate escape quote)
+    class Interpolate < Struct.new(:str, :obj)
+      MODIFIER = %i(obfuscate escape quote)
+      PATTERN  = /%\{(\w+)\}/
 
-    def lookup(key)
-      if mod = modifier(key)
-        key = key.sub("#{mod}d_", '')
-        obj.send(mod, lookup(key))
-      else
-        obj.send(key).to_s
+      def apply
+        str.gsub(PATTERN) { |match| lookup($1.to_s) }
       end
-    end
 
-    def modifier(key)
-      MOD.detect { |mod| key.start_with?("#{mod}d_") }
+      def lookup(key)
+        if mod = modifier(key)
+          key = key.sub("#{mod}d_", '')
+          obj.send(mod, lookup(key))
+        else
+          obj.send(key).to_s
+        end
+      end
+
+      def modifier(key)
+        MODIFIER.detect { |mod| key.start_with?("#{mod}d_") }
+      end
     end
   end
 end

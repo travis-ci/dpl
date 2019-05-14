@@ -3,7 +3,7 @@ module Dpl
     class OpsWorks < Provider
       full_name 'AWS OpsWorks'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

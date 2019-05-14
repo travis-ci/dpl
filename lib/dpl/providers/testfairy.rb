@@ -9,7 +9,7 @@ module Dpl
     class Testfairy < Provider
       requires 'net/http/post/multipart'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 
@@ -78,7 +78,7 @@ module Dpl
         end
 
         def request
-          Net::HTTP::Post::Multipart.new(uri.path, params, 'User-Agent': UA)
+          Net::HTTP::Post::Multipart.new(uri.path, params, 'User-Agent' => UA)
         end
 
         def http

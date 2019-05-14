@@ -3,7 +3,7 @@ module Dpl
     class AzureWebApps < Provider
       full_name 'Azure Web Apps'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

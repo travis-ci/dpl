@@ -5,7 +5,7 @@ module Dpl
 
       full_name 'Open Shift'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

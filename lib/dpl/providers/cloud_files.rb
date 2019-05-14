@@ -5,7 +5,7 @@ module Dpl
 
       full_name 'Cloud Files'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

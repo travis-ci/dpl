@@ -5,7 +5,7 @@ module Dpl
 
       full_name 'GitHub Pages'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

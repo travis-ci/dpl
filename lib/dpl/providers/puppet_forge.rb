@@ -5,7 +5,7 @@ module Dpl
 
       full_name 'Puppet Forge'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

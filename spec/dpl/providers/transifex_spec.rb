@@ -13,7 +13,7 @@ describe Dpl::Providers::Transifex, fakefs: true do
     it { should have_run_in_order }
 
     it do
-      expect(rc).to eq <<~rc
+      expect(rc).to eq sq(<<-rc)
         [https://www.transifex.com]
         hostname = https://www.transifex.com
         username = user

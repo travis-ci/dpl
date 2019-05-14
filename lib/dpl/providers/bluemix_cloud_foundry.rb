@@ -3,7 +3,7 @@ module Dpl
     class BluemixCloudFoundry < Provider
       full_name 'Bluemix Cloud Foundry'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

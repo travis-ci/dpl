@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Hephy < Provider
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

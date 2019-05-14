@@ -5,7 +5,7 @@ module Dpl
       # and get rid of the runtime gem dependency (also a lot easier to test)
       requires 'engineyard-cloud-client'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

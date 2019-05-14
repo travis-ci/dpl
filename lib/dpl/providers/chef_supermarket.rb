@@ -10,7 +10,7 @@ module Dpl
 
       full_name 'Chef Supermarket'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

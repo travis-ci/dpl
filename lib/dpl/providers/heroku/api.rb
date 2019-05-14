@@ -6,7 +6,7 @@ module Dpl
       class Api < Heroku
         full_name 'Heroku API'
 
-        description <<~str
+        description sq(<<-str)
           tbd
         str
 

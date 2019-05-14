@@ -3,7 +3,7 @@ module Dpl
     class Pypi < Provider
       full_name 'PyPI'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 
@@ -92,7 +92,7 @@ module Dpl
         end
 
         def pypirc
-          <<~rc
+          sq(<<-rc)
             [distutils]
             index-servers = pypi
                 pypi

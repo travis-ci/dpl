@@ -6,7 +6,7 @@ module Dpl
       class Git < Heroku
         full_name 'Heroku Git'
 
-        description <<~str
+        description sq(<<-str)
           tbd
         str
 

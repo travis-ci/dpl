@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Launchpad < Provider
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 
@@ -45,7 +45,7 @@ module Dpl
         end
 
         def authorization
-          squish(<<~auth)
+          squish(<<-auth)
             OAuth oauth_consumer_key="Travis%20Deploy",
             oauth_nonce="#{nonce}",
             oauth_signature="%26#{oauth_token_secret}",

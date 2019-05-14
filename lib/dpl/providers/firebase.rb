@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Firebase < Provider
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

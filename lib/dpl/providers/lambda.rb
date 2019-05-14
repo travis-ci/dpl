@@ -7,7 +7,7 @@ module Dpl
 
       full_name 'AWS Lambda'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 
