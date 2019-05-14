@@ -17,7 +17,7 @@ describe Dpl::Providers::ChefSupermarket, fakefs: true do
     subject.run
   end
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_run '[info] Validating cookbook dpl' }
     it { should have_run '[info] Uploading cookbook dpl to https://supermarket.chef.io/api/v1/cookbooks' }
     it { should have_run 'tar -czf dpl.tgz dpl' }

@@ -3,7 +3,7 @@ describe Dpl::Providers::Atlas do
 
   before { subject.run }
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_env ATLAS_TOKEN: 'token' }
     it { should have_run %r(go get github.com/hashicorp/atlas-upload-cli) }
     it { should have_run 'atlas-upload app .' }

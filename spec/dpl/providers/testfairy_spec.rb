@@ -13,7 +13,6 @@ describe Dpl::Providers::Testfairy do
     it { should have_run /"video": "on"/ }
     it { should have_run /"video-quality": "high"/ }
     it { should have_run /"max-duration": "10m"/ }
-    it { should have_run_in_order }
   end
 
   describe 'given --symbols_file file' do

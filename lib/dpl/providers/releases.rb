@@ -28,12 +28,7 @@ module Dpl
       opt '--body BODY', 'Content for the release notes'
       # should this have --github_url, like Pages does?
 
-      TIMEOUTS = {
-        timeout: 180,
-        open_timeout: 180
-      }
-
-      URL = 'https://api.github.com/repos/%s/releases/%s'
+      needs :git
 
       msgs deploy:               'Deploying to repo: %{slug}',
            local_tag:            'Current tag is: %{local_tag}',
@@ -45,6 +40,13 @@ module Dpl
            set_target_commitish: 'Setting target_commitish to %s',
            missing_file:         '%s does not exist.',
            not_a_file:           '%s is not a file, skipping.'
+
+      URL = 'https://api.github.com/repos/%s/releases/%s'
+
+      TIMEOUTS = {
+        timeout: 180,
+        open_timeout: 180
+      }
 
       def validate
         info :deploy

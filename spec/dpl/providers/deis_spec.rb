@@ -5,11 +5,11 @@ describe Dpl::Providers::Deis do
 
   before { subject.run }
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_run 'curl -sSL https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh | bash -x -s stable' }
+    it { should have_run './deis login deis.deisapps.com --username=user --password=pass' }
     it { should have_run './deis keys:add .dpl/id_rsa.pub' }
     it { should have_run %r(.dpl/git-ssh deis-builder.deisapps.com -p 2222  2>&1 \| grep -c 'PTY allocation request failed' > /dev/null) }
-    it { should have_run './deis login deis.deisapps.com --username=user --password=pass' }
     it { should have_run 'mv ./deis ~/deis' }
     it { should have_run 'git stash --all' }
     it { should have_run 'mv ~/deis ./deis' }

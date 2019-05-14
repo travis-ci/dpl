@@ -18,14 +18,14 @@ module Dpl
 
       needs :git, :ssh_key
 
-      SERVER = 'openshift.redhat.com'
-
       msgs login:           'Authenticated as %{user}',
            validate:        'Found application %s',
            deploy_branch:   'Deployment branch: %{deployment_branch}'
 
       cmds git_push:        'git push %{git_url} -f',
            git_push_branch: 'git push %{git_url} -f %{deployment_branch}'
+
+      SERVER = 'openshift.redhat.com'
 
       def api
         @api ||= ::RHC::Rest::Client.new(user: user, password: password, server: SERVER)

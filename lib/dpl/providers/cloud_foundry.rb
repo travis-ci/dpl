@@ -7,12 +7,11 @@ module Dpl
         tbd
       str
 
-      opt '--username USER',       'Bluemix username', required: true
-      opt '--password PASS',       'Bluemix password', required: true
-      opt '--organization ORG',    'Bluemix target organization', required: true
-      opt '--space SPACE',         'Bluemix target space', required: true
-      opt '--region REGION',       'Bluemix region', default: 'ng', enum: %w(ng eu-gb eu-de au-syd)
-      opt '--api URL',             'Bluemix api URL', required: true
+      opt '--username USER',       'Cloud Foundry username', required: true
+      opt '--password PASS',       'Cloud Foundry password', required: true
+      opt '--organization ORG',    'Cloud Foundry target organization', required: true
+      opt '--space SPACE',         'Cloud Foundry target space', required: true
+      opt '--api URL',             'Cloud Foundry api URL', required: true
       opt '--app_name APP',        'Application name'
       opt '--manifest FILE',       'Path to the manifest'
       opt '--skip_ssl_validation', 'Skip SSL validation'

@@ -6,7 +6,7 @@ describe Dpl::Providers::Gae do
   context do
     before { subject.run }
 
-    describe 'by default' do
+    describe 'by default', record: true do
       it { should have_run '[python:2.7] python -c "import sys; print(sys.version)"' }
       it { should have_run 'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | gzip -d | tar -x -C ~' }
       it { should have_run '[python:2.7] ~/google-cloud-sdk/bin/bootstrapping/install.py --usage-reporting=false --command-completion=false --path-update=false' }

@@ -8,12 +8,12 @@ describe Dpl::Providers::Hackage do
 
   before { subject.run }
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_run '[apt:get] cabal (cabal-install)' }
     it { should have_run 'cabal check' }
     it { should have_run 'cabal sdist' }
-    it { should have_run 'cabal upload --username="user" --password="pass" dist/two.tar.gz' }
     it { should have_run 'cabal upload --username="user" --password="pass" dist/one.tar.gz' }
+    it { should have_run 'cabal upload --username="user" --password="pass" dist/two.tar.gz' }
     it { should have_run_in_order }
   end
 end

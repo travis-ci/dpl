@@ -9,7 +9,7 @@ describe Dpl::Providers::Pages do
 
   before { subject.run }
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_run '[info] Logged in as login (name)' }
     it { should have_run '[info] Deploying branch gh-pages to github.com' }
     it { should have_run 'git init .' }

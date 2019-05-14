@@ -12,7 +12,6 @@ module Dpl
 
       requires 'faraday'
 
-      opt '--api_key KEY', 'Heroku API key'
       opt '--strategy NAME', 'Deployment strategy', default: 'api', enum: %w(api git)
       opt '--app APP', 'Heroku app name', default: :repo_name
       # mentioned in the code

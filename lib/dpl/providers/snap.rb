@@ -3,8 +3,6 @@ module Dpl
     class Snap < Provider
       summary 'Snap deployment provider'
 
-      apt 'snapd', 'snap'
-
       description <<~str
         tbd
       str
@@ -14,6 +12,8 @@ module Dpl
       opt '--snap STR', 'Path to the snap to be pushed (can be a glob)', required: true
       opt '--channel CHAN', 'Channel into which the snap will be released', default: 'edge'
       opt '--token TOKEN', 'Snap API token', required: true
+
+      apt 'snapd', 'snap'
 
       cmds login:          'snapcraft login --with %{token}',
            install:        'sudo snap install snapcraft --classic',
