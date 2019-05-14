@@ -20,11 +20,11 @@ module Support
       end
 
       def failure_message
-        "Expected the command\n\n  #{str}\n\nto have run, but it didn't. Instead, we have run the commands:\n\n  #{indent(cmds.join("\n"))}"
+        "Expected the command\n\n  #{str}\n\nto have run, but it didn't. Instead, we have run the commands:\n\n  #{indent(cmd.ctx.cmds.join("\n"))}"
       end
 
       def failure_message_when_negated
-        "Expected the command\n\n  #{str}\n\nto not have run, but it did:\n\n  #{indent(cmds.join("\n"))}"
+        "Expected the command\n\n  #{str}\n\nto not have run, but it did:\n\n  #{indent(cmd.ctx.cmds.join("\n"))}"
       end
     end
 
