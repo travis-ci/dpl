@@ -3,7 +3,7 @@ module Dpl
     class CloudFoundry < Provider
       full_name 'Cloud Foundry'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

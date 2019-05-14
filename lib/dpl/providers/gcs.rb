@@ -14,7 +14,7 @@ module Dpl
 
       full_name 'Google Cloud Store'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

@@ -3,7 +3,7 @@ module Dpl
     class Script < Provider
       summary 'Minimal provider that executes a custom command'
 
-      description <<~str
+      description sq(<<-str)
         This deployment provider executes a single, custom command. This is
         usually a script that is contained in your repository, but it can be
         any command executable in the build environment.

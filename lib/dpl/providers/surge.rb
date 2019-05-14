@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Surge < Provider
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

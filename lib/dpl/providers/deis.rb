@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Deis < Provider
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

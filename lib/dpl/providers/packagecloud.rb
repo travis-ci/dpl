@@ -5,7 +5,7 @@ module Dpl
     class Packagecloud < Provider
       requires 'packagecloud'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

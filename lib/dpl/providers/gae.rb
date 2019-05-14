@@ -5,7 +5,7 @@ module Dpl
 
       experimental 'Google App Engine'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

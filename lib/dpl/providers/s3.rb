@@ -10,7 +10,7 @@ module Dpl
 
       full_name 'AWS S3'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

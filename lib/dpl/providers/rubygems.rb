@@ -3,7 +3,7 @@ module Dpl
     class Rubygems < Provider
       requires 'gems'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 

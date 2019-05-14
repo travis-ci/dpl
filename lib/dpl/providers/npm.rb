@@ -3,7 +3,7 @@ module Dpl
     class Npm < Provider
       full_name 'NPM'
 
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 
@@ -59,7 +59,7 @@ module Dpl
 
         def registry
           data = package_json
-          url = data && data['publishConfig']&.fetch('registry')
+          url = data && data.fetch('publishConfig', {})['registry']
           url ? URI(url).host : REGISTRY
         end
 

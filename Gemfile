@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '> 2.1' # 2.2 and up
+ruby '>= 2.2'
 
 gemspec name: 'dpl', path: 'gemspecs'
 
@@ -23,7 +23,7 @@ gemspec name: 'dpl-testfairy', path: 'gemspecs'
 # gem 'cl', path: '../../cl'
 
 group :test do
-  gem 'fakefs'
+  gem 'fakefs', '~> 0.13.0'
   gem 'rspec'
   gem 'webmock'
 end

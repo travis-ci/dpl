@@ -34,7 +34,7 @@ module Dpl
 
   class Provider < Cl::Cmd
     extend Forwardable
-    include Assets, Env, FileUtils
+    include Assets, Env, FileUtils, Interpolate
 
     class << self
       %i(cleanup deprecated experimental).each do |name|
@@ -95,6 +95,13 @@ module Dpl
         strs.unshift 'travis/0.1.0' if ENV['TRAVIS']
         strs = strs.flat_map { |e| Hash === e ? e.map { |k, v| "#{k}/#{v}" } : e }
         strs.join(' ').gsub(/\s+/, ' ').strip
+      end
+
+      # Beloved squiggly heredocs did not existin Ruby 2.1.0, which we still
+      # want to support, so let's give kudos with this method in the meantime.
+      def sq(str)
+        width = str =~ /( *)\S/ && $1.size
+        str.lines.map { |line| line.gsub(/^ {#{width}}/, '') }.join
       end
     end
 
@@ -306,11 +313,6 @@ module Dpl
       end
     end
 
-    def interpolate(str, args = [])
-      args = Interpolate.new(self) if args.empty?
-      str % args
-    end
-
     def escape(str)
       Shellwords.escape(str)
     end
@@ -321,6 +323,10 @@ module Dpl
 
     def quote(str)
       %("#{str}")
+    end
+
+    def sq(str)
+      self.class.sq(str)
     end
 
     def opts_for(keys, opts = {})

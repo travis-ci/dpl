@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Transifex < Provider
-      description <<~str
+      description sq(<<-str)
         tbd
       str
 
@@ -33,7 +33,7 @@ module Dpl
 
       private
 
-        RC = <<~rc
+        RC = sq(<<-rc)
           [%{url}]
           hostname = %{url}
           username = %{username}
