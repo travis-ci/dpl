@@ -1,10 +1,11 @@
-# in Cl make it so that --path[s] expands to two options? or maybe just add an
-# option :alias
-
 module Dpl
   module Providers
     class Atlas < Provider
-      # https://github.com/hashicorp/atlas-upload-cli
+      summary 'Atlas deployment provider'
+
+      description <<~str
+        tbd
+      str
 
       opt '--app APP',       'The Atlas application to upload to', required: true
       opt '--token TOKEN',   'The Atlas API token', required: true

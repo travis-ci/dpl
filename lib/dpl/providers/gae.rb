@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Gae < Provider
-      summary 'Gae deployment provider'
+      summary 'Google App Engine deployment provider'
 
       experimental 'Google App Engine'
 
