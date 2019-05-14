@@ -6,7 +6,7 @@ describe Dpl::Providers::Catalyze do
     it { should have_run 'git push --force target HEAD:master' }
   end
 
-  describe 'given --skip-cleanup' do
+  describe 'given --skip_cleanup' do
     env TRAVIS_REPO_SLUG: 'repo',
         TRAVIS_BRANCH: 'branch',
         TRAVIS_BUILD_NUMBER: '1',

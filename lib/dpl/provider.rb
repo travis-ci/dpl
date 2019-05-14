@@ -103,7 +103,7 @@ module Dpl
     opt '--app NAME',      default: :repo_name
     opt '--key_name NAME', default: :machine_name
     opt '--run CMD',       type: :array
-    opt '--skip-cleanup'
+    opt '--skip_cleanup'
     # opt '--pretend', 'Pretend running the deployment'
     # opt '--quiet',   'Suppress any output'
 

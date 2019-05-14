@@ -54,7 +54,7 @@ describe Dpl::Providers::Pages do
     it { should have_run 'git push --quiet "https://token@github.com/travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
   end
 
-  describe 'given --keep_history --allow-empty' do
+  describe 'given --keep_history --allow_empty' do
     it { should have_run 'git commit --allow-empty -qm "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages"' }
   end
 

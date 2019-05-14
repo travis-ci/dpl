@@ -14,7 +14,7 @@ module Dpl
       opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
       opt '--keep_history', 'Create incremental commit instead of doing push force, defaults to false'
       opt '--allow_empty_commit', 'Allow an empty commit to be created', requires: :keep_history
-      opt '--committer_from-gh', 'Use the token\'s owner name and email for commit. Overrides the email and name options'
+      opt '--committer_from_gh', 'Use the token\'s owner name and email for commit. Overrides the email and name options'
       opt '--verbose', 'Be verbose about the deploy process'
       opt '--local_dir DIR', 'Directory to push to GitHub Pages, defaults to current', default: '.'
       opt '--fqdn FQDN', 'Writes your website\'s domain name to the CNAME file'

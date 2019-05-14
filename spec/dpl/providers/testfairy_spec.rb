@@ -19,7 +19,7 @@ describe Dpl::Providers::Testfairy do
     it { should have_run /"symbols_file": "file"/ }
   end
 
-  describe 'given --tester_groups one,two' do
+  describe 'given --testers_groups one,two' do
     it { should have_run /"testers-groups": "one,two"/ }
   end
 
