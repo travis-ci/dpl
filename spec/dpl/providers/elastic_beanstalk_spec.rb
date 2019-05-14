@@ -1,6 +1,6 @@
 describe Dpl::Providers::ElasticBeanstalk do
   let(:args) { |e| required + args_from_description(e) }
-  let(:required) { %w(--access_key_id id --secret_access_key key --env env --bucket-name bucket) }
+  let(:required) { %w(--access_key_id id --secret_access_key key --env env --bucket_name bucket) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
   let(:events) { [] }
 
