@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class AzureWebApps < Provider
-      summary 'Anynines deployment provider'
+      full_name 'Azure Web Apps'
 
       description <<~str
         tbd

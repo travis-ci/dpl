@@ -3,7 +3,7 @@ module Dpl
     class PuppetForge < Provider
       requires 'puppet/face', 'puppet_blacksmith'
 
-      summary 'Puppet Forge deployment provider'
+      full_name 'Puppet Forge'
 
       description <<~str
         tbd

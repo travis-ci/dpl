@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Atlas < Provider
-      summary 'Atlas deployment provider'
-
       description <<~str
         tbd
       str

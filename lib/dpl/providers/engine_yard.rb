@@ -5,8 +5,6 @@ module Dpl
       # and get rid of the runtime gem dependency (also a lot easier to test)
       requires 'engineyard-cloud-client'
 
-      summary 'EngineYard deployment provider'
-
       description <<~str
         tbd
       str

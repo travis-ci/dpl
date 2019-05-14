@@ -3,7 +3,7 @@ require 'dpl/provider/zip'
 module Dpl
   module Providers
     class Lambda < Provider
-      summary 'AWS Lambda deployment provider'
+      full_name 'AWS Lambda'
 
       description <<~str
         tbd

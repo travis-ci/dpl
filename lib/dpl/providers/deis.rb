@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Deis < Provider
-      summary 'Deis deployment provider'
-
       description <<~str
         tbd
       str

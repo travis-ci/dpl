@@ -8,14 +8,15 @@ See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 Dpl supports the following providers:
 
-  * [Anynines](#azure_web_apps)
   * [Anynines](#anynines)
   * [Atlas](#atlas)
+  * [AWS Code Deploy](#code_deploy)
   * [AWS Elastic Beanstalk](#elastic_beanstalk)
   * [AWS Lambda](#lambda)
   * [AWS OpsWorks](#ops_works)
   * [AWS S3](#s3)
-  * [BitBallon](#bit_balloon)
+  * [Azure Web Apps](#azure_web_apps)
+  * [BitBalloon](#bit_balloon)
   * [Bluemix Cloud Foundry](#bluemix_cloud_foundry)
   * [Boxfuse](#boxfuse)
   * [Cargo](#cargo)
@@ -24,7 +25,6 @@ Dpl supports the following providers:
   * [Cloud Files](#cloud_files)
   * [Cloud Foundry](#cloud_foundry)
   * [Cloud66](#cloud66)
-  * [Code Deploy](#code_deploy)
   * [Deis](#deis)
   * [EngineYard](#engine_yard)
   * [Firebase](#firebase)
@@ -37,7 +37,6 @@ Dpl supports the following providers:
   * [Heroku API](#heroku:api)
   * [Heroku Git](#heroku:git)
   * [Launchpad](#launchpad)
-  * [Minimal provider that executes a custom command](#script)
   * [NPM](#npm)
   * [Open Shift](#open_shift)
   * [Packagecloud](#packagecloud)
@@ -45,6 +44,7 @@ Dpl supports the following providers:
   * [PyPI](#pypi)
   * [Rubygems](#rubygems)
   * [Scalingo](#scalingo)
+  * [Script](#script)
   * [Snap](#snap)
   * [Surge](#surge)
   * [Testfairy](#testfairy)
@@ -77,39 +77,6 @@ Dpl will deploy by default from the latest commit. Use the `--skip_cleanup` opti
 Dpl may install additional deployment provider specific gem dependencies at runtime. This can cause [a problem](https://github.com/travis-ci/dpl/issues/769) if `sudo dpl` is used, where the process installing the provider code may not have sufficient permissions. In this case, you can install the provider gem (of the same version as `dpl`) with `sudo` beforehand to work around this issue (e.g. `sudo gem install dpl dpl-s3`).
 
 ## Providers
-
-### Anynines
-
-```
-Usage: readme azure_web_apps [options]
-
-Options:
-
-  --site SITE          Web App name (e.g. myapp in myapp.azurewebsites.net) (type: string, required:
-                       true)
-  --username NAME      Web App Deployment Username (type: string, required: true)
-  --password PASS      Web App Deployment Password (type: string, required: true)
-  --slot SLOT          Slot name (if your app uses staging deployment) (type: string)
-  --verbose            Print deployment output from Azure. Warning: If authentication fails, Git prints
-                       credentials in clear text. Correct credentials remain hidden. (type: flag)
-
-Common Options:
-
-  --app NAME           type: string, default: repo name
-  --key_name NAME      type: string, default: machine name
-  --run CMD            type: array (string, can be given multiple times)
-  --skip-cleanup       type: flag
-  --help               Get help on this command (type: flag)
-
-Summary:
-
-  Anynines deployment provider
-
-Description:
-
-  tbd
-
-```
 
 ### Anynines
 
@@ -177,6 +144,47 @@ Common Options:
 Summary:
 
   Atlas deployment provider
+
+Description:
+
+  tbd
+
+```
+
+### AWS Code Deploy
+
+```
+Usage: readme code_deploy [options]
+
+Options:
+
+  --access_key_id ID            AWS access key (type: string, required: true)
+  --secret_access_key KEY       AWS secret access key (type: string, required: true)
+  --application NAME            CodeDeploy application name (type: string, required: true)
+  --deployment_group GROUP      CodeDeploy deployment group name (type: string)
+  --revision_type TYPE          CodeDeploy revision type (type: string, known values: s3, or, github, downcase:
+                                true)
+  --commit_id SHA               Commit ID in case of GitHub (type: string)
+  --repository NAME             Repository name in case of GitHub (type: string)
+  --bucket NAME                 S3 bucket in case of S3 (type: string)
+  --region REGION               AWS availability zone (type: string, default: us-east-1)
+  --wait_until_deployed         Wait until the deployment has finished (type: flag)
+  --bundle_type TYPE            type: string
+  --endpoint ENDPOINT           type: string
+  --key KEY                     type: string
+  --description DESCR           type: string
+
+Common Options:
+
+  --app NAME                    type: string, default: repo name
+  --key_name NAME               type: string, default: machine name
+  --run CMD                     type: array (string, can be given multiple times)
+  --skip-cleanup                type: flag
+  --help                        Get help on this command (type: flag)
+
+Summary:
+
+  AWS Code Deploy deployment provider
 
 Description:
 
@@ -375,7 +383,40 @@ Description:
 
 ```
 
-### BitBallon
+### Azure Web Apps
+
+```
+Usage: readme azure_web_apps [options]
+
+Options:
+
+  --site SITE          Web App name (e.g. myapp in myapp.azurewebsites.net) (type: string, required:
+                       true)
+  --username NAME      Web App Deployment Username (type: string, required: true)
+  --password PASS      Web App Deployment Password (type: string, required: true)
+  --slot SLOT          Slot name (if your app uses staging deployment) (type: string)
+  --verbose            Print deployment output from Azure. Warning: If authentication fails, Git prints
+                       credentials in clear text. Correct credentials remain hidden. (type: flag)
+
+Common Options:
+
+  --app NAME           type: string, default: repo name
+  --key_name NAME      type: string, default: machine name
+  --run CMD            type: array (string, can be given multiple times)
+  --skip-cleanup       type: flag
+  --help               Get help on this command (type: flag)
+
+Summary:
+
+  Azure Web Apps deployment provider
+
+Description:
+
+  tbd
+
+```
+
+### BitBalloon
 
 ```
 Usage: readme bit_balloon [options]
@@ -396,7 +437,7 @@ Common Options:
 
 Summary:
 
-  BitBallon deployment provider
+  BitBalloon deployment provider
 
 Description:
 
@@ -649,47 +690,6 @@ Common Options:
 Summary:
 
   Cloud66 deployment provider
-
-Description:
-
-  tbd
-
-```
-
-### Code Deploy
-
-```
-Usage: readme code_deploy [options]
-
-Options:
-
-  --access_key_id ID            AWS access key (type: string, required: true)
-  --secret_access_key KEY       AWS secret access key (type: string, required: true)
-  --application NAME            CodeDeploy application name (type: string, required: true)
-  --deployment_group GROUP      CodeDeploy deployment group name (type: string)
-  --revision_type TYPE          CodeDeploy revision type (type: string, known values: s3, or, github, downcase:
-                                true)
-  --commit_id SHA               Commit ID in case of GitHub (type: string)
-  --repository NAME             Repository name in case of GitHub (type: string)
-  --bucket NAME                 S3 bucket in case of S3 (type: string)
-  --region REGION               AWS availability zone (type: string, default: us-east-1)
-  --wait_until_deployed         Wait until the deployment has finished (type: flag)
-  --bundle_type TYPE            type: string
-  --endpoint ENDPOINT           type: string
-  --key KEY                     type: string
-  --description DESCR           type: string
-
-Common Options:
-
-  --app NAME                    type: string, default: repo name
-  --key_name NAME               type: string, default: machine name
-  --run CMD                     type: array (string, can be given multiple times)
-  --skip-cleanup                type: flag
-  --help                        Get help on this command (type: flag)
-
-Summary:
-
-  Code Deploy deployment provider
 
 Description:
 
@@ -1115,42 +1115,6 @@ Description:
 
 ```
 
-### Minimal provider that executes a custom command
-
-```
-Usage: readme script [options]
-
-Options:
-
-  --script ./script      The script to execute (type: string, required: true)
-
-Common Options:
-
-  --app NAME             type: string, default: repo name
-  --key_name NAME        type: string, default: machine name
-  --run CMD              type: array (string, can be given multiple times)
-  --skip-cleanup         type: flag
-  --help                 Get help on this command (type: flag)
-
-Summary:
-
-  Minimal provider that executes a custom command
-
-Description:
-
-  This deployment provider executes a single, custom command. This is
-  usually a script that is contained in your repository, but it can be
-  any command executable in the build environment.
-  
-  It is possible to pass arguments to a script deployment like so:
-  
-    dpl script -s './scripts/deploy.sh production --verbose'
-  
-  Deployment will be marked a failure if the script exits with nonzero
-  status.
-
-```
-
 ### NPM
 
 ```
@@ -1391,6 +1355,42 @@ Summary:
 Description:
 
   tbd
+
+```
+
+### Script
+
+```
+Usage: readme script [options]
+
+Options:
+
+  --script ./script      The script to execute (type: string, required: true)
+
+Common Options:
+
+  --app NAME             type: string, default: repo name
+  --key_name NAME        type: string, default: machine name
+  --run CMD              type: array (string, can be given multiple times)
+  --skip-cleanup         type: flag
+  --help                 Get help on this command (type: flag)
+
+Summary:
+
+  Minimal provider that executes a custom command
+
+Description:
+
+  This deployment provider executes a single, custom command. This is
+  usually a script that is contained in your repository, but it can be
+  any command executable in the build environment.
+  
+  It is possible to pass arguments to a script deployment like so:
+  
+    dpl script -s './scripts/deploy.sh production --verbose'
+  
+  Deployment will be marked a failure if the script exits with nonzero
+  status.
 
 ```
 

@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Npm < Provider
-      summary 'NPM deployment provider'
+      full_name 'NPM'
 
       description <<~str
         tbd

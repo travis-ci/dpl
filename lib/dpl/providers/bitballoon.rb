@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class BitBalloon < Provider
-      summary 'BitBallon deployment provider'
-
       description <<~str
         BitBallon provides free simple static site hosting.
 

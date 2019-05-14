@@ -8,7 +8,7 @@ module Dpl
         chef/knife/cookbook_metadata
       )
 
-      summary 'Chef Supermarket deployment provider'
+      full_name 'Chef Supermarket'
 
       description <<~str
         tbd

@@ -3,7 +3,7 @@ module Dpl
     class OpenShift < Provider
       requires 'rhc'
 
-      summary 'Open Shift deployment provider'
+      full_name 'Open Shift'
 
       description <<~str
         tbd

@@ -5,8 +5,6 @@ module Dpl
     class Packagecloud < Provider
       requires 'packagecloud'
 
-      summary 'Packagecloud deployment provider'
-
       description <<~str
         tbd
       str

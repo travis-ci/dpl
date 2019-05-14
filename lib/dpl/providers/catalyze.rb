@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Catalyze < Provider
-      summary 'Catalyze deployment provider'
-
       description <<~str
         tbd
       str

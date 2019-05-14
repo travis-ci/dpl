@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Surge < Provider
-      summary 'Surge deployment provider'
-
       description <<~str
         tbd
       str

@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Anynines < Provider
-      summary 'Anynines deployment provider'
-
       description <<~str
         tbd
       str
