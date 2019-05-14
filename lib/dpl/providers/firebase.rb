@@ -9,11 +9,11 @@ module Dpl
 
       env :firebase
 
-      npm 'firebase-tools@^6.3', 'firebase'
-
       opt '--token TOKEN',  'Firebase CI access token (generate with firebase login:ci)', required: true
       opt '--project NAME', 'Firebase project to deploy to (defaults to the one specified in your firebase.json)'
       opt '--message MSG',  'Message describing this deployment.'
+
+      npm 'firebase-tools@^6.3', 'firebase'
 
       cmds deploy: 'firebase deploy --non-interactive %{deploy_opts}'
       errs deploy: 'Firebase deployment failed'

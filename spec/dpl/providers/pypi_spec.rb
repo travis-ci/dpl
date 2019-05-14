@@ -20,7 +20,7 @@ describe Dpl::Providers::Pypi, fakefs: true do
 
   before { subject.run }
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_run %r(pip install .* setuptools twine wheel) }
     it { should have_run '[info] Authenticated as user' }
     it { should have_run 'python setup.py sdist' }

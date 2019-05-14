@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Pypi < Provider
-      summary 'PyPi deployment provider'
+      summary 'PyPI deployment provider'
 
       description <<~str
         tbd

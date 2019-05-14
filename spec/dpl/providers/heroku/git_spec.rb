@@ -12,10 +12,10 @@ describe Dpl::Providers::Heroku, fakefs: true do
 
   after { rm File.expand_path('~/.netrc') } # weird. does FakeFS keep traces of this around?
 
-  describe 'using --api_key'  do
+  describe 'using --api_key' do
     let(:creds) { %w(--api_key key) }
 
-    describe 'by default' do
+    describe 'by default', record: true do
       it { should have_run '[print] Authenticating ... ' }
       it { should have_run '[info] success.' }
       it { should have_run '[print] Checking for app dpl ... ' }

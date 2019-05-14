@@ -9,6 +9,7 @@ RSpec.configure do |c|
   c.include Support::File
   c.include Support::Fixtures
   c.include Support::Matchers
+  c.include Support::Matchers::RecordCmds, record: true
   c.include Support::Require
   c.include Support::FakeFs, fakefs: true
 end

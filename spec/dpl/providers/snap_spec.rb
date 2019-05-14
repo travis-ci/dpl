@@ -7,7 +7,7 @@ describe Dpl::Providers::Snap do
     file 'snap'
     before { subject.run }
 
-    describe 'given --snap ./snap' do
+    describe 'given --snap ./snap', record: true do
       it { should have_run '[apt:get] snapd (snap)' }
       it { should have_run 'sudo snap install snapcraft --classic' }
       it { should have_run 'snapcraft login --with token' }

@@ -4,7 +4,7 @@ describe Dpl::Providers::Surge do
 
   chdir 'tmp'
 
-  describe 'given --login login --token token --domain domain' do
+  describe 'given --login login --token token --domain domain', record: true do
     before { subject.run }
     it { should have_run '[npm:install] surge (surge)' }
     it { should have_run "surge #{cwd} domain" }

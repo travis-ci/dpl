@@ -1,14 +1,16 @@
 module Support
   module Matchers
-    class HaveRun < Struct.new(:str)
+    module RecordCmds
+      def self.included(base)
+        base.before(:context) { @expected_cmds = [] }
+      end
+    end
+
+    class HaveRun < Struct.new(:cmds, :str)
       include Shared
 
-      def self.cmds
-        @cmds ||= []
-      end
-
       def matches?(cmd)
-        self.class.cmds << str
+        cmds << str if cmds
         @cmd = cmd
         cmd.ctx.cmds.any? { |cmd, opts| match?(cmd) }
       end
@@ -26,26 +28,37 @@ module Support
       end
     end
 
-    class HaveRunInOrder
+    # needs record: true on the context
+    class HaveRunInOrder < Struct.new(:expected, :example)
       include Shared
 
+      attr_reader :actual
+
       def matches?(cmd)
-        @expected = HaveRun.cmds.clear
-        @actual = cmd.ctx.cmds.map { |str| @expected.map { |cmd| cmd if match?(str, cmd) } }.flatten.compact
-        @expected == @actual
+        @actual = cmd.ctx.cmds.map { |str| expected.detect { |cmd| match?(str, cmd) } }.compact
+        expected == actual
       end
 
       def description
         'have run commands in order'
       end
+
+      def failure_message
+        "Expected the commands\n\n#{indent(expected.join("\n"))}\n\nto have run in this order, but they have run as follows:\n\n#{indent(actual.join("\n"))}"
+      end
+
+      def indent(strs)
+        strs.lines.map { |line| "  #{line}" }.join
+      end
     end
 
     def have_run(str)
-      HaveRun.new(str)
+      HaveRun.new(@expected_cmds, str)
     end
 
     def have_run_in_order
-      HaveRunInOrder.new
+      # p example_group
+      HaveRunInOrder.new(@expected_cmds)
     end
   end
 end

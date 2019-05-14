@@ -29,10 +29,16 @@ module Dpl
       end
 
       def deploy
-        Dir.glob('dist/*.tar.gz') do |tar|
+        tar_files.each do |tar|
           shell :upload, opts_for(%i(username password)), tar, assert: true
         end
       end
+
+      private
+
+        def tar_files
+          Dir.glob('dist/*.tar.gz').sort
+        end
     end
   end
 end

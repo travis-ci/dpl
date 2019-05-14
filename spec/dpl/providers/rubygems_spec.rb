@@ -10,7 +10,7 @@ describe Dpl::Providers::Rubygems do
   before { stub_request(:post, %r(/gems)).and_return(body: "Successfully registered gem: #{name}") }
   before { subject.run }
 
-  describe 'given --api_key key' do
+  describe 'given --api_key key', record: true do
     it { should have_run '[info] Authenticating with api key.' }
     it { should have_run '[print] Looking up gem dpl ... ' }
     it { should have_run '[info] found.' }
@@ -18,6 +18,7 @@ describe Dpl::Providers::Rubygems do
     it { should have_run '[info] Successfully registered gem: dpl' }
     it { should have_requested(:get, %r(/gems/dpl.json)) }
     it { should have_requested(:post, %r(/gems)).with(body: 'dpl') }
+    it { should have_run_in_order }
   end
 
   describe 'given --user user --password pass' do
@@ -32,7 +33,6 @@ describe Dpl::Providers::Rubygems do
       it { should have_run '[print] Looking up gem other ... ' }
       it { should have_run 'for gemspec in other.gemspec; do gem build $gemspec; done' }
       it { should have_run '[info] Successfully registered gem: other' }
-      it { should have_run_in_order }
       it { should have_requested(:get, %r(/gems/other.json)) }
       it { should have_requested(:post, %r(/gems)).with(body: 'other') }
     end

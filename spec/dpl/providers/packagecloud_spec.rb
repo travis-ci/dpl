@@ -29,7 +29,7 @@ describe Dpl::Providers::Packagecloud do
     end
   end
 
-  describe 'given --dist ubuntu/trusty' do
+  describe 'given --dist ubuntu/trusty', record: true do
     file 'one.tgz'
     before { subject.run }
 
@@ -37,8 +37,8 @@ describe Dpl::Providers::Packagecloud do
     it { should have_run '[info] Timeouts: connect_timeout=60 read_timeout=60 write_timeout=180' }
     it { should have_run '[info] Supported packages: one.tgz' }
     it { should have_run '[info] Pushing package: one.tgz to user/repo' }
-    it { should_not have_run '[info] Source packages: ' }
     it { should have_run_in_order }
+    it { should_not have_run '[info] Source packages: ' }
 
     it { expect(Packagecloud::Credentials).to have_received(:new).with('user', 'token') }
     it { expect(Packagecloud::Connection).to have_received(:new).with(*url, timeouts) }

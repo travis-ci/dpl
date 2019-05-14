@@ -14,12 +14,16 @@ module Dpl
         # https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/heroku/generic.rb#L20
         required :api_key, [:username, :password]
 
+        # readme says username/password are allowed, but the code does not seem to
+        # use them for writing the netrc https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/heroku/git.rb
+        # so the api key is required in any case?
+        opt '--api_key KEY',   'Heroku API key'
         opt '--username USER', 'Heroku username', alias: :user
         opt '--password PASS', 'Heroku password'
         # mentioned in the code
         opt '--git URL'
 
-        needs :git, :git_http_user_agent, :ssh_key
+        needs :git, :git_http_user_agent
 
         cmds fetch: 'git fetch origin $TRAVIS_BRANCH --unshallow',
              push:  'git push %{remote} HEAD:refs/heads/master -f'

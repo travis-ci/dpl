@@ -16,16 +16,18 @@ module Dpl
       opt '--branch BRANCH', 'Branch of your git repository.', default: 'master'
       opt '--app APP', 'Required if your repository does not contain the appropriate remote (will add a remote to your local repository)'
 
+      needs :git, :ssh_key
+
       cmds login_key:   'timeout 2 ./scalingo login --api-token %{api_key} 2> /dev/null > /dev/null',
            login_creds: 'echo -e \"%{username}\n%{password}\" | timeout 2 ./scalingo login 2> /dev/null > /dev/null',
-           add_key:     './scalingo keys-add dpl_tmp_key %{file}',
+           add_key:     './scalingo keys-add dpl_tmp_key %s',
            remove_key:  './scalingo keys-remove dpl_tmp_key',
            remote_add:  'git remote add %{remote} git@scalingo.com:%{app}.git 2> /dev/null > /dev/null',
            deploy:      'git push %{remote} %{branch} -f'
 
       errs install:    'Failed to install the Scalingo CLI.',
            login:      'Failed to authenticate with the Scalingo API',
-           setup_key:  'Failed to add the ssh key.',
+           add_key:    'Failed to add the ssh key.',
            deploy:     'Failed to push the app.',
            remove_key: 'Failed to remove the ssh key.'
 
@@ -38,7 +40,7 @@ module Dpl
       end
 
       def add_key(file, type = nil)
-        shell :add_key, assert: true
+        shell :add_key, file, assert: true
       end
 
       def setup

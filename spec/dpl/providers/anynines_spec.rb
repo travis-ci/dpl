@@ -3,7 +3,7 @@ describe Dpl::Providers::Anynines do
 
   before { subject.run }
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_run %r(wget .*cli.run.pivotal.io.* -qO cf.tgz && tar -zxvf cf.tgz) }
     it { should have_run './cf api https://api.aws.ie.a9s.eu' }
     it { should have_run './cf login -u name -p pass -o org -s space' }

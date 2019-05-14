@@ -51,7 +51,7 @@ describe Dpl::Providers::Lambda do
   describe 'function does not exist' do
     let(:exists) { false }
 
-    describe 'by default' do
+    describe 'by default', record: true do
       it { should have_run '[info] Using Access Key: ********************' }
       it { should have_run '[info] Creating function func.' }
       it { should have_run_in_order }

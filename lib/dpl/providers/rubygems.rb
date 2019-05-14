@@ -11,7 +11,7 @@ module Dpl
 
       required :api_key, [:user, :password]
 
-      opt '--api-key KEY', 'Rubygems api key'
+      opt '--api_key KEY', 'Rubygems api key'
       opt '--gem NAME', 'Name of the gem to release', default: :repo_name
       opt '--gemspec FILE', 'Gemspec file to use to build the gem'
       opt '--gemspec_glob GLOB', 'Glob pattern to search for gemspec files when multiple gems are generated in the repository (overrides the gemspec option)'

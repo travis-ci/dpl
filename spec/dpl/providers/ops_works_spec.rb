@@ -39,7 +39,7 @@ describe Dpl::Providers::OpsWorks do
 
   before { subject.run }
 
-  describe 'by default' do
+  describe 'by default', record: true do
     let(:json) { JSON.dump(deploy: { dpl: { migrate: false, scm: { revision: 'sha' } } }) }
 
     it { should have_run '[info] Logging in with Access Key: ********************' }

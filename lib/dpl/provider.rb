@@ -15,8 +15,8 @@ module Dpl
   #   * install
   #   * login
   #   * setup
-  #   * prepare
   #   * validate
+  #   * prepare
   #   * deploy
   #   * finish
   #
@@ -127,8 +127,8 @@ module Dpl
       install
       login
       setup
-      prepare
       validate
+      prepare
       deploy
     )
 
@@ -227,7 +227,7 @@ module Dpl
 
     def setup_ssh_key
       ssh_keygen(key_name, '.dpl/id_rsa')
-      setup_git_ssh('.dpl/id_rsa') if needs?(:git)
+      setup_git_ssh('.dpl/id_rsa')
       add_key('.dpl/id_rsa.pub') if respond_to?(:add_key)
     end
 

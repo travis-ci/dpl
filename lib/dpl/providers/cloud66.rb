@@ -13,7 +13,7 @@ module Dpl
 
       def deploy
         response = client.request(request)
-        error(response) if response.code != '200'
+        error :failed, response.code if response.code != '200'
       end
 
       private
@@ -28,16 +28,12 @@ module Dpl
           Net::HTTP::Post.new(uri.path)
         end
 
-        def use_ssl?
-          uri.scheme.downcase == 'https'
-        end
-
         def uri
           @uri ||= URI.parse(redeployment_hook)
         end
 
-        def error(response)
-          super(:failed, response.code)
+        def use_ssl?
+          uri.scheme.downcase == 'https'
         end
     end
   end

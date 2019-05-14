@@ -3,7 +3,7 @@ module Dpl
     class CloudFiles < Provider
       requires 'fog/rackspace'
 
-      summary 'CloudFiles deployment provider'
+      summary 'Cloud Files deployment provider'
 
       description <<~str
         tbd

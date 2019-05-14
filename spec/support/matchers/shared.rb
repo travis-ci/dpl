@@ -11,10 +11,6 @@ module Support
         str.is_a?(Regexp) ? str.match(other) : str == other
       end
 
-      def cmds
-        cmd.ctx.cmds
-      end
-
       def indent(str)
         return str if str.lines.size < 2
         str.lines[0] + str.lines[1..-1].map { |str| "#{' ' * 2}#{str}" }.join

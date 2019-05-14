@@ -43,7 +43,7 @@ describe Dpl::Providers::S3 do
   context do
     before { subject.run }
 
-    describe 'by default' do
+    describe 'by default', record: true do
       it { should have_run '[info] Logging in with Access Key: ********************' }
       it { should have_run '[info] Uploading 1 files with up to 5 threads.' }
       it { should have_run '[info] Uploading file one.txt to / with acl=private content_type=text/plain cache_control=no-cache storage_class=STANDARD' }

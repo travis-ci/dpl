@@ -10,6 +10,7 @@ module Dpl
           tbd
         str
 
+        opt '--api_key KEY', 'Heroku API key'
         # mentioned in the code
         opt '--version VERSION' # used in triggering a build, not sure this should be exposed?
 

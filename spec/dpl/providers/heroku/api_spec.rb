@@ -14,7 +14,7 @@ describe Dpl::Providers::Heroku, fakefs: true do
 
   # remaining options are tested in heroku/git_spec.rb
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_run '[print] Authenticating ... ' }
     it { should have_run '[info] success.' }
     it { should have_run '[print] Checking for app dpl ... ' }

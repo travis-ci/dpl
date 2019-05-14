@@ -6,7 +6,7 @@ describe Dpl::Providers::Transifex, fakefs: true do
 
   before { subject.run }
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_run '[pip:install] transifex (transifex, >=0.11)' }
     it { should have_run 'tx status' }
     it { should have_run 'tx push --source --no-interactive' }

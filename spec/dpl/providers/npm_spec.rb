@@ -5,7 +5,7 @@ describe Dpl::Providers::Npm, fakefs: true do
 
   before { subject.run }
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_run '[info] NPM version: 1' }
     it { should have_run '[info] Authenticated with email email and API key ********************' }
     it { should have_run '[info] ~/.npmrc size: 36' }

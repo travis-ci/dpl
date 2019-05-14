@@ -10,7 +10,7 @@ describe Dpl::Providers::OpenShift do
   before { expect(RHC::Rest::Client).to receive(:new).with(user: 'user', password: 'pass', server: 'openshift.redhat.com').and_return(api) }
   before { subject.run }
 
-  describe 'by default' do
+  describe 'by default', record: true do
     it { should have_run '[info] Authenticated as user' }
     it { should have_run '[info] Found application dpl' }
     it { should have_run 'git push git://dpl.git -f' }

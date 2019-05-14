@@ -6,6 +6,8 @@ module Dpl
       opt '--target TARGET', 'The git remote repository to deploy to', required: true
       opt '--path PATH', 'Path to files to deploy', default: '.'
 
+      needs :git
+
       cmds push:     'git push --force %{target} HEAD:master',
            checkout: 'git checkout HEAD',
            add:      'git add %{path} --all --force',
