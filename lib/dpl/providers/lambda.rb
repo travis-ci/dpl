@@ -3,6 +3,8 @@ require 'dpl/provider/zip'
 module Dpl
   module Providers
     class Lambda < Provider
+      requires 'aws-sdk', 'zip'
+
       full_name 'AWS Lambda'
 
       description <<~str
@@ -165,7 +167,7 @@ module Dpl
         end
 
         def tmp_filename
-          @tmp_filename ||= Dir::Tmpname.make_tmpname(app, 'zip')
+          @tmp_filename ||= "#{tmp_dir}/#{app}.zip"
         end
     end
   end

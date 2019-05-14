@@ -147,7 +147,7 @@ module Dpl
         `hostname`.strip
       end
 
-      def tmpdir
+      def tmp_dir
         Dir.mktmpdir
       end
 

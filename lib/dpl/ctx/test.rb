@@ -119,7 +119,7 @@ module Dpl
         'machine_name'
       end
 
-      def tmpdir
+      def tmp_dir
         FileUtils.mkdir_p('tmp')
         'tmp'
       end
