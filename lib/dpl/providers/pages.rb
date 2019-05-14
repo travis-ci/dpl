@@ -200,7 +200,7 @@ module Dpl
       end
 
       def work_dir
-        @work_dir ||= tmpdir
+        @work_dir ||= tmp_dir
       end
 
       def api

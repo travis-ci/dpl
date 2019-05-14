@@ -20,9 +20,9 @@ describe Dpl::Providers::Heroku, fakefs: true do
     it { should have_run '[print] Checking for app dpl ... ' }
     it { should have_run '[info] success.' }
     it { should have_run '[info] Creating application archive' }
-    it { should have_run 'tar -zcf /Users/sven/.dpl.dpl.tgz --exclude .git .' }
+    it { should have_run %r(tar -zcf /.*/.dpl.dpl.tgz --exclude \.git \.) }
     it { should have_run '[info] Uploading application archive' }
-    it { should have_run %r(curl  put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: dpl/.*" --data-binary @/Users/sven/.dpl.dpl.tgz) }
+    it { should have_run %r(curl  put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: dpl/.*" --data-binary @.*/.dpl.dpl.tgz) }
     it { should have_run '[info] Triggering Heroku build (deployment)' }
     it { should have_run %r(curl  output_stream_url -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: dpl/.*") }
     it { should have_run_in_order }
