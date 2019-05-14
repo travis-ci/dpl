@@ -111,20 +111,20 @@ module Dpl
         ENV['TRAVIS_BUILD_NUMBER']
       end
 
-      def git_tag
-        `git describe --tags --exact-match 2>/dev/null`.chomp
-      end
-
-      def remotes
-        `git remote -v`.scan(/\t[^\s]+\s/).map(&:strip).uniq
-      end
-
       def git_log(args)
         `git log #{args}`
       end
 
+      def git_remotes
+        `git remote -v`.scan(/\t[^\s]+\s/).map(&:strip).uniq
+      end
+
       def git_rev_parse(ref)
         `git rev-parse #{ref}`.strip
+      end
+
+      def git_tag
+        `git describe --tags --exact-match 2>/dev/null`.chomp
       end
 
       def sha

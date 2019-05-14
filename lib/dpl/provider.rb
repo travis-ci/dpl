@@ -144,7 +144,7 @@ module Dpl
       :experimental?, :keep, :needs?, :user_agent
 
     def_delegators :ctx, :repo_slug, :repo_name, :build_dir, :build_number,
-      :error, :exists?, :sleep, :success?, :git_tag, :remotes, :git_rev_parse,
+      :error, :exists?, :sleep, :success?, :git_log, :git_tag, :git_remotes, :git_rev_parse,
       :commit_msg, :sha, :npm_version, :which, :encoding, :machine_name,
       :ssh_keygen, :logger, :tmp_dir, :rendezvous, :apt_get, :npm_install,
       :pip_install

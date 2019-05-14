@@ -83,20 +83,20 @@ module Dpl
         1
       end
 
-      def git_tag
-        'tag'
-      end
-
-      def remotes
-        ['origin']
-      end
-
       def git_log(args)
         'commits'
       end
 
+      def git_remotes
+        ['origin']
+      end
+
       def git_rev_parse(ref)
         "ref: #{ref}"
+      end
+
+      def git_tag
+        'tag'
       end
 
       def sha

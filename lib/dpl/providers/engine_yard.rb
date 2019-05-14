@@ -74,7 +74,7 @@ module Dpl
             app_name: app,
             account_name: account,
             environment_name: environment,
-            remotes: remotes
+            remotes: git_remotes
           )
         end
 
