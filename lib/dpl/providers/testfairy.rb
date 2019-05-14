@@ -9,8 +9,6 @@ module Dpl
     class Testfairy < Provider
       requires 'net/http/post/multipart'
 
-      summary 'Testfairy deployment provider'
-
       description <<~str
         tbd
       str

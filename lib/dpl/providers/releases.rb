@@ -3,7 +3,7 @@ module Dpl
     class Releases < Provider
       requires 'octokit'
 
-      summary 'GitHub Releases deployment provider'
+      full_name 'GitHub Releases'
 
       description <<~str
         tbd

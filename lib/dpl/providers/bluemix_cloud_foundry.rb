@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class BluemixCloudFoundry < Provider
-      summary 'Bluemix Cloud Foundry deployment provider'
+      full_name 'Bluemix Cloud Foundry'
 
       description <<~str
         tbd

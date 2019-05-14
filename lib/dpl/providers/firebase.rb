@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Firebase < Provider
-      summary 'Firebase deployment provider'
-
       description <<~str
         tbd
       str

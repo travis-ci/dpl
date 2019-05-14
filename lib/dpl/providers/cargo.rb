@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Cargo < Provider
-      summary 'Cargo deployment provider'
-
       description <<~str
         tbd
       str

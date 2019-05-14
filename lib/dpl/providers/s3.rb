@@ -8,7 +8,7 @@ module Dpl
     class S3 < Provider
       requires 'aws-sdk', 'mime-types'
 
-      summary 'AWS S3 deployment provider'
+      full_name 'AWS S3'
 
       description <<~str
         tbd

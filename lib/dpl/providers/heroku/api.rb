@@ -4,7 +4,7 @@ module Dpl
   module Providers
     class Heroku
       class Api < Heroku
-        summary 'Heroku API deployment provider'
+        full_name 'Heroku API'
 
         description <<~str
           tbd

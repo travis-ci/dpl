@@ -4,7 +4,7 @@ module Dpl
     class ElasticBeanstalk < Provider
       requires 'aws-sdk', 'zip'
 
-      summary 'AWS Elastic Beanstalk deployment provider'
+      full_name 'AWS Elastic Beanstalk'
 
       description <<~str
         tbd

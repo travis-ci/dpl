@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Hephy < Provider
-      summary 'Hephy deployment provider'
-
       description <<~str
         tbd
       str

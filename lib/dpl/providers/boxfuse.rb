@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Boxfuse < Provider
-      summary 'Boxfuse deployment provider'
-
       description <<~str
         BitBallon does something.
       str

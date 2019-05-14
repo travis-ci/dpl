@@ -3,7 +3,7 @@ module Dpl
     class Pages < Provider
       requires 'octokit'
 
-      summary 'GitHub Pages deployment provider'
+      full_name 'GitHub Pages'
 
       description <<~str
         tbd

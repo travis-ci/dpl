@@ -4,7 +4,7 @@ module Dpl
   module Providers
     class Heroku
       class Git < Heroku
-        summary 'Heroku Git deployment provider'
+        full_name 'Heroku Git'
 
         description <<~str
           tbd

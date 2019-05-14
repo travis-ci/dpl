@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Scalingo < Provider
-      summary 'Scalingo deployment provider'
-
       description <<~str
         tbd
       str

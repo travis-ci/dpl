@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Transifex < Provider
-      summary 'Transifex deployment provider'
-
       description <<~str
         tbd
       str

@@ -1,8 +1,6 @@
 module Dpl
   module Providers
     class Hackage < Provider
-      summary 'Hackage deployment provider'
-
       description <<~str
         tbd
       str

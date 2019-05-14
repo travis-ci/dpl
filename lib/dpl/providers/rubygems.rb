@@ -3,8 +3,6 @@ module Dpl
     class Rubygems < Provider
       requires 'gems'
 
-      summary 'Rubygems deployment provider'
-
       description <<~str
         tbd
       str
