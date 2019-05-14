@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class OpsWorks < Provider
-      summary 'OpsWorks deployment provider'
+      summary 'AWS OpsWorks deployment provider'
 
       description <<~str
         tbd

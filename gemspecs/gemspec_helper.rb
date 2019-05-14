@@ -16,7 +16,7 @@ def gemspec_for(name, runtime_dependencies = [])
     s.required_ruby_version = '>= 2.2'
 
     if name == 'dpl'
-      s.executables = `git ls-files -- bin/*`.split("\n")
+      s.executables = ['bin/dpl']
       s.files       = `git ls-files -- {[A-Z]*,lib/**/*}`.split("\n")
       s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
 

@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+$: << File.expand_path('../../lib', __FILE__)
+
+require 'erb'
+require 'dpl'
+
+SKIP = %i(help heroku)
+
+def providers
+  consts = Dpl::Provider.registry.values
+  consts = consts.select { |const| const.registry_key && !SKIP.include?(const.registry_key.to_sym) }
+  providers = consts.map { |const| [const.registry_key, const.full_name] }.to_h
+  providers.sort_by { |_, name| name.downcase }.to_h
+end
+
+def help(name)
+  ctx = Cl::Ctx.new('dpl')
+  Cl::Help.new(ctx, [name.to_s]).help
+end
+
+erb = ERB.new(File.read('lib/dpl/assets/dpl/README.erb.md'), nil, '-')
+puts erb.result

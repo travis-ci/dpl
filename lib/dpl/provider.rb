@@ -47,6 +47,11 @@ module Dpl
         define_method(name) { |*args| args.any? ? instance_variable_set(:"@#{name}", args) : instance_variable_get(:"@#{name}") }
       end
 
+      # make this a dsl method, use it in the summary and experimental
+      def full_name
+        summary.to_s.sub(' deployment provider', '')
+      end
+
       def cmds(cmds = nil)
         return self.cmds.update(cmds) if cmds
         @cmds ||= self == Provider ? {} : superclass.cmds.dup

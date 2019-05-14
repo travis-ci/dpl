@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class CloudFoundry < Provider
-      summary 'CloudFoundry deployment provider'
+      summary 'Cloud Foundry deployment provider'
 
       description <<~str
         tbd

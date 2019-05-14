@@ -1,6 +1,12 @@
 module Dpl
   module Providers
     class Catalyze < Provider
+      summary 'Catalyze deployment provider'
+
+      description <<~str
+        tbd
+      str
+
       env :catalyze
 
       opt '--target TARGET', 'The git remote repository to deploy to', required: true

@@ -12,7 +12,7 @@ module Dpl
     class Gcs < Provider
       requires 'gstore', 'mime-types', 'dpl/support/gstore_patch'
 
-      summary 'Gcs deployment provider'
+      summary 'Google Cloud Store deployment provider'
 
       description <<~str
         tbd
