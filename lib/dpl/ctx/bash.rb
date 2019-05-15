@@ -16,9 +16,13 @@ module Dpl
         super('dpl')
       end
 
-      # output
-
-      def fold(msg)
+      # Folds any log output from the given block
+      #
+      # Starts a log fold with the given fold message, calls the block, and
+      # closes the fold.
+      #
+      # @param msg [String] the message that will appear on the log fold
+      def fold(msg, &block)
         self.folds += 1
         print "travis_fold:start:dpl.#{folds}\r"
         info "\e[33m#{msg}\e[0m"
@@ -27,52 +31,113 @@ module Dpl
         print "\ntravis_fold:end:dpl.#{folds}\r"
       end
 
+      # Outputs a deprecation warning for a given deprecated option key to stderr.
+      #
+      # @param key [Symbol] the deprecated option key
+      # @param msg [String or Symbol] the deprecation message. if given a Symbol this will be wrapped into the string "Please use #{symbol}".
       def deprecate_opt(key, msg)
         msg = "please use #{msg}" if msg.is_a?(Symbol)
         warn "Deprecated option #{key} used (#{msg})."
       end
 
+      # Outputs an info level message to stdout.
       def info(*msgs)
         stdout.puts(*msgs)
       end
 
+      # Prints an info level message to stdout.
+      #
+      # This method does not append a newline character to the given message,
+      # which usually is not the desired behaviour. The method is intended to
+      # be used if an initial, partial message is supposed to be printed, which
+      # will be completed later (using the method `info`).
+      #
+      # For example:
+      #
+      #   print 'Starting a long running task ...'
+      #   run_long_running_task
+      #   info 'done.'
       def print(chars)
         stdout.print(chars)
       end
 
+      # Outputs an warning message to stderr
+      #
+      # This method is intended to be used for warning messages that are
+      # supposed to show up in the build log, but do not qualify as errors that
+      # would abort the deployment process. The warning will be highlighted as
+      # red text. Use sparingly.
       def warn(*msgs)
         msgs = msgs.join("\n").lines
         msgs.each { |msg| stderr.puts("\e[31;1m#{msg}\e[0m") }
       end
 
+      # Outputs an error message to stderr, and raises an error, halting the
+      # deployment process.
+      #
+      # This method is intended to be used for all error conditions that
+      # require the deployment process to be aborted.
       def error(message)
         raise Error, message
       end
 
+      # Returns a logger
+      #
+      # Returns a logger instance, with the given log level set. This can be
+      # used to pass to clients that accept a Ruby logger, such as Faraday,
+      # for debugging purposes.
+      #
+      # Use with care.
+      #
+      # @param level [Symbol] the Ruby logger log level
       def logger(level = :info)
         logger = Logger.new(stderr)
         logger.level = Logger.const_get(level.to_s.upcase)
         logger
       end
 
-      # shell commands
-
-      def apt_get(name, cmd)
-        shell "sudo apt-get -qq install #{name}", retry: true unless which(cmd)
+      # Installs an APT package
+      #
+      # Installs the APT package with the given name, unless the command is already
+      # available (as determined by `which [cmd]`.
+      #
+      # @param package [String] the package name
+      # @param cmd [String] an executable installed by the package, defaults to the package name
+      def apt_get(package, cmd = package)
+        shell "sudo apt-get -qq install #{package}", retry: true unless which(cmd)
       end
 
-      def npm_install(name, cmd = name)
-        shell "npm install -g #{name}", retry: true unless which(cmd)
+      # Installs an NPM package
+      #
+      # Installs the NPM package with the given name, unless the command is already
+      # available (as determined by `which [cmd]`.
+      #
+      # @param package [String] the package name
+      # @param cmd [String] an executable installed by the package, defaults to the package name
+      def npm_install(package, cmd = package)
+        shell "npm install -g #{package}", retry: true unless which(cmd)
       end
 
-      def pip_install(name, cmd = name, version = nil)
-        shell "pip uninstall --user -y #{name}" if version && which(cmd) # why only if version was given?
-        cmd = "pip install --user #{name}"
+      # Installs a Python package
+      #
+      # Installs the Python package with the given name. A previously installed
+      # package is uninstalled before that, but only if `version` was given.
+      #
+      # @param package [String] Package name (required).
+      # @param cmd     [String] Executable command installed by that package (optional, defaults to the package name).
+      # @param version [String] Package version (optional).
+      def pip_install(package, cmd = package, version = nil)
+        shell "pip uninstall --user -y #{package}" if version && which(cmd)
+        cmd = "pip install --user #{package}"
         cmd << "==#{version}" if version
         shell cmd, echo: true, retry: true
         shell 'export PATH=$PATH:$HOME/.local/bin'
       end
 
+      # Generates an SSH key
+      #
+      # @param name [String] the key name
+      # @param file [String] path to the key file
       def ssh_keygen(name, file)
         shell %(ssh-keygen -t rsa -N "" -C #{name} -f #{file})
       end
@@ -91,47 +156,101 @@ module Dpl
         @last_status
       end
 
+      # Runs a shell command and captures stdout, stderr, and the exit status
+      #
+      # Runs the given command using `Open3.capture3`, which will capture the
+      # stdout and stderr streams, as well as the exit status. I.e. this will
+      # *not* stream log output in real time, but capture the output, and allow
+      # implementors to display it later (using the `%{out}` and `%{err}`
+      # interpolation variables.
+      #
+      # Use sparingly.
+      #
+      # @option chdir [String] directory temporarily to change to before running the command
       def open3(cmd, opts)
         opts = [opts[:chdir] ? only(opts, :chdir) : nil].compact
         Open3.capture3(cmd, *opts)
       end
 
+      # Runs a shell command, streaming any stdout or stderr output, and
+      # returning the exit status
+      #
+      # This is the default method for executing shell commands. The stdout and
+      # stderr will not be captured, but streamed directly to the parent process.
+      #
+      # @option chdir [String] directory temporarily to change to before running the command
       def system(cmd, opts)
         opts = [opts[:chdir] ? only(opts, :chdir) : nil].compact
-        [Kernel.system(cmd, *opts), '', last_process_status]
+        Kernel.system(cmd, *opts)
+        ['', '', last_process_status]
       end
 
-      # $? is a read-only variable, so we use a method that we can stub during tests.
-      def last_process_status
-        $?.success?
-      end
-
-      def with_python(cmd, version)
-        "bash -c 'source $HOME/virtualenv/python#{version}/bin/activate; #{cmd.gsub(/'/, "'\\\\''")}'"
-      end
-
+      # Whether or not the last executed shell command was successful.
       def success?
         !!@last_status
       end
 
-      # system and filesystem info
+      # Returns the last child process' exit status
+      #
+      # Internal, and not to be used by implementors. $? is a read-only
+      # variable, so we use a method that we can stub during tests.
+      def last_process_status
+        $?.success?
+      end
 
+      # Enforces a Python version to be used.
+      #
+      # Wraps the given command in a bash command that enforces the given
+      # Python version to be used.
+      def with_python(cmd, version)
+        "bash -c 'source $HOME/virtualenv/python#{version}/bin/activate; #{cmd.gsub(/'/, "'\\\\''")}'"
+      end
+
+      # Returns current repository name
+      #
+      # Uses the environment variable `TRAVIS_REPO_SLUG` if present, or the
+      # current directory's base name.
+      #
+      # Note that this might return an unexpected string outside of the context
+      # of Travis CI build environments if the method is called at a time when
+      # the current working directory has changed.
       def repo_name
         ENV['TRAVIS_REPO_SLUG'] ? ENV['TRAVIS_REPO_SLUG'].split('/').last : File.basename(Dir.pwd)
       end
 
+      # Returns current repository slug
+      #
+      # Uses the environment variable `TRAVIS_REPO_SLUG` if present, or the
+      # last two segmens of the current working directory's path.
+      #
+      # Note that this might return an unexpected string outside of the context
+      # of Travis CI build environments if the method is called at a time when
+      # the current working directory has changed.
       def repo_slug
         ENV['TRAVIS_REPO_SLUG'] || Dir.pwd.split('/')[-2, 2].join('/')
       end
 
+      # Returns the current build directory
+      #
+      # Uses the environment variable `TRAVIS_REPO_SLUG` if present, and
+      # defaults to `.` otherwise.
+      #
+      # Note that this might return an unexpected string outside of the context
+      # of Travis CI build environments if the method is called at a time when
+      # the current working directory has changed.
       def build_dir
         ENV['TRAVIS_BUILD_DIR'] || '.'
       end
 
+      # Returns the current build directory
+      #
+      # Uses the environment variable `TRAVIS_BUILD_NUMBER` if present, and
+      # raises an exception if missing.
       def build_number
         ENV['TRAVIS_BUILD_NUMBER'] || raise('TRAVIS_BUILD_NUMBER not set')
       end
 
+      # Returns the encoding of the given file, as determined by `file`.
       def encoding(path)
         case `file '#{path}'`
         when /gzip compressed/
@@ -145,58 +264,75 @@ module Dpl
         end
       end
 
+      # Returns the message of the commit `git_sha`.
       def git_commit_msg
         `git log #{git_sha} -n 1 --pretty=%B`.chomp
       end
 
+      # Returns the output of `git log`, using the given args.
       def git_log(args)
         `git log #{args}`.chomp
       end
 
+      # Returns the Git log, separated by NULs
+      #
+      # Returns the output of `git ls-files -z`, which separates log entries by
+      # NULs, rather than newline characters.
       def git_ls_files
         `git ls-files -z`.split("\x0")
       end
 
+      # Returns known Git remote URLs
       def git_remote_urls
         `git remote -v`.scan(/\t[^\s]+\s/).map(&:strip).uniq
       end
 
+      # Returns the sha for the given Git ref
       def git_rev_parse(ref)
         `git rev-parse #{ref}`.strip
       end
 
+      # Returns the latest tag name, if any
       def git_tag
         `git describe --tags --exact-match 2>/dev/null`.chomp
       end
 
+      # Returns the current commit sha
       def git_sha
         ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.chomp
       end
 
+      # Returns the local machine's hostname
       def machine_name
         `hostname`.strip
       end
 
+      # Returns the current NPM version
       def npm_version
         `npm --version`
       end
 
+      # Returns true or false depending if the given command can be found
       def which(cmd)
-        !`which #{cmd}`.chomp.empty?
+        !`which #{cmd}`.chomp.empty? if cmd
       end
 
+      # Returns a unique temporary directory name
       def tmp_dir
         Dir.mktmpdir
       end
 
+      # Returns the size of the given file path
       def file_size(path)
         File.size(path)
       end
 
+      # Writes the given content to the given file path
       def write_file(path, content)
         File.open(File.expand_path(path), 'w+') { |f| f.write(content) }
       end
 
+      # Writes the given machine, login, and password to ~/.netrc
       def write_netrc(machine, login, password)
         netrc = Netrc.read
         netrc[machine] = [login, password]
@@ -204,12 +340,12 @@ module Dpl
         puts File.read('/Users/sven/.netrc')
       end
 
-      # external
-
+      # Rendezvous with a Heroku log output stream.
       def rendezvous(url)
         Rendezvous.start(url: url)
       end
 
+      # Returns a copy of the given hash, reduced to the given keys
       def only(hash, *keys)
         hash.select { |key, _| keys.include?(key) }.to_h
       end
