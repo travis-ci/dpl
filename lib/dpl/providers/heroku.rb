@@ -10,7 +10,7 @@ module Dpl
         Provider[:"heroku:#{opts[:strategy]}"].new(ctx, args)
       end
 
-      requires 'faraday'
+      requires 'faraday', 'rendezvous'
 
       opt '--strategy NAME', 'Deployment strategy', default: 'api', enum: %w(api git)
       opt '--app APP', 'Heroku app name', default: :repo_name
