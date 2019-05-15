@@ -1,4 +1,5 @@
 language: ruby
+
 rvm:
 - 2.2.10
 - 2.3.8
@@ -6,9 +7,33 @@ rvm:
 - 2.5.5
 - 2.6.2
 
+cache:
+  directories:
+    - vendor/cache
+    - $GEM_HOME
+    - node_modules
+
+env:
+  global:
+    - DPL_VERSION=$(ruby -I lib -r dpl/version.rb -e "puts DPL::VERSION.succ + \".travis.#{ENV['TRAVIS_JOB_NUMBER']}\"")
+
+before_cache:
+  - rm -rf $GEM_HOME/cache/dpl-*.travis.*.gem $GEM_HOME/gems/dpl-*.travis.* $GEM_HOME/specifications/dpl-*.travis.*
+  - git checkout bin/dpl
+
+before_install:
+  - gem update bundler
+
+before_script:
+  - rm -f $(ruby -r rubygems -e "puts Gem.bindir")/dpl
+
+script:
+  - bundle exec rspec
+
 jobs:
   include:
     - stage: deploy
+      if: branch = master AND NOT type IN (pull_request)
       cache: false
       before_deploy:
         - sed -i.bak "s/VERSION = '.*'/VERSION = '${DPL_VERSION}'/g" lib/dpl/version.rb
@@ -27,30 +52,3 @@ jobs:
           gemspec_glob: 'dpl*.gemspec'
           on:
             repo: travis-ci/dpl
-          if: branch = master AND NOT type IN (pull_request)
-  allow_failures:
-
-env:
-  global:
-    - DPL_VERSION=$(ruby -I lib -r dpl/version.rb -e "puts DPL::VERSION.succ + \".travis.#{ENV['TRAVIS_JOB_NUMBER']}\"")
-
-sudo: false
-
-before_cache:
-  - rm -rf $GEM_HOME/cache/dpl-*.travis.*.gem $GEM_HOME/gems/dpl-*.travis.* $GEM_HOME/specifications/dpl-*.travis.*
-  - git checkout bin/dpl
-
-cache:
-  directories:
-    - vendor/cache
-    - $GEM_HOME
-    - node_modules
-
-before_install:
-  - gem update bundler
-
-before_script:
-  - rm -f $(ruby -r rubygems -e "puts Gem.bindir")/dpl
-
-script:
-  - bundle exec rspec
