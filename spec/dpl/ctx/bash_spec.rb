@@ -13,6 +13,10 @@ describe Dpl::Ctx::Bash do
   before { allow(Open3).to receive(:capture3).and_return(captures) }
   before { allow_any_instance_of(described_class).to receive(:last_process_status).and_return(status) }
 
+  def self.cmds(cmds)
+    before { cmds.each { |cmd, str| allow(subject).to receive(:`).with(cmd.to_s).and_return(str) } }
+  end
+
   chdir 'tmp/dpl'
 
   matcher :have_stdout do |str|
@@ -261,10 +265,6 @@ describe Dpl::Ctx::Bash do
     end
   end
 
-  def self.cmds(cmds)
-    before { cmds.each { |cmd, str| expect(subject).to receive(:`).with(cmd.to_s).and_return(str) } }
-  end
-
   describe 'encoding' do
     describe 'gziped' do
       cmds "file 'one'": 'one: gzip compressed data, last modified: Wed May 15 12:00:00 2019, from Unix, original size 4'
@@ -283,8 +283,8 @@ describe Dpl::Ctx::Bash do
   end
 
   describe 'git_commit_msg' do
-    cmds 'git rev-parse HEAD': "1234\n",
-         'git log 1234 -n 1 --pretty=%B': "commit msg\n"
+    before { allow(subject).to receive(:git_sha).and_return('1234') }
+    cmds 'git log 1234 -n 1 --pretty=%B': "commit msg\n"
     it { expect(subject.git_commit_msg).to eq 'commit msg' }
   end
 
@@ -352,17 +352,6 @@ describe Dpl::Ctx::Bash do
   end
 
   describe 'tmp_dir' do
-    it { expect(subject.tmp_dir).to start_with '/var/' }
-  end
-
-  describe 'exists?' do
-    describe 'file exists' do
-      file 'foo'
-      it { expect(subject.exists?('foo')).to be true }
-    end
-
-    describe 'file does not exist' do
-      it { expect(subject.exists?('foo')).to be false }
-    end
+    it { expect(subject.tmp_dir).to match %r(/(tmp|var)/) }
   end
 end
