@@ -41,7 +41,6 @@ describe Dpl::Providers::Lambda do
 
   after { Aws.config.clear }
 
-  chdir 'tmp'
   file 'one'
 
   before { subject.run }

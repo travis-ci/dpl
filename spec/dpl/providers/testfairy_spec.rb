@@ -1,7 +1,6 @@
 describe Dpl::Providers::Testfairy do
   let(:args) { |e| %w(--api_key key --app_file file) + args_from_description(e) }
 
-  chdir 'tmp'
   file 'file'
 
   before { stub_request(:post, 'http://api.testfairy.com/api/upload').and_return(body: JSON.dump(status: 'success')) }

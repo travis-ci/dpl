@@ -1,7 +1,6 @@
 describe Dpl::Providers::Gcs do
   let(:args) { |e| %w(--access_key_id id --secret_access_key key --bucket bucket) + args_from_description(e) }
 
-  chdir 'tmp'
   file 'one'
   file 'two/two'
   file '.hidden'

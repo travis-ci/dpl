@@ -1,9 +1,12 @@
 require 'cl'
 require 'stringio'
+require 'dpl/provider/squiggle'
 
 module Dpl
   module Ctx
     class Test < Cl::Ctx
+      include Squiggle
+
       attr_reader :cmds, :stderr
 
       def initialize
@@ -146,6 +149,25 @@ module Dpl
 
       def test?
         true
+      end
+
+      def file_size(path)
+        File.size(path.sub("#{File.expand_path('~')}", './home'))
+      end
+
+      def write_file(path, content)
+        path = File.expand_path(path)
+        path = path.sub("#{File.expand_path('~')}", './home')
+        FileUtils.mkdir_p(File.dirname(path))
+        File.open(path, 'w+') { |f| f.write(content) }
+      end
+
+      def write_netrc(machine, login, password)
+        write_file('~/.netrc', sq(<<-rc))
+          machine #{machine}
+            login #{login}
+            password #{password}
+        rc
       end
 
       def except(hash, *keys)

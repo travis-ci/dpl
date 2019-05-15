@@ -5,8 +5,6 @@ describe Dpl::Providers::OpenShift do
   let(:app)  { double(name: 'dpl', git_url: 'git://dpl.git', 'deployment_branch=': nil, restart: nil) }
   let(:api)  { double(user: user, find_application: app, add_key: nil, delete_key: nil) }
 
-  chdir 'tmp'
-
   before { expect(RHC::Rest::Client).to receive(:new).with(user: 'user', password: 'pass', server: 'openshift.redhat.com').and_return(api) }
   before { subject.run }
 

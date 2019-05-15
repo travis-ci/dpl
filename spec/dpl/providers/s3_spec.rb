@@ -2,7 +2,6 @@ describe Dpl::Providers::S3 do
   let(:args) { |e| %w(--access_key_id id --secret_access_key key --bucket bucket) + args_from_description(e) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
 
-  chdir 'tmp'
   file 'one.txt'
   file '.hidden.txt'
 

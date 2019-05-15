@@ -1,7 +1,6 @@
 describe Dpl::Providers::PuppetForge do
   let(:args) { |e| %w(--user user --password pass) + args_from_description(e) }
 
-  chdir 'tmp'
   file 'metadata.json', JSON.dump(name: 'author-module')
 
   let(:face)  { double(build: nil) }

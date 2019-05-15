@@ -6,6 +6,7 @@ require 'dpl/provider/assets'
 require 'dpl/provider/env'
 require 'dpl/provider/interpolate'
 require 'dpl/provider/require'
+require 'dpl/provider/squiggle'
 
 module Dpl
   # Providers are encouraged to implement any of the following stages
@@ -34,9 +35,11 @@ module Dpl
 
   class Provider < Cl::Cmd
     extend Forwardable
-    include Assets, Env, FileUtils, Interpolate
+    include Assets, Env, FileUtils, Interpolate, Squiggle
 
     class << self
+      include Squiggle
+
       %i(cleanup deprecated experimental).each do |name|
         define_method(:"#{name}?") { !!instance_variable_get(:"@#{name}") }
         define_method(name) { |arg = true| instance_variable_set(:"@#{name}", arg) }
@@ -96,13 +99,6 @@ module Dpl
         strs = strs.flat_map { |e| Hash === e ? e.map { |k, v| "#{k}/#{v}" } : e }
         strs.join(' ').gsub(/\s+/, ' ').strip
       end
-
-      # Beloved squiggly heredocs did not existin Ruby 2.1.0, which we still
-      # want to support, so let's give kudos with this method in the meantime.
-      def sq(str)
-        width = str =~ /( *)\S/ && $1.size
-        str.lines.map { |line| line.gsub(/^ {#{width}}/, '') }.join
-      end
     end
 
     abstract
@@ -154,7 +150,7 @@ module Dpl
       :build_number, :repo_slug, :encoding, :git_commit_msg, :git_log,
       :git_ls_files, :git_remote_urls, :git_rev_parse, :git_sha, :git_tag,
       :machine_name, :npm_version, :sleep, :ssh_keygen, :success?, :tmp_dir,
-      :which, :logger, :rendezvous
+      :which, :logger, :rendezvous, :file_size, :write_file, :write_netrc
 
     attr_reader :repo_name
 

@@ -41,11 +41,7 @@ module Dpl
         rc
 
         def write_rc
-          File.open(rc_path, 'w') { |f| f.write(interpolate(RC)) }
-        end
-
-        def rc_path
-          File.expand_path('~/.transifexrc')
+          write_file('~/.transifexrc', interpolate(RC))
         end
 
         def url

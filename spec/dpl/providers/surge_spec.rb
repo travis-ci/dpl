@@ -2,8 +2,6 @@ describe Dpl::Providers::Surge do
   let(:args) { |e| args_from_description(e) }
   let(:cwd)  { File.expand_path('.') }
 
-  chdir 'tmp'
-
   describe 'given --login login --token token --domain domain', record: true do
     before { subject.run }
     it { should have_run '[npm:install] surge (surge)' }

@@ -1,4 +1,4 @@
-describe Dpl::Providers::Heroku, fakefs: true do
+describe Dpl::Providers::Heroku do
   let(:args) { |e| %w(--strategy api --api_key key) + args_from_description(e) }
   let(:user) { JSON.dump(email: 'email') }
   let(:dyno) { JSON.dump(attach_url: 'attach_url') }

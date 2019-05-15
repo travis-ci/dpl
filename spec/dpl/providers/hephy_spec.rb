@@ -1,8 +1,6 @@
 describe Dpl::Providers::Hephy do
   let(:args) { |e| %w(--controller hephy.hephyapps.com --username user --password pass) + args_from_description(e) }
 
-  chdir 'tmp'
-
   before { subject.run }
 
   describe 'by default', record: true do

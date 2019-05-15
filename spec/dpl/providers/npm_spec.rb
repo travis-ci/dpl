@@ -1,7 +1,12 @@
-describe Dpl::Providers::Npm, fakefs: true do
+describe Dpl::Providers::Npm do
   let(:args) { |e| %w(--email email --api_key key) + args_from_description(e) }
 
-  dir File.expand_path('~')
+  let(:npmrc) do
+    sq(<<-rc)
+      _auth = \${NPM_API_KEY}
+      email = email
+    rc
+  end
 
   before { subject.run }
 
@@ -11,6 +16,7 @@ describe Dpl::Providers::Npm, fakefs: true do
     it { should have_run '[info] ~/.npmrc size: 36' }
     it { should have_run 'env NPM_API_KEY=key npm publish' }
     it { should have_run_in_order }
+    it { should have_written '~/.npmrc', npmrc }
   end
 
   describe 'given --tag tag' do

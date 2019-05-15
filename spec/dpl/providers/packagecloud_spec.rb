@@ -14,8 +14,6 @@ describe Dpl::Providers::Packagecloud do
     )
   end
 
-  chdir 'tmp'
-
   before { allow(Packagecloud::Credentials).to receive(:new).with('user', 'token').and_return(creds) }
   before { allow(Packagecloud::Connection).to receive(:new).with(*url, timeouts).and_return(conn) }
   before { allow(Packagecloud::Client).to receive(:new).with(creds, anything, conn).and_return(client) }

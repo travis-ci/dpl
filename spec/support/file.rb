@@ -46,14 +46,14 @@ module Support
       Dir.chdir(name)
     end
 
-    def rm(file)
-      FileUtils.rm(file)
-    end
-
     def rm_r(*paths)
       paths.each { |path| FileUtils.rm_r(path) }
     end
     alias rm rm_r
+
+    def rm_rf(*paths)
+      paths.each { |path| FileUtils.rm_rf(path) }
+    end
 
     def yaml(obj)
       YAML.dump(obj)

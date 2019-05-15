@@ -2,7 +2,6 @@ describe Dpl::Providers::Rubygems do
   let(:args) { |e| args_from_description(e) }
   let(:name) { 'dpl' }
 
-  chdir 'tmp'
   file 'dpl-2.0.0.gem', 'dpl'
   file 'other-0.0.1.gem', 'other'
 
