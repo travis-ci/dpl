@@ -126,6 +126,8 @@ module Dpl
 
     abstract
 
+    arg :provider, 'The provider name', required: true
+
     opt '--app NAME',      default: :repo_name
     opt '--key_name NAME', default: :machine_name
     opt '--run CMD',       type: :array
