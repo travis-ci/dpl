@@ -1,8 +1,6 @@
 describe Dpl::Providers::Gae do
   let(:args) { |e| %w(--project id) + args_from_description(e) }
 
-  chdir 'tmp'
-
   context do
     before { subject.run }
 

@@ -1,4 +1,4 @@
-describe Dpl::Providers::ChefSupermarket, fakefs: true do
+describe Dpl::Providers::ChefSupermarket do
   let(:uploader) { Chef::CookbookUploader }
   let(:site)     { Chef::CookbookSiteStreamingUploader }
 
@@ -31,7 +31,7 @@ describe Dpl::Providers::ChefSupermarket, fakefs: true do
   end
 
   describe 'given --cookbook_name dpl.test' do
-    before { FileUtils.mkdir_p('../dpl.test') } # use fakefs
+    before { FileUtils.mkdir_p('../dpl.test') }
     after  { FileUtils.rm_rf('../dpl.test') }
 
     # it do

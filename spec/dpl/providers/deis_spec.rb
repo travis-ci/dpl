@@ -1,8 +1,6 @@
 describe Dpl::Providers::Deis do
   let(:args) { |e| %w(--controller deis.deisapps.com --username user --password pass) + args_from_description(e) }
 
-  chdir 'tmp'
-
   before { subject.run }
 
   describe 'by default', record: true do

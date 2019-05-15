@@ -6,7 +6,6 @@ describe Dpl::Providers::Releases do
   let(:release)  { JSON.dump(tag_name: 'tag', url: '/releases/1', assets_url: '/releases/1/assets', upload_url: '/releases/1/assets{?name,label}') }
   let(:assets)   { JSON.dump([]) }
 
-  chdir 'tmp'
   file 'one'
   file 'one_two'
   file 'two'

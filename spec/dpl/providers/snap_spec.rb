@@ -1,8 +1,6 @@
 describe Dpl::Providers::Snap do
   let(:args) { |e| args_from_description(e) + %w(--token token) }
 
-  chdir 'tmp'
-
   context do
     file 'snap'
     before { subject.run }

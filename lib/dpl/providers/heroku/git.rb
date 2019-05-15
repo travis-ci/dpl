@@ -1,5 +1,3 @@
-require 'netrc'
-
 module Dpl
   module Providers
     class Heroku
@@ -48,9 +46,7 @@ module Dpl
           end
 
           def write_netrc
-            netrc = Netrc.read
-            netrc['git.heroku.com'] = [email, api_key || password]
-            netrc.save
+            super('git.heroku.com', email, api_key || password)
           end
       end
     end

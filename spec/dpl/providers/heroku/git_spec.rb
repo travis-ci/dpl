@@ -1,7 +1,16 @@
-describe Dpl::Providers::Heroku, fakefs: true do
+describe Dpl::Providers::Heroku do
   let(:args) { |e| %w(--strategy git) + creds + args_from_description(e) }
   let(:user) { JSON.dump(email: 'email') }
   let(:dyno) { JSON.dump(attach_url: 'attach_url') }
+  let(:pass) { 'key' }
+
+  let(:netrc) do
+    sq(<<-rc)
+      machine git.heroku.com
+        login email
+        password #{pass}
+    rc
+  end
 
   before { stub_request(:get, 'https://api.heroku.com/account').and_return(body: user) }
   before { stub_request(:get, 'https://api.heroku.com/apps/dpl') }
@@ -9,8 +18,6 @@ describe Dpl::Providers::Heroku, fakefs: true do
   before { stub_request(:post, 'https://api.heroku.com/apps/dpl/dynos').and_return(body: dyno) }
   before { stub_request(:delete, 'https://api.heroku.com/apps/dpl/dynos') }
   before { subject.run }
-
-  after { rm File.expand_path('~/.netrc') } # weird. does FakeFS keep traces of this around?
 
   describe 'using --api_key' do
     let(:creds) { %w(--api_key key) }
@@ -22,10 +29,10 @@ describe Dpl::Providers::Heroku, fakefs: true do
       it { should have_run '[info] success.' }
       it { should have_run 'git fetch origin $TRAVIS_BRANCH --unshallow' }
       it { should have_run 'git push https://git.heroku.com/dpl.git HEAD:refs/heads/master -f' }
-      it { should have_netrc 'git.heroku.com', login: 'email', password: 'key' }
       it { should have_requested :get, 'https://api.heroku.com/account' }
       it { should have_requested :get, 'https://api.heroku.com/apps/dpl' }
       it { should have_run_in_order }
+      it { should have_written '~/.netrc', netrc }
     end
 
     describe 'given --app other' do
@@ -54,6 +61,7 @@ describe Dpl::Providers::Heroku, fakefs: true do
 
   describe 'using --username and --password'  do
     let(:creds) { %w(--username user and --password pass) }
-    it { should have_netrc 'git.heroku.com', login: 'email', password: 'pass' }
+    let(:pass) { 'pass' }
+    it { should have_written '~/.netrc', netrc }
   end
 end

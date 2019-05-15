@@ -4,7 +4,6 @@ require 'support/env'
 require 'support/file'
 require 'support/fixtures'
 require 'support/matchers'
-require 'support/fakefs'
 require 'support/require'
 
 def symbolize(obj)

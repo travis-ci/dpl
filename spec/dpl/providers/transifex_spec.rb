@@ -1,8 +1,6 @@
-describe Dpl::Providers::Transifex, fakefs: true do
+describe Dpl::Providers::Transifex do
   let(:args) { |e| %w(--username user --password pass) + args_from_description(e) }
-  let(:rc)   { File.read(File.expand_path('~/.transifexrc')) }
-
-  dir File.expand_path('~')
+  let(:rc) { File.read('./home/.transifexrc') }
 
   before { subject.run }
 
@@ -13,7 +11,7 @@ describe Dpl::Providers::Transifex, fakefs: true do
     it { should have_run_in_order }
 
     it do
-      expect(rc).to eq sq(<<-rc)
+      should have_written '~/.transifexrc', sq(<<-rc)
         [https://www.transifex.com]
         hostname = https://www.transifex.com
         username = user

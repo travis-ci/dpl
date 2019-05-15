@@ -1,5 +1,6 @@
 require 'cl'
 require 'logger'
+require 'netrc'
 require 'open3'
 require 'rendezvous'
 require 'tmpdir'
@@ -69,7 +70,7 @@ module Dpl
         cmd = "pip install --user #{name}"
         cmd << "==#{version}" if version
         shell cmd, echo: true, retry: true
-        shell 'export PATH=$PATH:$HOME/.local/bin' # i don't think this propagates to the parent process
+        shell 'export PATH=$PATH:$HOME/.local/bin'
       end
 
       def ssh_keygen(name, file)
@@ -186,6 +187,21 @@ module Dpl
 
       def tmp_dir
         Dir.mktmpdir
+      end
+
+      def file_size(path)
+        File.size(path)
+      end
+
+      def write_file(path, content)
+        File.open(File.expand_path(path), 'w+') { |f| f.write(content) }
+      end
+
+      def write_netrc(machine, login, password)
+        netrc = Netrc.read
+        netrc[machine] = [login, password]
+        netrc.save
+        puts File.read('/Users/sven/.netrc')
       end
 
       # external

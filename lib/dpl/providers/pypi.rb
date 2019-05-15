@@ -35,7 +35,6 @@ module Dpl
            twine_upload: 'Twine upload failed.',
            upload_docs:  'Uploading docs failed.'
 
-      PYPIRC  = '~/.pypirc'
       VERSION = /\A\d+(?:\.\d+)*\z/ # add format to Cl
 
       def install
@@ -56,8 +55,18 @@ module Dpl
 
       private
 
+        PYPIRC = sq(<<-rc)
+          [distutils]
+          index-servers = pypi
+              pypi
+          [pypi]
+          repository: %{server}
+          username: %{username}
+          password: %{password}
+        rc
+
         def write_config
-          File.open(pypirc_file, 'w+') { |f| f.write(pypirc) }
+          write_file('~/.pypirc', interpolate(PYPIRC))
         end
 
         def upload_docs
@@ -89,22 +98,6 @@ module Dpl
           arg = name.to_s
           arg << "==#{send(:"#{name}_version")}" if send(:"#{name}_version") =~ VERSION
           arg
-        end
-
-        def pypirc
-          sq(<<-rc)
-            [distutils]
-            index-servers = pypi
-                pypi
-            [pypi]
-            repository: #{server}
-            username: #{username}
-            password: #{password}
-          rc
-        end
-
-        def pypirc_file
-          File.expand_path(PYPIRC)
         end
     end
   end

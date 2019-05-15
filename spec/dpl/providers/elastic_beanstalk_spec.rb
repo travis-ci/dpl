@@ -51,7 +51,6 @@ describe Dpl::Providers::ElasticBeanstalk do
 
   after { Aws.config.clear }
 
-  chdir 'tmp'
   file 'one'
   file 'two'
 

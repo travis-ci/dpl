@@ -11,5 +11,7 @@ RSpec.configure do |c|
   c.include Support::Matchers
   c.include Support::Matchers::RecordCmds, record: true
   c.include Support::Require
-  c.include Support::FakeFs, fakefs: true
+
+  c.before { rm_rf '/tmp/dpl' }
+  c.before { chdir '/tmp/dpl' }
 end

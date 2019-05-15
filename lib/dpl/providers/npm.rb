@@ -41,8 +41,8 @@ module Dpl
         end
 
         def write_npmrc
-          File.open(npmrc_path, 'w+') { |f| f.write(npmrc) }
-          info "#{NPMRC} size: #{File.size(File.expand_path(NPMRC))}"
+          write_file(npmrc_path, npmrc)
+          info "#{NPMRC} size: #{file_size(npmrc_path)}"
         end
 
         def npmrc_path
