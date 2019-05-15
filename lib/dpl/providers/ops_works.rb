@@ -7,7 +7,7 @@ module Dpl
         tbd
       str
 
-      experimental 'AWS OpsWorks'
+      experimental
 
       env :aws
 

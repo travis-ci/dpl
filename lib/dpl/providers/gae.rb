@@ -3,11 +3,11 @@ module Dpl
     class Gae < Provider
       full_name 'Google App Engine'
 
-      experimental 'Google App Engine'
-
       description sq(<<-str)
         tbd
       str
+
+      experimental
 
       env :googlecloud, :cloudsdk_core
 

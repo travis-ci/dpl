@@ -10,7 +10,7 @@ module Dpl
         tbd
       str
 
-      experimental 'AWS Elastic Beanstalk'
+      experimental
 
       env :aws, :elastic_beanstalk
 

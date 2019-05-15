@@ -5,7 +5,7 @@ module Dpl
         tbd
       str
 
-      experimental 'Transifex'
+      experimental
 
       opt '--username NAME',   'Transifex username', required: true
       opt '--password PASS',   'Transifex password', required: true
