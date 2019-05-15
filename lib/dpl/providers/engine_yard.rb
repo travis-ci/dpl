@@ -62,7 +62,7 @@ module Dpl
         end
 
         def deployment
-          opts = { ref: sha }
+          opts = { ref: git_sha }
           opts = opts.merge(migrate: true, migration_command: migrate) if migrate?
           EY::CloudClient::Deployment.deploy(api, env, opts)
         rescue EY::CloudClient::Error => e
@@ -74,7 +74,7 @@ module Dpl
             app_name: app,
             account_name: account,
             environment_name: environment,
-            remotes: git_remotes
+            remotes: git_remote_urls
           )
         end
 

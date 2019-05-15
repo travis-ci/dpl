@@ -86,13 +86,13 @@ module Dpl
         {
           app_id: app_id,
           app_source: {
-            revision: sha,
+            revision: git_sha,
           }
         }
       end
 
       def custom_json
-        super || { deploy: { app[:shortname] => { migrate: migrate?, scm: { revision: sha } } } }.to_json
+        super || { deploy: { app[:shortname] => { migrate: migrate?, scm: { revision: git_sha } } } }.to_json
       end
 
       def stack_id

@@ -150,11 +150,18 @@ module Dpl
     def_delegators :'self.class', :apt, :npm, :pip, :experimental,
       :experimental?, :keep, :needs?, :user_agent
 
-    def_delegators :ctx, :repo_slug, :repo_name, :build_dir, :build_number,
-      :error, :exists?, :sleep, :success?, :git_log, :git_tag, :git_remotes, :git_rev_parse,
-      :commit_msg, :sha, :npm_version, :which, :encoding, :machine_name,
-      :ssh_keygen, :logger, :tmp_dir, :rendezvous, :apt_get, :npm_install,
-      :pip_install
+    def_delegators :ctx, :apt_get, :npm_install, :pip_install, :build_dir,
+      :build_number, :repo_slug, :encoding, :git_commit_msg, :git_log,
+      :git_ls_files, :git_remote_urls, :git_rev_parse, :git_sha, :git_tag,
+      :machine_name, :npm_version, :sleep, :ssh_keygen, :success?, :tmp_dir,
+      :which, :logger, :rendezvous
+
+    attr_reader :repo_name
+
+    def initialize(ctx, *)
+      @repo_name = ctx.repo_name
+      super
+    end
 
     def run
       run_stages

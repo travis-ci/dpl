@@ -128,7 +128,7 @@ module Dpl
       end
 
       def commit_id
-        super || sha
+        super || git_sha
       end
 
       def repository

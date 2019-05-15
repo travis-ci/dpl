@@ -28,7 +28,7 @@ module Dpl
 
       def login
         info :login
-        shell :login, assert: 'Failed to authenticate: %{err}', info: '%{out}'
+        shell :login, assert: 'Failed to authenticate: %{err}', info: '%{out}', capture: true
       end
 
       def validate

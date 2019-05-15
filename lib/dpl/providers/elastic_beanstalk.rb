@@ -56,11 +56,11 @@ module Dpl
       end
 
       def label
-        @label ||= super || "travis-#{sha}-#{Time.now.to_i}"
+        @label ||= super || "travis-#{git_sha}-#{Time.now.to_i}"
       end
 
       def description
-        super || commit_msg
+        super || git_commit_msg
       end
 
       def bucket_path
@@ -77,7 +77,7 @@ module Dpl
 
       def create_zip
         ::Zip::File.open(zip_file, ::Zip::File::CREATE) do |zip|
-          ctx.files.each { |path| zip.add(path.sub(cwd, ''), path) }
+          git_ls_files.each { |path| zip.add(path.sub(cwd, ''), path) }
         end
       end
 

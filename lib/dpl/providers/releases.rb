@@ -93,8 +93,8 @@ module Dpl
 
       def with_target_commitish(opts)
         return opts if target_commitish? || !same_repo?
-        info :set_target_commitish, sha
-        opts.merge(target_commitish: sha)
+        info :set_target_commitish, git_sha
+        opts.merge(target_commitish: git_sha)
       end
 
       def content_type(file)

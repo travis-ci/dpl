@@ -30,7 +30,7 @@ describe Dpl::Providers::Heroku, fakefs: true do
     it { should have_requested :get, 'https://api.heroku.com/account' }
     it { should have_requested :post, 'https://api.heroku.com/sources' }
     it { should have_requested :get, 'https://api.heroku.com/apps/dpl' }
-    it { should have_requested(:post, 'https://api.heroku.com/apps/dpl/builds').with(body: { source_blob: { url: 'get_url', version: 'ref: HEAD' } }) }
+    it { should have_requested(:post, 'https://api.heroku.com/apps/dpl/builds').with(body: { source_blob: { url: 'get_url', version: 'sha' } }) }
     it { should have_requested :get, 'https://api.heroku.com/apps/dpl/builds/1' }
   end
 
