@@ -1,6 +1,7 @@
 # Silences "Struct::Tms is deprecated" warnings on Ruby 2.6.2 that would
 # otherwise spam hundereds of warnings, on apparently every single const
-# eager loaded (or something).
+# eager loaded (or something). The constant Tms is not used anywhere in
+# the aws-sdk gem, so it seems safe to skip it.
 #
 # Maybe submit a patch to aws-sdk?
 

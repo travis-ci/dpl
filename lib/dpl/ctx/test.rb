@@ -4,21 +4,19 @@ require 'stringio'
 module Dpl
   module Ctx
     class Test < Cl::Ctx
-      attr_reader :stderr
+      attr_reader :cmds, :stderr
 
       def initialize
+        @cmds = []
         @stderr = StringIO.new
         super('dpl')
-      end
-
-      def exists?(path)
-        File.exists?(path)
       end
 
       def fold(name)
         cmds << "[fold] #{name}"
         yield.tap { cmds << "[unfold] #{name}" }
       end
+
 
       def apt_get(name, cmd)
         cmds << "[apt:get] #{name} (#{cmd})"
@@ -32,8 +30,9 @@ module Dpl
         cmds << "[pip:install] #{name} (#{cmd}, #{version})"
       end
 
-      def npm_version
-        '1'
+      def ssh_keygen(name, file)
+        File.open(file, 'w+') { |f| f.write('private-key') }
+        File.open("#{file}.pub", 'w+') { |f| f.write('ssh-rsa public-key') }
       end
 
       def shell(cmd, opts = {})
@@ -83,12 +82,20 @@ module Dpl
         1
       end
 
+      def git_commit_msg
+        'commit msg'
+      end
+
       def git_log(args)
         'commits'
       end
 
-      def git_remotes
-        ['origin']
+      def git_ls_files
+        %w(one two)
+      end
+
+      def git_remote_urls
+        ['git://origin.git']
       end
 
       def git_rev_parse(ref)
@@ -99,34 +106,25 @@ module Dpl
         'tag'
       end
 
-      def sha
+      def git_sha
         'sha'
-      end
-
-      def commit_msg
-        'commit msg'
-      end
-
-      def files
-        %w(one two)
-      end
-
-      def which(cmd)
-        false
       end
 
       def machine_name
         'machine_name'
       end
 
+      def npm_version
+        '1'
+      end
+
+      def which(cmd)
+        false
+      end
+
       def tmp_dir
         FileUtils.mkdir_p('tmp')
         'tmp'
-      end
-
-      def ssh_keygen(name, file)
-        File.open(file, 'w+') { |f| f.write('private-key') }
-        File.open("#{file}.pub", 'w+') { |f| f.write('ssh-rsa public-key') }
       end
 
       def sleep(*)
@@ -144,10 +142,6 @@ module Dpl
 
       def rendezvous(url)
         cmds << "[rendezvous] #{url}"
-      end
-
-      def cmds
-        @cmds ||= []
       end
 
       def test?

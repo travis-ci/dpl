@@ -109,7 +109,7 @@ module Dpl
           end
 
           def version
-            super || ENV['TRAVIS_COMMIT'] || git_rev_parse('HEAD')
+            super || git_sha
           end
 
           def curl_opts
