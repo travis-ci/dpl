@@ -2,11 +2,11 @@ require 'cl'
 require 'fileutils'
 require 'forwardable'
 require 'shellwords'
-require 'dpl/provider/assets'
-require 'dpl/provider/env'
-require 'dpl/provider/interpolate'
-require 'dpl/provider/require'
-require 'dpl/provider/squiggle'
+require 'dpl/helper/assets'
+require 'dpl/helper/env'
+require 'dpl/helper/interpolate'
+require 'dpl/helper/require'
+require 'dpl/helper/squiggle'
 
 module Dpl
   # Providers are encouraged to implement any of the following stages
@@ -40,14 +40,44 @@ module Dpl
     class << self
       include Squiggle
 
-      %i(cleanup deprecated experimental).each do |name|
-        define_method(:"#{name}?") { !!instance_variable_get(:"@#{name}") }
-        define_method(name) { |arg = true| instance_variable_set(:"@#{name}", arg) }
+      def deprecated?
+        !!@deprecated
       end
 
-      %i(apt npm pip).each do |name|
-        define_method(:"#{name}?") { !!instance_variable_get(:"@#{name}") }
-        define_method(name) { |*args| args.any? ? instance_variable_set(:"@#{name}", args) : instance_variable_get(:"@#{name}") }
+      def deprecated(msg = nil)
+        msg ? @deprecated = msg : @deprecated
+      end
+
+      def experimental?
+        !!@experimental
+      end
+
+      def experimental
+        @experimental = true
+      end
+
+      def apt?
+        !!@apt
+      end
+
+      def apt(*args)
+        args.any? ? @apt = args : @apt
+      end
+
+      def npm?
+        !!@npm
+      end
+
+      def npm(*args)
+        args.any? ? @npm = args : @npm
+      end
+
+      def pip?
+        !!@pip
+      end
+
+      def pip(*args)
+        args.any? ? @pip = args : @pip
       end
 
       def full_name(name = nil)
@@ -138,7 +168,7 @@ module Dpl
          experimental: '%s support is experimental'
 
     def_delegators :'self.class', :apt, :npm, :pip, :experimental,
-      :experimental?, :keep, :needs?, :user_agent
+      :experimental?, :full_name, :keep, :needs?, :user_agent
 
     def_delegators :ctx, :apt_get, :npm_install, :pip_install, :build_dir,
       :build_number, :repo_slug, :encoding, :git_commit_msg, :git_log,
@@ -178,7 +208,7 @@ module Dpl
     end
 
     def before_init
-      warn msg(:experimental) % experimental if experimental?
+      warn msg(:experimental) % full_name if experimental?
       deprecated_opts.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
       self.class.require(ctx)
     end

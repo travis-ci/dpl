@@ -1,6 +1,6 @@
 require 'cl'
 require 'stringio'
-require 'dpl/provider/squiggle'
+require 'dpl/helper/squiggle'
 
 module Dpl
   module Ctx

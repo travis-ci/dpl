@@ -1,4 +1,4 @@
-require 'dpl/provider/zip'
+require 'dpl/helper/zip'
 
 module Dpl
   module Providers

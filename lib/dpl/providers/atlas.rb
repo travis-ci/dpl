@@ -5,6 +5,8 @@ module Dpl
         tbd
       str
 
+      experimental
+
       opt '--app APP',       'The Atlas application to upload to', required: true
       opt '--token TOKEN',   'The Atlas API token', required: true
       opt '--path PATH',     'Files or directories to upload', type: :array, default: ['.']
@@ -15,8 +17,6 @@ module Dpl
       opt '--vcs',           'Get lists of files to exclude and include from a VCS (Git, Mercurial or SVN)'
       opt '--args ARGS',     'Args to pass to the atlas-upload CLI'
       opt '--debug',         'Turn on debug output'
-
-      experimental 'Atlas'
 
       def setup
         ENV['ATLAS_TOKEN'] = token
