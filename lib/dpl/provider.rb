@@ -101,26 +101,7 @@ module Dpl
       end
     end
 
-    abstract
-
-    opt '--app NAME',      default: :repo_name
-    opt '--key_name NAME', default: :machine_name
-    opt '--run CMD',       type: :array
-    opt '--skip_cleanup'
-    # opt '--pretend', 'Pretend running the deployment'
-    # opt '--quiet',   'Suppress any output'
-
-    msgs cleanup: 'Cleaning up git repository with `git stash --all`. If you need build artifacts for deployment, set `deploy.skip_cleanup: true`. See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup.',
-         experimental: '%s support is experimental'
-
     KEEP = %w(.dpl)
-
-    # FILES = {
-    #   git_ssh: <<~file
-    #     #!/bin/sh
-    #     exec ssh -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i %s -- "$@"
-    #   file
-    # }
 
     FOLDS = {
       init:     'Initialize deployment',
@@ -142,6 +123,17 @@ module Dpl
       prepare
       deploy
     )
+
+    abstract
+
+    opt '--app NAME',      default: :repo_name
+    opt '--key_name NAME', default: :machine_name
+    opt '--run CMD',       type: :array
+    opt '--skip_cleanup'
+    opt '--stage', 'stages to run (for testing only)', type: :array, internal: true, default: STAGES
+
+    msgs cleanup: 'Cleaning up git repository with `git stash --all`. If you need build artifacts for deployment, set `deploy.skip_cleanup: true`. See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup.',
+         experimental: '%s support is experimental'
 
     def_delegators :'self.class', :apt, :npm, :pip, :experimental,
       :experimental?, :keep, :needs?, :user_agent
