@@ -18,7 +18,7 @@ module Dpl
       end
 
       def install
-        ctx.shell "gem install #{gem_name} -v #{version}", echo: true
+        ctx.shell "gem install #{gem_name} -v #{version}", echo: true, sudo: ctx.sudo?
       end
 
       def paths
