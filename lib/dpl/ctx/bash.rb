@@ -166,6 +166,7 @@ module Dpl
       #
       # @option opts [Boolean] :echo    output the command to stdout before running it
       # @option opts [Boolean] :silence silence all log output by redirecting stdout and stderr to `/dev/null`
+      # @option opts [Boolean] :sudo    run the command with sudo prepended
       # @option opts [Boolean] :capture use `Open3.capture3` to capture stdout and stderr
       # @option opts [String]  :python  wrap the command into Bash code that enforces the given Python version to be used
       # @option opts [String]  :info    message to output to stdout if the command has exited with the exit code 0 (supports the interpolation variable `${out}` for stdout in case it was captured.
@@ -175,6 +176,7 @@ module Dpl
       #
       # TODO add retry
       def shell(cmd, opts = {})
+        cmd = "sudo #{cmd}" if opts[:sudo]
         cmd = "#{cmd} > /dev/null 2>&1" if opts[:silence]
         cmd = with_python(cmd, opts[:python]) if opts[:python]
 
@@ -227,6 +229,11 @@ module Dpl
       # variable, so we use a method that we can stub during tests.
       def last_process_status
         $?.success?
+      end
+
+      # Whether or not the current Ruby process runs with superuser priviledges.
+      def sudo?
+        Process::UID.eid == 0
       end
 
       # Enforces a Python version to be used.

@@ -34,10 +34,6 @@ Running `dpl` in a terminal that saves history is potentially insecure as creden
 
 Dpl will deploy by default from the latest commit. Use the `--skip_cleanup` option to deploy from the current file system state, which may include artifacts left by your build process. Note that providers that deploy via git may ignore this option.
 
-## Dpl and sudo
-
-Dpl may install additional deployment provider specific gem dependencies at runtime. This can cause [a problem](https://github.com/travis-ci/dpl/issues/769) if `sudo dpl` is used, where the process installing the provider code may not have sufficient permissions. In this case, you can install the provider gem (of the same version as `dpl`) with `sudo` beforehand to work around this issue (e.g. `sudo gem install dpl dpl-s3`).
-
 ## Providers
 <% providers.each do |key, name|%>
 ### <%= name %>
