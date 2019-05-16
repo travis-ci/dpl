@@ -7,9 +7,27 @@ rvm:
 - 2.5.5
 - 2.6.2
 
+cache:
+  - bundler
+
 script:
   - bundle exec rspec
 
+jobs:
+  include:
+    - &job
+      stage: test runtime gem installation
+      install: skip
+      script: ruby -Ilib .travis/test_install.rb
+      rvm: 2.2.10
+    - <<: *job
+      rvm: 2.3.8
+    - <<: *job
+      rvm: 2.4.5
+    - <<: *job
+      rvm: 2.5.5
+    - <<: *job
+      rvm: 2.6.2
 
 # before_script:
 #   - rm -f $(ruby -r rubygems -e "puts Gem.bindir")/dpl
