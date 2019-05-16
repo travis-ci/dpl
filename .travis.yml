@@ -1,17 +1,17 @@
 language: ruby
 
-rvm:
-- 2.2.10
-- 2.3.8
-- 2.4.5
-- 2.5.5
-- 2.6.2
-
-cache:
-  - bundler
-
-script:
-  - bundle exec rspec
+# rvm:
+# - 2.2.10
+# - 2.3.8
+# - 2.4.5
+# - 2.5.5
+# - 2.6.2
+#
+# cache:
+#   - bundler
+#
+# script:
+#   - bundle exec rspec
 
 jobs:
   include:
