@@ -129,11 +129,11 @@ module Dpl
 
     arg :provider, 'The provider name', required: true
 
-    opt '--app NAME',      default: :repo_name
-    opt '--key_name NAME', default: :machine_name
-    opt '--run CMD',       type: :array
-    opt '--skip_cleanup'
-    opt '--stage NAME', 'stages to run (for testing only)', type: :array, internal: true, default: STAGES
+    opt '--run CMD',       'Command to execute after the deployment finished successfully', type: :array
+    opt '--skip_cleanup',  'Skip cleaning up build artifacts before the deployment'
+    opt '--app NAME',      default: :repo_name, internal: true
+    opt '--key_name NAME', default: :machine_name, internal: true
+    opt '--stage NAME',    type: :array, internal: true, default: STAGES
 
     msgs before_install:  'Installing deployment dependencies',
          before_setup:    'Setting the build environment up for the deployment',
@@ -162,11 +162,6 @@ module Dpl
     def initialize(ctx, *args)
       @repo_name = ctx.repo_name
       super
-    end
-
-    # The internal name of the provider.
-    def name
-      registry_key
     end
 
     # Runs all stages, all commands provided by the user, as well as the final

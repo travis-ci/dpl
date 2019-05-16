@@ -11,10 +11,10 @@ module Dpl
         Provider[:"heroku:#{opts[:strategy]}"].new(ctx, args)
       end
 
-      opt '--strategy NAME', 'Deployment strategy', default: 'api', enum: %w(api git)
+      opt '--strategy NAME', 'Heroku deployment strategy', default: 'api', enum: %w(api git)
       opt '--app APP', 'Heroku app name', default: :repo_name
       # mentioned in the code
-      opt '--log_level LEVEL'
+      opt '--log_level LEVEL', internal: true
 
       msgs login:     'Authenticating ... ',
            restart:   'Restarting dynos ... ',
