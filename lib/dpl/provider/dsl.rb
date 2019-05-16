@@ -7,6 +7,26 @@ module Dpl
     module Dsl
       include Squiggle
 
+      # @!method env
+      # Declare an environment variable prefix to accept env vars as options
+      #
+      # This method is defined in `Env::ClassMethods`.
+      #
+      # Declares an environment variable prefix that imports environment
+      # variables into `opts` if they match declared options.
+      #
+      # For example, with the following declaration on the class body:
+      #
+      #   ```ruby
+      #   env :aws
+      #   opt '--access_key_id ID'
+      #   ```
+      #
+      # if the environment variable `AWS_ACCESS_KEY_ID` is set then the option
+      # `opts[:access_key_id]` will default to the value given on that
+      # variable (i.e. it could still be overwritten by the user by passing
+      # the `--access_key_id` option).
+
       # @!method opt
       # Declare command line options that the provider supports.
       #
