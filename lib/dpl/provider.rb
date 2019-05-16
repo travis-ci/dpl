@@ -133,7 +133,7 @@ module Dpl
     opt '--key_name NAME', default: :machine_name
     opt '--run CMD',       type: :array
     opt '--skip_cleanup'
-    opt '--stage', 'stages to run (for testing only)', type: :array, internal: true, default: STAGES
+    opt '--stage NAME', 'stages to run (for testing only)', type: :array, internal: true, default: STAGES
 
     msgs before_install:  'Installing deployment dependencies',
          before_setup:    'Setting the build environment up for the deployment',
@@ -159,7 +159,7 @@ module Dpl
 
     attr_reader :repo_name
 
-    def initialize(ctx, *)
+    def initialize(ctx, *args)
       @repo_name = ctx.repo_name
       super
     end
@@ -173,16 +173,20 @@ module Dpl
     # stage `finish` (which will be run even if an error has been raised during
     # previous stages).
     def run
-      stages = STAGES.select { |stage| run_stage?(stage) }
+      stages = stage.select { |stage| run_stage?(stage) }
       stages.each { |stage| run_stage(stage) }
       run_cmds
     ensure
-      run_stage(:finish)
+      run_stage(:finish) if finish?
     end
 
     # Whether or not a stage needs to be run
     def run_stage?(stage)
       respond_to?(:"before_#{stage}") || respond_to?(stage)
+    end
+
+    def finish?
+      stage.size == STAGES.size
     end
 
     # Runs a single stage.

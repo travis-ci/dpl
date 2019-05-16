@@ -11,10 +11,6 @@ module Dpl
         Provider[:"heroku:#{opts[:strategy]}"].new(ctx, args)
       end
 
-      gem 'faraday', '~> 0.15.4'
-      gem 'rendezvous', '~> 0.1.3'
-      gem 'netrc', '~> 0.11.0'
-
       opt '--strategy NAME', 'Deployment strategy', default: 'api', enum: %w(api git)
       opt '--app APP', 'Heroku app name', default: :repo_name
       # mentioned in the code

@@ -2,6 +2,10 @@ module Dpl
   module Providers
     class Heroku
       class Git < Heroku
+        gem 'faraday', '~> 0.15.4'
+        gem 'rendezvous', '~> 0.1.3'
+        gem 'netrc', '~> 0.11.0'
+
         full_name 'Heroku Git'
 
         description sq(<<-str)

@@ -3,4 +3,5 @@ $: << File.expand_path('../../lib', __FILE__)
 
 require 'dpl'
 
-Dpl::Cli.new($0).run(ARGV)
+ctx =  Dpl::Ctx::Bash.new
+Dpl::Cli.new(ctx, 'dpl').run(ARGV)

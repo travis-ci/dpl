@@ -71,7 +71,7 @@ describe Dpl::Ctx::Bash do
 
   describe 'fold' do
     before { subject.fold('foo') { stdout.puts 'bar' } }
-    it { should have_stdout "travis_fold:start:dpl.1\r\e[33mfoo\e[0m\nbar\n\ntravis_fold:end:dpl.1\r" }
+    it { should have_stdout "travis_fold:start:dpl.1\r\e[K\e[33mfoo\e[0m\nbar\n\ntravis_fold:end:dpl.1\r\e[K" }
   end
 
   describe 'deprecated_opt' do
@@ -128,26 +128,18 @@ describe Dpl::Ctx::Bash do
 
   describe 'gem_require' do
     describe 'already installed' do
-      before { allow(Gem).to receive(:latest_version_for).and_return double(to_s: '1.0.0') }
+      before { allow(Gem::Specification).to receive(:find_all).and_return [:gem] }
       before { allow(subject).to receive(:require) }
-      before { subject.gem_require('name', '1.0.0', require: 'name/one') }
-      it { should_not call_system 'gem install name -v 1.0.0' }
+      before { subject.gem_require('name', '~> 1.0.0', require: 'name/one') }
+      it { should_not call_system 'gem install name -v "~> 1.0.0"' }
       it { expect(subject).to have_received(:require).with('name/one') }
     end
 
-    describe 'not installed (older version found)' do
-      before { allow(Gem).to receive(:latest_version_for).and_return double(to_s: '0.0.1') }
+    describe 'not installed' do
+      before { allow(Gem::Specification).to receive(:find_all).and_return [] }
       before { allow(subject).to receive(:require) }
-      before { subject.gem_require('name', '1.0.0', require: 'name/one') }
-      it { should call_system 'gem install name -v 1.0.0' }
-      it { expect(subject).to have_received(:require).with('name/one') }
-    end
-
-    describe 'not installed (no version found)' do
-      before { allow(Gem).to receive(:latest_version_for).and_return nil }
-      before { allow(subject).to receive(:require) }
-      before { subject.gem_require('name', '1.0.0', require: 'name/one') }
-      it { should call_system 'gem install name -v 1.0.0' }
+      before { subject.gem_require('name', '~> 1.0.0', require: 'name/one') }
+      it { should call_system 'gem install name -v "~> 1.0.0"' }
       it { expect(subject).to have_received(:require).with('name/one') }
     end
   end

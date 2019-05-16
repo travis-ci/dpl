@@ -24,11 +24,11 @@ module Dpl
       # @param msg [String] the message that will appear on the log fold
       def fold(msg, &block)
         self.folds += 1
-        print "travis_fold:start:dpl.#{folds}\r"
+        print "travis_fold:start:dpl.#{folds}\r\e[K"
         info "\e[33m#{msg}\e[0m"
         yield
       ensure
-        print "\ntravis_fold:end:dpl.#{folds}\r"
+        print "\ntravis_fold:end:dpl.#{folds}\r\e[K"
       end
 
       # Outputs a deprecation warning for a given deprecated option key to stderr.
@@ -123,13 +123,14 @@ module Dpl
 
       # Whether or not the Ruby gem with the given version is installed.
       def gem_installed?(name, version)
-        return false unless installed = Gem.latest_version_for(name)
-        Gem::Dependency.new(name, version).match?(name, installed.to_s)
+        req = Gem::Requirement.create(version)
+        Gem::Specification.find_all { |s| s.name == name and req =~ s.version }.any?
       end
 
       # Installs the Ruby gem with the specified version.
       def gem_install(name, version)
-        shell "gem install #{name} -v #{version}", echo: true, retry: true, sudo: sudo?
+        shell "gem install #{name} -v #{version.inspect}", echo: true, retry: true, sudo: sudo?
+        Gem.refresh
       end
 
       # Installs an NPM package

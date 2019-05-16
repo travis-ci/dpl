@@ -4,6 +4,9 @@ module Dpl
   module Providers
     class Heroku
       class Api < Heroku
+        gem 'faraday', '~> 0.15.4'
+        gem 'rendezvous', '~> 0.1.3'
+
         full_name 'Heroku API'
 
         description sq(<<-str)

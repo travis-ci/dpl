@@ -1,4 +1,4 @@
-describe Dpl::Providers::Heroku do
+describe Dpl::Providers::Heroku::Git do
   let(:args) { |e| %w(--strategy git) + creds + args_from_description(e) }
   let(:user) { JSON.dump(email: 'email') }
   let(:dyno) { JSON.dump(attach_url: 'attach_url') }
