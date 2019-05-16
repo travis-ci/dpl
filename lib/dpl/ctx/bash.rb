@@ -142,6 +142,37 @@ module Dpl
         shell %(ssh-keygen -t rsa -N "" -C #{name} -f #{file})
       end
 
+      # Runs a single shell command
+      #
+      # This the is the central point of executing any shell commands. It allows two
+      # strategies for running commands in subprocesses:
+      #
+      # * Using [Kernel#system](https://ruby-doc.org/core-2.6.3/Kernel.html#method-i-system)
+      #   which is the default strategy, and should be used when possible. The stdout
+      #   and stderr streams will not be captured, but streamed directly to the parent
+      #   process (so any output on these streams appears in the build log as soon as
+      #   possible).
+      #
+      # * Using [Open3.capture3](https://ruby-doc.org/stdlib-2.6.3/libdoc/open3/rdoc/Open3.html#method-c-capture3)
+      #   which captures both stdout and stderr, and does not automatically output it
+      #   to the build log. Implementors can choose to display it after the shell command
+      #   has completed, using the `%{out}` and `%{err}` interpolation variables. Use
+      #   sparingly.
+      #
+      # The method accepts the following options:
+      #
+      # @param  cmd  [String] the shell command to execute
+      # @param  opts [Hash] options
+      #
+      # @option opts [Boolean] :echo    output the command to stdout before running it
+      # @option opts [Boolean] :silence silence all log output by redirecting stdout and stderr to `/dev/null`
+      # @option opts [Boolean] :capture use `Open3.capture3` to capture stdout and stderr
+      # @option opts [String]  :python  wrap the command into Bash code that enforces the given Python version to be used
+      # @option opts [String]  :info    message to output to stdout if the command has exited with the exit code 0 (supports the interpolation variable `${out}` for stdout in case it was captured.
+      # @option opts [String]  :assert  error message to be raised if the command has exited with a non-zero exit code (supports the interpolation variable `${out}` for stdout in case it was captured.
+      #
+      # @return [Boolean] whether or not the command was successful (has exited with the exit code 0)
+      #
       # TODO add retry
       def shell(cmd, opts = {})
         cmd = "#{cmd} > /dev/null 2>&1" if opts[:silence]
