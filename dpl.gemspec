@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.require_path  = 'lib'
   s.required_ruby_version = '>= 2.2'
 
-  s.executables = ['bin/dpl']
+  s.executables = ['dpl']
   s.files       = `git ls-files -- {[A-Z]*,lib/**/*}`.split("\n")
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
 
