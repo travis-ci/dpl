@@ -11,7 +11,7 @@ module Dpl
   module Providers
     class Gcs < Provider
       gem 'gstore', '~> 0.2.1', require: ['gstore', 'dpl/support/gstore_patch']
-      gem 'mime-types', '~> 3.0'
+      gem 'mime-types', '~> 3.2.2'
 
       full_name 'Google Cloud Store'
 

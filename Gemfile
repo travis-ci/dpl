@@ -12,7 +12,7 @@ gemspec name: 'dpl'
 # chef_supermarket
 gem 'chef',               pre_ruby_2_3 ? '~> 12.0' : pre_ruby_2_4 ? '~> 13.0' : '>= 14'
 gem 'net-telnet',         '~> 0.1.0' if pre_ruby_2_3
-gem 'mime-types',         '~> 3.0'
+gem 'mime-types',         '~> 3.2.2'
 gem 'rack',               '~> 2.0.7'
 
 # cloud_files
@@ -22,7 +22,7 @@ gem 'nokogiri',           '< 1.10'
 
 # code_deploy, elastic_beanstalk, lambda, s3
 gem 'aws-sdk',            '~> 2.0'
-gem 'mime-types',         '~> 3.0'
+gem 'mime-types',         '~> 3.2.2'
 gem 'rubyzip',            '~> 1.2.2'
 
 # engine_yard
@@ -30,7 +30,7 @@ gem 'engineyard-cloud-client', '~> 2.1.0'
 
 # gcs
 gem 'gstore',             '~> 0.2.1'
-gem 'mime-types',         '~> 3.0'
+gem 'mime-types',         '~> 3.2.2'
 
 # heroku
 gem 'faraday',            '~> 0.15.4'
@@ -47,15 +47,15 @@ gem 'rhc',                '~> 1.38.7'
 gem 'packagecloud-ruby', '~> 1.0.8'
 
 # pages, releases
-gem 'octokit',           '~> 4.6.2'
-gem 'mime-types',        '~> 3.0'
+gem 'octokit',           '~> 4.14.0'
+gem 'mime-types',        '~> 3.2.2'
 
 # puppet_forge
-gem 'puppet',            '~> 5'
+gem 'puppet',            '~> 5.5.14'
 gem 'puppet-blacksmith', '~> 3.3.1'
 
 # rubygems
-gem 'gems',              '~> 1.1.0'
+gem 'gems',              '~> 1.1.1'
 
 # testfairy
 gem 'multipart-post',    '~> 2.0.0'
