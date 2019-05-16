@@ -194,24 +194,33 @@ module Dpl
       # @option opts [Boolean] :sudo    run the command with sudo prepended
       # @option opts [Boolean] :capture use `Open3.capture3` to capture stdout and stderr
       # @option opts [String]  :python  wrap the command into Bash code that enforces the given Python version to be used
+      # @option opts [String]  :retry   retries the command 2 more times if it fails
       # @option opts [String]  :info    message to output to stdout if the command has exited with the exit code 0 (supports the interpolation variable `${out}` for stdout in case it was captured.
       # @option opts [String]  :assert  error message to be raised if the command has exited with a non-zero exit code (supports the interpolation variable `${out}` for stdout in case it was captured.
       #
       # @return [Boolean] whether or not the command was successful (has exited with the exit code 0)
-      #
-      # TODO add retry
       def shell(cmd, opts = {})
         cmd = "sudo #{cmd}" if opts[:sudo]
         cmd = "#{cmd} > /dev/null 2>&1" if opts[:silence]
         cmd = with_python(cmd, opts[:python]) if opts[:python]
 
         info cmd if opts[:echo]
-        out, err, @last_status = opts[:capture] ? open3(cmd, opts) : system(cmd, opts)
+        out, err, @last_status = retrying(opts[:retry] ? 2 : 0) do
+          opts[:capture] ? open3(cmd, opts) : system(cmd, opts)
+        end
 
         info opts[:info] % { out: out } if opts[:info] && success?
         error opts[:assert] % { err: err } if opts[:assert] && !success?
 
         @last_status
+      end
+
+      def retrying(max, tries = 0, status = false)
+        loop do
+          tries += 1
+          out, err, status = yield
+          return [out, err, status] if status || tries > max
+        end
       end
 
       # Runs a shell command and captures stdout, stderr, and the exit status
