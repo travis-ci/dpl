@@ -79,6 +79,19 @@ module Dpl
     extend Dsl, Forwardable
     include Assets, Env, FileUtils, Interpolate, Squiggle
 
+    class << self
+      def install_deps?
+        apt? || gem? || npm? || pip?
+      end
+
+      def install_deps(ctx)
+        apt.each { |apt| ctx.apt_get *apt } if apt?
+        gem.each { |gem| ctx.gem_require *gem } if gem?
+        npm.each { |npm| ctx.npm_install *npm } if npm?
+        pip.each { |pip| ctx.pip_install *pip } if pip?
+      end
+    end
+
     # Default artifacts to keep during cleanup.
     KEEP = %w(.dpl)
 
@@ -134,9 +147,8 @@ module Dpl
          ssh_connected:   'SSH connection established.',
          ssh_failed:      'Failed to establish SSH connection.'
 
-    def_delegators :'self.class', :apt, :apt?, :gem, :gem?, :npm, :npm?, :pip,
-      :pip?, :experimental, :experimental?, :full_name, :keep, :needs?,
-      :user_agent
+    def_delegators :'self.class', :experimental, :experimental?, :full_name,
+      :install_deps, :install_deps?, :keep, :needs?, :user_agent
 
     def_delegators :ctx, :apt_get, :gem_require, :npm_install, :pip_install,
       :build_dir, :build_number, :repo_slug, :encoding, :git_commit_msg,
@@ -191,21 +203,17 @@ module Dpl
     # Initialize the deployment process.
     #
     # Displays warning messages about experimental providers, and deprecated
-    # options used, and requires any additional, required Rubygems source
-    # files, as declared by the provider.
+    # options used.
     def before_init
       warn msg(:experimental) % full_name if experimental?
       deprecated_opts.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
-      Require.new(ctx, self.class).run
     end
 
     # Install APT, NPM, and Python dependencies as declared by the provider.
     def before_install
-      info :before_install if apt || gem || npm || pip
-      apt.each { |apt| apt_get *apt } if apt?
-      gem.each { |gem| gem_require *gem } if gem?
-      npm.each { |npm| npm_install *npm } if npm?
-      pip.each { |pip| pip_install *pip } if pip?
+      return unless install_deps?
+      info :before_install
+      install_deps(ctx)
     end
 
     # Sets the build environment up for the deployment.
