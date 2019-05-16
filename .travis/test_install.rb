@@ -8,7 +8,9 @@ def opt_for(opt)
 end
 
 providers.each do |provider|
+  next unless provider.registry_key == 'engine_yard'
   opts = provider.opts.select(&:required?)
+  opts = opts + [provider.opts[provider.required.map(&:first).first]].compact
   opts = opts.map { |opt| opt_for(opt) }.join(' ')
   cmd = "bin/dpl #{provider.registry_key} --stage install #{opts}"
   puts cmd
