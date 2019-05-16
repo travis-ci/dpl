@@ -10,7 +10,8 @@ require 'kconv'
 module Dpl
   module Providers
     class Gcs < Provider
-      requires 'gstore', 'mime-types', 'dpl/support/gstore_patch'
+      gem 'gstore', '~> 0.2.1', require: ['gstore', 'dpl/support/gstore_patch']
+      gem 'mime-types', '~> 3.0'
 
       full_name 'Google Cloud Store'
 

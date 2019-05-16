@@ -3,7 +3,7 @@ module Dpl
     class EngineYard < Provider
       # maybe use the cli (https://github.com/engineyard/engineyard) instead,
       # and get rid of the runtime gem dependency (also a lot easier to test)
-      requires 'engineyard-cloud-client'
+      gem 'engineyard-cloud-client', '~> 2.1.0'
 
       description sq(<<-str)
         tbd

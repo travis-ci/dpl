@@ -54,6 +54,27 @@ module Dpl
         !!@apt
       end
 
+      # Declare additional paths to Ruby gem source code that this provider
+      # requires.
+      #
+      # These gems will be installed, and files required at runtime, during the
+      # `before_init` stage (not at install time, and/or load time), unless they
+      # are already installed.
+      #
+      # @param name    [String] Ruby gem name (required)
+      # @param version [String] Ruby gem version (required)
+      # @param opts    [Hash] options
+      # @option opts [Array<String>, String] :require A single path or a list of paths to source files to require from this Ruby gem. If not given the name of the gem will be assumed to be the path to be required.
+      #
+      # @return Previously declared gems if no arguments were given
+      def gem(name = nil, version = nil, opts = {})
+        name ? gem << [name, version, opts] : @gem ||= []
+      end
+
+      def gem?
+        !!@gem
+      end
+
       # Declare NPM packages the provider depends on. These will be installed
       # during the `before_install` stage using `npm install -g`, unless the
       # given cmd is already available according to `which [cmd]`.
@@ -281,18 +302,6 @@ module Dpl
         needs.include?(feature)
       end
 
-      # Declare additional paths to Ruby gem source code that this provider
-      # requires.
-      #
-      # These gems will be installed, and files required at runtime, during the
-      # `before_init` stage (not at install time, and/or load time).
-      #
-      # @param paths [String] Paths to gem source code files to require.
-      # @return Previously declared paths to require if no argument is given.
-      def requires(*paths)
-        paths.any? ? requires.concat(paths) : @requires ||= []
-      end
-
       # Generates a useragent string that identifies the current dpl version,
       # and whether it runs int he context of Travis CI. Can include arbitrary
       # extra strings or key value pairs (passed as String or Hash arguments).
@@ -303,6 +312,18 @@ module Dpl
         strs.unshift 'travis/0.1.0' if ENV['TRAVIS']
         strs = strs.flat_map { |e| Hash === e ? e.map { |k, v| "#{k}/#{v}" } : e }
         strs.join(' ').gsub(/\s+/, ' ').strip
+      end
+
+      def ruby_version
+        Gem::Version.new(RUBY_VERSION)
+      end
+
+      def ruby_pre_2_3?
+        ruby_version < Gem::Version.new('2.3.0')
+      end
+
+      def ruby_pre_2_4?
+        ruby_version < Gem::Version.new('2.4.0')
       end
     end
   end

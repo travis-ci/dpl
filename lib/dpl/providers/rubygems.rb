@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Rubygems < Provider
-      requires 'gems'
+      gem 'gems', '~> 1.1.1'
 
       description sq(<<-str)
         tbd

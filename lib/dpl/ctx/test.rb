@@ -25,6 +25,10 @@ module Dpl
         cmds << "[apt:get] #{name} (#{cmd})"
       end
 
+      def gem_require(name, version = nil, opts = {})
+        cmds << "[gem:require] #{name} (#{version}, #{opts})"
+      end
+
       def npm_install(name, cmd = name)
         cmds << "[npm:install] #{name} (#{cmd})"
       end

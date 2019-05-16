@@ -6,7 +6,8 @@ Thread.abort_on_exception = true
 module Dpl
   module Providers
     class S3 < Provider
-      requires 'aws-sdk', 'mime-types', 'dpl/support/aws_sdk_patch'
+      gem 'aws-sdk', '~> 2.0', require: ['aws-sdk', 'dpl/support/aws_sdk_patch']
+      gem 'mime-types', '~> 3.2.2'
 
       full_name 'AWS S3'
 

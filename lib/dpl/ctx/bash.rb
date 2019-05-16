@@ -104,7 +104,32 @@ module Dpl
       # @param package [String] the package name
       # @param cmd [String] an executable installed by the package, defaults to the package name
       def apt_get(package, cmd = package)
-        shell "sudo apt-get -qq install #{package}", retry: true unless which(cmd)
+        shell "sudo apt-get -qq install #{package}", echo: true, retry: true unless which(cmd)
+      end
+
+      # Requires source files from Ruby gems, installing them on demand if required
+      #
+      # Installs the Ruby gem with the given version, if not already installed, and
+      # requires the specified source files from that gem.
+      #
+      # @param name    [String] Ruby gem name (required)
+      # @param version [String] Ruby gem version (required)
+      # @param opts    [Hash] options
+      # @option opts [Array<String>, String] :require A single path or a list of paths to source files to require from this Ruby gem
+      def gem_require(name, version, opts = {})
+        gem_install(name, version) unless gem_installed?(name, version)
+        Array(opts[:require] || name).each { |path| require(path) }
+      end
+
+      # Whether or not the Ruby gem with the given version is installed.
+      def gem_installed?(name, version)
+        return false unless installed = Gem.latest_version_for(name)
+        Gem::Dependency.new(name, version).match?(name, installed.to_s)
+      end
+
+      # Installs the Ruby gem with the specified version.
+      def gem_install(name, version)
+        shell "gem install #{name} -v #{version}", echo: true, retry: true, sudo: sudo?
       end
 
       # Installs an NPM package
@@ -115,7 +140,7 @@ module Dpl
       # @param package [String] the package name
       # @param cmd [String] an executable installed by the package, defaults to the package name
       def npm_install(package, cmd = package)
-        shell "npm install -g #{package}", retry: true unless which(cmd)
+        shell "npm install -g #{package}", echo: true, retry: true unless which(cmd)
       end
 
       # Installs a Python package
