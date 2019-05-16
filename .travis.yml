@@ -18,7 +18,10 @@ jobs:
     - &job
       stage: test runtime gem installation
       install: skip
-      script: ruby -Ilib .travis/test_install.rb
+      script:
+      - gem build dpl.gemspec
+      - gem install dpl-*.gem
+      - ruby -Ilib .travis/test_install.rb
       rvm: 2.2.10
     - <<: *job
       rvm: 2.3.8
