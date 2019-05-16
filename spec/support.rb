@@ -3,6 +3,7 @@ require 'support/ctx'
 require 'support/env'
 require 'support/file'
 require 'support/fixtures'
+require 'support/gemfile'
 require 'support/matchers'
 require 'support/require'
 

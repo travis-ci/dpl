@@ -2,7 +2,7 @@ module Dpl
   module Providers
     class PuppetForge < Provider
       gem 'puppet', '~> 5.5.14', require: 'puppet/face'
-      gem 'puppet_blacksmith', '~> 3.3.1'
+      gem 'puppet-blacksmith', '~> 3.3.1', require: 'puppet_blacksmith'
 
       full_name 'Puppet Forge'
 
