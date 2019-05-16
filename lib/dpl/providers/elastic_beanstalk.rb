@@ -2,7 +2,8 @@
 module Dpl
   module Providers
     class ElasticBeanstalk < Provider
-      requires 'aws-sdk', 'zip'
+      gem 'aws-sdk', '~> 2.0'
+      gem 'rubyzip', '~> 1.2.2', require: 'zip'
 
       full_name 'AWS Elastic Beanstalk'
 

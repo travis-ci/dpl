@@ -126,6 +126,32 @@ describe Dpl::Ctx::Bash do
     end
   end
 
+  describe 'gem_require' do
+    describe 'already installed' do
+      before { allow(Gem).to receive(:latest_version_for).and_return double(to_s: '1.0.0') }
+      before { allow(subject).to receive(:require) }
+      before { subject.gem_require('name', '1.0.0', require: 'name/one') }
+      it { should_not call_system 'gem install name -v 1.0.0' }
+      it { expect(subject).to have_received(:require).with('name/one') }
+    end
+
+    describe 'not installed (older version found)' do
+      before { allow(Gem).to receive(:latest_version_for).and_return double(to_s: '0.0.1') }
+      before { allow(subject).to receive(:require) }
+      before { subject.gem_require('name', '1.0.0', require: 'name/one') }
+      it { should call_system 'gem install name -v 1.0.0' }
+      it { expect(subject).to have_received(:require).with('name/one') }
+    end
+
+    describe 'not installed (no version found)' do
+      before { allow(Gem).to receive(:latest_version_for).and_return nil }
+      before { allow(subject).to receive(:require) }
+      before { subject.gem_require('name', '1.0.0', require: 'name/one') }
+      it { should call_system 'gem install name -v 1.0.0' }
+      it { expect(subject).to have_received(:require).with('name/one') }
+    end
+  end
+
   describe 'npm_install' do
     describe 'cmd exists' do
       before { allow(subject).to receive(:`).with('which cmd').and_return('/bin/cmd') }

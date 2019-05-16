@@ -3,7 +3,7 @@
 module Dpl
   module Providers
     class Packagecloud < Provider
-      requires 'packagecloud'
+      gem 'packagecloud-ruby', '~> 1.0.8', require: 'packagecloud'
 
       description sq(<<-str)
         tbd

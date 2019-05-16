@@ -1,10 +1,10 @@
 module Dpl
   module Providers
+    # split this up to CodeDeploy::Github and CodeDeploy::S3 using the
+    # revision_type, in order to make opts more strict
     class CodeDeploy < Provider
-      requires 'aws-sdk'
+      gem 'aws-sdk', '~> 2.0'
 
-      # split this up to CodeDeploy::Github and CodeDeploy::S3 using the
-      # revision_type, in order to make opts more strict
       full_name 'AWS Code Deploy'
 
       description sq(<<-str)

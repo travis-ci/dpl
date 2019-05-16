@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Pages < Provider
-      requires 'octokit'
+      gem 'octokit', '~> 4.14.0'
 
       full_name 'GitHub Pages'
 

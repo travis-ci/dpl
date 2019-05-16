@@ -1,7 +1,10 @@
 module Dpl
   module Providers
     class CloudFiles < Provider
-      requires 'fog/rackspace'
+
+      gem 'nokogiri', '< 1.10'
+      gem 'fog-core', '~> 2.1.0'
+      gem 'fog-rackspace', '~> 0.1.6', require: 'fog/rackspace'
 
       full_name 'Cloud Files'
 

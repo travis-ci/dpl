@@ -5,9 +5,9 @@ require 'shellwords'
 require 'dpl/helper/assets'
 require 'dpl/helper/env'
 require 'dpl/helper/interpolate'
-require 'dpl/helper/require'
 require 'dpl/helper/squiggle'
 require 'dpl/provider/dsl'
+require 'dpl/version'
 
 module Dpl
   # Base class for all concrete providers that `dpl` supports.
@@ -134,14 +134,16 @@ module Dpl
          ssh_connected:   'SSH connection established.',
          ssh_failed:      'Failed to establish SSH connection.'
 
-    def_delegators :'self.class', :apt, :apt?, :npm, :npm?, :pip, :pip?,
-      :experimental, :experimental?, :full_name, :keep, :needs?, :user_agent
+    def_delegators :'self.class', :apt, :apt?, :gem, :gem?, :npm, :npm?, :pip,
+      :pip?, :experimental, :experimental?, :full_name, :keep, :needs?,
+      :user_agent
 
-    def_delegators :ctx, :apt_get, :npm_install, :pip_install, :build_dir,
-      :build_number, :repo_slug, :encoding, :git_commit_msg, :git_log,
-      :git_ls_files, :git_remote_urls, :git_rev_parse, :git_sha, :git_tag,
-      :machine_name, :npm_version, :sleep, :ssh_keygen, :success?, :tmp_dir,
-      :which, :logger, :rendezvous, :file_size, :write_file, :write_netrc
+    def_delegators :ctx, :apt_get, :gem_require, :npm_install, :pip_install,
+      :build_dir, :build_number, :repo_slug, :encoding, :git_commit_msg,
+      :git_log, :git_ls_files, :git_remote_urls, :git_rev_parse, :git_sha,
+      :git_tag, :machine_name, :npm_version, :sleep, :ssh_keygen, :success?,
+      :tmp_dir, :which, :logger, :rendezvous, :file_size, :write_file,
+      :write_netrc
 
     attr_reader :repo_name
 
@@ -199,8 +201,9 @@ module Dpl
 
     # Install APT, NPM, and Python dependencies as declared by the provider.
     def before_install
-      info :before_install if apt || npm || pip
+      info :before_install if apt || gem || npm || pip
       apt.each { |apt| apt_get *apt } if apt?
+      gem.each { |gem| gem_require *gem } if gem?
       npm.each { |npm| npm_install *npm } if npm?
       pip.each { |pip| pip_install *pip } if pip?
     end
