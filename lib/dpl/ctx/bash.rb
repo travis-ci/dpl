@@ -172,6 +172,7 @@ module Dpl
       # @param cmd     [String] Executable command installed by that package (optional, defaults to the package name).
       # @param version [String] Package version (optional).
       def pip_install(package, cmd = package, version = nil)
+        shell 'python -m pip install --upgrade pip setuptools'
         shell "pip uninstall --user -y #{package}" if version && which(cmd)
         cmd = "pip install --user #{package}"
         cmd << pip_version(version) if version
