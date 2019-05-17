@@ -1,6 +1,5 @@
 require 'cl'
 require 'logger'
-require 'netrc'
 require 'open3'
 require 'rendezvous'
 require 'tmpdir'
@@ -407,6 +406,7 @@ module Dpl
 
       # Writes the given machine, login, and password to ~/.netrc
       def write_netrc(machine, login, password)
+        require 'netrc'
         netrc = Netrc.read
         netrc[machine] = [login, password]
         netrc.save
