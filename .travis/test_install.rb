@@ -13,5 +13,5 @@ providers.each do |provider|
   opts = opts.map { |opt| opt_for(opt) }.join(' ')
   cmd = "bin/dpl #{provider.registry_key} --stage install #{opts}"
   puts cmd
-  # fail unless system cmd
+  fail unless system cmd
 end
