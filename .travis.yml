@@ -21,6 +21,8 @@ jobs:
       install:
       - gem build dpl.gemspec
       - gem install dpl-*.gem
+      before_script:
+      - ls /usr/bin/python*
       script:
       - ruby -Ilib .travis/test_install.rb
       rvm: 2.2.10
