@@ -35,6 +35,7 @@ module Dpl
         end
 
         private
+
           def pack
             info :pack
             shell :pack

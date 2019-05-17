@@ -72,7 +72,7 @@ module Dpl
 
       # Whether or not the provider depends on any apt packages.
       def apt?
-        !!@apt
+        apt.any?
       end
 
       # Declare additional paths to Ruby gem source code that this provider
@@ -94,7 +94,7 @@ module Dpl
       end
 
       def gem?
-        !!@gem
+        gem.any?
       end
 
       # Declare NPM packages the provider depends on. These will be installed
@@ -112,7 +112,7 @@ module Dpl
 
       # Whether or not the provider depends on any NPM packages.
       def npm?
-        !!@npm
+        npm.any?
       end
 
       # Declare Python packages the provider depends on. These will be installed
@@ -132,7 +132,7 @@ module Dpl
 
       # Whether or not the provider depends on any Python packages.
       def pip?
-        !!@pip
+        pip.any?
       end
 
       # Declare the full name of the provider. Required if the proper provider
