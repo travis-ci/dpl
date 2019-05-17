@@ -21,7 +21,7 @@ module Dpl
       end
 
 
-      def apt_get(name, cmd)
+      def apt_get(name, cmd = name)
         cmds << "[apt:get] #{name} (#{cmd})"
       end
 
