@@ -131,18 +131,31 @@ describe Dpl::Ctx::Bash do
     let(:bar) { ['bar', '~> 2.0.0', require: 'bar/two'] }
     let(:baz) { ['baz', '~> 3.0.0', require: 'baz/three'] }
 
-    before do
-      received = 0
-      allow(Gem::Specification).to receive(:find_all) { (received += 1) < 3 ? [] : [true] }
+    describe 'some gems missing' do
+      before do
+        received = 0
+        allow(Gem::Specification).to receive(:find_all) { (received += 1) < 3 ? [] : [true] }
+      end
+
+      before { allow(subject).to receive(:require) }
+      before { subject.gems_require([foo, bar, baz]) }
+
+      it { should call_system 'gem install -N foo:"~> 1.0.0" bar:"~> 2.0.0"' }
+      it { expect(subject).to have_received(:require).with('foo/one') }
+      it { expect(subject).to have_received(:require).with('bar/two') }
+      it { expect(subject).to have_received(:require).with('baz/three') }
     end
 
-    before { allow(subject).to receive(:require) }
-    before { subject.gems_require([foo, bar, baz]) }
+    describe 'no gems missing' do
+      before { allow(Gem::Specification).to receive(:find_all).and_return [true] }
+      before { allow(subject).to receive(:require) }
+      before { subject.gems_require([foo, bar, baz]) }
 
-    it { should call_system 'gem install -N foo:"~> 1.0.0" bar:"~> 2.0.0"' }
-    it { expect(subject).to have_received(:require).with('foo/one') }
-    it { expect(subject).to have_received(:require).with('bar/two') }
-    it { expect(subject).to have_received(:require).with('baz/three') }
+      it { should_not call_system }
+      it { expect(subject).to have_received(:require).with('foo/one') }
+      it { expect(subject).to have_received(:require).with('bar/two') }
+      it { expect(subject).to have_received(:require).with('baz/three') }
+    end
   end
 
   describe 'gem_require' do
