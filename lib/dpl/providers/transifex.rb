@@ -18,7 +18,7 @@ module Dpl
            push:   'tx push --source --no-interactive'
 
       def install
-        pip_install 'transifex', 'transifex', cli_version
+        pip_install 'transifex-client', 'tx', cli_version
       end
 
       def setup
