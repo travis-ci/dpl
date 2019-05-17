@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'cl'
   s.add_runtime_dependency 'netrc'
-  s.add_runtime_dependency 'rendezvous'
   s.add_runtime_dependency 'rubyzip'
   s.add_development_dependency 'rake'
 end

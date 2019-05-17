@@ -147,10 +147,6 @@ module Dpl
         logger
       end
 
-      def rendezvous(url)
-        cmds << "[rendezvous] #{url}"
-      end
-
       def test?
         true
       end
