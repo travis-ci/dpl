@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class ChefSupermarket < Provider
-      CHEF_VERSION = ruby_pre_2_3? ? '~> 12.0' : ruby_pre_2_4? ? '~> 13.0' : '>= 14'
+      CHEF_VERSION = ruby_pre?('2.3') ? '~> 12.0' : ruby_pre?('2.5') ? '~> 13.0' : '>= 14'
       CHEF_REQUIRE = %w(
         chef/cookbook_loader
         chef/cookbook_uploader
@@ -11,7 +11,7 @@ module Dpl
 
       gem 'chef', CHEF_VERSION, require: CHEF_REQUIRE
       gem 'mime-types'
-      gem 'net-telnet', '~> 0.1.0' if ruby_pre_2_3?
+      gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
       gem 'rack'
 
       full_name 'Chef Supermarket'

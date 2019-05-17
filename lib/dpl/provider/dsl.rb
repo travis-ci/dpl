@@ -344,12 +344,8 @@ module Dpl
         Gem::Version.new(RUBY_VERSION)
       end
 
-      def ruby_pre_2_3?
-        ruby_version < Gem::Version.new('2.3.0')
-      end
-
-      def ruby_pre_2_4?
-        ruby_version < Gem::Version.new('2.4.0')
+      def ruby_pre?(version)
+        ruby_version < Gem::Version.new(version)
       end
     end
   end
