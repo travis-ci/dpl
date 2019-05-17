@@ -50,6 +50,8 @@ def opt_for(opt)
 end
 
 providers.each do |provider|
+  system 'gem uninstall -aIx'
+  system 'gem install cl'
   opts = provider.opts.select(&:required?)
   opts = opts + [provider.opts[provider.required.map(&:first).first]].compact
   opts = opts.map { |opt| opt_for(opt) }.join(' ')
