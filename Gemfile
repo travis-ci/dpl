@@ -1,6 +1,6 @@
-ruby_version = Gem::Version.new(RUBY_VERSION)
-pre_ruby_2_3 = ruby_version < Gem::Version.new("2.3.0")
-pre_ruby_2_4 = ruby_version < Gem::Version.new("2.4.0")
+def ruby_pre?(version)
+  Gem::Version.new(RUBY_VERSION) < Gem::Version.new(version)
+end
 
 source 'https://rubygems.org'
 ruby '>= 2.2'
@@ -10,8 +10,8 @@ gemspec name: 'dpl'
 # gem 'cl', path: '../../cl'
 
 # chef_supermarket
-gem 'chef',               pre_ruby_2_3 ? '~> 12.0' : pre_ruby_2_4 ? '~> 13.0' : '>= 14'
-gem 'net-telnet',         '~> 0.1.0' if pre_ruby_2_3
+gem 'chef',               ruby_pre?('2.3') ? '~> 12.0' : ruby_pre?('2.5') ? '~> 13.0' : '>= 14'
+gem 'net-telnet',         '~> 0.1.0' if ruby_pre?('2.3')
 gem 'mime-types',         '~> 3.2.2'
 gem 'rack',               '~> 2.0.7'
 
