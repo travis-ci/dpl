@@ -18,6 +18,6 @@ Gem::Specification.new do |s|
   s.files       = `git ls-files -- {[A-Z]*,lib/**/*}`.split("\n")
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
 
-  s.add_runtime_dependency 'cl', '~> 0.1.11'
-  s.add_development_dependency 'rake', '~> 12.3.2'
+  s.add_runtime_dependency 'cl', '~> 0.1'
+  s.add_development_dependency 'rake', '~> 12.3'
 end
