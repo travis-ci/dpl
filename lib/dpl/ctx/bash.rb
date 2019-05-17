@@ -94,9 +94,11 @@ module Dpl
         logger
       end
 
-
       def apts_get(packages)
         packages = packages.reject { |name, cmd = name| which(cmd || name) }
+        return unless packages.any?
+        apt_update
+        packages.each { |package, cmd| apt_get(package, cmd || package, update: false) }
       end
 
       # Installs an APT package
@@ -106,10 +108,14 @@ module Dpl
       #
       # @param package [String] the package name
       # @param cmd [String] an executable installed by the package, defaults to the package name
-      def apt_get(package, cmd = package)
+      def apt_get(package, cmd = package, opts = {})
         return if which(cmd)
-        shell 'sudo apt-get update', echo: true, assert: true, retry: true
+        apt_update unless opts[:update].is_a?(FalseClass)
         shell "sudo apt-get -qq install #{package}", echo: true, assert: true, retry: true
+      end
+
+      def apt_update
+        shell 'sudo apt-get update', echo: true, assert: true, retry: true
       end
 
       def gems_require(gems)
