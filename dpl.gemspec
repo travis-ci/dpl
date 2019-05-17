@@ -19,7 +19,5 @@ Gem::Specification.new do |s|
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
 
   s.add_runtime_dependency 'cl'
-  s.add_runtime_dependency 'netrc'
-  s.add_runtime_dependency 'rubyzip'
   s.add_development_dependency 'rake'
 end

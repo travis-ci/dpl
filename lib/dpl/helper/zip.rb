@@ -1,8 +1,12 @@
 require 'tempfile'
-require 'zip'
 
 module Dpl
   class Zip < Struct.new(:src, :dest, :opts)
+    def initialize(*)
+      require 'zip'
+      super
+    end
+
     def zip
       if zip?
         copy
