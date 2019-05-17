@@ -23,7 +23,7 @@ module Dpl
            git_commit:   'git commit -m "Skip cleanup commit"'
 
       msgs commit: 'Skipping cleanup, committing any changes',
-           deploy: 'Deploying to Azure Web App: %{app}'
+           deploy: 'Deploying to Azure Web App: %{site}'
 
       URL = 'https://%s:%s@%s.scm.azurewebsites.net:443/%s.git'
 

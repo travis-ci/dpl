@@ -18,7 +18,7 @@ module Dpl
       opt '--access_key_id ID', 'AWS Access Key ID', required: true
       opt '--secret_access_key KEY', 'AWS Secret Key', required: true
       opt '--region REGION', 'AWS Region the Elastic Beanstalk app is running in', default: 'us-east-1'
-      opt '--app NAME', 'Elastic Beanstalk application name'
+      opt '--app NAME', 'Elastic Beanstalk application name', default: :repo_name
       opt '--env NAME', 'Elastic Beanstalk environment name which will be updated', required: true
       opt '--bucket_name NAME', 'Bucket name to upload app to', required: true
       opt '--bucket_path PATH', 'Location within Bucket to upload app to'

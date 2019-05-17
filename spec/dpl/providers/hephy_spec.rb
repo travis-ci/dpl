@@ -1,5 +1,5 @@
 describe Dpl::Providers::Hephy do
-  let(:args) { |e| %w(--controller hephy.hephyapps.com --username user --password pass) + args_from_description(e) }
+  let(:args) { |e| %w(--controller hephy.hephyapps.com --username user --password pass --app app) + args_from_description(e) }
 
   before { subject.run }
 
@@ -11,7 +11,7 @@ describe Dpl::Providers::Hephy do
     it { should have_run 'mv ./deis ~/deis' }
     it { should have_run 'git stash --all' }
     it { should have_run 'mv ~/deis ./deis' }
-    it { should have_run %r(git push.*ssh://git@hephy-builder.hephyapps.com:2222/dpl.git) }
+    it { should have_run %r(git push.*ssh://git@hephy-builder.hephyapps.com:2222/app.git) }
     it { should have_run "./deis keys:remove machine_name" }
     it { should have_run 'git stash pop' }
     it { should have_run_in_order }
@@ -22,6 +22,6 @@ describe Dpl::Providers::Hephy do
   end
 
   describe 'given --verbose' do
-    it { should have_run %r(git push -v ssh://git@hephy-builder.hephyapps.com:2222/dpl.git) }
+    it { should have_run %r(git push -v ssh://git@hephy-builder.hephyapps.com:2222/app.git) }
   end
 end
