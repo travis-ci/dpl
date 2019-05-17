@@ -98,6 +98,10 @@ module Dpl
           error :api_error, body['message'], body['url']
         end
 
+        def rendezvous(url)
+          Rendezvous.start(url: url)
+        end
+
         # overwritten in Git, meaningless in Api
         def username; end
         def password; end

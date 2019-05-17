@@ -413,11 +413,6 @@ module Dpl
         puts File.read('/Users/sven/.netrc')
       end
 
-      # Rendezvous with a Heroku log output stream.
-      def rendezvous(url)
-        Rendezvous.start(url: url)
-      end
-
       # Returns a copy of the given hash, reduced to the given keys
       def only(hash, *keys)
         hash.select { |key, _| keys.include?(key) }.to_h

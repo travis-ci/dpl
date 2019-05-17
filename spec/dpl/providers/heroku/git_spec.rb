@@ -17,6 +17,7 @@ describe Dpl::Providers::Heroku::Git do
   before { stub_request(:get, 'https://api.heroku.com/apps/other') }
   before { stub_request(:post, 'https://api.heroku.com/apps/dpl/dynos').and_return(body: dyno) }
   before { stub_request(:delete, 'https://api.heroku.com/apps/dpl/dynos') }
+  before { allow(Rendezvous).to receive(:start) }
   before { subject.run }
 
   describe 'using --api_key' do
@@ -55,7 +56,7 @@ describe Dpl::Providers::Heroku::Git do
     describe 'given --run ./cmd' do
       it { should have_run '[print] Running command ./cmd ... ' }
       it { should have_requested(:post, 'https://api.heroku.com/apps/dpl/dynos').with(body: { command: './cmd', attach: true }) }
-      it { should have_run '[rendezvous] attach_url' }
+      it { expect(Rendezvous).to have_received(:start).with(url: 'attach_url') }
     end
   end
 
