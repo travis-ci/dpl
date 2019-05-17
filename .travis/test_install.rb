@@ -41,7 +41,7 @@ passing = %i(
   transifex
 )
 
-skip = %i(chef_supermarket help heroku provider)
+skip = %i(help heroku provider)
 keys = Dpl::Provider.registry.keys.sort - skip - passing
 providers = keys.map { |key| Dpl::Provider[key] }
 
