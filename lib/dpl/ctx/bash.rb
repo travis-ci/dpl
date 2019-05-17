@@ -94,6 +94,11 @@ module Dpl
         logger
       end
 
+
+      def apts_get(packages)
+        packages = packages.reject { |name, cmd = name| which(cmd || name) }
+      end
+
       # Installs an APT package
       #
       # Installs the APT package with the given name, unless the command is already
@@ -169,9 +174,13 @@ module Dpl
       def pip_install(package, cmd = package, version = nil)
         shell "pip uninstall --user -y #{package}" if version && which(cmd)
         cmd = "pip install --user #{package}"
-        cmd << "==#{version}" if version
+        cmd << pip_version(version) if version
         shell cmd, echo: true, assert: true, retry: true
         shell 'export PATH=$PATH:$HOME/.local/bin'
+      end
+
+      def pip_version(version)
+        version =~ /^\d+/ ? "==#{version}" : version
       end
 
       # Generates an SSH key
