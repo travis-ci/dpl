@@ -131,7 +131,6 @@ module Dpl
 
     opt '--run CMD',       'Command to execute after the deployment finished successfully', type: :array
     opt '--skip_cleanup',  'Skip cleaning up build artifacts before the deployment'
-    opt '--key_name NAME', default: :machine_name, internal: true
     opt '--stage NAME',    type: :array, internal: true, default: STAGES
 
     msgs before_install:  'Installing deployment dependencies',
@@ -156,10 +155,11 @@ module Dpl
       :tmp_dir, :which, :logger, :rendezvous, :file_size, :write_file,
       :write_netrc
 
-    attr_reader :repo_name
+    attr_reader :repo_name, :key_name
 
     def initialize(ctx, *args)
       @repo_name = ctx.repo_name
+      @key_name = ctx.machine_name
       super
     end
 
