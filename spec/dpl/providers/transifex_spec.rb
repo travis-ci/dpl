@@ -5,7 +5,7 @@ describe Dpl::Providers::Transifex do
   before { subject.run }
 
   describe 'by default', record: true do
-    it { should have_run '[pip:install] transifex (transifex, 0.9.1)' }
+    it { should have_run '[pip:install] transifex-client (tx, >=0.11)' }
     it { should have_run 'tx status' }
     it { should have_run 'tx push --source --no-interactive' }
     it { should have_run_in_order }
@@ -21,7 +21,7 @@ describe Dpl::Providers::Transifex do
   end
 
   describe 'given --cli_version >=0.22' do
-    it { should have_run '[pip:install] transifex (transifex, >=0.22)' }
+    it { should have_run '[pip:install] transifex-client (tx, >=0.22)' }
   end
 
   describe 'given --hostname other.com' do
