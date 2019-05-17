@@ -113,6 +113,17 @@ describe Dpl::Ctx::Bash do
 
   # shell commands
 
+  describe 'apts_get' do
+    before { allow(subject).to receive(:`).with('which cmd').and_return('/bin/cmd') }
+    before { allow(subject).to receive(:`).with('which two').and_return('') }
+    before { subject.apts_get([['one', 'cmd'], ['two']]) }
+
+    it { should_not call_system }
+    it { should call_system 'sudo apt-get update' }
+    it { should_not call_system 'sudo apt-get -qq install one' }
+    it { should call_system 'sudo apt-get -qq install two' }
+  end
+
   describe 'apt_get' do
     describe 'cmd exists' do
       before { allow(subject).to receive(:`).with('which cmd').and_return('/bin/cmd') }
@@ -122,6 +133,7 @@ describe Dpl::Ctx::Bash do
 
     describe 'cmd does not exist' do
       before { subject.apt_get('name', 'cmd') }
+      it { should call_system 'sudo apt-get update' }
       it { should call_system 'sudo apt-get -qq install name' }
     end
   end

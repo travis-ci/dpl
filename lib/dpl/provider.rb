@@ -85,10 +85,10 @@ module Dpl
       end
 
       def install_deps(ctx)
-        apt.each { |apt| ctx.apt_get *apt } if apt?
+        ctx.apts_get(apt) if apt?
+        ctx.gems_require(gem) if gem?
         npm.each { |npm| ctx.npm_install *npm } if npm?
         pip.each { |pip| ctx.pip_install *pip } if pip?
-        ctx.gems_require(gem) if gem?
       end
     end
 

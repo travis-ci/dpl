@@ -20,6 +20,9 @@ module Dpl
         yield.tap { cmds << "[unfold] #{name}" }
       end
 
+      def apts_get(apts)
+        apts.each { |apt| apt_get(*apt) }
+      end
 
       def apt_get(name, cmd = name)
         cmds << "[apt:get] #{name} (#{cmd})"
