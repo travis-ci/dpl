@@ -102,7 +102,9 @@ module Dpl
       # @param package [String] the package name
       # @param cmd [String] an executable installed by the package, defaults to the package name
       def apt_get(package, cmd = package)
-        shell "sudo apt-get -qq install #{package}", echo: true, assert: true, retry: true unless which(cmd)
+        return if which(cmd)
+        shell 'sudo apt-get update', echo: true, assert: true, retry: true
+        shell "sudo apt-get -qq install #{package}", echo: true, assert: true, retry: true
       end
 
       def gems_require(gems)
