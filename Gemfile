@@ -14,6 +14,7 @@ gem 'bitballoon', git: 'https://github.com/travis-repos/bitballoon-ruby'
 
 # chef_supermarket
 gem 'chef',               ruby_pre?('2.3') ? '~> 12.0' : ruby_pre?('2.5') ? '~> 13.0' : '~> 13.0'
+gem 'bundler',            '< 2.0.0'  if ruby_pre?('2.3')
 gem 'net-telnet',         '~> 0.1.0' if ruby_pre?('2.3')
 gem 'mime-types',         '~> 3.2.2'
 gem 'rack',               '~> 2.0.7'
