@@ -1,7 +1,6 @@
 require 'cl'
 require 'logger'
 require 'open3'
-require 'rendezvous'
 require 'tmpdir'
 
 module Dpl
@@ -104,6 +103,9 @@ module Dpl
       # @param cmd [String] an executable installed by the package, defaults to the package name
       def apt_get(package, cmd = package)
         shell "sudo apt-get -qq install #{package}", echo: true, retry: true unless which(cmd)
+      end
+
+      def gems_require(gems)
       end
 
       # Requires source files from Ruby gems, installing them on demand if required
