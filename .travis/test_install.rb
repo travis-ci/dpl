@@ -1,7 +1,26 @@
 require 'dpl'
 
+passing = %i(
+  atlas
+  azure_web_apps
+  bit_balloon
+  bluemix_cloud_foundry
+  boxfuse
+  cargo
+  catalyze
+  cloud66
+  cloud_files
+  cloud_foundry
+  code_deploy
+  deis
+  engine_yard
+  firebase
+  gae
+  hephy
+)
+
 skip = %i(chef_supermarket hackage help heroku heroku:api heroku:git provider)
-keys = Dpl::Provider.registry.keys.sort - skip
+keys = Dpl::Provider.registry.keys.sort - skip - passing
 providers = keys.map { |key| Dpl::Provider[key] }
 
 def opt_for(opt)

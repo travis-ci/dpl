@@ -106,7 +106,8 @@ module Dpl
       end
 
       def gems_require(gems)
-        gems_install(gems.reject { |name, version, _| gem_installed?(name, version) })
+        missing = gems.reject { |name, version, _| gem_installed?(name, version) }
+        gems_install(missing) if missing.any?
         gems.each { |gem| gem_require(*gem) }
       end
 
