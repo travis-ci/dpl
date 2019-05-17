@@ -168,7 +168,7 @@ module Dpl
         end
 
         def tmp_filename
-          @tmp_filename ||= "#{tmp_dir}/#{app}.zip"
+          @tmp_filename ||= "#{tmp_dir}/#{repo_name}.zip"
         end
     end
   end

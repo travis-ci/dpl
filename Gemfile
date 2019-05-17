@@ -7,7 +7,7 @@ ruby '>= 2.2'
 
 gemspec name: 'dpl'
 # gem 'cl', git: 'https://github.com/svenfuchs/cl', ref: 'sf-v0.1.0'
-# gem 'cl', path: '../../cl'
+gem 'cl', path: '../../cl'
 
 # chef_supermarket
 gem 'chef',               ruby_pre?('2.3') ? '~> 12.0' : ruby_pre?('2.5') ? '~> 13.0' : '>= 14'

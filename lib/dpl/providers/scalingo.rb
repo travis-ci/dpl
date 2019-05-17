@@ -42,12 +42,13 @@ module Dpl
       end
 
       def setup
-        shell :remote_add
+        shell :remote_add if app
       end
 
       def deploy
         shell :deploy, assert: true
       end
+
       def remove_key
         shell :remove_key, assert: true
       end

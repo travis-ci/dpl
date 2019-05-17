@@ -131,7 +131,6 @@ module Dpl
 
     opt '--run CMD',       'Command to execute after the deployment finished successfully', type: :array
     opt '--skip_cleanup',  'Skip cleaning up build artifacts before the deployment'
-    opt '--app NAME',      default: :repo_name, internal: true
     opt '--key_name NAME', default: :machine_name, internal: true
     opt '--stage NAME',    type: :array, internal: true, default: STAGES
 

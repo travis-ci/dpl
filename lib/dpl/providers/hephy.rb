@@ -8,7 +8,7 @@ module Dpl
       opt '--controller NAME', 'Hephy controller', required: true, example: 'hephy.hephyapps.com'
       opt '--username USER',   'Hephy username', required: true
       opt '--password PASS',   'Hephy password', required: true
-      opt '--app APP',         'Hephy app'
+      opt '--app APP',         'Deis app', required: true
       opt '--cli_version VER', 'Install a specific hephy cli version', default: 'stable'
       opt '--verbose',         'Verbose log output'
 
