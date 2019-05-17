@@ -1,7 +1,8 @@
 describe Dpl::Providers do
   let(:gems) { Support::Gemfile.gems.to_h }
 
-  keys = Dpl::Provider.registry.keys.sort - %i(chef_supermarket help heroku provider)
+  skip = %i(bit_balloon chef_supermarket help heroku provider)
+  keys = Dpl::Provider.registry.keys.sort - skip
   providers = keys.map { |key| Dpl::Provider[key] }
 
   matcher :match_gemfile do

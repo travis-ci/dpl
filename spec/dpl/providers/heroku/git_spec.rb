@@ -43,9 +43,9 @@ describe Dpl::Providers::Heroku::Git do
     end
 
     describe 'given --log_level debug' do
-      it { should have_logged 'GET https://api.heroku.com/account' }
+      it { should have_logged 'get https://api.heroku.com/account' }
       it { should have_logged 'Accept: "application/vnd.heroku+json; version=3"' }
-      it { should have_logged 'Status 200' }
+      it { should have_logged 'Status: 200' }
     end
 
     describe 'given --run restart' do
