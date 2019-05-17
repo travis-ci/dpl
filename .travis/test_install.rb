@@ -19,6 +19,7 @@ passing = %i(
   firebase
   gae
   gcs
+  hackage
   hephy
   lambda
   launchpad
@@ -28,11 +29,15 @@ passing = %i(
   packagecloud
   pages
   puppet_forge
+  pypi
   releases
   rubygems
   s3
   scalingo
   script
+  snap
+  surge
+  testfairy
 )
 
 skip = %i(chef_supermarket help heroku heroku:api heroku:git provider)
