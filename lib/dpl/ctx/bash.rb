@@ -134,7 +134,7 @@ module Dpl
 
       # Installs multiple Ruby gems with the specified version.
       def gems_install(gems)
-        gems = gems.map { |name, version, _| "#{name}:#{version.inspect}" }.join(' ')
+        gems = gems.map { |name, version, _| version ? "#{name}:#{version.inspect}" : name }.join(' ')
         cmd = "gem install -N #{gems}"
         shell cmd, echo: true, assert: true, retry: true, sudo: sudo?
         Gem.refresh
