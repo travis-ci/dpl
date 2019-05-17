@@ -102,7 +102,7 @@ module Dpl
       # @param package [String] the package name
       # @param cmd [String] an executable installed by the package, defaults to the package name
       def apt_get(package, cmd = package)
-        shell "sudo apt-get -qq install #{package}", echo: true, retry: true unless which(cmd)
+        shell "sudo apt-get -qq install #{package}", echo: true, assert: true, retry: true unless which(cmd)
       end
 
       def gems_require(gems)
@@ -127,13 +127,13 @@ module Dpl
       # Installs multiple Ruby gems with the specified version.
       def gems_install(gems)
         gems = gems.map { |name, version, _| "#{name}:#{version.inspect}" }.join(' ')
-        shell "gem install -N #{gems}", echo: true, retry: true, sudo: sudo?
+        shell "gem install -N #{gems}", echo: true, assert: true, retry: true, sudo: sudo?
         Gem.refresh
       end
 
       # Installs a single Ruby gem with the specified version.
       def gem_install(name, version)
-        shell "gem install -N #{name} -v #{version.inspect}", echo: true, retry: true, sudo: sudo?
+        shell "gem install -N #{name} -v #{version.inspect}", echo: true, assert: true, retry: true, sudo: sudo?
         Gem.refresh
       end
 
@@ -151,7 +151,7 @@ module Dpl
       # @param package [String] the package name
       # @param cmd [String] an executable installed by the package, defaults to the package name
       def npm_install(package, cmd = package)
-        shell "npm install -g #{package}", echo: true, retry: true unless which(cmd)
+        shell "npm install -g #{package}", echo: true, assert: true, retry: true unless which(cmd)
       end
 
       # Installs a Python package
@@ -166,7 +166,7 @@ module Dpl
         shell "pip uninstall --user -y #{package}" if version && which(cmd)
         cmd = "pip install --user #{package}"
         cmd << "==#{version}" if version
-        shell cmd, echo: true, retry: true
+        shell cmd, echo: true, assert: true, retry: true
         shell 'export PATH=$PATH:$HOME/.local/bin'
       end
 
@@ -221,7 +221,7 @@ module Dpl
         end
 
         info opts[:info] % { out: out } if opts[:info] && success?
-        error opts[:assert] % { err: err } if opts[:assert] && !success?
+        error assert(cmd, opts) % { err: err } if opts[:assert] && !success?
 
         @last_status
       end
@@ -232,6 +232,10 @@ module Dpl
           out, err, status = yield
           return [out, err, status] if status || tries > max
         end
+      end
+
+      def assert(cmd, opts)
+        opts[:assert].is_a?(String) ? opts[:assert] : "Failed: #{cmd}"
       end
 
       # Runs a shell command and captures stdout, stderr, and the exit status
