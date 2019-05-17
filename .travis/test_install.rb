@@ -1,6 +1,7 @@
 require 'dpl'
 
 passing = %i(
+  anynines
   atlas
   azure_web_apps
   bit_balloon
@@ -13,10 +14,25 @@ passing = %i(
   cloud_foundry
   code_deploy
   deis
+  elastic_beanstalk
   engine_yard
   firebase
   gae
+  gcs
   hephy
+  lambda
+  launchpad
+  npm
+  open_shift
+  ops_works
+  packagecloud
+  pages
+  puppet_forge
+  releases
+  rubygems
+  s3
+  scalingo
+  script
 )
 
 skip = %i(chef_supermarket hackage help heroku heroku:api heroku:git provider)
