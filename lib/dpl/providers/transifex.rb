@@ -11,9 +11,8 @@ module Dpl
       opt '--password PASS',   'Transifex password', required: true
       opt '--hostname NAME',   'Transifex hostname', default: 'www.transifex.com'
       # this used to be 0.11, but that version does not seem to exist in pip.
-      # using the lastest version reported existing for now, should check that
-      # with transifex though.
-      opt '--cli_version VER', 'CLI version to install', default: '>=1.2.1'
+      # should check this with transifex though
+      opt '--cli_version VER', 'CLI version to install', default: '0.9.1'
 
       cmds status: 'tx status',
            push:   'tx push --source --no-interactive'

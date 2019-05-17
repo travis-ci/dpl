@@ -5,7 +5,7 @@ describe Dpl::Providers::Transifex do
   before { subject.run }
 
   describe 'by default', record: true do
-    it { should have_run '[pip:install] transifex (transifex, >=1.2.1)' }
+    it { should have_run '[pip:install] transifex (transifex, 0.9.1)' }
     it { should have_run 'tx status' }
     it { should have_run 'tx push --source --no-interactive' }
     it { should have_run_in_order }
