@@ -1,6 +1,7 @@
 require 'dpl'
 
-keys = Dpl::Provider.registry.keys.sort - %i(chef_supermarket help heroku heroku:api heroku:git provider)
+skip = %i(chef_supermarket hackage help heroku heroku:api heroku:git provider)
+keys = Dpl::Provider.registry.keys.sort - skip
 providers = keys.map { |key| Dpl::Provider[key] }
 
 def opt_for(opt)
