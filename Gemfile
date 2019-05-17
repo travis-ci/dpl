@@ -9,8 +9,12 @@ gemspec name: 'dpl'
 # gem 'cl', git: 'https://github.com/svenfuchs/cl', ref: 'sf-v0.1.0'
 gem 'cl', path: '../../cl'
 
+# bitballoon
+# https://github.com/BitBalloon/bitballoon-ruby/pull/14
+gem 'bitballoon', git: 'https://github.com/travis-repos/bitballoon-ruby'
+
 # chef_supermarket
-gem 'chef',               ruby_pre?('2.3') ? '~> 12.0' : ruby_pre?('2.5') ? '~> 13.0' : '>= 14'
+gem 'chef',               ruby_pre?('2.3') ? '~> 12.0' : ruby_pre?('2.5') ? '~> 13.0' : '~> 13.0'
 gem 'net-telnet',         '~> 0.1.0' if ruby_pre?('2.3')
 gem 'mime-types',         '~> 3.2.2'
 gem 'rack',               '~> 2.0.7'
@@ -33,7 +37,7 @@ gem 'gstore',             '~> 0.2.1'
 gem 'mime-types',         '~> 3.2.2'
 
 # heroku
-gem 'faraday',            '~> 0.15.4'
+gem 'faraday',            '~> 0.9.2'
 gem 'rendezvous',         '~> 0.1.3'
 gem 'netrc',              '~> 0.11.0'
 

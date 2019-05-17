@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class BitBalloon < Provider
+      gem 'bitballoon', '~> 0.2.6'
+
       description sq(<<-str)
         BitBallon provides free simple static site hosting.
 
