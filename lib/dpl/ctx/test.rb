@@ -25,6 +25,10 @@ module Dpl
         cmds << "[apt:get] #{name} (#{cmd})"
       end
 
+      def gems_require(gems)
+        gems.each { |gem| gem_require(gem) }
+      end
+
       def gem_require(name, version = nil, opts = {})
         cmds << "[gem:require] #{name} (#{version}, #{opts})"
       end

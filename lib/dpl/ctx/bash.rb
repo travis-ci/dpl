@@ -106,6 +106,8 @@ module Dpl
       end
 
       def gems_require(gems)
+        gems_install(gems.reject { |name, version, _| gem_installed?(name, version) })
+        gems.each { |gem| gem_require(*gem) }
       end
 
       # Requires source files from Ruby gems, installing them on demand if required
@@ -122,16 +124,23 @@ module Dpl
         Array(opts[:require] || name).each { |path| require(path) }
       end
 
+      # Installs multiple Ruby gems with the specified version.
+      def gems_install(gems)
+        gems = gems.map { |name, version, _| "#{name}:#{version.inspect}" }.join(' ')
+        shell "gem install -N #{gems}", echo: true, retry: true, sudo: sudo?
+        Gem.refresh
+      end
+
+      # Installs a single Ruby gem with the specified version.
+      def gem_install(name, version)
+        shell "gem install -N #{name} -v #{version.inspect}", echo: true, retry: true, sudo: sudo?
+        Gem.refresh
+      end
+
       # Whether or not the Ruby gem with the given version is installed.
       def gem_installed?(name, version)
         req = Gem::Requirement.create(version)
         Gem::Specification.find_all { |s| s.name == name and req =~ s.version }.any?
-      end
-
-      # Installs the Ruby gem with the specified version.
-      def gem_install(name, version)
-        shell "gem install #{name} -v #{version.inspect}", echo: true, retry: true, sudo: sudo?
-        Gem.refresh
       end
 
       # Installs an NPM package
