@@ -16,12 +16,12 @@ script:
 jobs:
   include:
     - &job
-      stage: test runtime gem installation
+      stage: test runtime dependency installation
       cache: false
-      install: skip
-      script:
+      install:
       - gem build dpl.gemspec
       - gem install dpl-*.gem
+      script:
       - ruby -Ilib .travis/test_install.rb
       rvm: 2.2.10
     - <<: *job
