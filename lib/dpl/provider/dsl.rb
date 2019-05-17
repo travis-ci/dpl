@@ -66,7 +66,8 @@ module Dpl
       #
       # @return Previously declared apt packages if no arguments were given.
       def apt(package = nil, cmd = nil)
-        package ? apt << [package, cmd].compact : @apt ||= []
+        return apt << [package, cmd].compact if package
+        @apt ||= self == Provider ? [] : superclass.apt.dup
       end
 
       # Whether or not the provider depends on any apt packages.
@@ -88,7 +89,8 @@ module Dpl
       #
       # @return Previously declared gems if no arguments were given
       def gem(name = nil, version = nil, opts = {})
-        name ? gem << [name, version, opts] : @gem ||= []
+        return gem << [name, version, opts] if name
+        @gem ||= self == Provider ? [] : superclass.gem.dup
       end
 
       def gem?
@@ -104,7 +106,8 @@ module Dpl
       #
       # @return Previously declared NPM packages if no arguments are given.
       def npm(package = nil, cmd = nil)
-        package ? npm << [package, cmd].compact : @npm ||= []
+        return npm << [package, cmd].compact if package
+        @npm ||= self == Provider ? [] : superclass.npm.dup
       end
 
       # Whether or not the provider depends on any NPM packages.
@@ -123,7 +126,8 @@ module Dpl
       #
       # @return Previously declared Python packages if no arguments are given.
       def pip(package = nil, cmd = nil, version = nil)
-        package ? pip << [package, cmd, version].compact : @pip ||= []
+        return pip << [package, cmd, version].compact if package
+        @pip ||= self == Provider ? [] : superclass.pip.dup
       end
 
       # Whether or not the provider depends on any Python packages.
@@ -293,7 +297,8 @@ module Dpl
       # @param paths [String] Paths to artifacts to keep during `cleanup`
       # @return Previously declared artifacts to keep if no argument is given.
       def keep(*paths)
-        paths.any? ? keep.concat(paths) : @keep ||= []
+        return keep.concat(paths) if paths.any?
+        @keep ||= self == Provider ? [] : superclass.keep.dup
       end
 
       # Declare features that the provider needs.
@@ -314,7 +319,8 @@ module Dpl
       # @param features [Symbol] Features to activate for this provider
       # @return Previously declared features needed if no argument is given.
       def needs(*features)
-        features.any? ? needs.concat(features) : @needs ||= []
+        return needs.concat(features) if features.any?
+        @needs ||= self == Provider ? [] : superclass.needs.dup
       end
 
       # Whether or not the provider has declared any features it needs.
