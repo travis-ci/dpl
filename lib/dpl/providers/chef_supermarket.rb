@@ -9,7 +9,6 @@ module Dpl
         chef/knife/cookbook_metadata
       )
 
-      # gem 'bundler', '< 2.0'
       gem 'chef', CHEF_VERSION, require: CHEF_REQUIRE
       gem 'mime-types'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
