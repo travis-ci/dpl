@@ -19,6 +19,7 @@ jobs:
       stage: test runtime dependency installation
       cache: false
       install:
+      - rvm list
       - gem build dpl.gemspec
       - gem install dpl-*.gem
       script:
