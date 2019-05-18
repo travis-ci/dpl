@@ -119,10 +119,9 @@ module Dpl
       end
 
       def gems_require(gems)
-        require 'bundler'
+        # require 'bundler'
         require 'bundler/inline'
-
-        Bundler.reset!
+        # Bundler.reset!
 
         gemfile do
           source 'https://rubygems.org'
