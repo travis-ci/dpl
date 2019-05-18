@@ -1,10 +1,5 @@
 require 'dpl'
 
-def clear_gems
-  run 'gem uninstall -aIx'
-  run 'gem install cl'
-end
-
 def opts_for(provider)
   opts = provider.opts.select(&:required?)
   opts = opts + [provider.opts[provider.required.map(&:first).first]].compact
@@ -26,6 +21,8 @@ keys = Dpl::Provider.registry.keys.sort - skip
 providers = keys.map { |key| Dpl::Provider[key] }
 
 providers.each do |provider|
-  clear_gems
+  run 'gem uninstall -aIx'
+  run 'gem install cl'
   run "bin/dpl #{provider.registry_key} --stage install #{opts_for(provider)}"
+  run 'gem list'
 end
