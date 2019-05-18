@@ -118,6 +118,16 @@ module Dpl
         shell 'sudo apt-get update', echo: true, assert: true, retry: true
       end
 
+      # Requires source files from Ruby gems, installing them on demand if required
+      #
+      # Installs the Ruby gems with the given version, if not already installed, and
+      # requires the specified source files from that gem.
+      #
+      # This happens using the bundler/inline API.
+      #
+      # @param gems [Array<String, String, Hash>] Array of gem requirements: gem name, version, and options (`require`: A single path or a list of paths to source files to require from this Ruby gem)
+      #
+      # @see https://bundler.io/v2.0/guides/bundler_in_a_single_file_ruby_script.html
       def gems_require(gems)
         require 'bundler/inline'
 
@@ -125,40 +135,6 @@ module Dpl
           source 'https://rubygems.org'
           gems.each { |g| gem *g }
         end
-      end
-
-      # Requires source files from Ruby gems, installing them on demand if required
-      #
-      # Installs the Ruby gem with the given version, if not already installed, and
-      # requires the specified source files from that gem.
-      #
-      # @param name    [String] Ruby gem name (required)
-      # @param version [String] Ruby gem version (required)
-      # @param opts    [Hash] options
-      # @option opts [Array<String>, String] :require A single path or a list of paths to source files to require from this Ruby gem
-      def gem_require(name, version, opts = {})
-        gem_install(name, version) unless gem_installed?(name, version)
-        Array(opts[:require] || name).each { |path| require(path) }
-      end
-
-      # Installs multiple Ruby gems with the specified version.
-      def gems_install(gems)
-        gems = gems.map { |name, version, _| version ? "#{name}:#{version.inspect}" : name }.join(' ')
-        cmd = "gem install -N #{gems}"
-        shell cmd, echo: true, assert: true, retry: true, sudo: sudo?
-        Gem.refresh
-      end
-
-      # Installs a single Ruby gem with the specified version.
-      def gem_install(name, version)
-        shell "gem install -N #{name} -v #{version.inspect}", echo: true, assert: true, retry: true, sudo: sudo?
-        Gem.refresh
-      end
-
-      # Whether or not the Ruby gem with the given version is installed.
-      def gem_installed?(name, version)
-        req = Gem::Requirement.create(version)
-        Gem::Specification.find_all { |s| s.name == name and req =~ s.version }.any?
       end
 
       # Installs an NPM package
