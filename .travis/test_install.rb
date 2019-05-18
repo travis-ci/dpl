@@ -1,8 +1,8 @@
 require 'dpl'
 
 def clear_gems
-  run 'gem uninstall -aIx &2>1'
-  run 'gem install cl > /dev/null &2>1'
+  run 'gem uninstall -aIx'
+  run 'gem install cl'
 end
 
 def opts_for(provider)
