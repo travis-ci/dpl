@@ -16,14 +16,11 @@ def run(cmd)
   fail unless system cmd
 end
 
-# skip = %i(help heroku provider)
-# keys = Dpl::Provider.registry.keys.sort - skip
-keys = [:chef_supermarket]
+skip = %i(help heroku provider)
+keys = Dpl::Provider.registry.keys.sort - skip
 providers = keys.map { |key| Dpl::Provider[key] }
 
 providers.each do |provider|
-  # run 'gem uninstall -aIx'
-  # run 'gem install cl'
   run "bin/dpl #{provider.registry_key} --stage install #{opts_for(provider)}"
   run 'gem list'
 end
