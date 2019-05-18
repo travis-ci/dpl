@@ -119,9 +119,11 @@ module Dpl
       end
 
       def gems_require(gems)
-        missing = gems.reject { |name, version, _| gem_installed?(name, version) }
-        gems_install(missing) if missing.any?
-        gems.each { |gem| gem_require(*gem) }
+        require 'bundler/inline'
+        gemfile do
+          source 'https://rubygems.org'
+          gems.each { |g| gem *g }
+        end
       end
 
       # Requires source files from Ruby gems, installing them on demand if required
