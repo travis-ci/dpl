@@ -1,5 +1,3 @@
-require 'json'
-
 module Dpl
   module Providers
     class Heroku

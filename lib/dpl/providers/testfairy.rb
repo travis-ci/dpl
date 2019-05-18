@@ -1,12 +1,12 @@
 require 'dpl/version'
 
-require 'json'
 require 'net/http'
 require 'securerandom'
 
 module Dpl
   module Providers
     class Testfairy < Provider
+      gem 'json'
       gem 'multipart-post', '~> 2.0.0', require: 'net/http/post/multipart'
 
       description sq(<<-str)

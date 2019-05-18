@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Npm < Provider
+      gem 'json'
+
       full_name 'NPM'
 
       description sq(<<-str)
