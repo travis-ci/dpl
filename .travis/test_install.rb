@@ -16,8 +16,9 @@ def run(cmd)
   fail unless system cmd
 end
 
-skip = %i(help heroku provider)
-keys = Dpl::Provider.registry.keys.sort - skip
+# skip = %i(help heroku provider)
+# keys = Dpl::Provider.registry.keys.sort - skip
+keys = [:chef_supermarket]
 providers = keys.map { |key| Dpl::Provider[key] }
 
 providers.each do |provider|
