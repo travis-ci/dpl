@@ -22,8 +22,8 @@ keys = [:chef_supermarket]
 providers = keys.map { |key| Dpl::Provider[key] }
 
 providers.each do |provider|
-  run 'gem uninstall -aIx'
-  run 'gem install cl'
+  # run 'gem uninstall -aIx'
+  # run 'gem install cl'
   run "bin/dpl #{provider.registry_key} --stage install #{opts_for(provider)}"
   run 'gem list'
 end
