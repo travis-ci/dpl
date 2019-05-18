@@ -129,10 +129,8 @@ module Dpl
       #
       # @see https://bundler.io/v2.0/guides/bundler_in_a_single_file_ruby_script.html
       def gems_require(gems)
-        info "Installing gem dependendies: #{gems.map { |name, version, _| "#{name} #{version}" }.join(', ')}"
-
         require 'bundler/inline'
-
+        info "Installing gem dependendies: #{gems.map { |name, version, _| "#{name} #{version}" }.join(', ')}"
         gemfile do
           source 'https://rubygems.org'
           gems.each { |g| gem *g }
