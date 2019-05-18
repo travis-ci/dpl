@@ -1,17 +1,17 @@
 language: ruby
 
-# rvm:
-# - 2.2.7
-# - 2.3.4
-# - 2.4.1
-# - 2.5.5
-# - 2.6.2
-#
-# cache:
-#   - bundler
-#
-# script:
-#   - bundle exec rspec
+rvm:
+- 2.2.7
+- 2.3.4
+- 2.4.1
+- 2.5.5
+- 2.6.2
+
+cache:
+  - bundler
+
+script:
+  - bundle exec rspec
 
 jobs:
   include:
@@ -19,7 +19,6 @@ jobs:
       stage: test runtime dependency installation
       cache: false
       install:
-      - rvm list
       - gem build dpl.gemspec
       - gem install dpl-*.gem
       script:
