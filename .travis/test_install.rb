@@ -22,5 +22,5 @@ providers = keys.map { |key| Dpl::Provider[key] }
 
 providers.each do |provider|
   run "bin/dpl #{provider.registry_key} --stage install #{opts_for(provider)}"
-  run 'gem list'
+  # run 'gem list'
 end
