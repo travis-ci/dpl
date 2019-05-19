@@ -10,7 +10,7 @@ module Dpl
       )
 
       gem 'chef', CHEF_VERSION, require: CHEF_REQUIRE
-      gem 'mime-types'
+      gem 'mime-types', '~> 3.2.2'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
       gem 'rack'
 

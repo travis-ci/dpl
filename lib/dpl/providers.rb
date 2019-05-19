@@ -1,7 +1,7 @@
 require 'dpl/providers/anynines'
 require 'dpl/providers/atlas'
 require 'dpl/providers/azure_web_apps'
-require 'dpl/providers/bitballoon'
+require 'dpl/providers/bit_balloon'
 require 'dpl/providers/boxfuse'
 require 'dpl/providers/bluemix_cloud_foundry'
 require 'dpl/providers/cargo'
