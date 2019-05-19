@@ -9,7 +9,7 @@ supported by Dpl. Thank you all for this!
 This document is for you if you want to contribute to Dpl, be it by adding a new
 deployment provider, fixing a bug, or adding a new feature.
 
-Dpl has a [code of conduct](/travis-ci/dpl/blob/master/CODE_OF_CONDUCT.md),
+Dpl has a [code of conduct](CODE_OF_CONDUCT.md),
 please follow it in all interactions with the project.
 
 Dpl is written in Ruby, and we assume that you familiarize yourself with our
@@ -17,7 +17,7 @@ documentation as much as needed.
 
 Helpful resources are:
 
-* The [Dpl README](/travis-ci/dpl/blob/master/README.md)
+* The [Dpl README](README.md)
 * The [Dpl API docs](https://www.rubydoc.info/github/travis-ci/dpl) on rubydocs.info
 * The [Cl README](https://github.com/svenfuchs/cl/blob/master/README.md)
 
@@ -25,26 +25,25 @@ Helpful resources are:
 
 ### Provider classes
 
-All provider specific classes live in [dpl/providers](/travis-ci/dpl/blob/master/lib/dpl/providers).
+All provider specific classes live in [dpl/providers](lib/dpl/providers).
 These represent the CLI commands that are executed when the command line
 exectuable `dpl` is run with a given provider name as the first argument.
 
 For instance, the command `dpl s3 --bucket bucket` instantiates and runs the provider
-class [S3](/travis-ci/dpl/blob/master/lib/dpl/providers/s3.rb).
+class [S3](lib/dpl/providers/s3.rb).
 
 Each provider is a subclass of `Dpl::Provider`, which is defined in
-[dpl/provider.rb](/travis-ci/dpl/blob/master/lib/dpl/provider.rb). This class
-defines, amongst other things, the order of stages that make up the deployment
-process.
+[dpl/provider.rb](lib/dpl/provider.rb). This class defines, amongst other
+things, the order of stages that make up the deployment process.
 
 The DSL that is used to declare features, dependencies, options etc. on the
 concrete provider classes is defined in the module `Dpl::Provider::DSL`, in
-[dpl/provider/dsl](/travis-ci/dpl/blob/master/lib/dpl/provider/dsl.rb).
+[dpl/provider/dsl](lib/dpl/provider/dsl.rb).
 
-Also of interest is [Dpl::Ctx::Bash](/travis-ci/dpl/blob/master/lib/dpl/ctx/bash.rb),
-the Bash execution context, that runs shell commands, installs dependencies
-etc. (while the `Test` context class is used for testing in order to keep your
-development machine clean and safe when you run tests locally).
+Also of interest is [Dpl::Ctx::Bash](lib/dpl/ctx/bash.rb), the Bash execution
+context, that runs shell commands, installs dependencies etc. (while the `Test`
+context class is used for testing in order to keep your development machine
+clean and safe when you run tests locally).
 
 ```
 lib
@@ -71,9 +70,9 @@ lib
 When a provider class is instantiated and run it will go through a number
 of stages that make up the deployment process.
 
-These are documented in [dpl/provider.rb](/travis-ci/dpl/blob/sf-dpl2/lib/dpl/provider.rb).
-If you are adding a new deployment provider please familiarize youself
-with this lifecycle.
+These are documented in [dpl/provider.rb](/lib/dpl/provider.rb). If you are
+adding a new deployment provider please familiarize youself with this
+lifecycle.
 
 Feel free to pick and interpret these stages according to the needs and
 semantics of the service provider you are adding. By no means do all of these
@@ -112,9 +111,9 @@ dependencies that do not look stable or widely supported.
 #### Runtime dependencies and local development
 
 Runtime dependencies can be declared on the provider class using the
-[DSL](/travis-ci/dpl/blob/master/lib/dpl/provider/dsl.rb). Ruby gem runtime
-dependencies, if any, additinally have to be added to the [Gemfile](/travis-ci/dpl/blob/master/Gemfile)
-for them to be present at test run time.
+[DSL](lib/dpl/provider/dsl.rb). Ruby gem runtime dependencies, if any,
+additinally have to be added to the [Gemfile](Gemfile) for them to be present
+at test run time.
 
 #### Running the tests locally
 
@@ -140,7 +139,7 @@ bundle exec rspec spec/dpl/providers/[provider_name]_spec.rb:25
 These tests can be run safely on any development machine, anywhere.
 
 On Travis CI we additionally run tests that exercise runtime dependency
-installation. These live in [.travis/test_install.rb](/travis-ci/dpl/blob/master/.travis/test_install.rb).
+installation. These live in [.travis/test_install.rb](.travis/test_install.rb).
 It is not advisable to run these tests outside of a VM or container that can be
 safely discareded.
 
@@ -153,10 +152,10 @@ safely discareded.
 Provider tests should be implemented on an input/output acceptance level, as
 much as possible.
 
-They use a [Ctx::Test](/travis-ci/dpl/blob/master/lib/dpl/ctx/test.rb) execution
-context in order to avoid running actual shell commands, or actually installing
-dependencies at test time. There are custom [RSpec matchers](/travis-ci/dpl/blob/master/spec/support/matchers)
-in place that help with making assertions against this execution context.
+They use a [Ctx::Test](lib/dpl/ctx/test.rb) execution context in order to avoid
+running actual shell commands, or actually installing dependencies at test
+time. There are custom [RSpec matchers](spec/support/matchers) in place that
+help with making assertions against this execution context.
 
 If your provider has to talk to an external HTTP API then ideally use
 [Webmock](https://github.com/bblimke/webmock) to stub external requests. If by
