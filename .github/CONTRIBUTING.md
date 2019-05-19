@@ -1,173 +1,225 @@
-# Writing a new deployment provider
+# Contributing to Dpl
 
-So you want to add a new deployment provider,
-fix a bug, or add a new feature to an
-existing provider.
+Dpl is a central component in Travis CI, and has been around for a long time.
 
-That's great.
+This library always has been a community effort first. There probably is not a
+single person in the world who is familiar with all deployment providers
+supported by Dpl. Thank you all for this!
 
-This document explains what you need to know in order
-to accomplish the goal.
+This document is for you if you want to contribute to Dpl, be it by adding a new
+deployment provider, fixing a bug, or adding a new feature.
 
-`dpl` is written in Ruby, and we assume that you have
-a good understanding of how it works.
+Dpl has a [code of conduct](/travis-ci/dpl/blob/master/CODE_OF_CONDUCT.md),
+please follow it in all interactions with the project.
 
-## General structure of the `dpl` code base
+Dpl is written in Ruby, and we assume that you familiarize yourself with our
+documentation as much as needed.
 
-### `lib/dpl/provider`
+Helpful resources are:
 
-Each provider code is a subclass of `DPL::Provider`,
-and it lives under `lib/dpl/provider`.
+* The [Dpl README](/travis-ci/dpl/blob/master/README.md)
+* The [Dpl API docs](https://www.rubydoc.info/github/travis-ci/dpl) on rubydocs.info
+* The [Cl README](https://github.com/svenfuchs/cl/blob/master/README.md)
+
+## Navigating the Dpl codebase
+
+### Provider classes
+
+All provider specific classes live in [dpl/providers](/travis-ci/dpl/blob/master/lib/dpl/providers).
+These represent the CLI commands that are executed when the command line
+exectuable `dpl` is run with a given provider name as the first argument.
+
+For instance, the command `dpl s3 --bucket bucket` instantiates and runs the provider
+class [S3](/travis-ci/dpl/blob/master/lib/dpl/providers/s3.rb).
+
+Each provider is a subclass of `Dpl::Provider`, which is defined in
+[dpl/provider.rb](/travis-ci/dpl/blob/master/lib/dpl/provider.rb). This class
+defines, amongst other things, the order of stages that make up the deployment
+process.
+
+The DSL that is used to declare features, dependencies, options etc. on the
+concrete provider classes is defined in the module `Dpl::Provider::DSL`, in
+[dpl/provider/dsl](/travis-ci/dpl/blob/master/lib/dpl/provider/dsl.rb).
+
+Also of interest is [Dpl::Ctx::Bash](/travis-ci/dpl/blob/master/lib/dpl/ctx/bash.rb),
+the Bash execution context, that runs shell commands, installs dependencies
+etc. (while the `Test` context class is used for testing in order to keep your
+development machine clean and safe when you run tests locally).
 
 ```
 lib
 └── dpl
-    ├── cli.rb
-    ├── error.rb
+    ├── assets                # Stores larger shell scripts
+    ├── ctx
+    │   ├── bash.rb           # Bash execution context
+    │   └── test.rb           # Test execution context
+    ├── provider.rb           # Base class for all providers
     ├── provider
-    │   ├── anynines.rb
-    │   ├── atlas.rb
-    │   ├── azure_webapps.rb
-    │   ├── bintray.rb
-    │   ├── bitballoon.rb
-    │   ├── ⋮
- ```
-
-`dpl` script will receive the provider name via `--provider`
-command-line option; e.g.,
-
-    dpl --provider=script …
-
-and attempts to load it at run time.
-
-In order to make `dpl` be aware of a provider code, put the provider
-code in `lib/dpl/provider` and add a key-value pair to the `DPL::Provider::GEM_NAME_OF`
-hash in `lib/dpl/provider.rb`.
-
-For example:
-
-```ruby
-module DPL
-  class Provider
-    GEM_NAME_OF = {
-      'NewProvider' => 'new_provider',
-    }
-  end
-end
+    │   ├── dsl.rb            # DSL for defining providers
+    │   └── example.rb        # Generating example commands for help output
+    └── providers
+        ├── anynines.rb       # Concrete providers
+        ├── atlas.rb
+        ├── azure_webapps.rb
+        ├── bintray.rb
+        ├── bitballoon.rb
+        └── ⋮
 ```
 
-There is no standard for how the key and value are defined, but
-we generally recommend adhering to the snake-case naming;
-e.g., for the `CloudFoundry` class, the file (and the gem name) is
-`cloud_foundry`.
-(Please note that some existing provider codes violate this guideline.)
+#### Lifecycle of the deployment process
 
-#### Basic structure of the provider code
+When a provider class is instantiated and run it will go through a number
+of stages that make up the deployment process.
 
-When `dpl` loads the provider code, first it sets up dependencies
-(install `apt` packages, `npm` modules, etc.).
+These are documented in [dpl/provider.rb](/travis-ci/dpl/blob/sf-dpl2/lib/dpl/provider.rb).
+If you are adding a new deployment provider please familiarize youself
+with this lifecycle.
 
-Then the following methods on the provider code are invoked:
+Feel free to pick and interpret these stages according to the needs and
+semantics of the service provider you are adding. By no means do all of these
+stages have to be filled in or implmented. The `Provider` base class checks for
+these methods, and runs them, if present, so that implementors can choose
+semantically fitting names for their providers.
 
-1. `#check_auth`: sets up (and ideally verifies) user credentials
-1. `#check_app`: verify that the application is valid
-1. `#push_app`: deploy the code
+#### Deployment tooling
 
-If you are trying to implement support for a new provider and this basic
-flow does not suit your needs, be sure to seek help/advice.
+If you are adding a new deployment provider please choose the tooling you are
+going to use carefully.
 
-### `spec/provider`
+Dpl is a long lived library, and it has outlived many tools that once were
+supported, and no longer are. Thus tooling stability is a major concern for
+this project.
 
-`dpl` uses [RSpec](https://github.com/rspec) for tests.
-The specs reside in `spec/provider`, and each provider has the corresponding
-`*_spec.rb` file to hold specs.
+Ideally use official CLI tooling supported by the company who's service
+provider you are about to add. Often, such CLI tools can be installed via
+standard package managers, or manually downloaded using `curl` and installed
+with a few simple Bash commands.
 
-## Testing new code locally
+Such CLI tooling is preferrable over Ruby gem runtime dependencies as they can
+be executed in a child process, and won't introduce any dependency resolution
+problems later on.
 
-To test it locally, first you need to write a corresponding `dpl-*.gemspec` file.
-You can write this file from scratch, or use the `gemspec_for` helper
-method, found in `gemspec_helper.rb`.
-We recommend the helper to ensure consistency.
-The important thing is that your new gem has a good runtime dependency, most
-notably on `dpl`.
+If no such CLI is available, or it does not look well supported, and your
+provider implementation needs to talk to an external HTTP API then please consider
+using [Net::HTTP](https://ruby-doc.org/stdlib-2.6.3/libdoc/net/http/rdoc/Net/HTTP.html)
+from Ruby's standard library.
 
-Once you have `dpl-*.gemspec`, you are ready to run specs. To do this,
-call `spec-*` Rake task.
+If you absolutely have to rely on a runtime Ruby gem dependency, such as a
+provider client implementation, please only do so if the gem is supported by
+the respective company officially. We may choose to reject including runtime
+dependencies that do not look stable or widely supported.
 
-> This task (and others) are dynamically inferred from the presence of `dpl-*.gemspec`,
-> so there is no need for you to touch `Rakefile`.
+#### Runtime dependencies and local development
 
-This Rake task builds and installs `dpl` and the provider gem from the local source,
-installs dependencies and runs the specs in `spec/provider/*_spec.rb`.
-For example, to run specs on the `s3` provider:
+Runtime dependencies can be declared on the provider class using the
+[DSL](/travis-ci/dpl/blob/master/lib/dpl/provider/dsl.rb). Ruby gem runtime
+dependencies, if any, additinally have to be added to the [Gemfile](/travis-ci/dpl/blob/master/Gemfile)
+for them to be present at test run time.
 
-    $ bundle install
-    $ rake spec-s3
+#### Running the tests locally
 
-If you have other versions of `dpl` and `dpl-*` gems before running the Rake task,
-they may interfere with your tests.
+You can run the test suite locally as follows:
 
-If you suspect this interference, be sure to uninstall them by
+```
+bundle install
+bundle exec rspec
+```
 
-    $ gem uninstall -aIx dpl dpl-* # for appropriate provider(s)
+In order to execute tests only for a certain provider you can run:
 
-or
+```
+bundle exec rspec spec/dpl/providers/[provider_name]_spec.rb
+```
 
-    $ rake clean
+In order to execute a single test or group of tests add a line number like so:
 
-to completely clean up the working directory.
+```
+bundle exec rspec spec/dpl/providers/[provider_name]_spec.rb:25
+```
 
-### Testing a portion of specs
+These tests can be run safely on any development machine, anywhere.
 
-The `spec-*` Rake tasks take an optional argument, which is passed on
-to `rspec` to indicate which lines to execute.
+On Travis CI we additionally run tests that exercise runtime dependency
+installation. These live in [.travis/test_install.rb](/travis-ci/dpl/blob/master/.travis/test_install.rb).
+It is not advisable to run these tests outside of a VM or container that can be
+safely discareded.
 
-For example:
+#### Writing tests
 
-    $ rake spec-s3["55"]
+`Dpl` uses [RSpec](https://github.com/rspec) for tests. The specs reside in
+`spec`, and each provider class has a corresponding file
+`spec/dpl/providers/*_spec.rb` to hold tests.
 
-### Avoid making actual network calls
+Provider tests should be implemented on an input/output acceptance level, as
+much as possible.
 
-Deployment code often interact with external services to do the job.
-It is tempting to make calls to external servers during the specs,
-but resist this temptation.
-Instead, mock the network calls and write specs that deal with different results.
-Assuming that the external resources are stable in their behavior,
-this will make the specs less susceptible to network issues.
+They use a [Ctx::Test](/travis-ci/dpl/blob/master/lib/dpl/ctx/test.rb) execution
+context in order to avoid running actual shell commands, or actually installing
+dependencies at test time. There are custom [RSpec matchers](/travis-ci/dpl/blob/master/spec/support/matchers)
+in place that help with making assertions against this execution context.
 
-# Testing `dpl` in the context of Travis CI builds
+If your provider has to talk to an external HTTP API then ideally use
+[Webmock](https://github.com/bblimke/webmock) to stub external requests. If by
+any means possible try to avoid mocking or stubbing Ruby client classes (this
+is not always possible, but should be considered).
 
-It is possible to test new deployment provider or new functionality
-of dpl when it is used from the Travis CI build script.
+# Testing Dpl on Travis CI
+
+It is possible to test new deployment provider or new functionality of Dpl on
+Travis CI.
 
 To do so, add the following to your `.travis.yml`:
 
 ```yaml
 deploy:
-  provider: X
+  provider: [name]
   edge:
-    source: myown/dpl
-    branch: foo
+    source: [github-handle]/dpl
+    branch: [branch]
   on:
     branch: TEST_BRANCH # or all_branches: true
-  ⋮ # rest of provider X configuration
+  ⋮ # rest of your provider's configuration
 ```
 
-This builds the `dpl` gem on the VM
-from `https://github.com/myown/dpl`, the `foo` branch.
-Then it installs the locally built gem,
-and uses that to deploy.
+This builds the `dpl` gem on the Travis CI build environment from your
+repository, on the given branch. Then it installs the locally built gem, and
+uses it to run your deployment.
 
-Notice that this is not a merge commit, so it is important
-that when you are testing your PR, the branch `foo` is up-to-date
-with https://github.com/travis-ci/dpl/tree/master/.
+When submitting a pull request, please be sure to run at least one deployment
+with the new configuration, and provide a link to the build in your pull
+request.
 
-When opening a PR, be sure to run at least one deployment with the new configuration,
-and provide a link to the build in the PR.
+#### Code conventions
+
+Dpl does not follow any strict code styleguide.
+
+Please take a look around other providers, and try to follow a similar code
+style to what you find.
+
+If you are rather unfamiliar with Ruby, and have trouble following our code
+style then please submit your pull request anyway, so we can help.
+
+#### Naming conventions
+
+Dpl uses constant names following Ruby naming conventions. I.e. constant
+names use `CamelCase`, and they live in files named in `snake_case.rb`.
+
+If you pick such names for a new provider please try to follow these
+conventions.
+
+Real world service provider or company names do not always translate to such
+conventional Ruby names one-to-one. That is ok, they don't have to. These Ruby
+constant names are representations of real world service and company names in
+Ruby code.
+
+Other Ruby libraries often (not always) follow a similar thinking. E.g.
+even though Amazon Web Services brand name is `AWS` the module name
+they chose in their [aws-sdk](https://github.com/aws/aws-sdk-ruby) is
+`Aws`, not `AWS`.
 
 ## Automatic closure of old issues
 
-If an issue has been left open and untouched for 90 days or more, we automatically 
-close them. We do this to ensure that new issues are more easily noticeable, and 
-that old issues that have been resolved or are no longer relevant are closed. 
+If an issue has been left open and untouched for 90 days or more, we automatically
+close them. We do this to ensure that new issues are more easily noticeable, and
+that old issues that have been resolved or are no longer relevant are closed.
 You can read more about this [here](https://blog.travis-ci.com/2018-03-09-closing-old-issues).

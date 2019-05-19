@@ -20,7 +20,6 @@ module Dpl
       opts = with_required(opts)
       opts = opts.reject(&:internal?)
       opts = opts[0, 5]
-      p opts.map(&:name)
       cmd_for(opts)
     end
 
