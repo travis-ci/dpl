@@ -1,11 +1,14 @@
 $: << 'lib'
+$: << 'lib/dpl/assets/dpl'
 require 'dpl'
 
 def gems
-  skip = %i(bit_balloon help)
-  consts = Dpl::Provider.registry
-  consts = consts.reject { |key, _| skip.include?(key) }.to_h
-  consts.values.map(&:gem).flatten(1).uniq
+  # skip = %i(bit_balloon help)
+  names = Dpl::Providers.constants - [:BitBalloon]
+  consts = names.map { |name| Dpl::Providers.const_get(name) }
+  p consts
+  # consts = consts.reject { |key, _| skip.include?(key) }.to_h
+  consts.map(&:gem).flatten(1).uniq
 end
 
 source 'https://rubygems.org'
