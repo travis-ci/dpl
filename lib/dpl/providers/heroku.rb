@@ -14,7 +14,7 @@ module Dpl
       gem 'netrc', '~> 0.11.0'
       gem 'rendezvous', '~> 0.1.3'
 
-      opt '--strategy NAME', 'Heroku deployment strategy', default: 'api', enum: %w(api git)
+      opt '--strategy NAME', 'Heroku deployment strategy', default: 'api', enum: %w(api git), internal: true
       opt '--app APP', 'Heroku app name', default: :repo_name
       # mentioned in the code
       opt '--log_level LEVEL', internal: true
