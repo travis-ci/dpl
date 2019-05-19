@@ -7,6 +7,7 @@ require 'dpl/helper/env'
 require 'dpl/helper/interpolate'
 require 'dpl/helper/squiggle'
 require 'dpl/provider/dsl'
+require 'dpl/provider/examples'
 require 'dpl/version'
 
 module Dpl
@@ -80,6 +81,10 @@ module Dpl
     include Assets, Env, FileUtils, Interpolate, Squiggle
 
     class << self
+      def examples
+        @examples ||= super || Examples.new(self).to_s
+      end
+
       def install_deps?
         apt? || gem? || npm? || pip?
       end
