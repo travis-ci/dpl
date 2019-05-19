@@ -111,9 +111,14 @@ dependencies that do not look stable or widely supported.
 #### Runtime dependencies and local development
 
 Runtime dependencies can be declared on the provider class using the
-[DSL](lib/dpl/provider/dsl.rb). Ruby gem runtime dependencies, if any,
-additinally have to be added to the [Gemfile](Gemfile) for them to be present
-at test run time.
+[DSL](lib/dpl/provider/dsl.rb).
+
+In the case of APT, NPM, and Pip dependencies these will be installed via
+shell commands at the beginning of the deployment process.
+
+Ruby gem dependencies will be installed using Bundler's [inline API](https://github.com/bundler/bundler/blob/master/lib/bundler/inline.rb),
+at the beginning of the deployment process, so they are available in the same
+Ruby process from then on.
 
 #### Running the tests locally
 
