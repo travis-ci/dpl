@@ -1,8 +1,8 @@
 # Dpl [![Build Status](https://travis-ci.org/travis-ci/dpl.svg?branch=master)](https://travis-ci.org/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Gem Version](https://badge.fury.io/rb/dpl.png)](http://badge.fury.io/rb/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github)](https://coveralls.io/github/travis-ci/dpl?branch=master)
 
-## Writing and Testing a New Deployment Provider and new functionality
+## Development
 
-See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute to Dpl.
 
 ## Supported Providers
 
@@ -42,10 +42,6 @@ Dpl will deploy by default from the latest commit. Use the `--skip_cleanup` opti
 <%= help(key) %>
 ```
 <% end -%>
-
-## Development
-
-TBD
 
 ## Credits
 

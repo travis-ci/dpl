@@ -41,7 +41,7 @@ module Dpl
 
     def cmd_for(opts)
       return unless opts.any?
-      opts = required_opts.concat(opts).uniq
+      opts = required_opts.concat(opts).uniq.compact
       "dpl #{name} #{opts_for(opts)}"
     end
 
