@@ -2,7 +2,7 @@ require 'dpl/support/gems'
 
 describe Dpl::Support::Gems::Parse do
   let(:code) do
-    <<~code
+    <<-code
       module Dpl
         module Providers
           class CloudFiles < Provider
