@@ -1,0 +1,37 @@
+{
+  "package": {
+    "name": "name",
+    "repo": "repo",
+    "subject": "user",
+    "desc": "desc",
+    "website_url": "website_url",
+    "issue_tracker_url": "issue_tracker_url",
+    "vcs_url": "vcs_url",
+    "github_use_tag_release_notes": true,
+    "github_release_notes_file": "RELEASE.txt",
+    "licenses": ["MIT"],
+    "labels": ["one", "two", "three"],
+    "public_download_numbers": false,
+    "public_stats": false,
+    "attributes": [
+      { "name": "foo", "values" : ["foo"], "type": "string" },
+      { "name": "bar", "values" : [1], "type": "number" }
+    ]
+  },
+  "version": {
+    "name": "0.5",
+    "desc": "desc",
+    "released": "2015-01-01",
+    "vcs_tag": "0.5",
+    "attributes": [
+      { "name": "bar", "values" : ["bar"], "type": "string" },
+      { "name": "baz", "values" : [2], "type": "number" }
+    ],
+    "gpgSign": true
+  },
+  "files": [
+    { "includePattern": "build/bin(.*)*/(.*\\.gem)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gems/$2" },
+    { "includePattern": "build/doc/(.*)", "uploadPattern": "doc/$1" }
+  ],
+  "publish": true
+}
