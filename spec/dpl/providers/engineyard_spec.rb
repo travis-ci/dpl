@@ -3,7 +3,7 @@ describe Dpl::Providers::Engineyard do
   let(:headers) { { content_type: 'application/json' } }
 
   def response(key)
-    { body: fixture(:engineyard, key), status: 200, headers: headers }
+    { body: fixture(:engineyard, "#{key}.json"), status: 200, headers: headers }
   end
 
   before do

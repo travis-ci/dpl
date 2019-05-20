@@ -45,28 +45,30 @@ module Dpl
     # Implementors are encouraged to use named variables when possible, but
     # are free to choose according to their needs.
     def interpolate(str, args = [])
-      args.any? ? str % args : Interpolate.new(str, self).apply
+      return str % args if args.is_a?(Array) && args.any?
+      args = {} if args.is_a?(Array)
+      Interpolate.new(str, self, args || {}).apply
     end
 
-    class Interpolate < Struct.new(:str, :obj)
+    class Interpolate < Struct.new(:str, :obj, :args)
       MODIFIER = %i(obfuscate escape quote)
       PATTERN  = /%\{(\w+)\}/
 
       def apply
-        str.gsub(PATTERN) { |match| lookup($1.to_s) }
+        str.gsub(PATTERN) { |match| lookup($1.to_sym) }
       end
 
       def lookup(key)
         if mod = modifier(key)
-          key = key.sub("#{mod}d_", '')
+          key = key.to_s.sub("#{mod}d_", '')
           obj.send(mod, lookup(key))
         else
-          obj.send(key).to_s
+          args.key?(key) ? args[key] : obj.send(key).to_s
         end
       end
 
       def modifier(key)
-        MODIFIER.detect { |mod| key.start_with?("#{mod}d_") }
+        MODIFIER.detect { |mod| key.to_s.start_with?("#{mod}d_") }
       end
     end
   end
