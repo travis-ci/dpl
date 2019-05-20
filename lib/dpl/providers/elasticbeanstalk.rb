@@ -1,7 +1,7 @@
 
 module Dpl
   module Providers
-    class ElasticBeanstalk < Provider
+    class Elasticbeanstalk < Provider
       gem 'aws-sdk', '~> 2.0'
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
 

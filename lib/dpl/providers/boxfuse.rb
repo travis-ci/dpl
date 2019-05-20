@@ -11,7 +11,7 @@ module Dpl
       opt '--payload PAYLOAD'
       opt '--image IMAGE'
       opt '--env ENV'
-      opt '--args ARGS', alias: :extra_args, deprecated: :extra_args
+      opt '--extra_args ARGS'
 
       URL = 'https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/latest/boxfuse-commandline-latest-linux-x64.tar.gz'
 
@@ -29,7 +29,7 @@ module Dpl
           opts = %i(user secret payload image env)
           cmd = ['boxfuse/boxfuse run', *opts_for(opts)]
           cmd << "--configfile=#{config_file}" if config_file?
-          cmd << args if args?
+          cmd << extra_args if extra_args?
           cmd.compact.join(' ')
         end
     end

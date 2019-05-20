@@ -31,7 +31,7 @@ module Dpl
       opt '--subnet_ids IDS',             'List of subnet IDs to be added to the function. Needs the ec2:DescribeSubnets and ec2:DescribeVpcs permission for the user of the access/secret key to work.', type: :array
       opt '--security_group_ids IDS',     'List of security group IDs to be added to the function. Needs the ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the access/secret key to work.', type: :array
       opt '--dead_letter_arn ARN',        'ARN to an SNS or SQS resource used for the dead letter queue.'
-      opt '--tracing_mode MODE',          '"Active" or "PassThrough" only. Needs the xray:PutTraceSegments and xray:PutTelemetryRecords on the role for this to work.', default: 'PassThrough'
+      opt '--tracing_mode MODE',          'Tracing mode (Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role)', default: 'PassThrough', enum: %w(Active PassThrough)
       opt '--environment_variables VARS', 'List of Environment Variables to add to the function, needs to be in the format of KEY=VALUE. Can be encrypted for added security.', type: :array
       opt '--kms_key_arn ARN',            'KMS key ARN to use to encrypt environment_variables.'
       opt '--function_tags TAGS',         'List of tags to add to the function, needs to be in the format of KEY=VALUE. Can be encrypted for added security.', type: :array

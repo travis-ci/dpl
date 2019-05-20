@@ -1,30 +1,49 @@
 module Dpl
-  class Examples < Struct.new(:cmd)
-    def to_s
-      [requireds, required, many].flatten.compact.uniq.join("\n")
+  class Examples < Struct.new(:const)
+    def cmds
+      examples.map(&:cmd).join("\n")
+    end
+
+    def full_config
+      full.config
+    end
+
+    def configs
+      examples.map(&:config)
+    end
+
+    def examples
+      [requireds, required, many].flatten.compact.uniq
     end
 
     def requireds
-      requireds_opts.map { |opts| cmd_for(opts) }
+      requireds_opts.map { |opts| example(opts) }
     end
 
     def required
       opts = required_opts
-      cmd_for(opts)
+      example(opts)
     end
 
     def many
-      opts = cmd.opts.opts
+      opts = const.opts.opts
       opts = order(opts)
       opts = without_required(opts)
       opts = with_required(opts)
       opts = opts.reject(&:internal?)
       opts = opts[0, 5]
-      cmd_for(opts)
+      example(opts)
+    end
+
+    def full
+      opts = const.opts.opts
+      opts = opts.reject(&:internal?)
+      opts = opts.reject { |opt| opt.name == :help }
+      example(opts)
     end
 
     def order(opts)
-      cmmn = cmd.superclass.opts.opts
+      cmmn = const.superclass.opts.opts
       opts - cmmn + cmmn
     end
 
@@ -35,45 +54,71 @@ module Dpl
     end
 
     def without_required(opts)
-      opts = opts - cmd.required.flatten.map { |key| cmd.opts[key] }
+      opts = opts - const.required.flatten.map { |key| const.opts[key] }
       opts - required_opts.map(&:opts)
     end
 
-    def cmd_for(opts)
+    def example(opts)
       return unless opts.any?
       opts = required_opts.concat(opts).uniq.compact
-      "dpl #{name} #{opts_for(opts)}"
+      Example.new(const, opts)
     end
 
     def requireds_opts
-      opts = cmd.required.flatten(1)
-      opts.map { |keys| Array(keys).map { |key| cmd.opts[key] } }
+      opts = const.required.flatten(1)
+      opts.map { |keys| Array(keys).map { |key| const.opts[key] } }
     end
 
     def required_opts
-      cmd.opts.select(&:required?)
+      const.opts.select(&:required?)
+    end
+  end
+
+  class Example < Struct.new(:const, :opts)
+    def config
+      config = opts_for(opts)
+      config = config.merge(strategy: strategy) # hmm.
+      compact(config)
+    end
+
+    def strategy
+      const.registry_key.to_s.split(':').last if const.registry_key.to_s.include?(':')
+    end
+
+    def cmd
+      "dpl #{name} #{strs_for(opts)}"
+    end
+
+    def ==(other)
+      const == other.const && opts == other.opts
     end
 
     def name
-      cmd.registry_key.to_s.split(':').join(' ')
+      const.registry_key.to_s.split(':').join(' ')
     end
 
     def opts_for(opts)
-      opts.map { |opt| opt_for(opt) }.join(' ')
+      opts.map { |opt| [opt.name, value_for(opt)] }.to_h
     end
 
-    def opt_for(opt)
+    def strs_for(opts)
+      opts.map { |opt| str_for(opt) }.join(' ')
+    end
+
+    def str_for(opt)
       "--#{opt.name} #{value_for(opt)}".strip
     end
 
     def value_for(opt)
-      return if opt.type == :flag
-      opt.enum? ? opt.enum.first : example_for(opt)
-    end
-
-    def example_for(opt)
+      return true if opt.type == :flag
+      return 1 if opt.type == :integer
+      return opt.enum.first if opt.enum?
       str = opt.strs.detect { |str| str =~ /^--#{opt.name} (.*)$/ } && $1
       str ? str.downcase : 'str'
+    end
+
+    def compact(hash)
+      hash.reject { |_, value| value.nil? }
     end
   end
 end

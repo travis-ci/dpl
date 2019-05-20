@@ -1,4 +1,4 @@
-describe Dpl::Providers::OpenShift do
+describe Dpl::Providers::Openshift do
   let(:args) { |e| %w(--user user --password pass --domain domain) + args_from_description(e) }
 
   let(:user) { double(login: 'foo@bar.com') }

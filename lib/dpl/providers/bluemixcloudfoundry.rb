@@ -1,6 +1,6 @@
 module Dpl
   module Providers
-    class BluemixCloudFoundry < Provider
+    class Bluemixcloudfoundry < Provider
       full_name 'Bluemix Cloud Foundry'
 
       description sq(<<-str)

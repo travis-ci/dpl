@@ -82,7 +82,7 @@ module Dpl
 
     class << self
       def examples
-        @examples ||= super || Examples.new(self).to_s
+        @examples ||= super || Examples.new(self).cmds
       end
 
       def install_deps?

@@ -1,6 +1,6 @@
 module Dpl
   module Providers
-    class BitBalloon < Provider
+    class Bitballoon < Provider
       gem 'bitballoon', '~> 0.2.6'
 
       description sq(<<-str)

@@ -38,12 +38,7 @@ describe Dpl::Providers::Boxfuse do
     it { should have_run 'boxfuse/boxfuse run --env="env"' }
   end
 
-  describe 'given --args args' do
-    it { should have_run 'boxfuse/boxfuse run args' }
-  end
-
   describe 'given --extra_args args' do
     it { should have_run 'boxfuse/boxfuse run args' }
-    it { should have_deprecated :extra_args }
   end
 end

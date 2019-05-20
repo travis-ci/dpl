@@ -9,7 +9,7 @@ module Dpl
 
       opt '--app APP',       'The Atlas application to upload to', required: true
       opt '--token TOKEN',   'The Atlas API token', required: true
-      opt '--path PATH',     'Files or directories to upload', type: :array, default: ['.']
+      opt '--paths PATH',    'Files or directories to upload', type: :array, default: ['.']
       opt '--address ADDR',  'The address of the Atlas server'
       opt '--include GLOB',  'Glob pattern of files or directories to include', type: :array
       opt '--exclude GLOB',  'Glob pattern of files or directories to exclude', type: :array
@@ -27,7 +27,7 @@ module Dpl
       end
 
       def deploy
-        path.each { |path| upload(path) }
+        paths.each { |path| upload(path) }
       end
 
       private
