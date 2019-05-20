@@ -1,4 +1,4 @@
-describe Dpl::Providers::OpsWorks do
+describe Dpl::Providers::Opsworks do
   let(:args) { |e| %w(--access_key_id id --secret_access_key key --app_id app) + args_from_description(e) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
 

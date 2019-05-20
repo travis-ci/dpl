@@ -1,6 +1,6 @@
 module Dpl
   module Providers
-    class OpenShift < Provider
+    class Openshift < Provider
       gem 'httpclient', '~> 2.4.0'
       gem 'net-ssh', '~> 4.2.0', require: 'net/ssh'
       gem 'net-ssh-gateway', '~> 2.0.0', require: 'net/ssh/gateway'

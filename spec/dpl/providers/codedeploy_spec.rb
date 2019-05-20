@@ -1,4 +1,4 @@
-describe Dpl::Providers::CodeDeploy do
+describe Dpl::Providers::Codedeploy do
   let(:args) { |e| %w(--access_key_id id --secret_access_key key --application app) + args_from_description(e) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
 

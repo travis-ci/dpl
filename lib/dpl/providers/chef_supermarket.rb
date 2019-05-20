@@ -1,6 +1,10 @@
 module Dpl
   module Providers
     class ChefSupermarket < Provider
+      unregister
+      register :'chef-supermarket'
+      register :chef_supermarket
+
       gem 'chef', '~> 12.0', require: %w(
         chef/cookbook_loader
         chef/cookbook_uploader

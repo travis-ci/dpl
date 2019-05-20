@@ -1,6 +1,6 @@
 module Dpl
   module Providers
-    class CloudFoundry < Provider
+    class Cloudfoundry < Provider
       full_name 'Cloud Foundry'
 
       description sq(<<-str)

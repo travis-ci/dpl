@@ -1,6 +1,6 @@
 module Dpl
   module Providers
-    class OpsWorks < Provider
+    class Opsworks < Provider
       full_name 'AWS OpsWorks'
 
       description sq(<<-str)
@@ -19,7 +19,7 @@ module Dpl
       opt '--layer_ids ID', 'A layer id', type: :array
       opt '--migrate', 'Migrate the database.'
       opt '--wait_until_deployed', 'Wait until the app is deployed and return the deployment status.'
-      opt '--update_on_success', 'When wait-until-deployed and updated-on-success are both not given, application source is updated to the current SHA. Ignored when wait-until-deployed is not given.'
+      opt '--update_on_success', 'When wait-until-deployed and updated-on-success are both not given, application source is updated to the current SHA. Ignored when wait-until-deployed is not given.', alias: :update_app_on_success
       opt '--custom_json JSON', 'Custom json options override (overwrites default configuration)'
 
       msgs login:         'Logging in with Access Key: %{obfuscated_access_key_id}',

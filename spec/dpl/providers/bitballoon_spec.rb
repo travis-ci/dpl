@@ -1,4 +1,4 @@
-describe Dpl::Providers::BitBalloon do
+describe Dpl::Providers::Bitballoon do
   let(:args) { |e| %w(--access_token token --site_id id) + args_from_description(e) }
 
   before { subject.run }

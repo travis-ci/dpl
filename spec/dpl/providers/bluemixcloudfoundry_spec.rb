@@ -1,4 +1,4 @@
-describe Dpl::Providers::BluemixCloudFoundry do
+describe Dpl::Providers::Bluemixcloudfoundry do
   let(:args) { |e| %w(--username name --password pass --organization org --space space) + args_from_description(e) }
 
   file 'manifest.yml'

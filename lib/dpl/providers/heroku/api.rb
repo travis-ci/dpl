@@ -10,7 +10,7 @@ module Dpl
 
         opt '--api_key KEY', 'Heroku API key', required: true
         # mentioned in the code
-        opt '--version VERSION' # used in triggering a build, not sure this should be exposed?
+        opt '--version VERSION', internal: true # used in triggering a build, not sure this should be exposed?
 
         msgs pack:    'Creating application archive',
              upload:  'Uploading application archive',

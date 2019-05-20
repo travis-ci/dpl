@@ -1,4 +1,4 @@
-describe Dpl::Providers::PuppetForge do
+describe Dpl::Providers::Puppetforge do
   let(:args) { |e| %w(--user user --password pass) + args_from_description(e) }
 
   file 'metadata.json', JSON.dump(name: 'author-module')

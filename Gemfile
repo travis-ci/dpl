@@ -7,7 +7,7 @@ ruby '>= 2.2'
 gemspec name: 'dpl'
 # gem 'cl', path: '../../cl'
 
-gems = Dpl::Support::Gems.new('lib/dpl/providers/**/*.rb', except: :bit_balloon)
+gems = Dpl::Support::Gems.new('lib/dpl/providers/**/*.rb', except: :bitballoon)
 gems.each do |name, version, opts|
   gem name, version, opts
 end

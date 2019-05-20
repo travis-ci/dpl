@@ -1,6 +1,6 @@
 module Dpl
   module Providers
-    class EngineYard < Provider
+    class Engineyard < Provider
       # maybe use the cli (https://github.com/engineyard/engineyard) instead,
       # and get rid of the runtime gem dependency (also a lot easier to test)
       gem 'engineyard-cloud-client', '~> 2.1.0'
@@ -12,12 +12,13 @@ module Dpl
       required :api_key, [:email, :password]
 
       opt '--api_key KEY',     'Engine Yard API key'
+      # docs say it's username, but the code says it's email
       opt '--email EMAIL',     'Engine Yard account email'
       opt '--password PASS',   'Engine Yard password'
       opt '--app APP',         'Engine Yard application name', default: :repo_name
       opt '--environment ENV', 'Engine Yard application environment'
       opt '--migrate CMD',     'Engine Yard migration commands'
-      opt '--account NAME'
+      opt '--account NAME',    'Engine Yard account name'
 
       msgs deploy:          'Deploying ...',
            invalid_migrate: 'Invalid migration command, try --migrate="rake db:migrate"',

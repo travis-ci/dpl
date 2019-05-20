@@ -1,4 +1,4 @@
-describe Dpl::Providers::EngineYard do
+describe Dpl::Providers::Engineyard do
   let(:args)    { |e| args_from_description(e) }
   let(:headers) { { content_type: 'application/json' } }
 
