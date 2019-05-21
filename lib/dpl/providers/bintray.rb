@@ -1,4 +1,3 @@
-require 'json'
 require 'net/http'
 require 'uri'
 require 'find'
@@ -6,6 +5,8 @@ require 'find'
 module Dpl
   module Providers
     class Bintray < Provider
+      gem 'json'
+
       description sq(<<-str)
         tbd
       str
