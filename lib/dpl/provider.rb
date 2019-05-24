@@ -137,6 +137,7 @@ module Dpl
     opt '--run CMD',       'Command to execute after the deployment finished successfully', type: :array
     opt '--skip_cleanup',  'Skip cleaning up build artifacts before the deployment'
     opt '--stage NAME',    type: :array, internal: true, default: STAGES
+    opt '--fold',          internal: true
 
     msgs before_install:  'Installing deployment dependencies',
          before_setup:    'Setting the build environment up for the deployment',

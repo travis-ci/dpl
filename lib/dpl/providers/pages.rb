@@ -10,13 +10,13 @@ module Dpl
       str
 
       opt '--github_token TOKEN', 'GitHub oauth token with repo permission', required: true
-      opt '--repo SLUG', 'Repo slug, defaults to current one', default: :repo_slug
+      opt '--repo SLUG', 'Repo slug', default: :repo_slug
       opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
-      opt '--keep_history', 'Create incremental commit instead of doing push force, defaults to false'
+      opt '--keep_history', 'Create incremental commit instead of doing push force'
       opt '--allow_empty_commit', 'Allow an empty commit to be created', requires: :keep_history
       opt '--committer_from_gh', 'Use the token\'s owner name and email for commit. Overrides the email and name options'
       opt '--verbose', 'Be verbose about the deploy process'
-      opt '--local_dir DIR', 'Directory to push to GitHub Pages, defaults to current', default: '.'
+      opt '--local_dir DIR', 'Directory to push to GitHub Pages', default: '.'
       opt '--fqdn FQDN', 'Writes your website\'s domain name to the CNAME file'
       opt '--project_name NAME', 'Used in the commit message only (defaults to fqdn or the current repo slug)'
       opt '--email EMAIL', 'Committer email', default: 'deploy@travis-ci.org'
@@ -24,7 +24,7 @@ module Dpl
       # what is the purpose of this file in the first place? a file name with
       # spaces seems highly irregular, but this has been there from the start
       # https://github.com/travis-ci/dpl/commit/58f6c7dd4f0fd49df2e93a8495fd01c7784d4f58#diff-cc5438ae072229825b07abf38951a912R47
-      opt '--deployment-file', 'Enable creation of a deployment-info file'
+      opt '--deployment_file', 'Enable creation of a deployment-info file'
       # not mentioned in the readme
       opt '--github_url URL', default: 'github.com'
       # how about the octokit options?
