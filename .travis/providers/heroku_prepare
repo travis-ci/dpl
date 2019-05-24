@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+dir = 'tmp/dpl_test_heroku'
+mkdir_p dir
+chdir dir
+
+File.write 'Gemfile', <<~str
+  source 'https://rubygems.org'
+  gem 'rack'
+str
+
+File.write 'config.ru', <<~str
+  require 'rack'
+  run ->(env) {  [200, { 'Content-type' => 'text/plain' }, ['#{ENV['ID']}']] }
+str
+
+system 'bundle install'
+system 'git init'
+system 'git add .'
+system "git commit -m 'test dpl heroku #{Time.now}'"

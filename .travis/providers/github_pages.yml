@@ -1,0 +1,27 @@
+language: shell
+
+script:
+  - true
+
+before_deploy:
+  - .travis/providers/github_pages_prepare
+  - cd tmp/dpl_test_github_pages
+
+deploy:
+  - provider: pages
+    repo: travis-ci/dpl_test
+    edge:
+      branch: sf-dpl2
+    on:
+      branch: sf-dpl2
+    github_token:
+      # personal access token with repo scope on travis-handworker
+      secure: "LWr5EoK9Zj40eaNsO1LaxZWX3Mz6OVmTDdSRFrLtv+ogW2yjw8Y1RaPdLc25dulCpgpuVzD8y7MZc7ArR2U7Tia/bZ0bzdch2feG237qg5cWc2LPxvV0SVXVnY3raHfN8mJ1lZIThCp9Nw3BeXiXnlgSQq6MaGmvo4jc4UDrlnk="
+    # keep_history: true
+    committer_from_gh: true
+    verbose: true
+    deployment_file: true
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/github_pages_test

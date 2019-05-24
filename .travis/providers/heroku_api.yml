@@ -1,0 +1,25 @@
+language: shell
+
+script:
+  - true
+
+before_deploy:
+  - .travis/providers/heroku_prepare
+  - cd tmp/dpl_test_heroku
+
+deploy:
+  - provider: heroku
+    strategy: api
+    app: dpl-test-heroku-api
+    edge:
+      branch: sf-dpl2
+    on:
+      branch: sf-dpl2
+    api_key:
+      # token by svenfuchs
+      # expires on 2020-06-03, heroku authorizations:add to create a permanent one
+      secure: "oRkMIOZFNAqLeMK/5la39VC7BcGNf//KiOo4chblbkRdFdaW/Mp5MqgAwTjvwGU5NYnkKTd3FIWQeHESh20sWkGRAZI4tc794fTpMqXilhiQitvJqJsU8Drx2UFZsOsBd2VxSZ4E/JkFq07nLSt2epcMAFtJrQ/XktotrZTwq5Q="
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/heroku_test https://dpl-test-heroku-api.herokuapp.com/

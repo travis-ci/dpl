@@ -4,9 +4,9 @@ module Dpl
       def self.new(ctx, args)
         # can this be a generic dispatch feature in Cl?
         return super unless registry_key.to_sym == :heroku
-        i = args.index('--strategy')
-        _, opts = parse(ctx, i ? args[i, 2] : [])
-        Provider[:"heroku:#{opts[:strategy]}"].new(ctx, args)
+        arg = args.detect { |arg| arg.include?('--provider') }
+        strategy = arg ? arg.split('=').last : 'api'
+        Provider[:"heroku:#{strategy}"].new(ctx, args)
       end
 
       gem 'faraday', '~> 0.9.2'
@@ -80,7 +80,7 @@ module Dpl
         end
 
         def headers
-          return HEADERS.dup unless username && password
+          return HEADERS.dup if username && password
           HEADERS.merge('Authorization': "Bearer #{api_key}")
         end
 

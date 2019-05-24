@@ -15,9 +15,8 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.2'
 
   s.executables = ['dpl']
-  s.files       = `git ls-files -- {[A-Z]*,lib/**/*}`.split("\n")
-  s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.files       = Dir['{lib/**/*,[A-Z]*}']
 
-  s.add_runtime_dependency 'cl', '~> 0.1'
+  s.add_runtime_dependency 'cl', '~> 0.1.13'
   s.add_development_dependency 'rake', '~> 12.3'
 end
