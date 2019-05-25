@@ -2,6 +2,7 @@ module Dpl
   module Providers
     class Releases < Provider
       gem 'octokit', '~> 4.14.0'
+      gem 'mime-types', '~> 3.2.2'
 
       full_name 'GitHub Releases'
 
@@ -50,7 +51,9 @@ module Dpl
 
       def validate
         info :deploy
+        # might not have a git remote set up
         shell 'git fetch --tags' if env_tag.nil?
+        # error if local_tag is nil?
         info :local_tag
       end
 
@@ -98,8 +101,9 @@ module Dpl
       end
 
       def content_type(file)
-        content_type = MIME::Types.type_for(file).first
-        content_type || 'application/octet-stream'
+        type = MIME::Types.type_for(file).first
+        type ||= 'application/octet-stream'
+        type.to_s
       end
 
       def url
