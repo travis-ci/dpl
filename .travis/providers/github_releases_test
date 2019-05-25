@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require 'open-uri'
+require 'json'
+
+expected = ENV['ID']
+url = 'https://api.github.com/repos/travis-ci/dpl_test/releases/latest'
+
+10.times do
+  puts "Checking #{url}"
+  uri = URI.parse(url)
+  actual = JSON.load(uri.read)['tag_name']
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual == expected
+  sleep 5
+end
+
+abort 'failed'

@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+dir = 'tmp/dpl_test_github_releases'
+mkdir_p dir
+chdir dir
+
+File.write 'dpl_test.rb', <<~str
+  p #{ENV['ID'].inspect}
+str
+
+system 'git init'
+system 'git add .'
+system "git commit -m 'test dpl github releases #{Time.now}'"
+system "git tag -a #{ENV['ID']} -m 'version #{ENV['ID']}'"
