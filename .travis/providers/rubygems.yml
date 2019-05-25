@@ -1,0 +1,24 @@
+language: shell
+
+script:
+  - true
+
+before_deploy:
+  - .travis/providers/rubygems_prepare
+  - cd tmp/dpl_test_rubygems
+
+deploy:
+  - provider: rubygems
+    edge:
+      branch: sf-dpl2
+    on:
+      branch: sf-dpl2
+    user:
+      secure: "WP2iPs35JqfSm0PhHJ7V2VqAj5eaWKY6oJfEEa3KxriXsvUqb4Hao25ft3qZPmNugVm+VCI78ft1bPhAzuI14t4IkfG4000+HGoAjdBRUBWbXev6DMxDW14bOa0laxdX8uOs5v73bSfvkHIe5GMOHtpKKqpfMbmx63gVs/Ayxhc="
+    password:
+      secure: "qZWpjy9yFJ482KhQOMic19rfQH9UmFGKpKD7Fm0XPPl6gG2HDnMyGiI7qI78P39sotnbipi/WYESo5y9zyjKZnLlkQZtuce500s7wZiolyZAh0GN5rXZLl5HB2rrY2qEfevh26T0LV1tZqj8vXn8GqEu+bL16I4JgD5/i+kEPXo="
+    gem: dpl_test
+    gemspec_glob: ./dpl_*.gemspec
+    skip_cleanup: true
+    host: http://localhost:9292
+    run: cd ../.. && .travis/providers/rubygems_test
