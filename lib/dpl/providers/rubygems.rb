@@ -22,9 +22,12 @@ module Dpl
            login_creds:   'Authenticating with username %{username} and password.',
            gem_lookup:    'Looking up gem %{gem} ... ',
            gem_found:     'found.',
-           gem_not_found: 'no such gem.'
+           gem_not_found: 'no such gem.',
+           gem_push:      'Pushing gem %{gem}'
 
-      cmds build_gemspecs: 'for gemspec in %{gemspec_glob}; do gem build $gemspec; done'
+      cmds gem_build: 'gem build %s'
+
+      errs gem_build: 'Failed to build %s'
 
       def setup
         Gems.host = host if host?
@@ -54,12 +57,17 @@ module Dpl
       private
 
         def build
-          shell :build_gemspecs
+          Dir[gemspec_glob].each do |gemspec|
+            shell :gem_build, gemspec, echo: true, assert: true
+          end
         end
 
         def push
-          Dir.glob("#{gem}-*.gem") do |file|
-            info Gems.push(File.new(file), *host)
+          # this seems improvable: if a gemspec_glob has been given it might
+          # not match this glob, and not all gems would be pushed
+          Dir["#{gem}-*.gem"].each do |file|
+            info :gem_push, gem: file
+            info Gems.push(File.new(file), *[host])
           end
         end
 

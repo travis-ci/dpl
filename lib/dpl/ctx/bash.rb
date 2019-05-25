@@ -135,6 +135,9 @@ module Dpl
           source 'https://rubygems.org'
           gems.each { |g| gem *g }
         end
+        ENV.replace(Bundler.original_env) # it would seem to me that clean_env should do this, but apparently it does not?
+        # Bundler.clean_env
+        # Bundler.reset!
       end
 
       # Installs an NPM package
@@ -213,7 +216,7 @@ module Dpl
         cmd = "#{cmd} > /dev/null 2>&1" if opts[:silence]
         cmd = with_python(cmd, opts[:python]) if opts[:python]
 
-        info cmd if opts[:echo]
+        info "$ #{cmd}" if opts[:echo]
         out, err, @last_status = retrying(opts[:retry] ? 2 : 0) do
           opts[:capture] ? open3(cmd, opts) : system(cmd, opts)
         end
