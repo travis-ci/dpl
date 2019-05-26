@@ -17,6 +17,7 @@ module Dpl
 
       env :aws
 
+      # how come there is no glob or file option?
       opt '--access_key_id ID', 'AWS access key id', required: true
       opt '--secret_access_key KEY', 'AWS secret key', required: true
       opt '--bucket BUCKET', 'S3 bucket', required: true
