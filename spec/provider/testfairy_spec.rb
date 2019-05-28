@@ -24,7 +24,7 @@ describe DPL::Provider::TestFairy do
 
 
   describe "#check_auth" do
-    
+
     example "check_auth without app_file" do
       expect {provider.check_auth}.to raise_error("App file is missing")
     end
@@ -46,17 +46,17 @@ describe DPL::Provider::TestFairy do
       expect {provider.check_auth }.to raise_error("App file is missing")
     end
 
-    example "push_app with app_file" do
+    skip "push_app with app_file" do
       provider.options.update(:app_file => @local_android_app)
       provider.push_app
     end
 
-    example "push_app with iOS app_file" do
+    skip "push_app with iOS app_file" do
       provider.options.update(:app_file => @local_ios_app)
       provider.push_app
     end
 
-    example "push_app with notifify param" do
+    skip "push_app with notifify param" do
       provider.options.update(:app_file => @local_ios_app)
       provider.options.update(:notify => true)
       provider.push_app
