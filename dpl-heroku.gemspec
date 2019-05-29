@@ -1,3 +1,3 @@
 require './gemspec_helper'
 
-gemspec_for 'heroku', [['faraday'], ['rendezvous'], ['netrc']]
+gemspec_for 'heroku', [['rendezvous'], ['netrc']]
