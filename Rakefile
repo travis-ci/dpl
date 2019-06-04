@@ -184,7 +184,7 @@ providers.each do |provider|
     rm_rf "stubs"
     rm_rf "vendor"
     logger.info green("Installing dpl-#{provider} gem")
-    sh "gem install --no-post-install-message dpl-#{provider}-#{gem_version}.gem"
+    sh "gem install --no-document --no-post-install-message dpl-#{provider}-#{gem_version}.gem"
     logger.info green("Testing dpl-#{provider} loads correctly")
     ruby "-S dpl --provider=#{provider} --skip-cleanup=true --no-deploy"
   end
