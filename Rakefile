@@ -181,6 +181,8 @@ providers.each do |provider|
 
   desc "Test dpl-#{provider} gem"
   task "check-#{provider}" => [Rake::FileTask[dpl_bin], "dpl-#{provider}-#{gem_version}.gem"] do
+    rm_rf "stubs"
+    rm_rf "vendor"
     logger.info green("Installing dpl-#{provider} gem")
     sh "gem install --no-post-install-message dpl-#{provider}-#{gem_version}.gem"
     logger.info green("Testing dpl-#{provider} loads correctly")
