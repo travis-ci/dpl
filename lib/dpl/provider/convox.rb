@@ -70,7 +70,7 @@ module DPL
         options[:description] || "Travis job ##{context.env['TRAVIS_BUILD_NUMBER']}/commit #{context.env['TRAVIS_COMMIT']}"
       end
 
-      def setenvs(_cmd)
+      def setenvs
         cli_vars.each do |k, v|
           ENV[k.to_s] = v
         end
