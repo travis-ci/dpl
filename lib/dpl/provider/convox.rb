@@ -70,14 +70,10 @@ module DPL
         options[:description] || "Travis job ##{context.env['TRAVIS_BUILD_NUMBER']}/commit #{context.env['TRAVIS_COMMIT']}"
       end
 
-      def setenvs
+      def convox_exec(cmd)
         cli_vars.each do |k, v|
           ENV[k.to_s] = v
         end
-      end
-
-      def convox_exec(cmd)
-        setenvs
         context.shell "#{convox_cli} #{cmd}"
       end
 
@@ -137,6 +133,9 @@ module DPL
       end
 
       def run(command)
+        cli_vars.each do |k, v|
+          ENV[k.to_s] = v
+        end
         error 'Running command failed.' unless context.shell command.to_s
       end
 
