@@ -70,10 +70,13 @@ module DPL
         options[:description] || "Travis job ##{context.env['TRAVIS_BUILD_NUMBER']}/commit #{context.env['TRAVIS_COMMIT']}"
       end
 
-      def convox_exec(cmd)
+      def setenvs
         cli_vars.each do |k, v|
           ENV[k.to_s] = v
         end
+      end
+
+      def convox_exec(cmd)
         context.shell "#{convox_cli} #{cmd}"
       end
 
@@ -87,14 +90,6 @@ module DPL
         unless convox_exec "build --rack #{option(:rack)} --app #{option(:app)} --id --description \"#{build_description}\""
           error 'Convox application deployment failed'
         end
-      end
-
-      def update_envs
-        cenvs = options[:environment] || []
-        cenvs = [cenvs] if cenvs.is_a? String
-        cenvs.map! { |entry| "'" + entry.gsub(%('), %('"'"')) + "'" }
-
-        convox_exec("env set #{cenvs.join(' ')} --rack #{option(:rack)} --app #{option(:app)} --replace")
       end
 
       # Disable cleanup - we need our binary
@@ -114,6 +109,7 @@ module DPL
       end
 
       def check_app
+        setenvs
         unless convox_exec "apps info --rack #{option(:rack)} --app #{option(:app)}"
           log 'Application doesn\'t exist.'
           # Create new app and wait
