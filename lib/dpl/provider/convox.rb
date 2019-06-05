@@ -130,20 +130,30 @@ module DPL
         end
       end
 
+      def run_cmds(from)
+        Array(options[from]).each do |command|
+          context.fold(format('Running %p', command)) { run(command) }
+        end
+      end
+
       def run(command)
-        setenvs
         error 'Running command failed.' unless context.shell command.to_s
       end
 
       def push_app
-        update_envs if options[:environment]
+        setenvs
+        Array(options[:before_push]).each do |command|
+          context.fold(format('Running %p', command)) { run(command) }
+        end
 
         if convox_promote
-          log 'Building and promoting application'
-          convox_deploy
+          context.fold('Building and promoting application') { convox_deploy }
         else
-          log 'Building application only'
-          convox_build
+          context.fold('Building application only') { convox_build }
+        end
+
+        Array(options[:after_push]).each do |command|
+          context.fold(format('Running %p', command)) { run(command) }
         end
       end
     end
