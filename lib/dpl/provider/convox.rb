@@ -140,7 +140,6 @@ module DPL
       end
 
       def push_app
-        setenvs
         Array(options[:before_push]).each do |command|
           context.fold(format('Running %p', command)) { run(command) }
         end
