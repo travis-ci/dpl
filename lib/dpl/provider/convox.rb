@@ -55,7 +55,10 @@ module DPL
       def cli_vars
         {
           CONVOX_HOST: convox_host,
-          CONVOX_PASSWORD: convox_pass
+          CONVOX_PASSWORD: convox_pass,
+          CONVOX_APP: option(:app),
+          CONVOX_RACK: option(:rack),
+          CONVOX_CLI: convox_cli
         }
       end
 
@@ -67,10 +70,14 @@ module DPL
         options[:description] || "Travis job ##{context.env['TRAVIS_BUILD_NUMBER']}/commit #{context.env['TRAVIS_COMMIT']}"
       end
 
-      def convox_exec(cmd)
+      def setenvs(_cmd)
         cli_vars.each do |k, v|
           ENV[k.to_s] = v
         end
+      end
+
+      def convox_exec(cmd)
+        setenvs
         context.shell "#{convox_cli} #{cmd}"
       end
 
@@ -118,9 +125,14 @@ module DPL
             log "Creating new application #{option(:app)} on rack #{option(:rack)}"
             convox_exec "apps create #{option(:app)} --generation #{convox_gen} --rack #{option(:rack)} --wait"
           else
-            error 'Cannot deploy to inexistent app.'
+            error 'Cannot deploy to inexisting app.'
           end
         end
+      end
+
+      def run(command)
+        setenvs
+        error 'Running command failed.' unless context.shell command.to_s
       end
 
       def push_app
