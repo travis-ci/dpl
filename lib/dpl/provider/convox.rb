@@ -100,10 +100,11 @@ module DPL
           # Check if file exists
           error 'env_file doesn\'t exist' unless File.exist?(options[:env_file])
           # Read file
-          File.open(options[:env_file]) do |line|
-            # Parse envs to dict and add to env_map
-            chomped_line = line.chomp
-            env_map.push(chomped_line) unless chomped_line.empty?
+          File.open(options[:env_file]) do |file|
+            file.each do |line|
+              # Parse envs to dict and add to env_map
+              env_map.push(line.chomp) unless line.chomp.empty?
+            end
           end
         end
 
