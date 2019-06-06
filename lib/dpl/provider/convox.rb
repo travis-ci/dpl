@@ -102,7 +102,8 @@ module DPL
           # Read file
           File.open(options[:env_file]) do |line|
             # Parse envs to dict and add to env_map
-            env_map.push(line) unless line.empty?
+            chomped_line = line.chomp
+            env_map.push(chomped_line) unless chomped_line.empty?
           end
         end
 
