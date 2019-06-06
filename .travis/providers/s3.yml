@@ -25,4 +25,4 @@ deploy:
 
 # why does deploy.run not work here?
 after_deploy:
-  - .travis/providers/s3_test
+  - travis_assert .travis/providers/s3_test

@@ -1,5 +1,13 @@
 #!/usr/bin/env ruby
 
+# Triggers a build on travis-ci.org/travis-ci/dpl.
+#
+# Requires either ENV['TRAVIS_API_TOKEN'] to be set, or --token to be given.
+#
+# If no arguments are given then jobs for all providers are included,
+# otherwise arguments are interpreted as provider names and matched
+# against YAML config files in .travis/providers.
+
 require 'json'
 require 'net/http'
 require 'securerandom'
@@ -27,8 +35,13 @@ def post(uri, body, opts)
   http.request(req)
 end
 
+def paths
+  glob = ARGV.any? ? ARGV.join(',') : '*'
+  Dir[".travis/providers/{#{glob}}.yml"]
+end
+
 def jobs
-  Dir['.travis/providers/*.yml'].map do |path|
+  paths.map do |path|
     job = YAML.load(File.read(path))
     job[:name] = path =~ %r(providers/(.+)\.yml) && $1
     job
