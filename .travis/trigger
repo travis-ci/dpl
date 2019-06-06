@@ -28,8 +28,10 @@ def post(uri, body, opts)
 end
 
 def jobs
-  Dir['./travis/providers/*.yml'].map do |path|
-    YAML.load(File.read(path))
+  Dir['.travis/providers/*.yml'].map do |path|
+    job = YAML.load(File.read(path))
+    job[:name] = path =~ %r(providers/(.+)\.yml) && $1
+    job
   end
 end
 
@@ -44,9 +46,13 @@ body = {
     config: {
       import: './.travis/blank.yml', # skips .travis.yml
       env: {
-        ID: SecureRandom.hex
+        global: {
+          ID: SecureRandom.hex
+        }
       },
-      jobs: jobs
+      matrix: {
+        include: jobs
+      }
     }
   }
 }
