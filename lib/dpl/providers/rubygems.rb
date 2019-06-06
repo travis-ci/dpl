@@ -16,7 +16,7 @@ module Dpl
       # only mentioned in code
       opt '--username USER', 'Rubygems user name', alias: :user
       opt '--password PASS', 'Rubygems password'
-      opt '--host URL'
+      opt '--host URL', default: 'https://rubygems.org'
 
       msgs login_api_key: 'Authenticating with api key.',
            login_creds:   'Authenticating with username %{username} and password.',
