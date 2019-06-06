@@ -92,6 +92,33 @@ module DPL
         end
       end
 
+      def update_envs
+        cenvs = options[:environment] || []
+        cenvs = [cenvs] if cenvs.is_a? String
+        cenvs.map! { |entry| "'" + entry.gsub(%('), %('"'"')) + "'" }
+
+        convox_exec("env set #{cenvs.join(' ')} --rack #{option(:rack)} --app #{option(:app)} --replace")
+      end
+
+      def environment
+        env_map = {}
+
+        # Read from env_file
+        if options[:env_file]
+          # Check if file exists
+          error 'env_file doesn\'t exist' unless File.exist?(options[:env_file])
+          # Read file
+          File.open(options[:env_file]) do |line|
+            # Parse envs to dict and add to env_map
+            e_key, e_val = line.split('=', 2)
+            env_map[e_key] = e_val
+          end
+        end
+
+        # Read from travis yaml
+        env_map.merge!(options[:environment])
+      end
+
       # Disable cleanup - we need our binary
       def cleanup; end
 
@@ -109,7 +136,7 @@ module DPL
       end
 
       def check_app
-        setenvs
+        setenvs # Set CONVOX_* envs for deployment process
         unless convox_exec "apps info --rack #{option(:rack)} --app #{option(:app)}"
           log 'Application doesn\'t exist.'
           # Create new app and wait
@@ -136,6 +163,8 @@ module DPL
       end
 
       def push_app
+        update_envs if environment
+
         Array(options[:before_push]).each do |command|
           context.fold(format('Running %p', command)) { run(command) }
         end
