@@ -24,4 +24,4 @@ deploy:
 
 after_deploy:
   - cd ../..
-  - .travis/providers/github_pages_test
+  - travis_assert .travis/providers/github_pages_test
