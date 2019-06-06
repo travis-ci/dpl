@@ -107,9 +107,6 @@ module DPL
             end
           end
         end
-
-        # Read from travis yaml
-        env_map.concat options[:env]
       end
 
       def environment
