@@ -1,4 +1,11 @@
+#!/usr/bin/env ruby
+
+$: << 'lib'
+
 require 'dpl'
+
+# This tests installing runtime dependencies for all providers, as part of
+# a second stage in .travis.yml.
 
 def opts_for(provider)
   opts = provider.opts.select(&:required?)
