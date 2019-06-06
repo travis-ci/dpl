@@ -92,16 +92,8 @@ module DPL
         end
       end
 
-      def update_envs
-        cenvs = options[:environment] || []
-        cenvs = [cenvs] if cenvs.is_a? String
-        cenvs.map! { |entry| "'" + entry.gsub(%('), %('"'"')) + "'" }
-
-        convox_exec("env set #{cenvs.join(' ')} --rack #{option(:rack)} --app #{option(:app)} --replace")
-      end
-
-      def environment
-        env_map = {}
+      def env_file
+        env_map = []
 
         # Read from env_file
         if options[:env_file]
@@ -110,13 +102,27 @@ module DPL
           # Read file
           File.open(options[:env_file]) do |line|
             # Parse envs to dict and add to env_map
-            e_key, e_val = line.split('=', 2)
-            env_map[e_key] = e_val
+            env_map.push(line) unless line.empty?
           end
         end
 
         # Read from travis yaml
-        env_map.merge!(options[:environment])
+        env_map.concat options[:env]
+      end
+
+      def environment
+        cenvs = env_file
+
+        yenvs = options[:env] || []
+        yenvs = [yenvs] if yenvs.is_a? String
+
+        cenvs.concat yenvs
+
+        cenvs.map! { |entry| "'" + entry.gsub(%('), %('"'"')) + "'" }
+      end
+
+      def update_envs
+        convox_exec("env set #{environment.join(' ')} --rack #{option(:rack)} --app #{option(:app)} --replace")
       end
 
       # Disable cleanup - we need our binary
