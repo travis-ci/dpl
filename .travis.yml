@@ -23,7 +23,7 @@ jobs:
       - gem build dpl.gemspec
       - gem install dpl-*.gem
       script:
-      - ruby -Ilib .travis/test_install.rb
+      - .travis/test_install
       rvm: 2.2.7
     - <<: *job
       rvm: 2.3.4
