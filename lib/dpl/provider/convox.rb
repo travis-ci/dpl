@@ -107,6 +107,8 @@ module DPL
             end
           end
         end
+
+        env_map
       end
 
       def environment
