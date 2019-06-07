@@ -2,7 +2,8 @@
 
 # Triggers a build on travis-ci.org/travis-ci/dpl.
 #
-# Requires either ENV['TRAVIS_API_TOKEN'] to be set, or --token to be given.
+# Requires either ENV['TRAVIS_API_TOKEN'] to be set, or -t/--token to
+# be given.
 #
 # If no arguments are given then jobs for all providers are included,
 # otherwise arguments are interpreted as provider names and matched
@@ -37,7 +38,7 @@ end
 
 def paths
   glob = ARGV.any? ? ARGV.join(',') : '*'
-  Dir[".travis/providers/{#{glob}}.yml"]
+  Dir[".travis/providers/{#{glob}}.yml"].sort
 end
 
 def jobs

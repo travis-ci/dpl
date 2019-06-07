@@ -21,4 +21,5 @@ deploy:
     gemspec_glob: ./dpl_*.gemspec
     skip_cleanup: true
     host: http://localhost:9292
-    run: cd ../.. && travis_assert .travis/providers/rubygems_test
+
+after_deploy: cd ../.. && .travis/providers/rubygems_test || TRAVIS_TEST_RESULT=$?
