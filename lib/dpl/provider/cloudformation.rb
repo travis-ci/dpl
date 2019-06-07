@@ -278,8 +278,21 @@ module DPL
       end
 
       def run(command)
-        ENV['CF_STACK_NAME'] = stack_name
         error 'Running command failed.' unless context.shell command.to_s
+      end
+
+      def save_outputs
+        return nil unless options[:outputs_file]
+
+        # Fetch outputs
+        resp = client.describe_stacks(stack_name: stack_name)
+        outputs = resp.stacks[0].outputs || {}
+        # Store to file
+        File.open(options[:outputs_file]) do |file|
+          outputs.each do |output|
+            file.puts "#{output.output_key}=#{output.output_value}"
+          end
+        end
       end
 
       def deploy
@@ -300,6 +313,8 @@ module DPL
         else
           cf_create
         end
+
+        save_outputs
       end
     end
   end
