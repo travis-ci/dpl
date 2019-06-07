@@ -15,9 +15,11 @@ deploy:
     on:
       branch: sf-dpl2
     user:
-      secure: "WP2iPs35JqfSm0PhHJ7V2VqAj5eaWKY6oJfEEa3KxriXsvUqb4Hao25ft3qZPmNugVm+VCI78ft1bPhAzuI14t4IkfG4000+HGoAjdBRUBWbXev6DMxDW14bOa0laxdX8uOs5v73bSfvkHIe5GMOHtpKKqpfMbmx63gVs/Ayxhc="
+      # the string username
+      secure: "XGeKKoJAMCH88Es5PvfY/+WW8KneG+fsygOyj0ov+RuJkIlcm44mES6scM8yCXPYecVX6gDPaIegz63g0VDVgM+uGN5/z9UKO2q7t39R+r7APml2CT1hq21zWcF6SsaM+kEwzuK4COy0RsLxOG0fX+wankEUes2n15UBSfasp2s="
     password:
-      secure: "qZWpjy9yFJ482KhQOMic19rfQH9UmFGKpKD7Fm0XPPl6gG2HDnMyGiI7qI78P39sotnbipi/WYESo5y9zyjKZnLlkQZtuce500s7wZiolyZAh0GN5rXZLl5HB2rrY2qEfevh26T0LV1tZqj8vXn8GqEu+bL16I4JgD5/i+kEPXo="
+      # the string password
+      secure: "HNromDkeUbrKu+uvYt3SOQ/OCB//A2oxvlRudU1ECuh+5lyyLnXLR6vVxbAEUc7GNNNQp722lyV9Ni4y1GroIDGH7ysviA3u1cUaY8d1PHs3/xBxjgOnNcvnz4d4LUWIEhdELpacLPqe1U0H+EmfbyxV3EZ7Xo8IU7QrEMQyytw="
     gem: dpl_test
     gemspec_glob: ./dpl_*.gemspec
     skip_cleanup: true

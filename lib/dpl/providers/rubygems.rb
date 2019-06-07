@@ -16,10 +16,11 @@ module Dpl
       # only mentioned in code
       opt '--username USER', 'Rubygems user name', alias: :user
       opt '--password PASS', 'Rubygems password'
-      opt '--host URL', default: 'https://rubygems.org'
+      opt '--host URL'
 
       msgs login_api_key: 'Authenticating with api key.',
            login_creds:   'Authenticating with username %{username} and password.',
+           setup:         'Setting up host %{host}',
            gem_lookup:    'Looking up gem %{gem} ... ',
            gem_found:     'found.',
            gem_not_found: 'no such gem.',
@@ -30,7 +31,9 @@ module Dpl
       errs gem_build: 'Failed to build %s'
 
       def setup
-        Gems.host = host if host?
+        return unless host?
+        info :setup
+        Gems.host = host
       end
 
       def login
@@ -65,9 +68,7 @@ module Dpl
         def push
           Dir["#{gem}-*.gem"].each do |file|
             info :gem_push, gem: file
-            msg = Gems.push(File.new(file), *[host])
-            p msg
-            info msg
+            info Gems.push(File.new(file), *[host].compact)
           end
         end
 
