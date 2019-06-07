@@ -32,7 +32,8 @@ module Dpl
 
       def setup
         return unless host?
-        require 'dpl/support/gems_debug'
+        # require 'dpl/support/gems_debug'
+        require 'dpl/support/geminabox'
         info :setup
         Gems.host = host
       end

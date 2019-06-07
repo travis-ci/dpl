@@ -25,4 +25,7 @@ deploy:
     skip_cleanup: true
     host: http://localhost:9292
 
-after_deploy: cd ../.. && .travis/providers/rubygems_test || TRAVIS_TEST_RESULT=$?
+after_deploy:
+  - curl http://localhost:9292/reindex
+  - cat /tmp/debug.txt
+  - cd ../.. && .travis/providers/rubygems_test || TRAVIS_TEST_RESULT=$?
