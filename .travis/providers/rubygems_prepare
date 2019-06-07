@@ -59,12 +59,10 @@ file 'dpl_test.gemspec', <<~str
   end
 str
 
-fork do
-  file 'config.ru', <<~str
-    require 'geminabox'
-    run Geminabox::Server
-  str
+file 'config.ru', <<~str
+  require 'geminabox'
+  run Geminabox::Server
+str
 
-  run 'gem install geminabox'
-  run 'rackup'
-end
+run 'gem install geminabox'
+run 'rackup'
