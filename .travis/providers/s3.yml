@@ -25,4 +25,4 @@ deploy:
 
 # why does deploy.run not work here?
 after_deploy:
-  - travis_assert .travis/providers/s3_test
+  - .travis/providers/s3_test || TRAVIS_TEST_RESULT=$?
