@@ -32,6 +32,7 @@ module Dpl
 
       def setup
         return unless host?
+        require 'dpl/support/gems_debug'
         info :setup
         Gems.host = host
       end
