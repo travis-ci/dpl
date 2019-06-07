@@ -278,7 +278,7 @@ module DPL
       end
 
       def run(command)
-        ENV[:CF_STACK_NAME] = stack_name
+        ENV['CF_STACK_NAME'] = stack_name
         error 'Running command failed.' unless context.shell command.to_s
       end
 
