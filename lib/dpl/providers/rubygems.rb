@@ -63,11 +63,11 @@ module Dpl
         end
 
         def push
-          # this seems improvable: if a gemspec_glob has been given it might
-          # not match this glob, and not all gems would be pushed
           Dir["#{gem}-*.gem"].each do |file|
             info :gem_push, gem: file
-            info Gems.push(File.new(file), *[host])
+            msg = Gems.push(File.new(file), *[host])
+            p msg
+            info msg
           end
         end
 
