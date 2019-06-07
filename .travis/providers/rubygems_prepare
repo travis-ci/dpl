@@ -61,6 +61,7 @@ str
 
 file 'config.ru', <<~str
   require 'geminabox'
+  Gem::ConfigFile # force autoload?
   run Geminabox::Server
 str
 
