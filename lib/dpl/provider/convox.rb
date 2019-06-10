@@ -119,7 +119,13 @@ module DPL
 
         cenvs.concat yenvs
 
-        cenvs.map! { |entry| "'" + entry.gsub(%('), %('"'"')) + "'" }
+        cenvs.map! do |entry|
+          unless entry.include?('=') do
+            entry = entry + '=' + context.env[entry]
+          end
+
+          "'" + entry.gsub(%('), %('"'"')) + "'"
+        end
       end
 
       def update_envs
