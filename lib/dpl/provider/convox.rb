@@ -120,9 +120,7 @@ module DPL
         cenvs.concat yenvs
 
         cenvs.map! do |entry|
-          unless entry.include?('=') do
-            entry = entry + '=' + context.env[entry]
-          end
+          entry = entry + '=' + context.env[entry] unless entry.include?('=')
 
           "'" + entry.gsub(%('), %('"'"')) + "'"
         end
