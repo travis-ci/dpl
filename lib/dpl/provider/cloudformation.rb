@@ -100,7 +100,14 @@ module DPL
         params = [params] if params.is_a?(String)
         output = []
         params.each do |ik, iv|
-          (ik, iv) = ik.split('=') if ik.is_a?(String) && ik.include?('=')
+          if ik.is_a?(String) {
+            if ik.include?('=')
+              (ik, iv) = ik.split('=')
+            else
+              iv = context.env[ik]
+            end
+          }
+
           ob = {
             parameter_key: ik,
             parameter_value: iv
