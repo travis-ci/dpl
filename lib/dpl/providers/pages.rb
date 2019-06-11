@@ -2,6 +2,7 @@ module Dpl
   module Providers
     class Pages < Provider
       gem 'octokit', '~> 4.14.0'
+      gem 'public_suffix', '~> 3.0.3'
 
       full_name 'GitHub Pages'
 

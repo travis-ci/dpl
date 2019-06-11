@@ -3,6 +3,7 @@ module Dpl
     class Releases < Provider
       gem 'octokit', '~> 4.14.0'
       gem 'mime-types', '~> 3.2.2'
+      gem 'public_suffix', '~> 3.0.3'
 
       full_name 'GitHub Releases'
 
