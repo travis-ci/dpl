@@ -438,7 +438,7 @@ Common Options:
 Examples:
 
   dpl azure_web_apps --site site --username name --password pass
-  dpl azure_web_apps --site site --username name --password pass --slot slot --verbose true
+  dpl azure_web_apps --site site --username name --password pass --slot slot --verbose
 ```
 
 ### Bintray
@@ -507,7 +507,7 @@ Common Options:
 Examples:
 
   dpl bitballoon --access_token token --site_id id
-  dpl bitballoon --access_token token --site_id id --local_dir dir --run cmd --skip_cleanup true
+  dpl bitballoon --access_token token --site_id id --local_dir dir --run cmd --skip_cleanup
 ```
 
 ### Bluemix Cloud Foundry
@@ -614,7 +614,7 @@ Common Options:
 Examples:
 
   dpl cargo --token token
-  dpl cargo --token token --run cmd --skip_cleanup true --help true
+  dpl cargo --token token --run cmd --skip_cleanup --help
 ```
 
 ### Catalyze
@@ -646,7 +646,7 @@ Common Options:
 Examples:
 
   dpl catalyze --target target
-  dpl catalyze --target target --path path --run cmd --skip_cleanup true --help true
+  dpl catalyze --target target --path path --run cmd --skip_cleanup --help
 ```
 
 ### Chef Supermarket
@@ -787,7 +787,7 @@ Common Options:
 Examples:
 
   dpl cloud66 --redeployment_hook url
-  dpl cloud66 --redeployment_hook url --run cmd --skip_cleanup true --help true
+  dpl cloud66 --redeployment_hook url --run cmd --skip_cleanup --help
 ```
 
 ### Deis
@@ -898,7 +898,7 @@ Common Options:
 Examples:
 
   dpl firebase --token token
-  dpl firebase --token token --project name --message msg --run cmd --skip_cleanup true
+  dpl firebase --token token --project name --message msg --run cmd --skip_cleanup
 ```
 
 ### GitHub Pages
@@ -944,7 +944,7 @@ Common Options:
 Examples:
 
   dpl pages --github_token token
-  dpl pages --github_token token --repo slug --target_branch branch --keep_history true --allow_empty_commit true
+  dpl pages --github_token token --repo slug --target_branch branch --keep_history --allow_empty_commit
 ```
 
 ### GitHub Releases
@@ -993,7 +993,7 @@ Examples:
   dpl releases --file file --api_key token
   dpl releases --file file --password pass
   dpl releases --file file
-  dpl releases --file file --api_key token --username login --repo slug --file_glob true
+  dpl releases --file file --api_key token --username login --repo slug --file_glob
 ```
 
 ### Google App Engine
@@ -1110,7 +1110,7 @@ Common Options:
 Examples:
 
   dpl hackage --username user --password user
-  dpl hackage --username user --password user --run cmd --skip_cleanup true --help true
+  dpl hackage --username user --password user --run cmd --skip_cleanup --help
 ```
 
 ### Hephy
@@ -1178,7 +1178,7 @@ Common Options:
 Examples:
 
   dpl heroku api --api_key key
-  dpl heroku api --api_key key --run cmd --skip_cleanup true --app app --help true
+  dpl heroku api --api_key key --run cmd --skip_cleanup --app app --help
 ```
 
 ### Heroku Git
@@ -1216,7 +1216,7 @@ Examples:
 
   dpl heroku git --api_key key
   dpl heroku git --username user --password pass
-  dpl heroku git --api_key key --git url --run cmd --skip_cleanup true --app app
+  dpl heroku git --api_key key --git url --run cmd --skip_cleanup --app app
 ```
 
 ### Launchpad
@@ -1249,7 +1249,7 @@ Common Options:
 
 Examples:
 
-  dpl launchpad --slug slug --oauth_token token --oauth_token_secret secret --run cmd --skip_cleanup true
+  dpl launchpad --slug slug --oauth_token token --oauth_token_secret secret --run cmd --skip_cleanup
 ```
 
 ### NPM
@@ -1283,7 +1283,7 @@ Common Options:
 Examples:
 
   dpl npm --email email --api_key key
-  dpl npm --email email --api_key key --tag tags --run cmd --skip_cleanup true
+  dpl npm --email email --api_key key --tag tags --run cmd --skip_cleanup
 ```
 
 ### Open Shift
@@ -1394,7 +1394,7 @@ Common Options:
 Examples:
 
   dpl puppetforge --user name --password pass
-  dpl puppetforge --user name --password pass --url url --run cmd --skip_cleanup true
+  dpl puppetforge --user name --password pass --url url --run cmd --skip_cleanup
 ```
 
 ### PyPI
@@ -1439,7 +1439,7 @@ Common Options:
 Examples:
 
   dpl pypi --username name --password pass
-  dpl pypi --username name --password pass --server server --distributions dists --skip_upload_docs true
+  dpl pypi --username name --password pass --server server --distributions dists --skip_upload_docs
 ```
 
 ### Rubygems
@@ -1562,7 +1562,7 @@ Common Options:
 Examples:
 
   dpl script --script ./script
-  dpl script --script ./script --run cmd --skip_cleanup true --help true
+  dpl script --script ./script --run cmd --skip_cleanup --help
 ```
 
 ### Snap
@@ -1595,7 +1595,7 @@ Common Options:
 Examples:
 
   dpl snap --snap str --token token
-  dpl snap --snap str --token token --channel chan --run cmd --skip_cleanup true
+  dpl snap --snap str --token token --channel chan --run cmd --skip_cleanup
 ```
 
 ### Surge
@@ -1683,7 +1683,7 @@ Common Options:
 Examples:
 
   dpl testfairy --api_key key --app_file file
-  dpl testfairy --api_key key --app_file file --symbols_file file --testers_groups groups --notify true
+  dpl testfairy --api_key key --app_file file --symbols_file file --testers_groups groups --notify
 ```
 
 ### Transifex
