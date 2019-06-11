@@ -9,7 +9,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute to Dpl.
 Dpl supports the following providers:
 
 <% providers.each do |key, name| -%>
-  * <%= "[#{name}](##{key})" %>
+  * <%= "[#{name}](##{name.gsub(/\W+/, '-').downcase})" %>
 <% end -%>
 
 ## Requirements
