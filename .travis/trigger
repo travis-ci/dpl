@@ -57,7 +57,7 @@ body = {
   request: {
     branch: 'sf-dpl2',
     message: "test dpl providers #{Time.now}",
-    config: {
+    config: YAML.dump(
       import: './.travis/blank.yml', # skips .travis.yml
       env: {
         global: {
@@ -67,7 +67,7 @@ body = {
       matrix: {
         include: jobs
       }
-    }
+    )
   }
 }
 

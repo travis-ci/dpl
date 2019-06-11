@@ -10,23 +10,24 @@ Dpl supports the following providers:
 
   * [Anynines](#anynines)
   * [Atlas](#atlas)
-  * [AWS Code Deploy](#code_deploy)
-  * [AWS Elastic Beanstalk](#elastic_beanstalk)
+  * [AWS Code Deploy](#codedeploy)
+  * [AWS Elastic Beanstalk](#elasticbeanstalk)
   * [AWS Lambda](#lambda)
-  * [AWS OpsWorks](#ops_works)
+  * [AWS OpsWorks](#opsworks)
   * [AWS S3](#s3)
   * [Azure Web Apps](#azure_web_apps)
-  * [BitBalloon](#bit_balloon)
-  * [Bluemix Cloud Foundry](#bluemix_cloud_foundry)
+  * [Bintray](#bintray)
+  * [Bitballoon](#bitballoon)
+  * [Bluemix Cloud Foundry](#bluemixcloudfoundry)
   * [Boxfuse](#boxfuse)
   * [Cargo](#cargo)
   * [Catalyze](#catalyze)
   * [Chef Supermarket](#chef_supermarket)
-  * [Cloud Files](#cloud_files)
-  * [Cloud Foundry](#cloud_foundry)
+  * [Cloud Files](#cloudfiles)
+  * [Cloud Foundry](#cloudfoundry)
   * [Cloud66](#cloud66)
   * [Deis](#deis)
-  * [EngineYard](#engine_yard)
+  * [Engineyard](#engineyard)
   * [Firebase](#firebase)
   * [GitHub Pages](#pages)
   * [GitHub Releases](#releases)
@@ -38,9 +39,9 @@ Dpl supports the following providers:
   * [Heroku Git](#heroku:git)
   * [Launchpad](#launchpad)
   * [NPM](#npm)
-  * [Open Shift](#open_shift)
+  * [Open Shift](#openshift)
   * [Packagecloud](#packagecloud)
-  * [Puppet Forge](#puppet_forge)
+  * [Puppet Forge](#puppetforge)
   * [PyPI](#pypi)
   * [Rubygems](#rubygems)
   * [Scalingo](#scalingo)
@@ -128,7 +129,7 @@ Options:
 
   --app APP                The Atlas application to upload to (type: string, required: true)
   --token TOKEN            The Atlas API token (type: string, required: true)
-  --path PATH              Files or directories to upload (type: array (string, can be given multiple
+  --paths PATH             Files or directories to upload (type: array (string, can be given multiple
                            times), default: ["."])
   --address ADDR           The address of the Atlas server (type: string)
   --include GLOB           Glob pattern of files or directories to include (type: array (string, can be
@@ -151,13 +152,13 @@ Common Options:
 Examples:
 
   dpl atlas --app app --token token
-  dpl atlas --app app --token token --path path --address addr --include glob
+  dpl atlas --app app --token token --paths path --address addr --include glob
 ```
 
 ### AWS Code Deploy
 
 ```
-Usage: dpl code_deploy [options]
+Usage: dpl codedeploy [options]
 
 Summary:
 
@@ -195,14 +196,14 @@ Common Options:
 
 Examples:
 
-  dpl code_deploy --access_key_id id --secret_access_key key --application name
-  dpl code_deploy --access_key_id id --secret_access_key key --application name --deployment_group group --revision_type s3
+  dpl codedeploy --access_key_id id --secret_access_key key --application name
+  dpl codedeploy --access_key_id id --secret_access_key key --application name --deployment_group group --revision_type s3
 ```
 
 ### AWS Elastic Beanstalk
 
 ```
-Usage: dpl elastic_beanstalk [options]
+Usage: dpl elasticbeanstalk [options]
 
 Summary:
 
@@ -239,8 +240,8 @@ Common Options:
 
 Examples:
 
-  dpl elastic_beanstalk --access_key_id id --secret_access_key key --env name --bucket_name name
-  dpl elastic_beanstalk --access_key_id id --secret_access_key key --env name --bucket_name name --region region
+  dpl elasticbeanstalk --access_key_id id --secret_access_key key --env name --bucket_name name
+  dpl elasticbeanstalk --access_key_id id --secret_access_key key --env name --bucket_name name --region region
 ```
 
 ### AWS Lambda
@@ -283,9 +284,8 @@ Options:
                                     ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the
                                     access/secret key to work. (type: array (string, can be given multiple times))
   --dead_letter_arn ARN             ARN to an SNS or SQS resource used for the dead letter queue. (type: string)
-  --tracing_mode MODE               "Active" or "PassThrough" only. Needs the xray:PutTraceSegments and
-                                    xray:PutTelemetryRecords on the role for this to work. (type: string, default:
-                                    PassThrough)
+  --tracing_mode MODE               Tracing mode (Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role)
+                                    (type: string, default: PassThrough, known values: Active, PassThrough)
   --environment_variables VARS      List of Environment Variables to add to the function, needs to be in the format
                                     of KEY=VALUE. Can be encrypted for added security. (type: array (string, can be
                                     given multiple times))
@@ -309,7 +309,7 @@ Examples:
 ### AWS OpsWorks
 
 ```
-Usage: dpl ops_works [options]
+Usage: dpl opsworks [options]
 
 Summary:
 
@@ -332,7 +332,7 @@ Options:
   --[no-]wait_until_deployed      Wait until the app is deployed and return the deployment status.
   --[no-]update_on_success        When wait-until-deployed and updated-on-success are both not given, application
                                   source is updated to the current SHA. Ignored when wait-until-deployed is not
-                                  given.
+                                  given. (alias: update_app_on_success)
   --custom_json JSON              Custom json options override (overwrites default configuration) (type: string)
 
 Common Options:
@@ -344,8 +344,8 @@ Common Options:
 
 Examples:
 
-  dpl ops_works --access_key_id id --secret_access_key key --app_id app
-  dpl ops_works --access_key_id id --secret_access_key key --app_id app --region region --instance_ids id
+  dpl opsworks --access_key_id id --secret_access_key key --app_id app
+  dpl opsworks --access_key_id id --secret_access_key key --app_id app --region region --instance_ids id
 ```
 
 ### AWS S3
@@ -438,17 +438,51 @@ Common Options:
 Examples:
 
   dpl azure_web_apps --site site --username name --password pass
-  dpl azure_web_apps --site site --username name --password pass --slot slot --verbose
+  dpl azure_web_apps --site site --username name --password pass --slot slot --verbose true
 ```
 
-### BitBalloon
+### Bintray
 
 ```
-Usage: dpl bit_balloon [options]
+Usage: dpl bintray [options]
 
 Summary:
 
-  BitBalloon deployment provider
+  Bintray deployment provider
+
+Description:
+
+  tbd
+
+
+Options:
+
+  --user USER              Bintray user (type: string, required: true)
+  --key KEY                Bintray API key (type: string, required: true)
+  --file FILE              Path to a descriptor file for the Bintray upload (type: string, required: true)
+  --passphrase PHRASE      Passphrase as configured on Bintray (if GPG signing is used) (type: string)
+
+Common Options:
+
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
+
+Examples:
+
+  dpl bintray --user user --key key --file file
+  dpl bintray --user user --key key --file file --passphrase phrase --run cmd
+```
+
+### Bitballoon
+
+```
+Usage: dpl bitballoon [options]
+
+Summary:
+
+  Bitballoon deployment provider
 
 Description:
 
@@ -472,14 +506,14 @@ Common Options:
 
 Examples:
 
-  dpl bit_balloon --access_token token --site_id id
-  dpl bit_balloon --access_token token --site_id id --local_dir dir --run cmd --skip_cleanup
+  dpl bitballoon --access_token token --site_id id
+  dpl bitballoon --access_token token --site_id id --local_dir dir --run cmd --skip_cleanup true
 ```
 
 ### Bluemix Cloud Foundry
 
 ```
-Usage: dpl bluemix_cloud_foundry [options]
+Usage: dpl bluemixcloudfoundry [options]
 
 Summary:
 
@@ -512,8 +546,8 @@ Common Options:
 
 Examples:
 
-  dpl bluemix_cloud_foundry --username user --password pass --organization org --space space
-  dpl bluemix_cloud_foundry --username user --password pass --organization org --space space --region ng
+  dpl bluemixcloudfoundry --username user --password pass --organization org --space space
+  dpl bluemixcloudfoundry --username user --password pass --organization org --space space --region ng
 ```
 
 ### Boxfuse
@@ -538,7 +572,7 @@ Options:
   --payload PAYLOAD        type: string
   --image IMAGE            type: string
   --env ENV                type: string
-  --args ARGS              type: string, alias: extra_args (deprecated, please use args)
+  --extra_args ARGS        type: string
 
 Common Options:
 
@@ -580,7 +614,7 @@ Common Options:
 Examples:
 
   dpl cargo --token token
-  dpl cargo --token token --run cmd --skip_cleanup --help
+  dpl cargo --token token --run cmd --skip_cleanup true --help true
 ```
 
 ### Catalyze
@@ -612,7 +646,7 @@ Common Options:
 Examples:
 
   dpl catalyze --target target
-  dpl catalyze --target target --path path --run cmd --skip_cleanup --help
+  dpl catalyze --target target --path path --run cmd --skip_cleanup true --help true
 ```
 
 ### Chef Supermarket
@@ -653,7 +687,7 @@ Examples:
 ### Cloud Files
 
 ```
-Usage: dpl cloud_files [options]
+Usage: dpl cloudfiles [options]
 
 Summary:
 
@@ -684,14 +718,14 @@ Common Options:
 
 Examples:
 
-  dpl cloud_files --username user --api_key key --region ord --container name
-  dpl cloud_files --username user --api_key key --region ord --container name --glob glob
+  dpl cloudfiles --username user --api_key key --region ord --container name
+  dpl cloudfiles --username user --api_key key --region ord --container name --glob glob
 ```
 
 ### Cloud Foundry
 
 ```
-Usage: dpl cloud_foundry [options]
+Usage: dpl cloudfoundry [options]
 
 Summary:
 
@@ -722,7 +756,7 @@ Common Options:
 
 Examples:
 
-  dpl cloud_foundry --username user --password pass --organization org --space space --api url
+  dpl cloudfoundry --username user --password pass --organization org --space space --api url
 ```
 
 ### Cloud66
@@ -753,7 +787,7 @@ Common Options:
 Examples:
 
   dpl cloud66 --redeployment_hook url
-  dpl cloud66 --redeployment_hook url --run cmd --skip_cleanup --help
+  dpl cloud66 --redeployment_hook url --run cmd --skip_cleanup true --help true
 ```
 
 ### Deis
@@ -792,14 +826,14 @@ Examples:
   dpl deis --controller name --username user --password pass --app app --cli_version ver
 ```
 
-### EngineYard
+### Engineyard
 
 ```
-Usage: dpl engine_yard [options]
+Usage: dpl engineyard [options]
 
 Summary:
 
-  EngineYard deployment provider
+  Engineyard deployment provider
 
 Description:
 
@@ -816,7 +850,7 @@ Options:
   --app APP                Engine Yard application name (type: string, default: repo name)
   --environment ENV        Engine Yard application environment (type: string)
   --migrate CMD            Engine Yard migration commands (type: string)
-  --account NAME           type: string
+  --account NAME           Engine Yard account name (type: string)
 
 Common Options:
 
@@ -827,9 +861,9 @@ Common Options:
 
 Examples:
 
-  dpl engine_yard --api_key key
-  dpl engine_yard --email email --password pass
-  dpl engine_yard --api_key key --app app --environment env --migrate cmd --account name
+  dpl engineyard --api_key key
+  dpl engineyard --email email --password pass
+  dpl engineyard --api_key key --app app --environment env --migrate cmd --account name
 ```
 
 ### Firebase
@@ -864,7 +898,7 @@ Common Options:
 Examples:
 
   dpl firebase --token token
-  dpl firebase --token token --project name --message msg --run cmd --skip_cleanup
+  dpl firebase --token token --project name --message msg --run cmd --skip_cleanup true
 ```
 
 ### GitHub Pages
@@ -884,21 +918,20 @@ Description:
 Options:
 
   --github_token TOKEN           GitHub oauth token with repo permission (type: string, required: true)
-  --repo SLUG                    Repo slug, defaults to current one (type: string, default: repo slug)
+  --repo SLUG                    Repo slug (type: string, default: repo slug)
   --target_branch BRANCH         Branch to push force to (type: string, default: gh-pages)
-  --[no-]keep_history            Create incremental commit instead of doing push force, defaults to false
+  --[no-]keep_history            Create incremental commit instead of doing push force
   --[no-]allow_empty_commit      Allow an empty commit to be created (requires: keep_history)
   --[no-]committer_from_gh       Use the token's owner name and email for commit. Overrides the email and name
                                  options
   --[no-]verbose                 Be verbose about the deploy process
-  --local_dir DIR                Directory to push to GitHub Pages, defaults to current (type: string, default:
-                                 .)
+  --local_dir DIR                Directory to push to GitHub Pages (type: string, default: .)
   --fqdn FQDN                    Writes your website's domain name to the CNAME file (type: string)
   --project_name NAME            Used in the commit message only (defaults to fqdn or the current repo slug)
                                  (type: string)
   --email EMAIL                  Committer email (type: string, default: deploy@travis-ci.org)
   --name NAME                    Committer name (type: string, default: Deploy Bot)
-  --[no-]deployment-file         Enable creation of a deployment-info file
+  --[no-]deployment_file         Enable creation of a deployment-info file
   --github_url URL               type: string, default: github.com
 
 Common Options:
@@ -911,7 +944,7 @@ Common Options:
 Examples:
 
   dpl pages --github_token token
-  dpl pages --github_token token --repo slug --target_branch branch --keep_history --allow_empty_commit
+  dpl pages --github_token token --repo slug --target_branch branch --keep_history true --allow_empty_commit true
 ```
 
 ### GitHub Releases
@@ -960,7 +993,7 @@ Examples:
   dpl releases --file file --api_key token
   dpl releases --file file --password pass
   dpl releases --file file
-  dpl releases --file file --api_key token --username login --repo slug --file_glob
+  dpl releases --file file --api_key token --username login --repo slug --file_glob true
 ```
 
 ### Google App Engine
@@ -1077,7 +1110,7 @@ Common Options:
 Examples:
 
   dpl hackage --username user --password user
-  dpl hackage --username user --password user --run cmd --skip_cleanup --help
+  dpl hackage --username user --password user --run cmd --skip_cleanup true --help true
 ```
 
 ### Hephy
@@ -1133,7 +1166,6 @@ Description:
 Options:
 
   --api_key KEY            Heroku API key (type: string, required: true)
-  --version VERSION        type: string
 
 Common Options:
 
@@ -1146,7 +1178,7 @@ Common Options:
 Examples:
 
   dpl heroku api --api_key key
-  dpl heroku api --api_key key --version version --run cmd --skip_cleanup --app app
+  dpl heroku api --api_key key --run cmd --skip_cleanup true --app app --help true
 ```
 
 ### Heroku Git
@@ -1184,7 +1216,7 @@ Examples:
 
   dpl heroku git --api_key key
   dpl heroku git --username user --password pass
-  dpl heroku git --api_key key --git url --run cmd --skip_cleanup --app app
+  dpl heroku git --api_key key --git url --run cmd --skip_cleanup true --app app
 ```
 
 ### Launchpad
@@ -1217,7 +1249,7 @@ Common Options:
 
 Examples:
 
-  dpl launchpad --slug slug --oauth_token token --oauth_token_secret secret --run cmd --skip_cleanup
+  dpl launchpad --slug slug --oauth_token token --oauth_token_secret secret --run cmd --skip_cleanup true
 ```
 
 ### NPM
@@ -1251,13 +1283,13 @@ Common Options:
 Examples:
 
   dpl npm --email email --api_key key
-  dpl npm --email email --api_key key --tag tags --run cmd --skip_cleanup
+  dpl npm --email email --api_key key --tag tags --run cmd --skip_cleanup true
 ```
 
 ### Open Shift
 
 ```
-Usage: dpl open_shift [options]
+Usage: dpl openshift [options]
 
 Summary:
 
@@ -1285,8 +1317,8 @@ Common Options:
 
 Examples:
 
-  dpl open_shift --user name --password pass --domain domain
-  dpl open_shift --user name --password pass --domain domain --app app --deployment_branch branch
+  dpl openshift --user name --password pass --domain domain
+  dpl openshift --user name --password pass --domain domain --app app --deployment_branch branch
 ```
 
 ### Packagecloud
@@ -1334,7 +1366,7 @@ Examples:
 ### Puppet Forge
 
 ```
-Usage: dpl puppet_forge [options]
+Usage: dpl puppetforge [options]
 
 Summary:
 
@@ -1361,8 +1393,8 @@ Common Options:
 
 Examples:
 
-  dpl puppet_forge --user name --password pass
-  dpl puppet_forge --user name --password pass --url url --run cmd --skip_cleanup
+  dpl puppetforge --user name --password pass
+  dpl puppetforge --user name --password pass --url url --run cmd --skip_cleanup true
 ```
 
 ### PyPI
@@ -1407,7 +1439,7 @@ Common Options:
 Examples:
 
   dpl pypi --username name --password pass
-  dpl pypi --username name --password pass --server server --distributions dists --skip_upload_docs
+  dpl pypi --username name --password pass --server server --distributions dists --skip_upload_docs true
 ```
 
 ### Rubygems
@@ -1530,7 +1562,7 @@ Common Options:
 Examples:
 
   dpl script --script ./script
-  dpl script --script ./script --run cmd --skip_cleanup --help
+  dpl script --script ./script --run cmd --skip_cleanup true --help true
 ```
 
 ### Snap
@@ -1563,7 +1595,7 @@ Common Options:
 Examples:
 
   dpl snap --snap str --token token
-  dpl snap --snap str --token token --channel chan --run cmd --skip_cleanup
+  dpl snap --snap str --token token --channel chan --run cmd --skip_cleanup true
 ```
 
 ### Surge
@@ -1651,7 +1683,7 @@ Common Options:
 Examples:
 
   dpl testfairy --api_key key --app_file file
-  dpl testfairy --api_key key --app_file file --symbols_file file --testers_groups groups --notify
+  dpl testfairy --api_key key --app_file file --symbols_file file --testers_groups groups --notify true
 ```
 
 ### Transifex
