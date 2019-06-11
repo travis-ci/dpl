@@ -614,7 +614,7 @@ Common Options:
 Examples:
 
   dpl cargo --token token
-  dpl cargo --token token --run cmd --skip_cleanup --help
+  dpl cargo --token token --run cmd --skip_cleanup
 ```
 
 ### Catalyze
@@ -646,7 +646,7 @@ Common Options:
 Examples:
 
   dpl catalyze --target target
-  dpl catalyze --target target --path path --run cmd --skip_cleanup --help
+  dpl catalyze --target target --path path --run cmd --skip_cleanup
 ```
 
 ### Chef Supermarket
@@ -787,7 +787,7 @@ Common Options:
 Examples:
 
   dpl cloud66 --redeployment_hook url
-  dpl cloud66 --redeployment_hook url --run cmd --skip_cleanup --help
+  dpl cloud66 --redeployment_hook url --run cmd --skip_cleanup
 ```
 
 ### Deis
@@ -1110,7 +1110,7 @@ Common Options:
 Examples:
 
   dpl hackage --username user --password user
-  dpl hackage --username user --password user --run cmd --skip_cleanup --help
+  dpl hackage --username user --password user --run cmd --skip_cleanup
 ```
 
 ### Hephy
@@ -1178,7 +1178,7 @@ Common Options:
 Examples:
 
   dpl heroku api --api_key key
-  dpl heroku api --api_key key --run cmd --skip_cleanup --app app --help
+  dpl heroku api --api_key key --run cmd --skip_cleanup --app app
 ```
 
 ### Heroku Git
@@ -1562,7 +1562,7 @@ Common Options:
 Examples:
 
   dpl script --script ./script
-  dpl script --script ./script --run cmd --skip_cleanup --help
+  dpl script --script ./script --run cmd --skip_cleanup
 ```
 
 ### Snap

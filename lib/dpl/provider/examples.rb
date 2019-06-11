@@ -30,16 +30,20 @@ module Dpl
       opts = order(opts)
       opts = without_required(opts)
       opts = with_required(opts)
-      opts = opts.reject(&:internal?)
+      opts = filter(opts)
       opts = opts[0, 5]
       example(opts)
     end
 
     def full
       opts = const.opts.opts
-      opts = opts.reject(&:internal?)
-      opts = opts.reject { |opt| opt.name == :help }
+      opts = filter(opts)
       example(opts)
+    end
+
+    def filter(opts)
+      opts = opts.reject(&:internal?)
+      opts.reject { |opt| opt.name == :help }
     end
 
     def order(opts)
