@@ -93,18 +93,18 @@ module DPL
       end
 
       def env_file
-        env_map = []
+        return nil unless options[:env_file]
 
         # Read from env_file
-        if options[:env_file]
-          # Check if file exists
-          error 'env_file doesn\'t exist' unless File.exist?(options[:env_file])
-          # Read file
-          File.open(options[:env_file]) do |file|
-            file.each do |line|
-              # Parse envs to dict and add to env_map
-              env_map.push(line.chomp) unless line.chomp.empty?
-            end
+        env_map = []
+
+        # Check if file exists
+        error 'env_file doesn\'t exist' unless File.exist?(options[:env_file])
+        # Read file
+        File.open(options[:env_file]) do |file|
+          file.each do |line|
+            # Parse envs to dict and add to env_map
+            env_map.push(line.chomp) unless line.chomp.empty?
           end
         end
 
@@ -112,7 +112,9 @@ module DPL
       end
 
       def environment
-        cenvs = env_file
+        return nil unless env_file || options[:env]
+
+        cenvs = env_file || []
 
         yenvs = options[:env] || []
         yenvs = [yenvs] if yenvs.is_a? String
@@ -120,7 +122,9 @@ module DPL
         cenvs.concat yenvs
 
         cenvs.map! do |entry|
-          entry = entry + '=' + context.env[entry] unless entry.include?('=')
+          unless entry.include?('=')
+            entry += '=' + (context.env[entry] || '')
+          end
 
           "'" + entry.gsub(%('), %('"'"')) + "'"
         end
@@ -174,7 +178,7 @@ module DPL
       end
 
       def push_app
-        update_envs if environment
+        update_envs unless environment.nil?
 
         Array(options[:before_push]).each do |command|
           context.fold(format('Running %p', command)) { run(command) }
