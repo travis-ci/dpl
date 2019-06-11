@@ -28,13 +28,13 @@ module Dpl
       opt '--memory_size MB',             'Amount of memory in MB to allocate to this Lambda', default: 128
       opt '--runtime NAME',               'Lambda runtime to use', default: 'node'
       opt '--publish',                    'Create a new version of the code instead of replacing the existing one.'
-      opt '--subnet_ids IDS',             'List of subnet IDs to be added to the function. Needs the ec2:DescribeSubnets and ec2:DescribeVpcs permission for the user of the access/secret key to work.', type: :array
-      opt '--security_group_ids IDS',     'List of security group IDs to be added to the function. Needs the ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the access/secret key to work.', type: :array
+      opt '--subnet_ids IDS',             'List of subnet IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSubnets and ec2:DescribeVpcs permission for the user of the access/secret key to work'
+      opt '--security_group_ids IDS',     'List of security group IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--dead_letter_arn ARN',        'ARN to an SNS or SQS resource used for the dead letter queue.'
-      opt '--tracing_mode MODE',          'Tracing mode (Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role)', default: 'PassThrough', enum: %w(Active PassThrough)
-      opt '--environment_variables VARS', 'List of Environment Variables to add to the function, needs to be in the format of KEY=VALUE. Can be encrypted for added security.', type: :array
+      opt '--tracing_mode MODE',          'Tracing mode', default: 'PassThrough', enum: %w(Active PassThrough), note: 'Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role'
+      opt '--environment_variables VARS', 'List of Environment Variables to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security'
       opt '--kms_key_arn ARN',            'KMS key ARN to use to encrypt environment_variables.'
-      opt '--function_tags TAGS',         'List of tags to add to the function, needs to be in the format of KEY=VALUE. Can be encrypted for added security.', type: :array
+      opt '--function_tags TAGS',         'List of tags to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security'
 
       msgs login:           'Using Access Key: %{obfuscated_access_key_id}',
            create_function: 'Creating function %{function_name}.',
