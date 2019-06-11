@@ -110,7 +110,7 @@ module Dpl
     end
 
     def value_for(opt)
-      return true if opt.type == :flag
+      return if opt.type == :flag
       return 1 if opt.type == :integer
       return opt.enum.first if opt.enum?
       str = opt.strs.detect { |str| str =~ /^--#{opt.name} (.*)$/ } && $1
