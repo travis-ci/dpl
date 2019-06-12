@@ -65,7 +65,7 @@ module DPL
       def convox_promote
         return true if options[:promote].nil?
 
-        options[:promote]
+        options[:promote].to_s == 'true'
       end
 
       def build_description
