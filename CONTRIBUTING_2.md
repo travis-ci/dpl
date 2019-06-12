@@ -110,7 +110,7 @@ fashion, but you have a successful deployment that can be verified manually,
 please still open a pull request, and talk to us. Any test is better than no
 test.
 
-## How to talk to us
+## How to get in touch
 
 Feel free to reach out to us via email to success@travis-ci.com. Please include
 the tag `[dpl-2]` to the subject line, so our inbox directs your email to the
