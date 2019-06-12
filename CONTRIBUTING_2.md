@@ -112,7 +112,7 @@ test.
 
 ## How to talk to us
 
-Feel free to reach out to us via email to contact@travis-ci.com. Please include
+Feel free to reach out to us via email to success@travis-ci.com. Please include
 the tag `[dpl-2]` to the subject line, so our inbox directs your email to the
 right team.
 
