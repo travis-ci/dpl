@@ -55,22 +55,30 @@ module DPL
       def cli_vars
         {
           CONVOX_HOST: convox_host,
-          CONVOX_PASSWORD: convox_pass
+          CONVOX_PASSWORD: convox_pass,
+          CONVOX_APP: option(:app),
+          CONVOX_RACK: option(:rack),
+          CONVOX_CLI: convox_cli
         }
       end
 
       def convox_promote
-        options[:promote] || false
+        return true if options[:promote].nil?
+
+        options[:promote].to_s == 'true'
       end
 
       def build_description
         options[:description] || "Travis job ##{context.env['TRAVIS_BUILD_NUMBER']}/commit #{context.env['TRAVIS_COMMIT']}"
       end
 
-      def convox_exec(cmd)
+      def setenvs
         cli_vars.each do |k, v|
           ENV[k.to_s] = v
         end
+      end
+
+      def convox_exec(cmd)
         context.shell "#{convox_cli} #{cmd}"
       end
 
@@ -86,12 +94,46 @@ module DPL
         end
       end
 
-      def update_envs
-        cenvs = options[:environment] || []
-        cenvs = [cenvs] if cenvs.is_a? String
-        cenvs.map! { |entry| "'" + entry.gsub(%('), %('"'"')) + "'" }
+      def env_file
+        return nil unless options[:env_file]
 
-        convox_exec("env set #{cenvs.join(' ')} --rack #{option(:rack)} --app #{option(:app)} --replace")
+        # Read from env_file
+        env_map = []
+
+        # Check if file exists
+        error 'env_file doesn\'t exist' unless File.exist?(options[:env_file])
+        # Read file
+        File.open(options[:env_file]) do |file|
+          file.each do |line|
+            # Parse envs to dict and add to env_map
+            env_map.push(line.chomp) unless line.chomp.empty?
+          end
+        end
+
+        env_map
+      end
+
+      def environment
+        return nil unless env_file || options[:env]
+
+        cenvs = env_file || []
+
+        yenvs = options[:env] || []
+        yenvs = [yenvs] if yenvs.is_a? String
+
+        cenvs.concat yenvs
+
+        cenvs.map! do |entry|
+          unless entry.include?('=')
+            entry += '=' + (context.env[entry] || '')
+          end
+
+          "'" + entry.gsub(%('), %('"'"')) + "'"
+        end
+      end
+
+      def update_envs
+        convox_exec("env set #{environment.join(' ')} --rack #{option(:rack)} --app #{option(:app)} --replace")
       end
 
       # Disable cleanup - we need our binary
@@ -111,6 +153,7 @@ module DPL
       end
 
       def check_app
+        setenvs # Set CONVOX_* envs for deployment process
         unless convox_exec "apps info --rack #{option(:rack)} --app #{option(:app)}"
           log 'Application doesn\'t exist.'
           # Create new app and wait
@@ -118,20 +161,33 @@ module DPL
             log "Creating new application #{option(:app)} on rack #{option(:rack)}"
             convox_exec "apps create #{option(:app)} --generation #{convox_gen} --rack #{option(:rack)} --wait"
           else
-            error 'Cannot deploy to inexistent app.'
+            error 'Cannot deploy to inexisting app.'
           end
         end
       end
 
+      def run(command)
+        cli_vars.each do |k, v|
+          ENV[k.to_s] = v
+        end
+        error 'Running command failed.' unless context.shell command.to_s
+      end
+
       def push_app
-        update_envs if options[:environment]
+        update_envs unless environment.nil?
+
+        Array(options[:before_push]).each do |command|
+          context.fold(format('Running %p', command)) { run(command) }
+        end
 
         if convox_promote
-          log 'Building and promoting application'
-          convox_deploy
+          context.fold('Building and promoting application') { convox_deploy }
         else
-          log 'Building application only'
-          convox_build
+          context.fold('Building application only') { convox_build }
+        end
+
+        Array(options[:after_push]).each do |command|
+          context.fold(format('Running %p', command)) { run(command) }
         end
       end
     end

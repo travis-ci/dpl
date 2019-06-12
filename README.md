@@ -484,8 +484,9 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 
 * **password**: Convox password. Can be either user api key, deploy key or rack password.
 * **host**: Optional (default: `console.convox.com`). Convox console or rack hostname.
-* **promote**: Optional (default: `false`). Flag to decide either you want to build and deploy(`true`) or only build (`false`) convox app.
-* **environment**: Optional. Environment variables list. If not set env variables will be not updated (Currently doesn't work with convox deploy keys).
+* **promote**: Optional (default: `true`). Flag to decide either you want to build and deploy (`true`) or only build (`false`) convox app.
+* **env_file**: Optional. Environment variables list read from file. Format should be `VAR_NAME=its value` - one variable per line.
+* **env**: Optional. Environment variables list. If not set env variables will be not updated (Currently doesn't work with convox deploy keys). Appended to `env_file` variables when its specified.
 * **generation**: Optional (default: `2`). Convox app generation.
 * **description**: Optional (defaults to travis job number and commit hash). Convox build description.
 * **create**: Optional (default: `false`). Flag to decide either you want to create application if it doesn't exist (`true`) or not (`false`). Keep in mind that deploy keys doesn't support app creation.
