@@ -291,11 +291,11 @@ module DPL
 
         # Fetch outputs
         resp = client.describe_stacks(stack_name: stack_name)
-        outputs = resp.stacks[0].outputs || {}
+        outputs = resp[:stacks][0].outputs || {}
         # Store to file
         File.open(options[:outputs_file], 'w') do |file|
           outputs.each do |output|
-            file.puts "#{output.output_key}=#{output.output_value}"
+            file.puts "#{output[:output_key]}=#{output[:output_value]}"
           end
         end
       end
