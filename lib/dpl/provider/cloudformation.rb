@@ -86,9 +86,9 @@ module DPL
       end
 
       def promote
-        return options[:promote].to_s == 'true' unless options[:promote].nil?
+        return true if options[:promote].nil?
 
-        false
+        options[:promote].to_s == 'true'
       end
 
       def travis_build_number
