@@ -61,9 +61,9 @@ describe DPL::Provider::Convox do
   end
 
   describe '#convox_promote' do
-    it 'should default to false' do
+    it 'should default to true' do
       provider.options.delete(:promote)
-      expect(provider.convox_promote).to be false
+      expect(provider.convox_promote).to be true
     end
   end
 

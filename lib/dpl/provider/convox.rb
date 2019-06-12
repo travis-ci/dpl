@@ -63,7 +63,9 @@ module DPL
       end
 
       def convox_promote
-        options[:promote] || false
+        return true if options[:promote].nil?
+
+        options[:promote]
       end
 
       def build_description
@@ -161,12 +163,6 @@ module DPL
           else
             error 'Cannot deploy to inexisting app.'
           end
-        end
-      end
-
-      def run_cmds(from)
-        Array(options[from]).each do |command|
-          context.fold(format('Running %p', command)) { run(command) }
         end
       end
 
