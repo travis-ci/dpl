@@ -16,7 +16,7 @@ The goal is to:
 ## Automated tests
 
 We have added automated integration tests for the providers/services we are
-familiar with. These live in https://github.com/travis-ci/dpl/tree/sf-dpl2/.travis.
+familiar with. These live in https://github.com/travis-ci/dpl/tree/dpl-2/.travis.
 They actually make a deployment to the respective service (or in case of
 Rubygems to a service running locally). The are currently triggered manually,
 and may be run on a regular basis in the future (as a cron build).
@@ -31,15 +31,15 @@ A provider test consists of:
 
 For example:
 
-* [github_pages_prepare](https://github.com/travis-ci/dpl/blob/sf-dpl2/.travis/providers/github_pages_prepare)
+* [github_pages_prepare](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/providers/github_pages_prepare)
   creates a minimal Git repository that serves an `index.html` on GitHub Pages in a temporary directory.
-* [github_pages.yml](https://github.com/travis-ci/dpl/blob/sf-dpl2/.travis/providers/github_pages.yml)
+* [github_pages.yml](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/providers/github_pages.yml)
   configures the build to use Dpl 2.0 to deploy this repository to GitHub Pages.
-* [github_pages_test](https://github.com/travis-ci/dpl/blob/sf-dpl2/.travis/providers/github_pages_test)
+* [github_pages_test](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/providers/github_pages_test)
   tests if the deployment was successful.
 
 The tests can be run on Travis CI individually, or combined, by triggering a
-build via our API, using the script [.travis/trigger](https://github.com/travis-ci/dpl/blob/sf-dpl2/.travis/trigger).
+build via our API, using the script [.travis/trigger](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/trigger).
 This takes a provider name as an argument, and requires a Travis CI API token
 to be given.
 
