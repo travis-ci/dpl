@@ -197,6 +197,7 @@ describe DPL::Provider::CloudFormation do
         .with(stack_name: 'some-test-stack-name')
         .and_raise(aws_validation_error.new('ValidationError', 'Stack [some-test-stack-name] does not exist'))
       expect(provider.client).to receive(:create_stack).and_return(true)
+      expect(provider).to receive(:save_outputs).and_return(true)
       provider.push_app
     end
 
@@ -210,6 +211,7 @@ describe DPL::Provider::CloudFormation do
         .with(stack_name: 'some-test-stack-name')
         .and_return(ss)
       expect(provider.client).to receive(:update_stack).and_return(true)
+      expect(provider).to receive(:save_outputs).and_return(true)
       provider.push_app
     end
 
@@ -274,6 +276,41 @@ describe DPL::Provider::CloudFormation do
       expect(provider).to receive(:stack_exists?).and_return(true)
       expect(provider.client).to receive(:wait_until).and_return(true)
       provider.push_app
+    end
+
+    it 'save_outputs should store stack outputs to file' do
+      tmpfile = Tempfile.new('cf_outputs')
+
+      ss = { stacks: [double] }
+      allow(ss[:stacks][0]).to receive(:outputs) {
+        [
+          {
+            output_key: 'oneKey',
+            output_value: 'someValue'
+          },
+          {
+            output_key: 'multipleEntries',
+            output_value: 'I am the value!'
+          },
+          {
+            output_key: 'Oh_HI',
+            output_value: 'Well Hello there.'
+          }
+        ]
+      }
+
+      provider.options.update(outputs_file: tmpfile.path)
+      expect(provider.client).to receive(:describe_stacks)
+        .with(stack_name: 'some-test-stack-name')
+        .and_return(ss)
+
+      begin
+        provider.save_outputs
+        read_data = File.read(tmpfile.path)
+        expect(read_data).to eq("oneKey=someValue\nmultipleEntries=I am the value!\nOh_HI=Well Hello there.\n")
+      ensure
+        tmpfile.unlink
+      end
     end
   end
 end

@@ -82,13 +82,13 @@ module DPL
       end
 
       def wait_timeout
-        options[:wait_timeout] || 3600
+        options[:wait_timeout] || 3000
       end
 
       def promote
-        return options[:promote].to_s == 'true' unless options[:promote].nil?
+        return true if options[:promote].nil?
 
-        false
+        options[:promote].to_s == 'true'
       end
 
       def travis_build_number
@@ -100,7 +100,12 @@ module DPL
         params = [params] if params.is_a?(String)
         output = []
         params.each do |ik, iv|
-          (ik, iv) = ik.split('=') if ik.is_a?(String) && ik.include?('=')
+          if ik.is_a?(String) && ik.include?('=')
+            (ik, iv) = ik.split('=')
+          elsif ik.is_a?(String)
+            iv = context.env[ik]
+          end
+
           ob = {
             parameter_key: ik,
             parameter_value: iv
@@ -277,6 +282,24 @@ module DPL
         File.read(filepath)
       end
 
+      def run(command)
+        error 'Running command failed.' unless context.shell command.to_s
+      end
+
+      def save_outputs
+        return nil unless options[:outputs_file]
+
+        # Fetch outputs
+        resp = client.describe_stacks(stack_name: stack_name)
+        outputs = resp[:stacks][0].outputs || {}
+        # Store to file
+        File.open(options[:outputs_file], 'w') do |file|
+          outputs.each do |output|
+            file.puts "#{output[:output_key]}=#{output[:output_value]}"
+          end
+        end
+      end
+
       def deploy
         super
       rescue ::Aws::CloudFormation::Errors::InvalidAccessKeyId
@@ -295,6 +318,8 @@ module DPL
         else
           cf_create
         end
+
+        save_outputs
       end
     end
   end
