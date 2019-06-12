@@ -82,7 +82,7 @@ module DPL
       end
 
       def wait_timeout
-        options[:wait_timeout] || 3600
+        options[:wait_timeout] || 3000
       end
 
       def promote
