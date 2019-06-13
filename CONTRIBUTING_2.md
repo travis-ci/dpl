@@ -60,13 +60,26 @@ export TRAVIS_API_TOKEN=[token]
 The `trigger` script accepts multiple provider names as arguments. If no
 arguments are given then tests for all providers will be run.
 
-## How to contribute
+## How to contribute a test
 
 Fork this repository, work off the branch [dpl-2](https://github.com/travis-ci/dpl/pull/1003) (not the master branch).
 
 Go to your Travis CI account page, sync your account, and enable the repository.
 
 Implement a provider test.
+
+In the build config YAML snippet make sure to use the branch of your fork for the
+deployment tooling, and allow the deployment to run on your branch:
+
+```
+deploy:
+  - provider: [name]
+    edge:
+      source: [your-login]/dpl
+      branch: dpl-2
+    on:
+      branch: [your-branch]
+```
 
 Ideally use credentials for an isolated account on the service you are deploying to.
 This is generally good practice, and way you can hand things off to someone else.
