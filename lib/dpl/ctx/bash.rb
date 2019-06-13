@@ -2,6 +2,7 @@ require 'cl'
 require 'logger'
 require 'open3'
 require 'tmpdir'
+require 'securerandom'
 
 module Dpl
   module Ctx
@@ -23,10 +24,23 @@ module Dpl
       def fold(msg, &block)
         self.folds += 1
         print "travis_fold:start:dpl.#{folds}\r\e[K"
-        info "\e[33m#{msg}\e[0m"
-        yield
+        time do
+          info "\e[33m#{msg}\e[0m"
+          yield
+        end
       ensure
         print "\ntravis_fold:end:dpl.#{folds}\r\e[K"
+      end
+
+      def time(&block)
+        id = SecureRandom.hex[0, 8]
+        start = Time.now.to_i * (10 ** 9)
+        print "travis_time:start:#{id}\r\e[K"
+        yield
+      ensure
+        finish = Time.now.to_i * (10 ** 9)
+        duration = finish - start
+        print "\ntravis_time:end:#{id}:start=#{start},finish=#{finish},duration=#{duration}\r\e[K"
       end
 
       # Outputs a deprecation warning for a given deprecated option key to stderr.
