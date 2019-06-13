@@ -368,6 +368,7 @@ module Dpl
     # Folds any log output from the given block into a fold with the given
     # name.
     def fold(name, &block)
+      return yield if name == :init
       title = FOLDS[name] || "deploy.#{name}"
       ctx.fold(title, &block)
     end
