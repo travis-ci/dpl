@@ -21,7 +21,8 @@ describe Dpl::Ctx::Bash do
 
   matcher :have_stdout do |str|
     match do
-      expect(stdout.string).to match(str)
+      matcher = str.is_a?(Regexp) ? :match : :include
+      expect(stdout.string).to send(matcher, str)
     end
 
     failure_message do
@@ -71,7 +72,9 @@ describe Dpl::Ctx::Bash do
 
   describe 'fold' do
     before { subject.fold('foo') { stdout.puts 'bar' } }
-    it { should have_stdout "travis_fold:start:dpl.1\r\e[K\e[33mfoo\e[0m\nbar\n\ntravis_fold:end:dpl.1\r\e[K" }
+    it { should have_stdout "travis_fold:start:dpl.1\r\e[K" }
+    it { should have_stdout "\e[33mfoo\e[0m\nbar\n" }
+    it { should have_stdout "\ntravis_fold:end:dpl.1\r\e[K" }
   end
 
   describe 'deprecated_opt' do
