@@ -11,9 +11,9 @@ deploy:
   - provider: pages
     repo: travis-ci/dpl_test
     edge:
-      branch: sf-dpl2
+      branch: dpl-2
     on:
-      branch: sf-dpl2
+      branch: dpl-2
     github_token:
       # personal access token with repo scope on travis-handworker
       secure: "LWr5EoK9Zj40eaNsO1LaxZWX3Mz6OVmTDdSRFrLtv+ogW2yjw8Y1RaPdLc25dulCpgpuVzD8y7MZc7ArR2U7Tia/bZ0bzdch2feG237qg5cWc2LPxvV0SVXVnY3raHfN8mJ1lZIThCp9Nw3BeXiXnlgSQq6MaGmvo4jc4UDrlnk="

@@ -1,4 +1,4 @@
-# Contributing to dpl 2.0
+# Dpl 2.0
 
 Dpl 2.0 is the next major version of our deployment tooling, and basically
 a rewrite of the current codebase.
@@ -62,7 +62,7 @@ arguments are given then tests for all providers will be run.
 
 ## How to contribute
 
-Fork this repository, make a new branch from [dpl-2](https://github.com/travis-ci/dpl/pull/1003) (not the master branch).
+Fork this repository, work off the branch [dpl-2](https://github.com/travis-ci/dpl/pull/1003) (not the master branch).
 
 Go to your Travis CI account page, sync your account, and enable the repository.
 
