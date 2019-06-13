@@ -9,9 +9,9 @@ before_deploy:
 deploy:
   - provider: s3
     edge:
-      branch: sf-dpl2
+      branch: dpl-2
     on:
-      branch: sf-dpl2
+      branch: dpl-2
 
     # dpl_test
     access_key_id:

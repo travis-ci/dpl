@@ -12,9 +12,9 @@ deploy:
     strategy: api
     app: dpl-test-heroku-api
     edge:
-      branch: sf-dpl2
+      branch: dpl-2
     on:
-      branch: sf-dpl2
+      branch: dpl-2
     api_key:
       # token by svenfuchs
       # expires on 2020-06-03, heroku authorizations:add to create a permanent one

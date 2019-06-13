@@ -11,9 +11,9 @@ deploy:
   - provider: releases
     repo: travis-ci/dpl_test
     edge:
-      branch: sf-dpl2
+      branch: dpl-2
     on:
-      branch: sf-dpl2
+      branch: dpl-2
 
     target_commitish: 'master'
     name: 'dpl test'
