@@ -32,6 +32,11 @@ module Dpl
         print "\ntravis_fold:end:dpl.#{folds}\r\e[K"
       end
 
+      # Times the given block
+      #
+      # Starts a travis time log tag, calls the block, and closes the tag,
+      # including timing information. This makes a timing badge appear on
+      # the surrounding log fold.
       def time(&block)
         id = SecureRandom.hex[0, 8]
         start = Time.now.to_i * (10 ** 9)
