@@ -55,9 +55,9 @@ uri = URI.parse('https://api.travis-ci.org/repo/travis-ci%2Fdpl/requests')
 
 body = {
   request: {
-    branch: 'sf-dpl2',
+    branch: 'dpl-2',
     message: "test dpl providers #{Time.now}",
-    config: YAML.dump(
+    config: {
       import: './.travis/blank.yml', # skips .travis.yml
       env: {
         global: {
@@ -67,7 +67,7 @@ body = {
       matrix: {
         include: jobs
       }
-    )
+    }
   }
 }
 
