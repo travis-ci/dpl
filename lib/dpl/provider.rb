@@ -24,6 +24,7 @@ module DPL
       'Cloud66'             => 'cloud66',
       'CloudFiles'          => 'cloud_files',
       'CloudFoundry'        => 'cloud_foundry',
+      'CloudFormation'      => 'cloudformation',
       'CodeDeploy'          => 'code_deploy',
       'Convox'              => 'convox',
       'Cargo'               => 'cargo',
