@@ -1,14 +1,14 @@
 # Dpl 2.0
 
-Dpl 2.0 is the next major version of our deployment tooling, and basically
+Dpl 2.0 is the next major version of our deployment tooling, and is
 a rewrite of the current codebase.
 
 We are looking for contributors or subject matter experts to help us test
-and/or improve all deployment providers/services.
+and improve all deployment providers/services.
 
 The goal is to:
 
-* Run at least one deployment manually using the new version, provide a link to
+* Run at least one deployment manually using the new version and provide a link to
   the respective build.
 * Implement an automated test that deploys to the respective service that can
   run on Travis CI.
@@ -17,7 +17,7 @@ The goal is to:
 
 We have added automated integration tests for the providers/services we are
 familiar with. These live in https://github.com/travis-ci/dpl/tree/dpl-2/.travis.
-They actually make a deployment to the respective service (or in case of
+They make a deployment to the respective service (or in case of
 Rubygems to a service running locally). The are currently triggered manually,
 and may be run on a regular basis in the future (as a cron build).
 
@@ -40,8 +40,7 @@ For example:
 
 The tests can be run on Travis CI individually, or combined, by triggering a
 build via our API, using the script [.travis/trigger](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/trigger).
-This takes a provider name as an argument, and requires a Travis CI API token
-to be given.
+This takes a provider name as an argument, and requires a Travis CI API token.
 
 For example, this triggers a build that executes the GitHub Pages test on
 Travis CI:
@@ -85,7 +84,7 @@ Ideally use credentials for an isolated account on the service you are deploying
 This is generally good practice, and way you can hand things off to someone else.
 
 In order to get things working encrypt the credentials against your fork, and
-add them to the build config YAML snippet. If you are standing in the root directory
+add them to the build config YAML snippet. If you are in the root directory
 of your fork then this command should do the trick:
 
 ```
@@ -131,4 +130,3 @@ right team.
 
 We also have a shared Slack channel for more direct communication that we'd
 love to add you to.
-
