@@ -6,12 +6,8 @@ a rewrite of the current codebase.
 We are looking for contributors or subject matter experts to help us test
 and improve all deployment providers/services.
 
-The goal is to:
-
-* Run at least one deployment manually using the new version and provide a link to
-  the respective build.
-* Implement an automated test that deploys to the respective service that can
-  run on Travis CI.
+The goal is to implement an automated test that can run on Travis CI and
+deploys to the respective service.
 
 ## Automated tests
 
