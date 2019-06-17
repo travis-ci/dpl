@@ -4,10 +4,13 @@ Dpl 2.0 is the next major version of our deployment tooling, and is
 a rewrite of the current codebase.
 
 We are looking for contributors or subject matter experts to help us test
-and improve all deployment providers/services.
+and improve all deployment service providers supported by this tool.
 
 The goal is to implement an automated test that can run on Travis CI and
 deploys to the respective service.
+
+An overview of all deployment service providers, and all options supported can
+be found in the [README](https://github.com/travis-ci/dpl/blob/dpl-2/README.md).
 
 ## Automated tests
 
