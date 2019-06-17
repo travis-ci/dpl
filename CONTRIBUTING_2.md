@@ -66,7 +66,7 @@ Implement a provider test.
 In the build config YAML snippet make sure to use the branch of your fork for the
 deployment tooling, and allow the deployment to run on your branch:
 
-```
+```yaml
 deploy:
   - provider: [name]
     edge:
@@ -96,7 +96,7 @@ gem install travis
 When you add encrypted credentials to the build config YAML snippet also add a comment
 that allows others to identify the account used. E.g:
 
-```
+```yaml
 deploy:
   - provider: pages
     github_token:
