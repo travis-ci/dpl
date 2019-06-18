@@ -17,7 +17,7 @@ be found in the [README](https://github.com/travis-ci/dpl/blob/dpl-2/README.md).
 We have added automated integration tests for the providers/services we are
 familiar with. These live in https://github.com/travis-ci/dpl/tree/dpl-2/.travis.
 They make a deployment to the respective service (or in case of
-Rubygems to a service running locally). The are currently triggered manually,
+Rubygems to a service running locally). They are currently triggered manually,
 and may be run on a regular basis in the future (as a cron build).
 
 A provider test consists of:
