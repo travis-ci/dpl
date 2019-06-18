@@ -18,6 +18,11 @@ module Dpl
       msgs invalid_project: '%{project} is not a directory',
            missing_domain:  'Please set the domain in .travis.yml or in a CNAME file in the project directory'
 
+      def login
+        ENV['SURGE_LOGIN'] ||= opts[:login]
+        ENV['SURGE_TOKEN'] ||= opts[:token]
+      end
+
       def validate
       	error :invalid_project if invalid_project?
       	error :missing_domain  if missing_domain?
