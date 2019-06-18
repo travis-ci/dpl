@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+dir = 'tmp/dpl_test'
+mkdir_p dir
+chdir dir do
+  File.write 'index.html', ENV['ID']
+end

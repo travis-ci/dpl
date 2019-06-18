@@ -1,0 +1,28 @@
+language: node_js
+node_js: 11
+
+script:
+  - true
+
+before_deploy:
+  - echo $SURGE_LOGIN
+  - .travis/providers/surge_prepare
+
+deploy:
+  - provider: surge
+    edge:
+      branch: dpl-2
+    on:
+      branch: dpl-2
+    login:
+      # travis encrypt [surge email]
+      secure: "IKSjy7Kr88OfT3mCnMi4cl7+ORdQ4/unN3hsiP23oO6VBr6tn4MAFZKcvqxk1A5BxyTLUN5207DjzfVLk0wcpI4bYzruna+zoC12hMxSCdguri24LQS5vJfNf5eJp6mGO9pEcG4AU1u4UjYxEts3k+dSGIuCia4nko+n2tWRN4w="
+    token:
+      # travis encrypt [surge token from `surge token`]
+      secure: "AjJTh64LNXW9ns4xLf0Fwmgmk1s0ObaH5893x1KxZ5uZjEiPlE2hsQChB6TR39wf+t953sygYrr02wSjKhlzPfn82eFPdG44f+zg2clQtPzfPOgA6NREP9cekBFcWiI0g8MTMAGHSkohNOendAX0RM0K70yWzbTMyqD05ToUOpI="
+    project: ./tmp/dpl_test
+    domain: travis-ci-dpl-test.surge.sh
+    skip_cleanup: true
+
+after_deploy:
+  - .travis/providers/surge_test || TRAVIS_TEST_RESULT=$?
