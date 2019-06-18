@@ -196,7 +196,7 @@ module DPL
 
             FileUtils.cd(workdir, :verbose => true) do
               print_step "Copying #{@build_dir} contents to #{workdir} (workdir: #{Dir.pwd})..."
-              context.shell "rsync -r --exclude .git --delete '#{@build_dir}/' '#{workdir}'" or error "Could not copy #{@build_dir}."
+              context.shell "rsync -rl --exclude .git --delete '#{@build_dir}/' '#{workdir}'" or error "Could not copy #{@build_dir}."
 
               github_configure
               github_commit
