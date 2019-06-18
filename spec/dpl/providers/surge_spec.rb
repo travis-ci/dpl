@@ -2,6 +2,10 @@ describe Dpl::Providers::Surge do
   let(:args) { |e| args_from_description(e) }
   let(:cwd)  { File.expand_path('.') }
 
+  before do
+    stub_request(:get, %r(npmjs.com/surge/latest)).to_return(body: '{"_nodeVersion": "8.8.0"}')
+  end
+
   describe 'given --login login --token token --domain domain', record: true do
     before { subject.run }
     it { should have_run '[npm:install] surge (surge)' }
@@ -35,5 +39,11 @@ describe Dpl::Providers::Surge do
     env SURGE_LOGIN: 'login', SURGE_TOKEN: 'token'
     before { subject.run }
     it { should have_run "surge #{cwd} domain" }
+  end
+
+  describe 'given an outdated node.js version' do
+    env SURGE_LOGIN: 'login', SURGE_TOKEN: 'token'
+    before { allow(ctx).to receive(:node_version).and_return('0.0.0') }
+    it { expect { subject.run }.to raise_error 'Unsupported node version: 0.0.0 (requires at least version 8.8.0)' }
   end
 end

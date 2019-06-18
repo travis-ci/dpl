@@ -128,6 +128,10 @@ module Dpl
         'machine_name'
       end
 
+      def node_version
+        '11.0.0'
+      end
+
       def npm_version
         '1'
       end

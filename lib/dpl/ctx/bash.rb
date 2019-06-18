@@ -414,6 +414,11 @@ module Dpl
         `hostname`.strip
       end
 
+      # Returns the current Node.js version
+      def node_version
+        `node -v`.sub(/^v/, '')
+      end
+
       # Returns the current NPM version
       def npm_version
         `npm --version`

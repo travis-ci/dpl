@@ -1,5 +1,4 @@
 require 'dpl/version'
-
 require 'net/http'
 require 'securerandom'
 
