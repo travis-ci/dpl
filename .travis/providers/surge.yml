@@ -5,7 +5,6 @@ script:
   - true
 
 before_deploy:
-  - echo $SURGE_LOGIN
   - .travis/providers/surge_prepare
 
 deploy:
