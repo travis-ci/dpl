@@ -7,6 +7,8 @@ describe Dpl::Providers::Surge do
     it { should have_run '[npm:install] surge (surge)' }
     it { should have_run "surge #{cwd} domain" }
     it { should have_run_in_order }
+    it { should have_env SURGE_LOGIN: 'login' }
+    it { should have_env SURGE_TOKEN: 'token' }
   end
 
   describe 'given --login login --token token' do
