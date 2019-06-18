@@ -493,6 +493,8 @@ You first need to create an [Atlas account](https://atlas.hashicorp.com/account/
 * **create**: Optional (default: `false`). Flag to decide either you want to create application if it doesn't exist (`true`) or not (`false`). Keep in mind that deploy keys doesn't support app creation.
 * **install_url**: Optional (default: `https://convox.com/cli/linux/convox`). Convox CLI URL. For intensive usage keep it on your S3 bucket (or other hosting service) for faster deployments.
 * **update_cli**: Optional (default: `false`). Either you want travis to perform `convox update` during installation step.
+* **before_deploy**: Optional. Define your commands to be run just before deployment.
+* **after_deploy**: Optional. Define your commands to be run just after deployment.
 
 #### Examples:
 

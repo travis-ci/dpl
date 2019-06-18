@@ -176,7 +176,7 @@ module DPL
       def push_app
         update_envs unless environment.nil?
 
-        Array(options[:before_push]).each do |command|
+        Array(options[:before_deploy]).each do |command|
           context.fold(format('Running %p', command)) { run(command) }
         end
 
@@ -186,7 +186,7 @@ module DPL
           context.fold('Building application only') { convox_build }
         end
 
-        Array(options[:after_push]).each do |command|
+        Array(options[:after_deploy]).each do |command|
           context.fold(format('Running %p', command)) { run(command) }
         end
       end
