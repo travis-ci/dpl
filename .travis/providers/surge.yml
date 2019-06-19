@@ -14,11 +14,10 @@ deploy:
     on:
       branch: dpl-2
     login:
-      # travis encrypt [surge email]
-      secure: "IKSjy7Kr88OfT3mCnMi4cl7+ORdQ4/unN3hsiP23oO6VBr6tn4MAFZKcvqxk1A5BxyTLUN5207DjzfVLk0wcpI4bYzruna+zoC12hMxSCdguri24LQS5vJfNf5eJp6mGO9pEcG4AU1u4UjYxEts3k+dSGIuCia4nko+n2tWRN4w="
+      dpl-test@travis-ci.org
     token:
       # travis encrypt [surge token from `surge token`]
-      secure: "AjJTh64LNXW9ns4xLf0Fwmgmk1s0ObaH5893x1KxZ5uZjEiPlE2hsQChB6TR39wf+t953sygYrr02wSjKhlzPfn82eFPdG44f+zg2clQtPzfPOgA6NREP9cekBFcWiI0g8MTMAGHSkohNOendAX0RM0K70yWzbTMyqD05ToUOpI="
+      secure: "q7S5tf3vVoT8UEGWetIKvb+Nd2iAhFtDA3lfYSL1xOV3ZxIVhOgl18xLDHSfu8zAZ0kbcdrVy6I6+/ZGEYqgBAtjBth6DaUlvDv7Xqw+E/Ad7vTJyR7VE2gW07Gs5Ear3bN6ty3PKMaysjO7NXhqfSACWvBK1+DDdpLJ4eW2qAQ="
     project: ./tmp/dpl_test
     domain: travis-ci-dpl-test.surge.sh
     skip_cleanup: true
