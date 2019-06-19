@@ -29,5 +29,3 @@ str
 
 run "git commit -am 'test dpl Engine Yard #{ENV['ID']}'"
 run 'git push -f origin/engine_yard'
-
-chdir '../..'

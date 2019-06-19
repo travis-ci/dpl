@@ -19,6 +19,7 @@ deploy:
     app: travis_dpl_test
     api_key:
       secure: "maQqcDA51oW/kVsaC6LmB7iKy2XoRxU6UStQZfGucqkryorC19RkHaKYjtEeQQORZT/Jh3+1kCMe2vXBHSsZA1lIIfIpj/HojwUGD0qeLSefDhdR2BTf78sRL+HsRE78GX8k2ORt+OQT6JcaA+rCb6/7Wk4/IygbcHHYMS+doK0="
+    skip_cleanup: true
 
 after_deploy:
   - .travis/providers/engine_yard_test || TRAVIS_TEST_RESULT=$?
