@@ -9,6 +9,7 @@ script: true
 
 before_deploy:
   - .travis/providers/engine_yard_prepare
+  - export TRAVIS_COMMIT=$(git rev-parse HEAD | tr -d '\n')
 
 deploy:
   - provider: engineyard

@@ -6,7 +6,7 @@ include FileUtils
 
 def run(cmd)
   puts "$ #{cmd}"
-  system cmd || abort
+  system(cmd) || abort
 end
 
 netrc = File.expand_path('~/.netrc')
@@ -18,8 +18,8 @@ str
 File.chmod 0600, netrc
 
 mkdir 'tmp'
-run   'git clone https://github.com/travis-ci/dpl_test.git tmp/dpl_test_heroku'
-chdir 'tmp/dpl_test_heroku'
+run   'git clone https://github.com/travis-ci/dpl_test.git tmp/dpl_test'
+chdir 'tmp/dpl_test'
 run   'git checkout -B engine_yard'
 
 File.write 'config.ru', <<~str
@@ -28,4 +28,4 @@ File.write 'config.ru', <<~str
 str
 
 run "git commit -am 'test dpl Engine Yard #{ENV['ID']}'"
-run 'git push -f origin/engine_yard'
+run 'git push -f origin engine_yard'
