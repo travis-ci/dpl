@@ -36,9 +36,7 @@ module Dpl
       end
 
       def validate
-        puts :validate
         @env ||= resolve(envs)
-        p [:validate, env]
         error :invalid_migrate if invalid_migrate?
       end
 
@@ -62,17 +60,14 @@ module Dpl
         def api
           @api ||= EY::CloudClient.new(token: token)
         rescue EY::CloudClient::Error => e
-          p [:api, e]
           error e.message
         end
 
         def deployment
           opts = { ref: git_sha }
           opts = opts.merge(migrate: true, migration_command: migrate) if migrate?
-          p [:deployment, opts]
-          p EY::CloudClient::Deployment.deploy(api, env, opts)
+          EY::CloudClient::Deployment.deploy(api, env, opts)
         rescue EY::CloudClient::Error => e
-          p [:deployment, e]
           error e.message
         end
 
@@ -86,7 +81,6 @@ module Dpl
         end
 
         def resolve(envs)
-          p [:resolve, envs]
           envs.one_match { return envs.matches.first }
           envs.no_matches { error envs.errors.join("\n").inspect }
           envs.many_matches { |envs| multiple_env_matches(envs) }
@@ -98,14 +92,12 @@ module Dpl
         end
 
         def poll_for_result(deployment)
-          p [:poll_for_result, deployment]
           deployment = refresh(deployment) until deployment.finished?
           info :deploy_done, deployment.app.id, deployment.environment.id, deployment.id
           deployment
         end
 
         def refresh(deployment)
-          p [:refresh, deployment]
           sleep 5
           print '.'
           EY::CloudClient::Deployment.get(api, deployment.app_environment, deployment.id)
