@@ -16,6 +16,7 @@ module Dpl
       end
 
       def fold(name)
+        p name
         cmds << "[fold] #{name}"
         yield.tap { cmds << "[unfold] #{name}" }
       end

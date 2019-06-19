@@ -150,7 +150,7 @@ module Dpl
       def gems_require(gems)
         require 'bundler/inline'
         info "Installing gem dependendies: #{gems.map { |name, version, _| "#{name} #{"(#{version})" if version}".strip }.join(', ')}"
-        gemfile do
+        gemfile(true) do
           source 'https://rubygems.org'
           gems.each { |g| gem *g }
         end
@@ -451,6 +451,10 @@ module Dpl
         netrc[machine] = [login, password]
         netrc.save
         puts File.read('/Users/sven/.netrc')
+      end
+
+      def sleep(sec)
+        Kernel.sleep(sec)
       end
 
       # Returns a copy of the given hash, reduced to the given keys
