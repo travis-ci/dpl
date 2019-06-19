@@ -1,0 +1,24 @@
+language: ruby
+
+env:
+  # GITHUB_TOKEN=[personal access token with repo scope on travis-dpl-test]
+  secure: "o7IxUSrMNTYoVqWO+LkmGn3wccPEEi9CewntdP/KGgH1g8YdDuEjZvSmSlNacEsXfibz+F3pWM1aNb3Qx5Is0fQizm0eVaAXs/4qwPZOyByzOt5QdO0PXw4BRuojc6kByW0QcsbUceyxUSFNQeWernpinlZAnblpLBjTpqbPKSw="
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/engine_yard_prepare
+
+deploy:
+  - provider: engineyard
+    edge:
+      branch: dpl-2
+    on:
+      branch: dpl-2
+    app: travis_dpl_test
+    api_key:
+      secure: "maQqcDA51oW/kVsaC6LmB7iKy2XoRxU6UStQZfGucqkryorC19RkHaKYjtEeQQORZT/Jh3+1kCMe2vXBHSsZA1lIIfIpj/HojwUGD0qeLSefDhdR2BTf78sRL+HsRE78GX8k2ORt+OQT6JcaA+rCb6/7Wk4/IygbcHHYMS+doK0="
+
+after_deploy:
+  - .travis/providers/engine_yard_test || TRAVIS_TEST_RESULT=$?
