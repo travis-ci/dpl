@@ -21,8 +21,8 @@ module Dpl
       opt '--account NAME',    'Engine Yard account name'
 
       msgs deploy:          'Deploying ...',
-           invalid_migrate: 'Invalid migration command, try --migrate="rake db:migrate"',
            authenticated:   'Authenticated as %s',
+           invalid_migrate: 'Invalid migration command, try --migrate="rake db:migrate"',
            multiple_envs:   "Multiple matches possible, please be more specific: %s",
            env_entry:       'environment=%s account=%s',
            deploy_done:     'Done: https://cloud.engineyard.com/apps/%s/environments/%s/deployments/%s/pretty',
@@ -31,6 +31,7 @@ module Dpl
       attr_reader :env, :token
 
       def login
+        authenticate
         info :authenticated, api.current_user.email
       end
 
