@@ -1,8 +1,13 @@
 #!/usr/bin/env ruby
 
+require 'bundler/inline'
 require 'fileutils'
 
 include FileUtils
+
+gemfile do
+  gem 'engineyard-cloud-client', '~> 2.1.0'
+end
 
 def run(cmd)
   puts "$ #{cmd}"
@@ -32,3 +37,13 @@ File.write 'id', ENV['ID']
 run 'git add .'
 run "git commit -m 'test dpl Engine Yard #{ENV['ID']}'"
 run 'git push -f origin engine_yard'
+
+# token = ENV['ENGINE_YARD_API_KEY']
+# api = EY::CloudClient.new(token: token)
+# # app = api.apps.find { |app| app.name == 'travis_dpl_test' }
+# # env = app.app_environments.first
+# env = api.environments.first
+# instance = env.instances.first
+# instance.stop
+# # envs = api.resolve_app_environments(app_name: 'travis_dpl_test')
+# # env = envs.one_match { envs.matches.first }
