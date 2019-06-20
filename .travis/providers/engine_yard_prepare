@@ -17,7 +17,7 @@ machine github.com
 str
 File.chmod 0600, netrc
 
-mkdir 'tmp'
+mkdir 'tmp' unless File.directory?('tmp')
 run   'git clone https://github.com/travis-ci/dpl_test.git tmp/dpl_test'
 chdir 'tmp/dpl_test'
 run   'git checkout -B engine_yard'
@@ -27,5 +27,8 @@ File.write 'config.ru', <<~str
   run ->(env) {  [200, { 'Content-type' => 'text/plain' }, ['#{ENV['ID']}']] }
 str
 
-run "git commit -am 'test dpl Engine Yard #{ENV['ID']}'"
+File.write 'id', ENV['ID']
+
+run 'git add .'
+run "git commit -m 'test dpl Engine Yard #{ENV['ID']}'"
 run 'git push -f origin engine_yard'

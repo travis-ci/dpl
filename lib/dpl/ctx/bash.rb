@@ -148,15 +148,18 @@ module Dpl
       #
       # @see https://bundler.io/v2.0/guides/bundler_in_a_single_file_ruby_script.html
       def gems_require(gems)
-        require 'bundler/inline'
-        info "Installing gem dependendies: #{gems.map { |name, version, _| "#{name} #{"(#{version})" if version}".strip }.join(', ')}"
-        gemfile(true) do
-          source 'https://rubygems.org'
-          gems.each { |g| gem *g }
+        # A local Gemfile.lock might interfer with bundler/inline, even though
+        # it should not. Switching to a temporary dir fixes this.
+        Dir.chdir(tmp_dir) do
+          require 'bundler/inline'
+          info "Installing gem dependencies: #{gems.map { |name, version, _| "#{name} #{"(#{version})" if version}".strip }.join(', ')}"
+          gemfile(true) do
+            source 'https://rubygems.org'
+            gems.each { |g| gem *g }
+          end
+          # https://github.com/bundler/bundler/issues/7181
+          ENV.replace(Bundler.original_env)
         end
-        ENV.replace(Bundler.original_env) # it would seem to me that clean_env should do this, but apparently it does not?
-        # Bundler.clean_env
-        # Bundler.reset!
       end
 
       # Installs an NPM package
