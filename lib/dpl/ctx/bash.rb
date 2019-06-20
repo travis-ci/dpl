@@ -182,8 +182,8 @@ module Dpl
       # @param cmd     [String] Executable command installed by that package (optional, defaults to the package name).
       # @param version [String] Package version (optional).
       def pip_install(package, cmd = package, version = nil)
-        shell "pip uninstall --user -y #{package}" if version && which(cmd)
-        cmd = "pip install --user #{package}"
+        shell "pip uninstall -y #{package}" if version && which(cmd) # --user
+        cmd = "pip install #{package}" # --user
         cmd << pip_version(version) if version
         shell cmd, echo: true, assert: true, retry: true
         shell 'export PATH=$PATH:$HOME/.local/bin'

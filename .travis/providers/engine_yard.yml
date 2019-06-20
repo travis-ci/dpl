@@ -3,6 +3,8 @@ language: ruby
 env:
   # GITHUB_TOKEN=[personal access token with repo scope on travis-dpl-test]
   secure: "o7IxUSrMNTYoVqWO+LkmGn3wccPEEi9CewntdP/KGgH1g8YdDuEjZvSmSlNacEsXfibz+F3pWM1aNb3Qx5Is0fQizm0eVaAXs/4qwPZOyByzOt5QdO0PXw4BRuojc6kByW0QcsbUceyxUSFNQeWernpinlZAnblpLBjTpqbPKSw="
+  # # ENGINE_YARD_API_KEY=[api key]
+  # secure: "YPEP0jh93rw8jok/2d/slB4fyDX9Sx3j9uMjKy+vpkBfr6msZbejIS18zYp4F7jr28aLk2i5vnQdMTLKz9IezK5RETgPe9y+s+K4x3QXQArH4DQy2GxjkrTFfq/FKAeUJv7CK8Jlpv0goPW9SpYNB5xQa4w3Vqd8P5oTmcus0+g="
 
 install: true
 script: true
