@@ -5,8 +5,7 @@ module Dpl
         tbd
       str
 
-      # Make sure we have the Python version needed. Maybe add a python DSL
-      # that installs the needed version if not available?
+      python '>= 2.7', '!= 3.0', '!= 3.1', '!= 3.2', '!= 3.3', '< 3.8'
 
       required :api_token, [:username, :password]
 
@@ -21,15 +20,23 @@ module Dpl
       cmds status: 'tx status',
            push:   'tx push --source --no-interactive'
 
-      msgs rc:   'Writing ~/.transifexrc (user: %{username}, password: %{obfuscated_password})'
-      errs push: 'Failure pushing to Transifex'
+      msgs login:  'Writing ~/.transifexrc (user: %{username}, password: %{obfuscated_password})'
+      errs push:   'Failure pushing to Transifex'
+
+      RC = sq(<<-rc)
+        [%{url}]
+        hostname = %{url}
+        username = %{username}
+        password = %{password}
+      rc
 
       def install
         pip_install 'transifex-client', 'tx', cli_version
       end
 
       def login
-        write_rc
+        info :login
+        write_file('~/.transifexrc', interpolate(RC))
         shell :status
       end
 
@@ -45,18 +52,6 @@ module Dpl
 
         def password
           super || api_token
-        end
-
-        RC = sq(<<-rc)
-          [%{url}]
-          hostname = %{url}
-          username = %{username}
-          password = %{password}
-        rc
-
-        def write_rc
-          info :rc
-          write_file('~/.transifexrc', interpolate(RC))
         end
 
         def url

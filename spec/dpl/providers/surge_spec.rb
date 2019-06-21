@@ -8,6 +8,7 @@ describe Dpl::Providers::Surge do
 
   describe 'given --login login --token token --domain domain', record: true do
     before { subject.run }
+    it { should have_run '[validate:runtime] node_js (>= 8.8.1)' }
     it { should have_run '[npm:install] surge (surge)' }
     it { should have_run "surge #{cwd} domain" }
     it { should have_run_in_order }
@@ -39,11 +40,5 @@ describe Dpl::Providers::Surge do
     env SURGE_LOGIN: 'login', SURGE_TOKEN: 'token'
     before { subject.run }
     it { should have_run "surge #{cwd} domain" }
-  end
-
-  describe 'given an outdated node.js version' do
-    env SURGE_LOGIN: 'login', SURGE_TOKEN: 'token'
-    before { allow(ctx).to receive(:node_version).and_return('0.0.0') }
-    it { expect { subject.run }.to raise_error 'Unsupported node version: 0.0.0 (requires at least version 8.8.0)' }
   end
 end

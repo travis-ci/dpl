@@ -14,7 +14,7 @@ File.write '.tx/config', <<~str
 [main]
 host = https://www.transifex.com
 
-[i18n.enjson]
+[dpl_test.test]
 file_filter = locales/<lang>.json
 source_file = locales/en.json
 source_lang = en

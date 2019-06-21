@@ -57,6 +57,19 @@ module Dpl
         !!@experimental
       end
 
+      def node_js(*requirements)
+        runtimes(:node_js, requirements)
+      end
+
+      def python(*requirements)
+        runtimes(:python, requirements)
+      end
+
+      def runtimes(name = nil, requirements = nil)
+        return @runtimes ||= [] unless name
+        runtimes << [name, requirements]
+      end
+
       # Declare APT packages the provider depends on. These will be installed
       # during the `before_install` stage using `apt-get install`, unless the
       # given cmd is already available according to `which [cmd]`.

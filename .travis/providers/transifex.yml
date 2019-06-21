@@ -11,7 +11,7 @@ script: true
 before_deploy:
   - .travis/providers/transifex_prepare
   - cd tmp/dpl_test
-  - ls -al . .tx locales
+  - python --version
 
 deploy:
   - provider: transifex
