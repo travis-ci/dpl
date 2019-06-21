@@ -134,7 +134,7 @@ describe Dpl::Ctx::Bash do
 
     describe 'python' do
       let(:runtimes) { [[:python, ['>= 2.7', '!= 3.0', '!= 3.1', '!= 3.2', '!= 3.3', '< 3.8']]] }
-      before { allow(subject).to receive(:`).with('python -v').and_return(version) }
+      before { allow(subject).to receive(:`).with('python --version 2>&1').and_return(version) }
 
       describe 'satisfied (2.7)' do
         let(:version) { 'Python 2.7' }

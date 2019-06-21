@@ -38,7 +38,7 @@ end
 
 def paths
   glob = ARGV.any? ? ARGV.join(',') : '*'
-  Dir[".travis/providers/{#{glob}}.yml"].sort
+  Dir[".travis/providers/{#{glob}}/*.yml"].sort
 end
 
 def jobs

@@ -15,22 +15,24 @@ module Dpl
 
       URL = 'https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/latest/boxfuse-commandline-latest-linux-x64.tar.gz'
 
+      cmds install: 'curl -L %{URL} | tar xz',
+           deploy:  'boxfuse/boxfuse run %{deploy_opts}'
+
       def install
-        shell "curl -L #{URL} | tar xz"
+        shell :install
       end
 
       def deploy
-        shell deploy_cmd
+        shell :deploy
       end
 
       private
 
-        def deploy_cmd
-          opts = %i(user secret payload image env)
-          cmd = ['boxfuse/boxfuse run', *opts_for(opts)]
-          cmd << "--configfile=#{config_file}" if config_file?
-          cmd << extra_args if extra_args?
-          cmd.compact.join(' ')
+        def deploy_opts
+          opts = [*opts_for(%i(user secret payload image env))]
+          opts << "--configfile=#{config_file}" if config_file?
+          opts << extra_args if extra_args?
+          opts.join(' ')
         end
     end
   end

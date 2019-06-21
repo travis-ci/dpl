@@ -11,8 +11,9 @@ module Dpl
     # * Named variables `%{name}` and
     # * Positional variables.
     #
-    # Named variable names need to match methods on the provider instance,
-    # which will be called in order to evaluate the value to be interpolated.
+    # Named variable names need to match constants on the provider class, or
+    # methods on the provider instance, which will be called in order to
+    # evaluate the value to be interpolated.
     #
     # Positional variables can be used if no corresponding method exists, e.g.
     # if the value that needs to be interpolated is an argument passed to a
@@ -53,6 +54,7 @@ module Dpl
     class Interpolate < Struct.new(:str, :obj, :args)
       MODIFIER = %i(obfuscate escape quote)
       PATTERN  = /%\{(\w+)\}/
+      UPCASE   = /^[A-Z_]+$/
 
       def apply
         str.gsub(PATTERN) { |match| lookup($1.to_sym) }
@@ -62,6 +64,8 @@ module Dpl
         if mod = modifier(key)
           key = key.to_s.sub("#{mod}d_", '')
           obj.send(mod, lookup(key))
+        elsif key.to_s =~ UPCASE
+          obj.class.const_get(key)
         else
           args.key?(key) ? args[key] : obj.send(key).to_s
         end

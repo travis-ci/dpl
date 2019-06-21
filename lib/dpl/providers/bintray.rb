@@ -5,7 +5,8 @@ require 'find'
 module Dpl
   module Providers
     class Bintray < Provider
-      gem 'json'
+      # gem 'json'
+      require 'json'
 
       description sq(<<-str)
         tbd
@@ -41,7 +42,7 @@ module Dpl
         version_attrs:   '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}/attributes',
         version_sign:    '/gpg/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
         version_publish: '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/publish',
-        version_file:    '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{source}'
+        version_file:    '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{target}'
       }
 
       MAP = {
@@ -53,6 +54,7 @@ module Dpl
 
       def validate
         error :missing_file unless File.exist?(file)
+        # validate that the repo exists, and we have access
       end
 
       def deploy
@@ -67,16 +69,16 @@ module Dpl
         exists?(:package)
       end
 
-      def version_exists?
-        exists?(:version)
-      end
-
       def create_package
         info :create_package
         post(path(:packages), compact(only(package, *MAP[:package])))
         return unless package_attrs
         info :package_attrs
         post(path(:package_attrs), package_attrs)
+      end
+
+      def version_exists?
+        exists?(:version)
       end
 
       def create_version
@@ -90,7 +92,7 @@ module Dpl
       def upload_files
         files.each do |file|
           info :upload_file, source: file.source, target: file.target
-          put_file(file.source, path(:version_file, source: file.source), file.params)
+          put_file(file.source, path(:version_file, target: file.target), file.params)
         end
       end
 
@@ -139,7 +141,7 @@ module Dpl
       end
 
       def exists?(type)
-        case code = head(path(type), raise: false)
+        case code = head(path(type), raise: false, silent: true)
         when 200, 201 then true
         when 404 then false
         else error :unexpected_code, code, type
@@ -185,7 +187,7 @@ module Dpl
 
       def handle(req, res, opts = { raise: true })
         error :request_failed, req.method, req.uri, res.code if opts[:raise] && !success?(res.code)
-        info :request_success, res.code, res.message, parse(res)['message']
+        info :request_success, res.code, res.message, parse(res)['message'] unless opts[:silent]
         res.code.to_i
       end
 

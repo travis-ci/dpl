@@ -4,7 +4,7 @@ script:
   - true
 
 before_deploy:
-  - .travis/providers/github_releases_prepare
+  - .travis/providers/github-releases/prepare
   - cd tmp/dpl_test_github_releases
 
 deploy:
@@ -23,4 +23,4 @@ deploy:
       # personal access token with repo scope on travis-dpl-test
       secure: "fRVQWM14TO7/nHNyXB3fHZPKCqZxNPxN3wKmVsxVqTj99SSPsonr1AvQXziFtLEc44+pmlg0J5diFhhwzWU2W4/UxDaFyrdhkmZWRkRlJTjkgO0kDOJPJFza4stXAsavn4bLpz6YuCD0ZprPTBJu2wDA7e1IvXGRu0nb/PIaRko="
 
-    run: cd ../.. && .travis/providers/github_releases_test || TRAVIS_TEST_RESULT=$?
+    run: cd ../.. && .travis/providers/github-releases/test || TRAVIS_TEST_RESULT=$?

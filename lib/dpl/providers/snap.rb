@@ -23,7 +23,9 @@ module Dpl
            deploy:         'Pushing snap %{snap_path}'
 
       def install
-        install_snapcraft unless which 'snapcraft'
+        return if which 'snapcraft'
+        shell :install
+        ENV['PATH'] += ':/snap/bin'
       end
 
       def login
@@ -51,11 +53,6 @@ module Dpl
 
       def snaps
         @snaps ||= Dir[snap].sort
-      end
-
-      def install_snapcraft
-        shell :install
-        ENV['PATH'] += ':/snap/bin'
       end
     end
   end
