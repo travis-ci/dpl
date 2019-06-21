@@ -116,6 +116,43 @@ describe Dpl::Ctx::Bash do
 
   # shell commands
 
+  describe 'validate_runtimes' do
+    describe 'node_js' do
+      let(:runtimes) { [[:node_js, ['>= 11.0.0']]] }
+      before { allow(subject).to receive(:`).with('node -v').and_return(version) }
+
+      describe 'satisfied' do
+        let(:version) { 'v11.0.0' }
+        it { expect { subject.validate_runtimes(runtimes) }.to_not raise_error }
+      end
+
+      describe 'fails' do
+        let(:version) { 'v10.0.0' }
+        it { expect { subject.validate_runtimes(runtimes) }.to raise_error 'Failed validating runtimes: node_js (>= 11.0.0)' }
+      end
+    end
+
+    describe 'python' do
+      let(:runtimes) { [[:python, ['>= 2.7', '!= 3.0', '!= 3.1', '!= 3.2', '!= 3.3', '< 3.8']]] }
+      before { allow(subject).to receive(:`).with('python -v').and_return(version) }
+
+      describe 'satisfied (2.7)' do
+        let(:version) { 'Python 2.7' }
+        it { expect { subject.validate_runtimes(runtimes) }.to_not raise_error }
+      end
+
+      describe 'satisfied (3.6)' do
+        let(:version) { 'Python 3.6' }
+        it { expect { subject.validate_runtimes(runtimes) }.to_not raise_error }
+      end
+
+      describe 'fails' do
+        let(:version) { '3.0.1' }
+        it { expect { subject.validate_runtimes(runtimes) }.to raise_error 'Failed validating runtimes: python (>= 2.7, != 3.0, != 3.1, != 3.2, != 3.3, < 3.8)' }
+      end
+    end
+  end
+
   describe 'apts_get' do
     before { allow(subject).to receive(:`).with('which cmd').and_return('/bin/cmd') }
     before { allow(subject).to receive(:`).with('which two').and_return('') }

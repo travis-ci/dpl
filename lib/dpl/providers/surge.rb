@@ -7,6 +7,8 @@ module Dpl
         tbd
       str
 
+      node_js '>= 8.8.1'
+
       gem 'json'
       npm :surge
       env :surge
@@ -19,8 +21,7 @@ module Dpl
       cmds deploy: 'surge %{project} %{domain}'
 
       msgs invalid_project: '%{project} is not a directory',
-           missing_domain:  'Please set the domain in .travis.yml or in a CNAME file in the project directory',
-           unsupported_node_version: 'Unsupported node version: %{node_version} (requires at least version %{required_node_version})'
+           missing_domain:  'Please set the domain in .travis.yml or in a CNAME file in the project directory'
 
       def login
         ENV['SURGE_LOGIN'] ||= opts[:login]
@@ -28,7 +29,6 @@ module Dpl
       end
 
       def validate
-        error :unsupported_node_version if unsupported_node_version?
       	error :invalid_project if invalid_project?
       	error :missing_domain  if missing_domain?
       end
@@ -47,14 +47,6 @@ module Dpl
 
       def project
         File.expand_path(super, build_dir)
-      end
-
-      def unsupported_node_version?
-        version(node_version) < version(required_node_version)
-      end
-
-      def required_node_version
-        @version ||= JSON.parse(URI.parse('https://registry.npmjs.com/surge/latest').read)['_nodeVersion']
       end
     end
   end

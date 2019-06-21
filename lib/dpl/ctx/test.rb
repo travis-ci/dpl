@@ -20,6 +20,12 @@ module Dpl
         yield.tap { cmds << "[unfold] #{name}" }
       end
 
+      def validate_runtimes(runtimes)
+        runtimes.each do |name, requirements|
+          cmds << "[validate:runtime] #{name} (#{requirements.join(', ')})"
+        end
+      end
+
       def apts_get(apts)
         apts.each { |apt| apt_get(*apt) }
       end

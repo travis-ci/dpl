@@ -31,7 +31,7 @@ module Dpl
            bootstrap: 'Failed bootstrap Google Cloud SDK.'
 
       msgs install:   'Downloading Google Cloud SDK ...',
-           validate:  'Python 2.7 Version',
+           validate:  'Validating Python 2.7 Version',
            bootstrap: 'Bootstrapping Google Cloud SDK ...',
            failed:    'Deployment failed.'
 

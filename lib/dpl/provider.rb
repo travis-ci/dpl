@@ -95,6 +95,10 @@ module Dpl
         npm.each { |npm| ctx.npm_install *npm } if npm?
         pip.each { |pip| ctx.pip_install *pip } if pip?
       end
+
+      def validate_runtimes(ctx)
+        ctx.validate_runtimes(runtimes) if runtimes.any?
+      end
     end
 
     # Default artifacts to keep during cleanup.
@@ -152,7 +156,8 @@ module Dpl
          ssh_failed:      'Failed to establish SSH connection.'
 
     def_delegators :'self.class', :experimental, :experimental?, :full_name,
-      :install_deps, :install_deps?, :keep, :needs?, :user_agent
+      :install_deps, :install_deps?, :keep, :needs?, :runtimes, :validate_runtimes,
+      :user_agent
 
     def_delegators :ctx, :apt_get, :gem_require, :npm_install, :pip_install,
       :build_dir, :build_number, :repo_slug, :encoding, :git_commit_msg,
@@ -215,6 +220,7 @@ module Dpl
 
     # Install APT, NPM, and Python dependencies as declared by the provider.
     def before_install
+      validate_runtimes(ctx)
       return unless install_deps?
       info :before_install
       install_deps(ctx)
@@ -523,11 +529,6 @@ module Dpl
     # @see Dpl::Squiggle
     def sq(str)
       self.class.sq(str)
-    end
-
-    # Returns an instance of `Gem::Version` for the given version string.
-    def version(version)
-      Gem::Version.new(version)
     end
 
     # Generate shell option strings to be passed to a shell command.

@@ -3,6 +3,7 @@ require 'logger'
 require 'open3'
 require 'tmpdir'
 require 'securerandom'
+require 'dpl/support/version'
 
 module Dpl
   module Ctx
@@ -111,6 +112,19 @@ module Dpl
         logger = Logger.new(stderr)
         logger.level = Logger.const_get(level.to_s.upcase)
         logger
+      end
+
+      def validate_runtimes(runtimes)
+        failed = runtimes.reject(&method(:validate_runtime))
+        failed = failed.map { |name, versions| "#{name} (#{versions.join(', ')})" }
+        error "Failed validating runtimes: #{failed.join(', ')}" if failed.any?
+      end
+
+      def validate_runtime(args)
+        name, required = *args
+        info "Validating required runtime version: #{name} (#{required.join(', ')})"
+        version = name == :node_js ? node_version : python_version
+        required.all? { |required| Version.new(version).satisfies?(required) }
       end
 
       def apts_get(packages)
@@ -419,12 +433,17 @@ module Dpl
 
       # Returns the current Node.js version
       def node_version
-        `node -v`.sub(/^v/, '')
+        `node -v`.sub(/^v/, '').chomp
       end
 
       # Returns the current NPM version
       def npm_version
         `npm --version`
+      end
+
+      # Returns the current Node.js version
+      def python_version
+        `python --version 2>&1`.sub(/^Python /, '').chomp
       end
 
       # Returns true or false depending if the given command can be found

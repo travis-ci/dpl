@@ -6,14 +6,15 @@ require 'json'
 expected = ENV['ID']
 
 20.times do
-  uri = URI.parse('https://www.transifex.com/api/2/project/dpl_test/resource/core/translation/en/?mode=default&file')
-  json = uri.read(http_basic_authentication: ['dpl_test', ENV['TRANSIFEX_PASSWORD']]))
-  p json
+  uri = URI.parse('https://www.transifex.com/api/2/project/dpl_test/resource/test/translation/en/?mode=default&file')
+  json = uri.read(http_basic_authentication: ['dpl_test', ENV['TRANSIFEX_PASSWORD']])
+  data = JSON.parse(json)
+  actual = data['test']
 
-  # puts "expected: #{expected.inspect}"
-  # puts "actual: #{actual.inspect}"
-  # exit 0 if actual == expected
-  # sleep 5
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual == expected
+  sleep 5
 end
 
 abort 'failed'
