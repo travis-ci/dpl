@@ -4,13 +4,13 @@ script:
   - true
 
 before_deploy:
-  - .travis/providers/heroku_prepare
+  - .travis/providers/heroku/prepare
   - cd tmp/dpl_test_heroku
 
 deploy:
   - provider: heroku
-    strategy: api
-    app: dpl-test-heroku-api
+    strategy: git
+    app: dpl-test-heroku-git
     edge:
       branch: dpl-2
     on:
@@ -22,4 +22,4 @@ deploy:
 
 after_deploy:
   - cd ../..
-  - .travis/providers/heroku_test https://dpl-test-heroku-api.herokuapp.com/ || TRAVIS_TEST_RESULT=$?
+  - .travis/providers/heroku/test https://dpl-test-heroku-git.herokuapp.com/ || TRAVIS_TEST_RESULT=$?

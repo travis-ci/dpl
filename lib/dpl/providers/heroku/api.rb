@@ -114,10 +114,6 @@ module Dpl
           def curl_opts
             $stdout.isatty ? '' : ' -sS'
           end
-
-          def symbolize(hash)
-            hash.map { |key, value| [key.to_sym, value] }.to_h
-          end
       end
     end
   end

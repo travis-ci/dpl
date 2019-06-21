@@ -13,7 +13,7 @@ describe Dpl::Providers::Bintray do
         version:         %r(packages/user/repo/name/versions/0.5$),
         versions:        %r(packages/user/repo/name/versions$),
         version_attrs:   %r(packages/user/repo/name/versions/0.5/attributes$),
-        version_file:    %r(content/user/repo/name/0.5/build/bin/foo.gem$),
+        version_file:    %r(content/user/repo/name/0.5/gems/foo.gem$),
         version_sign:    %r(gpg/user/repo/name/versions/0.5$),
         version_publish: %r(content/user/repo/name/0.5/publish$)
       }

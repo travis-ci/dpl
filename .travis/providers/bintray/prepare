@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+require 'bundler/inline'
+require 'fileutils'
+
+include FileUtils
+
+mkdir_p 'tmp/dpl_test'
+
+File.write 'tmp/dpl_test/upload.json', <<~str
+{
+  "package": {
+    "name": "dpl_test",
+    "repo": "dpl_test",
+    "subject": "dpl-test",
+    "licenses": ["MIT"],
+    "vcs_url": "https://github.com/travis-ci/dpl_test"
+  },
+  "version": {
+    "name": "#{ENV["ID"]}"
+  },
+  "files": [
+    {
+      "includePattern": "tmp/dpl_test/(test)",
+      "uploadPattern": "$1"
+    }
+  ],
+  "publish": true
+}
+str
+
+File.write 'tmp/dpl_test/test', ENV['ID']

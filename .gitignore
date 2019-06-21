@@ -13,3 +13,4 @@ play
 setuptools*.zip
 stubs
 vendor
+tmp

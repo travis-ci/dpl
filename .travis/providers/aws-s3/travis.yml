@@ -4,7 +4,7 @@ script:
   - true
 
 before_deploy:
-  - .travis/providers/s3_prepare
+  - .travis/providers/aws-s3/prepare
 
 deploy:
   - provider: s3
@@ -25,4 +25,4 @@ deploy:
 
 # why does deploy.run not work here?
 after_deploy:
-  - .travis/providers/s3_test || TRAVIS_TEST_RESULT=$?
+  - .travis/providers/aws-s3/test || TRAVIS_TEST_RESULT=$?

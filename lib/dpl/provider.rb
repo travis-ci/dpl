@@ -564,6 +564,18 @@ module Dpl
     def compact(hash)
       hash.reject { |_, value| value.nil? }
     end
+
+    # Deep symbolizes the given hash's keys
+    def symbolize(obj)
+      case obj
+      when Hash
+        obj.map { |key, obj| [key.to_sym, symbolize(obj)] }.to_h
+      when Array
+        obj.map { |obj| symbolize(obj) }
+      else
+        obj
+      end
+    end
   end
 end
 

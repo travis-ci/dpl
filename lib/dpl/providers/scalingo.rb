@@ -21,12 +21,12 @@ module Dpl
            add_key:     './scalingo keys-add dpl_tmp_key %s',
            remove_key:  './scalingo keys-remove dpl_tmp_key',
            remote_add:  'git remote add %{remote} git@scalingo.com:%{app}.git 2> /dev/null > /dev/null',
-           deploy:      'git push %{remote} %{branch} -f'
+           push:        'git push %{remote} %{branch} -f'
 
       errs install:    'Failed to install the Scalingo CLI.',
            login:      'Failed to authenticate with the Scalingo API',
            add_key:    'Failed to add the ssh key.',
-           deploy:     'Failed to push the app.',
+           push:       'Failed to push the app.',
            remove_key: 'Failed to remove the ssh key.'
 
       def install
@@ -46,7 +46,7 @@ module Dpl
       end
 
       def deploy
-        shell :deploy, assert: true
+        shell :push, assert: true
       end
 
       def remove_key

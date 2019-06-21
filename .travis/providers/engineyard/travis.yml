@@ -10,7 +10,7 @@ install: true
 script: true
 
 before_deploy:
-  - .travis/providers/engine_yard_prepare
+  - .travis/providers/engineyard/prepare
   - export TRAVIS_COMMIT=$(GIT_DIR=tmp/dpl_test/.git git rev-parse HEAD | tr -d '\n')
   - cd tmp/dpl_test
 
@@ -27,4 +27,4 @@ deploy:
 
 after_deploy:
   - cd ../..
-  - .travis/providers/engine_yard_test || TRAVIS_TEST_RESULT=$?
+  - .travis/providers/engineyard/test || TRAVIS_TEST_RESULT=$?

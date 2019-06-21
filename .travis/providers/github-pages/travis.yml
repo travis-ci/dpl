@@ -4,7 +4,7 @@ script:
   - true
 
 before_deploy:
-  - .travis/providers/github_pages_prepare
+  - .travis/providers/github-pages/prepare
   - cd tmp/dpl_test_github_pages
 
 deploy:
@@ -24,4 +24,4 @@ deploy:
 
 after_deploy:
   - cd ../..
-  - .travis/providers/github_pages_test || TRAVIS_TEST_RESULT=$?
+  - .travis/providers/github-pages/test || TRAVIS_TEST_RESULT=$?

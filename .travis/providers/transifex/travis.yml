@@ -9,7 +9,7 @@ install: true
 script: true
 
 before_deploy:
-  - .travis/providers/transifex_prepare
+  - .travis/providers/transifex/prepare
   - cd tmp/dpl_test
   - python --version
 
@@ -27,4 +27,4 @@ deploy:
 
 after_deploy:
   - cd ../..
-  - .travis/providers/transifex_test || TRAVIS_TEST_RESULT=$?
+  - .travis/providers/transifex/test || TRAVIS_TEST_RESULT=$?

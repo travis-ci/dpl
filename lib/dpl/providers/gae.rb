@@ -9,6 +9,8 @@ module Dpl
 
       experimental
 
+      python '= 2.7'
+
       env :googlecloud, :cloudsdk_core
 
       opt '--project ID', 'Project ID used to identify the project on Google Cloud', required: true
@@ -23,6 +25,7 @@ module Dpl
            login:     '~/google-cloud-sdk/bin/gcloud -q auth activate-service-account --key-file %{keyfile}',
            validate:  'python -c "import sys; print(sys.version)"',
            bootstrap: '~/google-cloud-sdk/bin/bootstrapping/install.py --usage-reporting=false --command-completion=false --path-update=false',
+           deploy:    '~/google-cloud-sdk/bin/gcloud --quiet %{deploy_opts}',
            cat_logs:  'find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;'
 
       errs install:   'Failed to download Google Cloud SDK.',
@@ -47,8 +50,8 @@ module Dpl
       end
 
       def deploy
-        shell deploy_cmd, python: 2.7
-        deploy_failed unless success?
+        shell :deploy, python: 2.7
+        failed unless success?
       end
 
       private
@@ -68,15 +71,14 @@ module Dpl
           shell :bootstrap, python: 2.7, assert: true
         end
 
-        def deploy_cmd
-          cmd = '~/google-cloud-sdk/bin/gcloud --quiet '
-          cmd << opts_for(%i(verbosity project config version))
-          cmd << " --#{no_promote? ? 'no-' : ''}promote"
-          cmd << ' --no-stop-previous-version' if no_stop_previous_version?
-          cmd
+        def deploy_opts
+          opts = [*opts_for(%i(verbosity project config version))]
+          opts << "--#{no_promote? ? 'no-' : ''}promote"
+          opts << '--no-stop-previous-version' if no_stop_previous_version?
+          opts.join(' ')
         end
 
-        def deploy_failed
+        def failed
           warn :failed
           shell :cat_logs
           error ''
