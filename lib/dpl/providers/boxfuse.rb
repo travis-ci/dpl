@@ -5,11 +5,14 @@ module Dpl
         BitBallon does something.
       str
 
+      env :boxfuse
+
       opt '--user USER'
       opt '--secret SECRET'
       opt '--config_file FILE', alias: :configfile, deprecated: :configfile
       opt '--payload PAYLOAD'
-      opt '--image IMAGE'
+      opt '--app APP'
+      opt '--version VERSION'
       opt '--env ENV'
       opt '--extra_args ARGS'
 
@@ -17,6 +20,15 @@ module Dpl
 
       cmds install: 'curl -L %{URL} | tar xz',
            deploy:  'boxfuse/boxfuse run %{deploy_opts}'
+
+      # def login
+      #   ENV['BOXFUSE_USER'] = user
+      #   ENV['BOXFUSE_SECRET'] = secret
+      # end
+
+      def validate
+        # check if the config file exists (it seems `boxfuse` doesn't)
+      end
 
       def install
         shell :install
@@ -29,8 +41,8 @@ module Dpl
       private
 
         def deploy_opts
-          opts = [*opts_for(%i(user secret payload image env))]
-          opts << "--configfile=#{config_file}" if config_file?
+          opts = [*opts_for(%i(user secret payload image env version), prefix: '-')]
+          opts << "-configfile=#{config_file}" if config_file?
           opts << extra_args if extra_args?
           opts.join(' ')
         end
