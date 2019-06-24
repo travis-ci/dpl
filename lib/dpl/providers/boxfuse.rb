@@ -41,7 +41,7 @@ module Dpl
       private
 
         def deploy_opts
-          opts = [*opts_for(%i(user secret payload image env version), prefix: '-')]
+          opts = [*opts_for(%i(user secret payload app env version), prefix: '-')]
           opts << "-configfile=#{config_file}" if config_file?
           opts << extra_args if extra_args?
           opts.join(' ')
