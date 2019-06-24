@@ -1,10 +1,10 @@
 describe Dpl::Providers::Boxfuse do
   before { subject.run }
 
-  # after do
-  #   ENV.delete('BOXFUSE_USER')
-  #   ENV.delete('BOXFUSE_SECRET')
-  # end
+  before do
+    ENV.delete('BOXFUSE_USER')
+    ENV.delete('BOXFUSE_SECRET')
+  end
 
   describe 'install' do
     it { should have_run %r(curl -L https://files.boxfuse.com/.*.tar.gz | tar xz) }
@@ -35,8 +35,8 @@ describe Dpl::Providers::Boxfuse do
     it { should have_run 'boxfuse/boxfuse run -payload="payload"' }
   end
 
-  describe 'given --image image' do
-    it { should have_run 'boxfuse/boxfuse run -image="image"' }
+  describe 'given --app app' do
+    it { should have_run 'boxfuse/boxfuse run -app="app"' }
   end
 
   describe 'given --env env' do

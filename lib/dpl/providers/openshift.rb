@@ -1,77 +1,43 @@
 module Dpl
   module Providers
     class Openshift < Provider
-      gem 'httpclient', '~> 2.4.0'
-      gem 'net-ssh', '~> 4.2.0', require: 'net/ssh'
-      gem 'net-ssh-gateway', '~> 2.0.0', require: 'net/ssh/gateway'
-      gem 'rhc', '~> 1.38.7'
-
-      full_name 'Open Shift'
+      full_name 'OpenShift'
 
       description sq(<<-str)
         tbd
       str
 
-      opt '--user NAME',     'OpenShift username', required: true
-      opt '--password PASS', 'OpenShift password', required: true
-      opt '--domain DOMAIN', 'OpenShift application domain', required: true
-      opt '--app APP',       'OpenShift application', default: :repo_name
-      # not mentioned in the readme or docs
-      opt '--deployment_branch BRANCH'
+      opt '--server SERVER',   'OpenShift server', required: true
+      opt '--token TOKEN',     'OpenShift token', required: true
+      opt '--project PROJECT', 'OpenShift project', required: true
+      opt '--app APP',         'OpenShift application', default: :repo_name
 
-      needs :git, :ssh_key
+      cmds install: 'curl %{URL} | tar xz',
+           login:   './oc login --token=%{token} --server=%{server}',
+           prepare: './oc project %{project}',
+           deploy:  './oc start-build %{app} --follow --commit %{git_sha}'
 
-      msgs login:           'Authenticated as %{user}',
-           validate:        'Found application %s',
-           deploy_branch:   'Deployment branch: %{deployment_branch}'
+      errs install: 'CLI tool installation failed',
+           login:   'Authentication failed',
+           prepare: 'Unable to select project %{project}',
+           deploy:  'Deployment failed'
 
-      cmds git_push:        'git push %{git_url} -f',
-           git_push_branch: 'git push %{git_url} -f %{deployment_branch}'
+      URL = 'https://mirror.openshift.com/pub/openshift-v4/clients/oc/4.1/linux/oc.tar.gz'
 
-      SERVER = 'openshift.redhat.com'
-
-      def api
-        @api ||= ::RHC::Rest::Client.new(user: user, password: password, server: SERVER)
+      def install
+        shell :install, assert: true, echo: true
       end
 
       def login
-        api.user.login
-        info :login
+        shell :login, assert: true
       end
 
-      def validate
-        info :validate, application.name
-      end
-
-      def add_key(file)
-        type, content, _ = File.read(file).split
-        api.add_key(key_name, content, type)
+      def prepare
+        shell :prepare, assert: true, echo: true
       end
 
       def deploy
-        if deployment_branch?
-          info :deploy_branch
-          application.deployment_branch = deployment_branch # does this have any effect?
-          shell :git_push_branch
-        else
-          shell :git_push
-        end
-      end
-
-      def remove_key
-        api.delete_key(key_name)
-      end
-
-      def restart
-        application.restart
-      end
-
-      def git_url
-        application.git_url
-      end
-
-      def application
-        @application ||= api.find_application(domain, app)
+        shell :deploy, assert: true, echo: true
       end
     end
   end
