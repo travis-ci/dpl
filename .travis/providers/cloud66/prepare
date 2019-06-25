@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+def run(cmd)
+  puts "$ #{cmd}"
+  system(cmd) || abort
+end
+
+netrc = File.expand_path('~/.netrc')
+
+File.write netrc, <<~str
+machine github.com
+  login #{ENV['GITHUB_TOKEN']}
+str
+File.chmod 0600, netrc
+
+mkdir 'tmp' unless File.directory?('tmp')
+run   'git clone https://github.com/travis-ci/dpl_test.git tmp/dpl_test'
+chdir 'tmp/dpl_test'
+run   'git checkout cloud66'
+
+File.write 'app/views/home/index.html.erb', ENV['ID']
+
+run 'git add .'
+run "git commit -m 'test dpl cloud66 #{ENV['ID']}'"
+run 'git push -f origin cloud66'

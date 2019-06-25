@@ -8,7 +8,6 @@ install: true
 script: true
 
 before_deploy:
-  - oc scale rc --replicas=1 --all
   - .travis/providers/openshift/prepare
   - export TRAVIS_COMMIT=$(GIT_DIR=tmp/dpl_test/.git git rev-parse HEAD | tr -d '\n')
   - cd tmp/dpl_test
@@ -29,5 +28,5 @@ deploy:
 after_deploy:
   - cd ../..
   - .travis/providers/openshift/test || TRAVIS_TEST_RESULT=$?
-  - oc scale rc --replicas=0 --all
-  - .oc delete pod --all
+  # - ./oc scale rc --replicas=0 --all
+  # - ./oc delete pod --all
