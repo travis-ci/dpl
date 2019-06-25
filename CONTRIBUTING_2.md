@@ -30,11 +30,11 @@ A provider test consists of:
 
 For example:
 
-* [github_pages_prepare](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/providers/github_pages_prepare)
+* [github-pages/prepare](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/providers/github-pages/prepare)
   creates a minimal Git repository that serves an `index.html` on GitHub Pages in a temporary directory.
-* [github_pages.yml](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/providers/github_pages.yml)
+* [github-pages/travis.yml](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/providers/github-pages/travis.yml)
   configures the build to use Dpl 2.0 to deploy this repository to GitHub Pages.
-* [github_pages_test](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/providers/github_pages_test)
+* [github-pages/test](https://github.com/travis-ci/dpl/blob/dpl-2/.travis/providers/github-pages/test)
   tests if the deployment was successful.
 
 The tests can be run on Travis CI individually, or combined, by triggering a
@@ -45,14 +45,14 @@ For example, this triggers a build that executes the GitHub Pages test on
 Travis CI:
 
 ```
-.travis/trigger github_pages --token [token]
+.travis/trigger github-pages --token [token]
 ```
 
 The token can also be set as an environment variable:
 
 ```
 export TRAVIS_API_TOKEN=[token]
-.travis/trigger github_pages
+.travis/trigger github-pages
 ```
 
 The `trigger` script accepts multiple provider names as arguments. If no
