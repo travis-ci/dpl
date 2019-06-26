@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+mkdir_p 'tmp/dpl_test'
+chdir 'tmp/dpl_test'
+
+File.write 'firebase.json', <<~str
+  {
+    "hosting": {
+      "public": "."
+    }
+  }
+str
+
+File.write 'index.html', ENV['ID']
+
