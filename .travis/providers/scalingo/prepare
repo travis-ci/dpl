@@ -1,10 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'fileutils'
-require 'net/http'
-require 'open-uri'
-require 'openssl'
-require 'json'
 
 include FileUtils
 
