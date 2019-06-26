@@ -1,16 +1,11 @@
 #!/usr/bin/env ruby
 
-require 'bundler/inline'
 require 'fileutils'
 # require 'net/http'
 # require 'open-uri'
 # require 'json'
 
 include FileUtils
-
-gemfile do
-  gem 'engineyard-cloud-client', '~> 2.1.0'
-end
 
 def run(cmd)
   puts "$ #{cmd}"
@@ -43,7 +38,11 @@ run 'git push -f origin engine_yard'
 
 
 # def headers
-#   { 'X-EY-TOKEN' => ENV['ENGINEYARD_TOKEN'] }
+#   {
+#     'X-EY-TOKEN' => ENV['ENGINEYARD_TOKEN'],
+#     'Content-Type' => 'application/json',
+#     'Accept' => 'application/vnd.engineyard.v3+json',
+#   }
 # end
 #
 # def servers

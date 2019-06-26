@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'open-uri'
+require 'json'
+
+expected = ENV['ID']
+
+10.times do
+  uri = URI.parse('https://s3.amazonaws.com/travis-dpl-test/dpl_test')
+  actual = uri.read
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual == expected
+  sleep 5
+end
+
+abort 'failed'

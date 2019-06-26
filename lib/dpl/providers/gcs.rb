@@ -37,6 +37,7 @@ module Dpl
 
       def deploy
         Dir.chdir(local_dir) do
+          p paths
           paths.each { |path| upload(path) }
         end
       end
