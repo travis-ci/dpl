@@ -1,4 +1,5 @@
 require 'cl'
+require 'fileutils'
 require 'logger'
 require 'open3'
 require 'tmpdir'
@@ -8,7 +9,7 @@ require 'dpl/support/version'
 module Dpl
   module Ctx
     class Bash < Cl::Ctx
-      attr_accessor :folds, :stdout, :stderr
+      attr_accessor :folds, :stdout, :stderr, :last_out, :last_err
 
       def initialize(stdout = $stdout, stderr = $stderr)
         @stdout, @stderr = stdout, stderr
@@ -253,12 +254,12 @@ module Dpl
         cmd = with_python(cmd, opts[:python]) if opts[:python]
 
         info "$ #{cmd}" if opts[:echo]
-        out, err, @last_status = retrying(opts[:retry] ? 2 : 0) do
+        @last_out, @last_err, @last_status = retrying(opts[:retry] ? 2 : 0) do
           opts[:capture] ? open3(cmd, opts) : system(cmd, opts)
         end
 
-        info opts[:info] % { out: out } if opts[:info] && success?
-        error assert(cmd, opts) % { err: err } if opts[:assert] && !success?
+        info opts[:info] % { out: last_out } if opts[:info] && success?
+        error assert(cmd, opts) % { err: last_err } if opts[:assert] && !success?
 
         @last_status
       end
@@ -298,7 +299,7 @@ module Dpl
       # stderr will not be captured, but streamed directly to the parent process.
       #
       # @option chdir [String] directory temporarily to change to before running the command
-      def system(cmd, opts)
+      def system(cmd, opts = {})
         opts = [opts[:chdir] ? only(opts, :chdir) : nil].compact
         Kernel.system(cmd, *opts)
         ['', '', last_process_status]
@@ -453,7 +454,7 @@ module Dpl
 
       # Returns a unique temporary directory name
       def tmp_dir
-        Dir.mktmpdir
+        @tmp_dir ||= Dir.mktmpdir
       end
 
       # Returns the size of the given file path
@@ -461,9 +462,29 @@ module Dpl
         File.size(path)
       end
 
+      def move_files(paths)
+        paths.each do |path|
+          target = "#{tmp_dir}/#{File.basename(path)}"
+          mv(path, target) if File.exists?(path)
+        end
+      end
+
+      def unmove_files(paths)
+        paths.each do |path|
+          source = "#{tmp_dir}/#{File.basename(path)}"
+          mv(source, path) if File.exists?(source)
+        end
+      end
+
+      def mv(src, dest)
+        Kernel.system("sudo mv #{src} #{dest} 2> /dev/null")
+      end
+
       # Writes the given content to the given file path
-      def write_file(path, content)
-        File.open(File.expand_path(path), 'w+') { |f| f.write(content) }
+      def write_file(path, content, chmod = nil)
+        path = File.expand_path(path)
+        File.open(path, 'w+') { |f| f.write(content) }
+        FileUtils.chmod(chmod, path) if chmod
       end
 
       # Writes the given machine, login, and password to ~/.netrc

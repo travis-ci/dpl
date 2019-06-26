@@ -7,7 +7,7 @@ module Dpl
     class Test < Cl::Ctx
       include Squiggle
 
-      attr_reader :cmds, :stderr
+      attr_reader :cmds, :stderr, :last_out, :last_err
 
       def initialize
         @cmds = []
@@ -172,7 +172,23 @@ module Dpl
         File.size(path.sub("#{File.expand_path('~')}", './home'))
       end
 
-      def write_file(path, content)
+      def move_files(paths)
+        paths.each do |path|
+          mv(path, "/tmp/#{File.basename(path)}")
+        end
+      end
+
+      def unmove_files(paths)
+        paths.each do |path|
+          mv("/tmp/#{File.basename(path)}", path)
+        end
+      end
+
+      def mv(src, dest)
+        cmds << [:mv, src, dest].join(' ')
+      end
+
+      def write_file(path, content, chmod = nil)
         path = File.expand_path(path)
         path = path.sub("#{File.expand_path('~')}", './home')
         FileUtils.mkdir_p(File.dirname(path))

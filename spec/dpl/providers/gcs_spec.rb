@@ -8,33 +8,37 @@ describe Dpl::Providers::Gcs do
   before { stub_request(:put, /.*/) }
   before { subject.run }
 
-  describe 'by default' do
-    it { should have_run '[info] Logging in with Access Key: ********************' }
-    it { expect(WebMock).to have_requested(:put, %r(bucket.*.com/one$)) }
-    it { expect(WebMock).to_not have_requested(:put, %r(bucket.*.com/\.hidden$)) }
+  describe 'by default', record: true do
+    it { should have_run 'mv /etc/boto.cfg /tmp/boto.cfg' }
+    it { should have_run '[validate:runtime] python (>= 2.7.9, < 2.8)' }
+    it { should have_run 'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-252.0.0-linux-x86_64.tar.gz | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false' }
+    it { should have_run '[info] Authenticating with access key: ********************' }
+    it { should have_run 'git stash --all' }
+    it { should have_run 'gsutil cp -r one gs://bucket/' }
+    it { should have_run 'gsutil cp -r two/two gs://bucket/' }
+    it { should have_run 'git stash pop' }
+    it { should have_run 'mv /tmp/boto.cfg /etc/boto.cfg' }
+    it { should have_run_in_order }
+    it { should_not have_run 'gsutil cp -r .hidden gs://bucket/' }
   end
 
-  describe 'given --upload_dir ./dir' do
-    it { expect(WebMock).to have_requested(:put, %r(bucket.*.com/dir/one$)) }
-  end
-
-  describe 'given --local_dir ./two' do
-    it { expect(WebMock).to have_requested(:put, %r(bucket.*.com/two$)) }
+  describe 'given --upload_dir dir' do
+    it { should have_run 'gsutil cp -r one gs://bucket/dir' }
   end
 
   describe 'given --dot_match' do
-    it { expect(WebMock).to have_requested(:put, %r(bucket.*.com/\.hidden$)) }
+    it { should have_run 'gsutil cp -r .hidden gs://bucket/' }
   end
 
-  describe 'given --acl public-read' do
-    it { expect(WebMock).to have_requested(:put, %r(one)).with(headers: { 'X-Goog-Acl' => 'public-read' }) }
+  describe 'given --acl public_read' do
+    it { should have_run 'gsutil cp -a "public_read" -r one gs://bucket/' }
   end
 
   describe 'given --detect_encoding' do
-    it { expect(WebMock).to have_requested(:put, %r(one)).with(headers: { 'Content-Encoding' => 'text' }) }
+    it { should have_run 'gsutil -h "Content-Encoding:text" cp -r one gs://bucket/' }
   end
 
   describe 'given --cache_control max-age=1' do
-    it { expect(WebMock).to have_requested(:put, %r(one)).with(headers: { 'Cache-Control' => 'max-age=1' }) }
+    it { should have_run 'gsutil -h "Cache-Control:max-age=1" cp -r one gs://bucket/' }
   end
 end

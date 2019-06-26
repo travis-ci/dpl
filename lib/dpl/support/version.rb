@@ -41,6 +41,16 @@ class Version
     trunc(other.size).to_a != other.to_a
   end
 
+  def <=>(other)
+    to_a <=> other.to_a
+  end
+
+  define_method :'~>' do |min|
+    min = min.trunc(nums.size)
+    max = min.clone.bump
+    self >= min && self < max
+  end
+
   def bump
     ix = nums[1] ? -2 : -1
     nums[ix] = nums[ix] + 1
@@ -51,16 +61,6 @@ class Version
   def trunc(size)
     @nums = nums[0..size - 1]
     self
-  end
-
-  def <=>(other)
-    to_s <=> other.to_s
-  end
-
-  define_method :'~>' do |min|
-    min = min.trunc(nums.size)
-    max = min.clone.bump
-    self >= min && self < max
   end
 
   def clone

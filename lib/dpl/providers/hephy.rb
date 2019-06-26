@@ -18,10 +18,10 @@ module Dpl
       INSTALL = 'https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh'
 
       cmds login:      './deis login %{controller} --username=%{username} --password=%{password}',
-           add_key:    './deis keys:add %s',
+           add_key:    './deis keys:add %{key}',
            validate:   './deis apps:info --app=%{app}',
            deploy:     "bash -c 'git push %{verbose} %{url} HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'",
-           run:        './deis run -a %s -- %s',
+           run:        './deis run -a %{app} -- %{cmd}',
            remove_key: './deis keys:remove %{key_name}'
 
       errs login:      'Login failed.',
@@ -39,8 +39,8 @@ module Dpl
         shell :login, assert: true
       end
 
-      def add_key(file)
-        shell :add_key, file, assert: true
+      def add_key(key)
+        shell :add_key, key: key, assert: true
         wait_for_ssh_access(host, port)
       end
 
@@ -53,7 +53,7 @@ module Dpl
       end
 
       def run_cmd(cmd)
-        shell :run, cmd, app, echo: true, assert: true
+        shell :run, app: app, cmd: cmd, echo: true, assert: true
       end
 
       def remove_key

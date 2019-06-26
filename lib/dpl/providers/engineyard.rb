@@ -23,7 +23,7 @@ module Dpl
       msgs deploy:          'Deploying ...',
            authenticated:   'Authenticated as %s',
            invalid_migrate: 'Invalid migration command, try --migrate="rake db:migrate"',
-           multiple_envs:   "Multiple matches possible, please be more specific: %s",
+           multiple_envs:   'Multiple matches possible, please be more specific: %s',
            env_entry:       'environment=%s account=%s',
            deploy_done:     'Done: https://cloud.engineyard.com/apps/%s/environments/%s/deployments/%s/pretty',
            deploy_failed:   'Deployment failed (see logs on Engine Yard)'
