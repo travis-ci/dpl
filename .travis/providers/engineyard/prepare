@@ -2,6 +2,9 @@
 
 require 'bundler/inline'
 require 'fileutils'
+# require 'net/http'
+# require 'open-uri'
+# require 'json'
 
 include FileUtils
 
@@ -38,12 +41,20 @@ run 'git add .'
 run "git commit -m 'test dpl Engine Yard #{ENV['ID']}'"
 run 'git push -f origin engine_yard'
 
-# token = ENV['ENGINE_YARD_API_KEY']
-# api = EY::CloudClient.new(token: token)
-# # app = api.apps.find { |app| app.name == 'travis_dpl_test' }
-# # env = app.app_environments.first
-# env = api.environments.first
-# instance = env.instances.first
-# instance.stop
-# # envs = api.resolve_app_environments(app_name: 'travis_dpl_test')
-# # env = envs.one_match { envs.matches.first }
+
+# def headers
+#   { 'X-EY-TOKEN' => ENV['ENGINEYARD_TOKEN'] }
+# end
+#
+# def servers
+#   uri = URI.parse('https://api.engineyard.com/servers')
+#   data = JSON.parse(uri.read(headers))
+#   data['servers']
+# end
+#
+# servers.each do |server|
+#   uri = URI.parse("https://api.engineyard.com/servers/#{server['id']}/stop")
+#   http = Net::HTTP.new(uri.host)
+#   http.set_debug_output($stdout)
+#   http.put(uri.path, '', headers)
+# end

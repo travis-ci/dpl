@@ -3,15 +3,15 @@ language: ruby
 env:
   # GITHUB_TOKEN=[personal access token with repo scope on travis-dpl-test]
   secure: "o7IxUSrMNTYoVqWO+LkmGn3wccPEEi9CewntdP/KGgH1g8YdDuEjZvSmSlNacEsXfibz+F3pWM1aNb3Qx5Is0fQizm0eVaAXs/4qwPZOyByzOt5QdO0PXw4BRuojc6kByW0QcsbUceyxUSFNQeWernpinlZAnblpLBjTpqbPKSw="
-  # # ENGINE_YARD_API_KEY=[api key]
-  # secure: "YPEP0jh93rw8jok/2d/slB4fyDX9Sx3j9uMjKy+vpkBfr6msZbejIS18zYp4F7jr28aLk2i5vnQdMTLKz9IezK5RETgPe9y+s+K4x3QXQArH4DQy2GxjkrTFfq/FKAeUJv7CK8Jlpv0goPW9SpYNB5xQa4w3Vqd8P5oTmcus0+g="
+  # ENGINEYARD_TOKEN=[api key]
+  secure: "KXIVseBmqNgkefqqmVLNExDFpJwfVlvDw4jQSLMfTnuQpFi3VC8sTKIQywdtIHBr0xBuXsmj9jDiFb3DGIefsABDJ4ajdSqF0flabtEbTT9zUBHLcKSODX0QR5AER+rjFUrHV6U3HQfETKkRU4cDX1wEYEg03xrNQoQqZc4QAWs="
+
 
 install: true
 script: true
 
 before_deploy:
   - .travis/providers/engineyard/prepare
-  - export TRAVIS_COMMIT=$(GIT_DIR=tmp/dpl_test/.git git rev-parse HEAD | tr -d '\n')
   - cd tmp/dpl_test
 
 deploy:

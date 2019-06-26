@@ -1,0 +1,29 @@
+language: ruby
+
+env:
+  # SCALINGO_TOKEN=[scalingo api token]
+  secure: "JjRCTqCz5+s6jMKd6LLlldp/79kzdzEUGcfOKLDD16iLMpuDXeMa4M0rxtbICJs79eC68E0NLOrpwF96pzZCv74wTNzTJeUh15+NBErBBafkBijnoML/2Xp0K+ybAs8b2IrJ8RgH+oYyf5mQXz5Qq9PRp/lquRMIyb7TjGU4A54="
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/scalingo/scale 1
+  - .travis/providers/scalingo/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: scalingo
+    edge:
+      branch: dpl-2
+    on:
+      branch: dpl-2
+    app: dpl-test
+    api_key:
+      secure: "Gtk9nEqjD8meGWVBB2oH7VGy4dFyQh9GmhICRWBXa2YNxQy98bikuXTPoDQJ395S4hWATLR1TWvp/rZ4H59GcOnyp8GuF9/O25DcLvZ1H0WCW75WckkpBPF8YEElVQlC17LmC3zAVG7qtp1QnmawhWXxJX7PL1B97tuqwXhVlcI="
+    skip_cleanup: true
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/scalingo/test || TRAVIS_TEST_RESULT=$?
+  - .travis/providers/scalingo/scale 0
