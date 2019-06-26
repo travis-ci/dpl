@@ -26,9 +26,10 @@ module Dpl
            gem_not_found: 'no such gem.',
            gem_push:      'Pushing gem %{gem}'
 
-      cmds gem_build: 'gem build %s'
+      cmds gem_build: 'gem build %{gemspec}'
 
-      errs gem_build: 'Failed to build %s'
+      # TODO test this
+      errs gem_build: 'Failed to build %{gemspec}'
 
       def setup
         return unless host?
@@ -61,7 +62,7 @@ module Dpl
 
         def build
           Dir[gemspec_glob].each do |gemspec|
-            shell :gem_build, gemspec, echo: true, assert: true
+            shell :gem_build, gemspec: gemspec, echo: true, assert: true
           end
         end
 

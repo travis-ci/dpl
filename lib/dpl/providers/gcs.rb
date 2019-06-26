@@ -1,16 +1,8 @@
 require 'kconv'
 
-# gstore seems dead (it's archived on github)
-#
-# omg, and there's a PR to use https://github.com/googleapis/google-cloud-ruby
-# https://github.com/travis-ci/dpl/pull/916/files
-#
-# well, i guess i'm done with the code now anyway :)
-
 module Dpl
   module Providers
     class Gcs < Provider
-      gem 'gstore', '~> 0.2.1', require: ['gstore', 'dpl/support/gstore_patch']
       gem 'mime-types', '~> 3.2.2'
 
       full_name 'Google Cloud Store'
@@ -19,73 +11,92 @@ module Dpl
         tbd
       str
 
+      python '>= 2.7.9', '< 2.8'
+
       opt '--access_key_id ID', 'GCS Interoperable Access Key ID', required: true
       opt '--secret_access_key KEY', 'GCS Interoperable Access Secret', required: true
       opt '--bucket BUCKET', 'GCS Bucket', required: true
-      opt '--acl ACL', 'Access control to set for uploaded objects'
-      opt '--upload_dir DIR', 'GCS directory to upload to', default: '.'
-      opt '--local_dir DIR', 'Local directory to upload from. Can be an absolute (~/travis/build) or relative (build) path.', default: '.'
+      opt '--local_dir DIR', 'Local directory to upload from', default: '.'
+      opt '--upload_dir DIR', 'GCS directory to upload to'
       opt '--dot_match', 'Upload hidden files starting with a dot'
+      opt '--acl ACL', 'Access control to set for uploaded objects'
       opt '--detect_encoding', 'HTTP header Content-Encoding to set for files compressed with gzip and compress utilities.'
       opt '--cache_control HEADER', 'HTTP header Cache-Control to suggest that the browser cache the file.'
 
-      msgs login: 'Logging in with Access Key: %{obfuscated_access_key_id}'
+      cmds install: 'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
+           copy:    'gsutil %{gs_opts}cp %{copy_opts}-r %{source} %{target}'
+
+      msgs login: 'Authenticating with access key: %{obfuscated_access_key_id}'
+
+      errs copy:  'Failed uploading files.'
+
+      URL = 'https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-252.0.0-linux-x86_64.tar.gz'
+
+      BOTO = sq(<<-str)
+        [Credentials]
+        gs_access_key_id = %{access_key_id}
+        gs_secret_access_key = %{secret_access_key}
+      str
+
+      path '~/google-cloud-sdk'
+      move '/etc/boto.cfg'
+
+      def install
+        shell :install
+      end
 
       def login
         info :login
+        write_boto
       end
 
       def deploy
         Dir.chdir(local_dir) do
-          p paths
-          paths.each { |path| upload(path) }
+          source_files.each { |file| copy(file) }
         end
       end
 
       private
 
-        def upload(path)
-          params = { data: File.read(path), headers: headers(path) }
-          gstore.put_object(bucket, upload_path(path), params)
+        def write_boto
+          write_file '~/.boto', interpolate(BOTO), 0600
         end
 
-        def headers(path)
-          compact(
-            'Content-Type': mime_type(path),
-            'Content-Encoding': encoding(path),
-            'Cache-Control': cache_control,
-            'x-goog-acl': acl
-          )
+        def source_files
+          Dir.glob(*glob).select { |path| File.file?(path) }
+        end
+
+        def copy(source)
+          shell :copy, gs_opts: gs_opts(source), source: source, assert: true, echo: true
+        end
+
+        def gs_opts(path)
+          opts = []
+          opts << %(-h "Cache-Control:#{cache_control}") if cache_control?
+          opts << %(-h "Content-Encoding:#{encoding(path)}") if detect_encoding?
+          opts << %(-h "Content-type:#{mime_type(path)}") if mime_type(path)
+          opts.join(' ') + ' ' if opts.any?
+        end
+
+        def copy_opts
+          opts = []
+          opts << %(-a "#{acl}") if acl?
+          opts.join(' ') + ' ' if opts.any?
+        end
+
+        def target
+          "gs://#{bucket}/#{upload_dir}"
         end
 
         def mime_type(path)
-          MIME::Types.type_for(path).first.to_s
-        end
-
-        def paths
-          Dir.glob(*glob).reject { |path| File.directory?(path) }
+          type = MIME::Types.type_for(path).first
+          type.to_s if type
         end
 
         def glob
-          glob = ["**/*"]
+          glob = ['**/*']
           glob << File::FNM_DOTMATCH if dot_match?
           glob
-        end
-
-        def upload_path(path)
-          [upload_dir, path].compact.join('/')
-        end
-
-        def encoding(path)
-          super if detect_encoding?
-        end
-
-        def gstore
-          @gstore ||= GStore::Client.new(credentials)
-        end
-
-        def credentials
-          { access_key: access_key_id, secret_key: secret_access_key }
         end
     end
   end

@@ -8,4 +8,4 @@ dir = 'tmp/dpl_test'
 mkdir_p dir
 chdir dir
 
-File.write 'dpl_test', ENV['ID']
+File.write 'index.html', ENV['ID']

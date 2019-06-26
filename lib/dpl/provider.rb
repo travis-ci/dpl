@@ -85,6 +85,14 @@ module Dpl
         @examples ||= super || Examples.new(self).cmds
       end
 
+      def move_files(ctx)
+        ctx.move_files(move) if move.any?
+      end
+
+      def unmove_files(ctx)
+        ctx.unmove_files(move) if move.any?
+      end
+
       def install_deps?
         apt? || gem? || npm? || pip?
       end
@@ -156,15 +164,15 @@ module Dpl
          ssh_failed:      'Failed to establish SSH connection.'
 
     def_delegators :'self.class', :experimental, :experimental?, :full_name,
-      :install_deps, :install_deps?, :keep, :needs?, :runtimes, :validate_runtimes,
-      :user_agent
+      :install_deps, :install_deps?, :keep, :move_files, :unmove_files,
+      :needs?, :runtimes, :validate_runtimes, :user_agent
 
     def_delegators :ctx, :apt_get, :gem_require, :npm_install, :pip_install,
       :build_dir, :build_number, :repo_slug, :encoding, :git_commit_msg,
       :git_log, :git_ls_files, :git_remote_urls, :git_rev_parse, :git_sha,
       :git_tag, :machine_name, :node_version, :npm_version, :sleep,
-      :ssh_keygen, :success?, :tmp_dir, :which, :logger, :rendezvous,
-      :file_size, :write_file, :write_netrc
+      :ssh_keygen, :success?, :mv, :tmp_dir, :which, :logger, :rendezvous,
+      :file_size, :write_file, :write_netrc, :last_out, :last_err
 
     attr_reader :repo_name, :key_name
 
@@ -215,7 +223,8 @@ module Dpl
     # options used.
     def before_init
       warn msg(:experimental) % full_name if experimental?
-      deprecated_opts.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
+      deprecations.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
+      move_files(ctx)
     end
 
     # Install APT, NPM, and Python dependencies as declared by the provider.
@@ -279,6 +288,7 @@ module Dpl
     def before_finish
       remove_key if needs?(:ssh_key) && respond_to?(:remove_key)
       uncleanup unless skip_cleanup?
+      unmove_files(ctx)
     end
 
     # Resets the current working directory to the commited state.
@@ -406,8 +416,9 @@ module Dpl
     # See Ctx::Bash#shell for details on the options accepted.
     def shell(cmd, *args)
       opts = args.last.is_a?(Hash) ? args.pop : {}
-      opts[:assert] = interpolate(err(cmd, opts[:assert]), args) if opts[:assert].is_a?(TrueClass) || opts[:assert].is_a?(Symbol)
-      cmd = interpolate(self.cmd(cmd), args).strip if cmd.is_a?(Symbol)
+      # opts[:assert] = interpolate(err(cmd, opts[:assert]), args) if opts[:assert].is_a?(TrueClass) || opts[:assert].is_a?(Symbol)
+      opts[:assert] = err(cmd, opts[:assert]) if opts[:assert].is_a?(TrueClass) || opts[:assert].is_a?(Symbol)
+      cmd = interpolate(self.cmd(cmd), opts).strip if cmd.is_a?(Symbol)
       ctx.shell(cmd, opts)
     end
 

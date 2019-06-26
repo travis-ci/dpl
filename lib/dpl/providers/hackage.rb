@@ -12,7 +12,7 @@ module Dpl
 
       cmds validate: 'cabal check',
            prepare:  'cabal dist',
-           upload:   'cabal upload %s %s'
+           upload:   'cabal upload %{upload_opts} %{path}'
 
       errs validate: 'cabal check failed',
            prepare:  'cabal dist failed',
@@ -27,12 +27,16 @@ module Dpl
       end
 
       def deploy
-        tar_files.each do |tar|
-          shell :upload, opts_for(%i(username password)), tar, assert: true
+        tar_files.each do |path|
+          shell :upload, path: path, assert: true
         end
       end
 
       private
+
+        def upload_opts
+          opts_for(%i(username password))
+        end
 
         def tar_files
           Dir.glob('dist/*.tar.gz').sort

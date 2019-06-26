@@ -6,12 +6,17 @@ require 'json'
 expected = ENV['ID']
 
 10.times do
-  uri = URI.parse('https://s3.amazonaws.com/travis-dpl-test/dpl_test')
-  actual = uri.read
-  puts "expected: #{expected.inspect}"
-  puts "actual: #{actual.inspect}"
-  exit 0 if actual == expected
-  sleep 5
+  begin
+    uri = URI.parse('https://storage.googleapis.com/dpl-test/index.html')
+    actual = uri.read
+    puts "expected: #{expected.inspect}"
+    puts "actual: #{actual.inspect}"
+    exit 0 if actual == expected
+    sleep 5
+  rescue OpenURI::HTTPError => e
+    puts e.message
+    sleep 5
+  end
 end
 
 abort 'failed'

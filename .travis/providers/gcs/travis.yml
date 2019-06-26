@@ -1,10 +1,12 @@
 language: shell
+dist: xenial
 
-script:
-  - true
+install: true
+script: true
 
 before_deploy:
   - .travis/providers/gcs/prepare
+  - python --version
 
 deploy:
   - provider: gcs
@@ -18,8 +20,11 @@ deploy:
       secure: "iABLcHXwe+QKA2UceW05qecEx9egQtzQWJD0laOMt3PX7NLjpF2wL76DoBHwvxFZxqN0NurAPi+JpoYXCLbCxPC0wze4mtTxrcGRJLdAQ2uAsdJi3pq+LxG3ilxMRujXoUuEyS8RY321AqmD+fcpmbrSzEttAaoWhA14ZP/n4kg="
     secret_access_key:
       secure: "a9yhXPi2v3mlkOJgOHcYoIcYv7Xu7J0hF4EF1f6Zn/ZgpQIBqqV8XKbVCMOX/UG4xbm/ZMarGQFNwdvgWPqYkAyGafffuxG8FOXlgtb39f3PexjDCgJKKVnSVJPX1+t/gMvdHPKcfA78XKIqNmKqbtw44y1GHdpsJ/be6GeVGos="
-    bucket: travis-dpl-test
+    bucket: dpl-test
     local_dir: ./tmp/dpl_test
+    acl: public_read
+    cache_control: "private, max-age=0, no-transform"
+    detect_encoding: true
     skip_cleanup: true
 
 # why does deploy.run not work here?

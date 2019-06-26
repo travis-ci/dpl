@@ -18,7 +18,7 @@ module Dpl
 
       cmds login_key:   'timeout 2 ./scalingo login --api-token %{api_key} > /dev/null 2>&1',
            login_creds: 'echo -e \"%{username}\n%{password}\" | timeout 2 ./scalingo login > /dev/null 2>&1',
-           add_key:     './scalingo keys-add dpl_tmp_key %s',
+           add_key:     './scalingo keys-add dpl_tmp_key %{key}',
            remove_key:  './scalingo keys-remove dpl_tmp_key',
            remote_add:  'git remote add %{remote} git@scalingo.com:%{app}.git > /dev/null 2>&1',
            push:        'git push %{remote} HEAD:%{branch} -f'
@@ -38,8 +38,8 @@ module Dpl
         shell api_key ? :login_key : :login_creds, assert: err(:login)
       end
 
-      def add_key(file, type = nil)
-        shell :add_key, file, assert: true, echo: true
+      def add_key(key, type = nil)
+        shell :add_key, key: key, assert: true, echo: true
       end
 
       def setup

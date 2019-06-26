@@ -57,6 +57,14 @@ module Dpl
         !!@experimental
       end
 
+      def path(path)
+        ENV['PATH'] = "#{path}:#{ENV['PATH']}"
+      end
+
+      def move(*paths)
+        paths.any? ? @move = paths : @move ||= []
+      end
+
       def node_js(*requirements)
         runtimes(:node_js, requirements)
       end

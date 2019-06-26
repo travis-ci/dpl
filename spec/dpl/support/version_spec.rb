@@ -55,6 +55,7 @@ describe Version do
       it { should     satisfy '~> 2.3.3' }
       it { should     satisfy '~> 2.3.4' }
       it { should_not satisfy '~> 2.3.5' }
+      it { should_not satisfy '~> 2.3.10' }
       it { should_not satisfy '~> 2.4' }
       it { should_not satisfy '~> 3' }
       it { should_not satisfy '~> 3.1' }

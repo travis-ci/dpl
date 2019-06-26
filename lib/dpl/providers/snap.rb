@@ -15,7 +15,7 @@ module Dpl
 
       cmds login:          'snapcraft login --with %{token}',
            install:        'sudo snap install snapcraft --classic',
-           deploy:         'snapcraft push %s --release=%s'
+           deploy:         'snapcraft push %{snap_path} --release=%{channel}'
 
       msgs login:          'Attemping to login ...',
            no_snaps:       'No snap found matching %{snap}',
@@ -40,7 +40,7 @@ module Dpl
 
       def deploy
         info :deploy
-        shell :deploy, snap_path, channel
+        shell :deploy
       end
 
       def snap_path

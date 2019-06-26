@@ -141,6 +141,11 @@ describe Dpl::Ctx::Bash do
         it { expect { subject.validate_runtimes(runtimes) }.to_not raise_error }
       end
 
+      describe 'satisfied (2.7.13)' do
+        let(:version) { 'Python 2.7.13' }
+        it { expect { subject.validate_runtimes([[:python, ['>= 2.7.9']]]) }.to_not raise_error }
+      end
+
       describe 'satisfied (3.6)' do
         let(:version) { 'Python 3.6' }
         it { expect { subject.validate_runtimes(runtimes) }.to_not raise_error }
