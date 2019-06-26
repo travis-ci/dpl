@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'net/http'
+
+def bearer_token
+  uri = URI.parse("https://auth.scalingo.com/v1/tokens/exchange")
+  http = Net::HTTP.new(uri.host, 443)
+  http.use_ssl = true
+  req = Net::HTTP::Post.new(uri.path)
+  req.basic_auth('', ENV['SCALINGO_TOKEN'])
+  res = http.request(req)
+  JSON.parse(res.body)['token']
+end
+
+def scale(count)
+  uri = URI.parse("https://api.scalingo.com/v1/apps/dpl-test/scale")
+  http = Net::HTTP.new(uri.host, 443)
+  http.use_ssl = true
+  req = Net::HTTP::Post.new(uri.path)
+  req['Authorization'] = "Bearer #{bearer_token}"
+  req['Content-Type'] = 'application/json'
+  req.body = JSON.dump(containers: [name: 'web', amount: count, size: 'S'])
+  res = http.request(req)
+end
+
+scale(ARGV[0].to_i)
+
