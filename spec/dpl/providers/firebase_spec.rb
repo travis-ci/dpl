@@ -19,6 +19,11 @@ describe Dpl::Providers::Firebase do
       before { subject.run }
       it { should have_run 'firebase deploy --non-interactive --message="msg" --token="token"' }
     end
+
+    describe 'given --only only' do
+      before { subject.run }
+      it { should have_run 'firebase deploy --non-interactive --token="token" --only="only"' }
+    end
   end
 
   describe 'missing firebase.json' do
