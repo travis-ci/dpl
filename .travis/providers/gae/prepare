@@ -1,0 +1,10 @@
+#!/bin/bash
+
+mkdir -p tmp/dpl_test
+cat .travis/providers/gae/main.go | sed "s/__ID__/$ID/g" > tmp/dpl_test/main.go
+cp .travis/providers/gae/app.yaml tmp/dpl_test
+
+cd tmp/dpl_test
+export GOOS=linux
+go get
+go build -ldflags="-s"

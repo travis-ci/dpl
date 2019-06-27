@@ -1,0 +1,29 @@
+dist: xenial
+language: go
+
+install: true
+script: true
+
+env:
+  GOPATH: '/home/travis/tmp/dpl_test'
+
+before_deploy:
+  - .travis/providers/gae/prepare
+  - openssl aes-256-cbc -K $encrypted_81cf70da4be5_key -iv $encrypted_81cf70da4be5_iv -in .travis/providers/gae/service-account.json.enc -out tmp/dpl_test/service-account.json -d
+  # - .travis/providers/gae/start
+  - cd tmp/dpl_test
+  - ls -al .
+
+deploy:
+  - provider: gae
+    edge:
+      branch: dpl-2
+    on:
+      branch: dpl-2
+    project_id: dpl-test-244917
+    skip_cleanup: true
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/gae/test || TRAVIS_TEST_RESULT=$?
+  # - .travis/providers/gae/stop
