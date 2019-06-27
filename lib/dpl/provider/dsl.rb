@@ -58,7 +58,7 @@ module Dpl
       end
 
       def path(path)
-        ENV['PATH'] = "#{path}:#{ENV['PATH']}"
+        ENV['PATH'] = "#{File.expand_path(path)}:#{ENV['PATH']}"
       end
 
       def move(*paths)

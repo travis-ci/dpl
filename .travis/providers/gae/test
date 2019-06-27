@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require 'open-uri'
+
+$stdout.sync = true
+
+expected = ENV['ID']
+url = 'https://dpl-test-244917.appspot.com/'
+
+def poll(url)
+  puts "polling: #{url}"
+  uri = URI.parse(url)
+  actual = uri.read.chomp
+rescue OpenURI::HTTPError => e
+end
+
+40.times do
+  actual = poll(url)
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual == expected
+  sleep 5
+end
+
+abort 'failed'

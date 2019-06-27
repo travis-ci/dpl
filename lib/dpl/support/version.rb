@@ -34,7 +34,7 @@ class Version
   end
 
   def ==(other)
-    self.to_a == other.to_a
+    trunc(other.size).to_a == other.to_a
   end
 
   def !=(other)

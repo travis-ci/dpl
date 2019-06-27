@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export PATH="/home/travis/google-cloud-sdk/bin/:$PATH"
+
+gcloud -q auth activate-service-account --key-file tmp/dpl_test/service-account.json
+gcloud config set project dpl-test-244917
+
+version=$(gcloud app versions list | tail -n 1 | awk '{ print $2 }')
+echo "Version: $version"
+gcloud -q app versions stop $version
