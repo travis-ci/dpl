@@ -25,6 +25,8 @@ module Dpl
       msgs commit: 'Skipping cleanup, committing any changes',
            deploy: 'Deploying to Azure Web App: %{site}'
 
+      errs git_push: 'Failed pushing to Azure Web Apps'
+
       URL = 'https://%s:%s@%s.scm.azurewebsites.net:443/%s.git'
 
       def setup
@@ -33,7 +35,7 @@ module Dpl
 
       def deploy
         info :deploy
-        shell :git_push, silence: !verbose?
+        shell :git_push, silence: !verbose?, assert: true
       end
 
       private
