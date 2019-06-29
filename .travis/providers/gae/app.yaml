@@ -7,3 +7,6 @@ handlers:
 
 # manual_scaling:
 #   instances: 1
+
+automatic_scaling:
+  max_num_instances: 1
