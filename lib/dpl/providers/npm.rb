@@ -3,48 +3,55 @@ module Dpl
     class Npm < Provider
       gem 'json'
 
-      full_name 'NPM'
+      full_name 'npm'
 
       description sq(<<-str)
         tbd
       str
 
-      opt '--email EMAIL', 'NPM email address', required: true
-      opt '--api_key KEY', 'NPM api key (can be retrieved from your local ~/.npmrc file)', required: true
-      # not mentioned in the readme
-      opt '--tag TAGS', 'NPM distribution tags to add'
+      opt '--email EMAIL', 'npm email address', required: true
+      opt '--api_key KEY', 'npm api key (can be retrieved from your local ~/.npmrc file)', required: true
+      opt '--access ACCESS', 'access level', enum: %w(public private)
+      opt '--tag TAGS', 'npm distribution tags to add'
 
       REGISTRY = 'registry.npmjs.org'
       NPMRC = '~/.npmrc'
 
-      msgs version: 'NPM version: %{npm_version}',
+      msgs version: 'npm version: %{npm_version}',
            login:   'Authenticated with email %{email} and API key %{obfuscated_api_key}'
 
-      cmds deploy:  'env NPM_API_KEY=%{api_key} npm publish %{publish_opts}'
+      cmds deploy:  'npm publish %{publish_opts}'
+
+      errs deploy:  'Failed pushing to npm'
 
       def login
         info :version
         info :login
         write_npmrc
+        ENV['NPM_API_KEY'] = api_key
       end
 
       def deploy
-        shell :deploy
+        shell :deploy, assert: true
       end
 
       def finish
-        rm_f npmrc_path
+        remove_npmrc
       end
 
       private
 
         def publish_opts
-          opts_for(:tag)
+          opts_for(%i(access tag))
         end
 
         def write_npmrc
           write_file(npmrc_path, npmrc)
           info "#{NPMRC} size: #{file_size(npmrc_path)}"
+        end
+
+        def remove_npmrc
+          rm_f npmrc_path
         end
 
         def npmrc_path

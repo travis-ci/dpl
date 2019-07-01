@@ -11,15 +11,19 @@ describe Dpl::Providers::Npm do
   before { subject.run }
 
   describe 'by default', record: true do
-    it { should have_run '[info] NPM version: 1' }
+    it { should have_run '[info] npm version: 1' }
     it { should have_run '[info] Authenticated with email email and API key ********************' }
     it { should have_run '[info] ~/.npmrc size: 36' }
-    it { should have_run 'env NPM_API_KEY=key npm publish' }
+    it { should have_run 'npm publish' }
     it { should have_run_in_order }
     it { should have_written '~/.npmrc', npmrc }
   end
 
+  describe 'given --access public' do
+    it { should have_run 'npm publish --access="public"' }
+  end
+
   describe 'given --tag tag' do
-    it { should have_run 'env NPM_API_KEY=key npm publish --tag="tag"' }
+    it { should have_run 'npm publish --tag="tag"' }
   end
 end

@@ -168,7 +168,7 @@ module Dpl
         Dir.chdir(tmp_dir) do
           require 'bundler/inline'
           info "Installing gem dependencies: #{gems.map { |name, version, _| "#{name} #{"(#{version})" if version}".strip }.join(', ')}"
-          gemfile(true) do
+          gemfile do
             source 'https://rubygems.org'
             gems.each { |g| gem *g }
           end
