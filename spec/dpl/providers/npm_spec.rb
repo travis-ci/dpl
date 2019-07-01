@@ -11,12 +11,17 @@ describe Dpl::Providers::Npm do
   before { subject.run }
 
   describe 'by default', record: true do
+    it { should have_run 'npm config set registry registry.npmjs.org' }
     it { should have_run '[info] npm version: 1' }
     it { should have_run '[info] Authenticated with email email and API key ********************' }
     it { should have_run '[info] ~/.npmrc size: 36' }
     it { should have_run 'npm publish' }
     it { should have_run_in_order }
     it { should have_written '~/.npmrc', npmrc }
+  end
+
+  describe 'given --registry registry' do
+    it { should have_run 'npm config set registry registry' }
   end
 
   describe 'given --access public' do
