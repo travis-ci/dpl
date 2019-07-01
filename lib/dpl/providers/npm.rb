@@ -12,17 +12,25 @@ module Dpl
       opt '--email EMAIL', 'npm email address', required: true
       opt '--api_key KEY', 'npm api key (can be retrieved from your local ~/.npmrc file)', required: true
       opt '--access ACCESS', 'access level', enum: %w(public private)
+      opt '--registry URL', 'npm registry url'
       opt '--tag TAGS', 'npm distribution tags to add'
 
       REGISTRY = 'registry.npmjs.org'
       NPMRC = '~/.npmrc'
 
-      msgs version: 'npm version: %{npm_version}',
-           login:   'Authenticated with email %{email} and API key %{obfuscated_api_key}'
+      msgs version:  'npm version: %{npm_version}',
+           login:    'Authenticated with email %{email} and API key %{obfuscated_api_key}'
 
-      cmds deploy:  'npm publish %{publish_opts}'
+      cmds registry: 'npm config set registry %{registry}',
+           deploy:   'npm publish %{publish_opts}'
 
-      errs deploy:  'Failed pushing to npm'
+      errs registry: 'Failed to set registry config',
+          deploy:    'Failed pushing to npm'
+
+      # TODO can we switch the login and setup stages?
+      def install
+        shell :registry, assert: true
+      end
 
       def login
         info :version
@@ -67,6 +75,7 @@ module Dpl
         end
 
         def registry
+          return super if super
           data = package_json
           url = data && data.fetch('publishConfig', {})['registry']
           url ? URI(url).host : REGISTRY
