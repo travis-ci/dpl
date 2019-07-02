@@ -6,9 +6,8 @@ require 'date'
 module DPL
   class Provider
     class Scalingo < Provider
-
       def install_deploy_dependencies
-        unless context.shell "curl -OL https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz && tar -zxvf scalingo_latest_linux_amd64.tar.gz && mv scalingo_*_linux_amd64/scalingo . && rm scalingo_latest_linux_amd64.tar.gz && rm -r scalingo_*_linux_amd64"
+        if !context.shell 'curl -OL https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz && tar -zxvf scalingo_latest_linux_amd64.tar.gz && mv scalingo_*_linux_amd64/scalingo . && rm scalingo_latest_linux_amd64.tar.gz && rm -r scalingo_*_linux_amd64'
           error "Couldn't install Scalingo CLI."
         end
       end
@@ -16,12 +15,12 @@ module DPL
       def initialize(context, options)
         super
         @options = options
-        @remote = options[:remote] || "scalingo"
-        @branch = options[:branch] || "master"
+        @remote = options[:remote] || 'scalingo'
+        @branch = options[:branch] || 'master'
       end
 
       def logged_in
-        context.shell "DISABLE_INTERACTIVE=true ./scalingo login 2> /dev/null > /dev/null"
+        context.shell 'DISABLE_INTERACTIVE=true ./scalingo login 2> /dev/null > /dev/null'
       end
 
       def check_auth
@@ -31,38 +30,25 @@ module DPL
         elsif @options[:username] && @options[:password]
           context.shell "echo -e \"#{@options[:username]}\n#{@options[:password]}\" | timeout 2 ./scalingo login 2> /dev/null > /dev/null"
         end
-        if !logged_in
-          error "Couldn't connect to Scalingo API."
-        end
+        error "Couldn't connect to Scalingo API." if !logged_in
       end
 
-      def setup_key(file, type = nil)
-        if !logged_in
-          error "Couldn't connect to Scalingo API."
-        end
-        unless context.shell "./scalingo keys-add dpl_tmp_key #{file}"
-          error "Couldn't add ssh key."
-        end
+      def setup_key(file, _type = nil)
+        error "Couldn't connect to Scalingo API." if !logged_in
+        error "Couldn't add ssh key." if !context.shell "./scalingo keys-add dpl_tmp_key #{file}"
       end
 
       def remove_key
-        if !logged_in
-          error "Couldn't connect to Scalingo API."
-        end
-        unless context.shell "./scalingo keys-remove dpl_tmp_key"
-          error "Couldn't remove ssh key."
-        end
+        error "Couldn't connect to Scalingo API." if !logged_in
+        error "Couldn't remove ssh key." if !context.shell './scalingo keys-remove dpl_tmp_key'
       end
 
       def push_app
         if @options[:app]
           context.shell "git remote add #{@remote} git@scalingo.com:#{@options[:app]}.git 2> /dev/null > /dev/null"
         end
-        unless context.shell "git push #{@remote} #{@branch} -f"
-          error "Couldn't push your app."
-        end
+        error "Couldn't push your app." if !context.shell "git push #{@remote} #{@branch} -f"
       end
-
     end
   end
 end
