@@ -45,8 +45,11 @@ module DPL
 
       def push_app
         if @options[:app]
-          context.shell "git remote add #{@remote} git@scalingo.com:#{@options[:app]}.git > /dev/null"
+          if !context.shell "./scalingo --app #{@options[:app]} git-setup --remote #{@remote}"
+            error 'Failed to add the Git remote.'
+          end
         end
+
         error "Couldn't push your app." if !context.shell "git push #{@remote} #{@branch} -f"
       end
     end
