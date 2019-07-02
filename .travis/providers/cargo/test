@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'open-uri'
+require 'json'
+
+expected = ENV['ID']
+url = 'https://crates.io/api/v1/crates/dpl-test'
+
+10.times do
+  puts "Checking #{url}"
+  uri = URI.parse(url)
+  data = JSON.load(uri)
+  actual = data['versions'].map { |version| version['num'].split('.').last }
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual.include?(expected)
+  sleep 5
+end
+
+abort 'failed'
