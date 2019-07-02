@@ -20,15 +20,15 @@ module DPL
       end
 
       def logged_in
-        context.shell 'DISABLE_INTERACTIVE=true ./scalingo login 2> /dev/null > /dev/null'
+        context.shell 'DISABLE_INTERACTIVE=true ./scalingo login > /dev/null'
       end
 
       def check_auth
         token = @options[:api_key] || @options[:api_token]
         if token
-          context.shell "timeout 2 ./scalingo login --api-token #{token} 2> /dev/null > /dev/null"
+          context.shell "timeout 2 ./scalingo login --api-token #{token} > /dev/null"
         elsif @options[:username] && @options[:password]
-          context.shell "echo -e \"#{@options[:username]}\n#{@options[:password]}\" | timeout 2 ./scalingo login 2> /dev/null > /dev/null"
+          context.shell "echo -e \"#{@options[:username]}\n#{@options[:password]}\" | timeout 2 ./scalingo login > /dev/null"
         end
         error "Couldn't connect to Scalingo API." if !logged_in
       end
@@ -45,7 +45,7 @@ module DPL
 
       def push_app
         if @options[:app]
-          context.shell "git remote add #{@remote} git@scalingo.com:#{@options[:app]}.git 2> /dev/null > /dev/null"
+          context.shell "git remote add #{@remote} git@scalingo.com:#{@options[:app]}.git > /dev/null"
         end
         error "Couldn't push your app." if !context.shell "git push #{@remote} #{@branch} -f"
       end
