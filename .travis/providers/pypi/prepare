@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+mkdir_p 'tmp/dpl-test/dpl-test'
+chdir 'tmp/dpl-test'
+
+File.write 'dpl-test/__init__.py', <<~str
+def test():
+    return ('test')
+str
+
+File.write 'setup.py', <<~str
+from setuptools import setup
+
+setup(name='dpl-test',
+      version='#{ENV['DPL_TEST_VERSION']}',
+      description='Testing Travis CI dpl PyPI integration',
+      url='http://github.com/travis-ci/dpl',
+      author='Travis CI',
+      author_email='contact@travis-ci.org',
+      license='MIT',
+      packages=['dpl-test'],
+      zip_safe=False)
+str
