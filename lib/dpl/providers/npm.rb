@@ -10,6 +10,7 @@ module Dpl
       str
 
       opt '--email EMAIL', 'npm email address', required: true
+      opt '--username USER', 'npm username'
       opt '--api_key KEY', 'npm api key (can be retrieved from your local ~/.npmrc file)', required: true
       opt '--access ACCESS', 'access level', enum: %w(public private)
       opt '--registry URL', 'npm registry url'
@@ -25,7 +26,7 @@ module Dpl
            deploy:   'npm publish %{publish_opts}'
 
       errs registry: 'Failed to set registry config',
-          deploy:    'Failed pushing to npm'
+           deploy:    'Failed pushing to npm'
 
       # TODO can we switch the login and setup stages?
       def install
