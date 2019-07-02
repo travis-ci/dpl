@@ -30,17 +30,17 @@ module DPL
         elsif @options[:username] && @options[:password]
           context.shell "echo -e \"#{@options[:username]}\n#{@options[:password]}\" | timeout 2 ./scalingo login > /dev/null"
         end
-        error "Couldn't connect to Scalingo API." if !logged_in
+        error "Couldn't connect to Scalingo API to check authentication." if !logged_in
       end
 
       def setup_key(file, _type = nil)
-        error "Couldn't connect to Scalingo API." if !logged_in
-        error "Couldn't add ssh key." if !context.shell "./scalingo keys-add dpl_tmp_key #{file}"
+        error "Couldn't connect to Scalingo API to setup the SSH key." if !logged_in
+        error "Couldn't add SSH key." if !context.shell "./scalingo keys-add dpl_tmp_key #{file}"
       end
 
       def remove_key
-        error "Couldn't connect to Scalingo API." if !logged_in
-        error "Couldn't remove ssh key." if !context.shell './scalingo keys-remove dpl_tmp_key'
+        error "Couldn't connect to Scalingo API to remove the SSH key." if !logged_in
+        error "Couldn't remove SSH key." if !context.shell './scalingo keys-remove dpl_tmp_key'
       end
 
       def push_app
