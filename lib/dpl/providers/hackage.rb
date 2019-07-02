@@ -5,7 +5,7 @@ module Dpl
         tbd
       str
 
-      apt 'cabal-install' #, 'cabal-install'
+      apt 'cabal-install'
 
       opt '--username USER', 'Hackage username', required: true
       opt '--password USER', 'Hackage password', required: true
