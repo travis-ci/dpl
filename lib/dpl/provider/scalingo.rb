@@ -17,6 +17,7 @@ module DPL
         @options = options
         @remote = options[:remote] || 'scalingo'
         @branch = options[:branch] || 'master'
+        @timeout = options[:timeout] || '60'
       end
 
       def logged_in
@@ -26,9 +27,9 @@ module DPL
       def check_auth
         token = @options[:api_key] || @options[:api_token]
         if token
-          context.shell "timeout 2 ./scalingo login --api-token #{token} > /dev/null"
+          context.shell "timeout #{@timeout} ./scalingo login --api-token #{token} > /dev/null"
         elsif @options[:username] && @options[:password]
-          context.shell "echo -e \"#{@options[:username]}\n#{@options[:password]}\" | timeout 2 ./scalingo login > /dev/null"
+          context.shell "echo -e \"#{@options[:username]}\n#{@options[:password]}\" | timeout #{@timeout} ./scalingo login > /dev/null"
         end
         error "Couldn't connect to Scalingo API to check authentication." if !logged_in
       end
