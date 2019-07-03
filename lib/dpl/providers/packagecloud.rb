@@ -1,4 +1,6 @@
 # talk to previous contributors about the logic in source_files
+#
+# the docs recommend to just `packagecloud push src target` https://packagecloud.io/docs#travis
 
 module Dpl
   module Providers

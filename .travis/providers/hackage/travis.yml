@@ -1,0 +1,25 @@
+dist: xenial
+language: haskell
+
+script:
+  - true
+
+before_deploy:
+  - .travis/providers/hackage/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: hackage
+    edge:
+      branch: dpl-2
+    on:
+      branch: dpl-2
+
+    username: dpl_test
+    password:
+      secure: "CZ1xZnYO/5Ypp0cH+aCr6GXSEkSyNoBm6fgNXwYWnetwU7ZLTTGRVTjQexAu3uGbFZIfTqmRjW3RdiEeNhzvFZw4x3N43BFnzNcZLh1YIJbzYkcGMAhE08gmKVnXn2YckranUqK/r1h2MN0o2p1g0oO4W5v30j4wWzPUVJ5n/QQ="
+    skip_cleanup: true
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/hackage/test || TRAVIS_TEST_RESULT=$?

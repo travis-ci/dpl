@@ -9,9 +9,9 @@ module Dpl
         tbd
       str
 
-      opt '--email EMAIL', 'npm email address', required: true
-      opt '--username USER', 'npm username'
       opt '--api_key KEY', 'npm api key (can be retrieved from your local ~/.npmrc file)', required: true
+      opt '--email EMAIL', 'npm email address' #, required: true
+      # opt '--username USER', 'npm username'
       opt '--access ACCESS', 'access level', enum: %w(public private)
       opt '--registry URL', 'npm registry url'
       opt '--tag TAGS', 'npm distribution tags to add'
@@ -20,24 +20,19 @@ module Dpl
       NPMRC = '~/.npmrc'
 
       msgs version:  'npm version: %{npm_version}',
-           login:    'Authenticated with email %{email} and API key %{obfuscated_api_key}'
+           login:    'Authenticated with API key %{obfuscated_api_key}'
 
-      cmds registry: 'npm config set registry %{registry}',
+      cmds registry: 'npm config set registry "%{registry}"',
            deploy:   'npm publish %{publish_opts}'
 
       errs registry: 'Failed to set registry config',
            deploy:    'Failed pushing to npm'
 
-      # TODO can we switch the login and setup stages?
-      def install
-        shell :registry, assert: true
-      end
-
       def login
         info :version
         info :login
         write_npmrc
-        ENV['NPM_API_KEY'] = api_key
+        shell :registry, assert: true
       end
 
       def deploy
@@ -69,9 +64,9 @@ module Dpl
 
         def npmrc
           if npm_version =~ /^1/
-            "_auth = ${NPM_API_KEY}\nemail = #{email}"
+            "_auth = #{api_key}\nemail = #{email}"
           else
-            "//#{registry}/:_authToken=${NPM_API_KEY}"
+            "//#{registry.sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_key}"
           end
         end
 
