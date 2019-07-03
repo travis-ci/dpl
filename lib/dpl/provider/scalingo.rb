@@ -17,6 +17,7 @@ module DPL
         @options = options
         @remote = options[:remote] || 'scalingo'
         @branch = options[:branch] || 'master'
+        @region = options[:region] || 'agora-fr1'
         @timeout = options[:timeout] || '60'
         @debug = !options[:debug].nil?
       end
