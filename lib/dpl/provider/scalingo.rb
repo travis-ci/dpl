@@ -7,9 +7,17 @@ module DPL
   class Provider
     class Scalingo < Provider
       def install_deploy_dependencies
-        if !context.shell 'curl -OL https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz && tar -zxvf scalingo_latest_linux_amd64.tar.gz && mv scalingo_*_linux_amd64/scalingo . && rm scalingo_latest_linux_amd64.tar.gz && rm -r scalingo_*_linux_amd64'
-          error "Couldn't install Scalingo CLI."
-        end
+        command = 'curl'
+        command = "#{command} --silent" if !@debug
+        command = "#{command} -OL https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz"
+        tar_options = 'v' if @debug
+        tar_options = "#{tar_options}zxf"
+        command = "#{command} && tar -#{tar_options} scalingo_latest_linux_amd64.tar.gz" \
+                  ' && mv scalingo_*_linux_amd64/scalingo .' \
+                  ' && rm scalingo_latest_linux_amd64.tar.gz' \
+                  ' && rm -r scalingo_*_linux_amd64'
+
+        error "Couldn't install Scalingo CLI." if !context.shell command
       end
 
       def initialize(context, options)
@@ -47,6 +55,8 @@ module DPL
       end
 
       def push_app
+        install_deploy_dependencies
+
         if @options[:app]
           if !scalingo("--app #{@options[:app]} git-setup --remote #{@remote}")
             error 'Failed to add the Git remote.'
@@ -62,11 +72,14 @@ module DPL
         if @debug
           env << 'DEBUG=1'
         else
-          command += '> /dev/null'
+          command += ' > /dev/null'
         end
         command = "#{input} | #{command}" if input != ''
+        command = "#{env.join(' ')} timeout #{@timeout} ./scalingo #{command}"
 
-        context.shell "#{env.join(' ')} timeout #{@timeout} ./scalingo #{command}"
+        puts "Execute #{command}" if @debug
+
+        context.shell command
       end
     end
   end
