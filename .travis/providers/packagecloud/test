@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'open-uri'
+require 'json'
+
+expected = ENV['ID']
+url = 'https://packagecloud.io/api/v1/repos/dpl-test/dpl-test/package/gem/dpl_test/versions.json'
+
+10.times do
+  puts "Checking #{url}"
+  uri = URI.parse(url)
+  json = uri.read(http_basic_authentication: [ENV['PACKAGECLOUD_TOKEN'], ''])
+  data = JSON.load(json)
+  actual = data.map { |version| version['version'].split('.').last }
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual.include?(expected)
+  sleep 5
+end
+
+abort 'failed'
