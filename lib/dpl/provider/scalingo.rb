@@ -63,7 +63,9 @@ module DPL
           end
         end
 
-        error "Couldn't push your app." if !context.shell "git push #{@remote} #{@branch} -f"
+        if !context.shell "git push #{@remote} #{@branch} -f"
+          error "Couldn't push your app."
+        end
       end
 
       def scalingo(command, env = [], input = '')
