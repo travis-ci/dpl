@@ -18,40 +18,54 @@ module DPL
         @remote = options[:remote] || 'scalingo'
         @branch = options[:branch] || 'master'
         @timeout = options[:timeout] || '60'
+        @debug = !options[:debug].nil?
       end
 
       def logged_in
-        context.shell 'DISABLE_INTERACTIVE=true ./scalingo login > /dev/null'
+        scalingo('login', ['DISABLE_INTERACTIVE=true'])
       end
 
       def check_auth
         token = @options[:api_key] || @options[:api_token]
         if token
-          context.shell "timeout #{@timeout} ./scalingo login --api-token #{token} > /dev/null"
+          scalingo("login --api-token #{token}")
         elsif @options[:username] && @options[:password]
-          context.shell "echo -e \"#{@options[:username]}\n#{@options[:password]}\" | timeout #{@timeout} ./scalingo login > /dev/null"
+          scalingo('login', [], "echo -e \"#{@options[:username]}\n#{@options[:password]}\"")
         end
         error "Couldn't connect to Scalingo API to check authentication." if !logged_in
       end
 
       def setup_key(file, _type = nil)
         error "Couldn't connect to Scalingo API to setup the SSH key." if !logged_in
-        error "Couldn't add SSH key." if !context.shell "./scalingo keys-add dpl_tmp_key #{file}"
+        error "Couldn't add SSH key." if !scalingo("keys-add dpl_tmp_key #{file}")
       end
 
       def remove_key
         error "Couldn't connect to Scalingo API to remove the SSH key." if !logged_in
-        error "Couldn't remove SSH key." if !context.shell './scalingo keys-remove dpl_tmp_key'
+        error "Couldn't remove SSH key." if !scalingo('keys-remove dpl_tmp_key')
       end
 
       def push_app
         if @options[:app]
-          if !context.shell "./scalingo --app #{@options[:app]} git-setup --remote #{@remote}"
+          if !scalingo("--app #{@options[:app]} git-setup --remote #{@remote}")
             error 'Failed to add the Git remote.'
           end
         end
 
         error "Couldn't push your app." if !context.shell "git push #{@remote} #{@branch} -f"
+      end
+
+      def scalingo(command, env = [], input = '')
+        env << "SCALINGO_REGION=#{@region}" if !@region.empty?
+
+        if @debug
+          env << 'DEBUG=1'
+        else
+          command += '> /dev/null'
+        end
+        command = "#{input} | #{command}" if input != ''
+
+        context.shell "#{env.join(' ')} timeout #{@timeout} ./scalingo #{command}"
       end
     end
   end
