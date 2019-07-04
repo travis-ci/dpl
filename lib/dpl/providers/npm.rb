@@ -10,8 +10,7 @@ module Dpl
       str
 
       opt '--api_key KEY', 'npm api key (can be retrieved from your local ~/.npmrc file)', required: true
-      opt '--email EMAIL', 'npm email address' #, required: true
-      # opt '--username USER', 'npm username'
+      opt '--email EMAIL', 'npm email address'
       opt '--access ACCESS', 'access level', enum: %w(public private)
       opt '--registry URL', 'npm registry url'
       opt '--tag TAGS', 'npm distribution tags to add'
