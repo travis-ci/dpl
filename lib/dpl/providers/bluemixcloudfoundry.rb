@@ -28,22 +28,24 @@ module Dpl
 
       cmds install: 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz',
            api:     './cf api %{api} %{skip_ssl_validation_opt}',
-           login:   './cf login -u "%{username}" -p "%{password}"',
-           target:  './cf target -o "%{organization}" -s "%{space}"',
+           login:   './cf login -u %{username} -p %{password}',
+           target:  './cf target -o %{organization} -s %{space}',
            push:    './cf push %{push_args}',
            logout:  './cf logout'
 
-      msgs login:   '$ ./cf login -u "%{username}" -p "%{obfuscated_password}" -o "%{organization}" -s "%{space}"'
+      msgs login:   '$ ./cf login -u %{username} -p %{obfuscated_password} -o %{organization} -s %{space}'
 
-      errs api:     'Failed to set api %{api}',
+      errs install: 'Failed to install CLI tools',
+           api:     'Failed to set api %{api}',
            login:   'Failed to login',
            target:  'Failed to target organization %{organization}, space %{space}',
-           push:    'Failed to push app'
+           push:    'Failed to push app',
+           logout:  'Failed to logout'
 
       msgs manifest_missing: 'Application must have a manifest.yml for unattended deployment'
 
       def install
-        shell :install, echo: true
+        shell :install, echo: true, assert: true
       end
 
       def validate
@@ -62,7 +64,7 @@ module Dpl
       end
 
       def finish
-        shell :logout, echo: true if logout?
+        shell :logout, echo: true, assert: true if logout?
       end
 
       private
