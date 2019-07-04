@@ -16,7 +16,7 @@ module Dpl
 
       cmds install: 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz',
            api:     './cf api %{url}',
-           login:   './cf login -u %{username} -p %{password} -o %{organization} -s %{space}',
+           login:   './cf login -u "%{username}" -p "%{password}" -o "%{organization}" -s "%{space}"',
            push:    './cf push %{args}',
            logout:  './cf logout'
 
