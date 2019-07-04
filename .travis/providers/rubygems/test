@@ -6,6 +6,8 @@ require 'uri'
 # not sure why, but strangely, this doesn't list the gem, as it would, locally
 # puts Net::HTTP.get(URI.parse('http://localhost:9292/'))
 
+$stdout.sync = true
+
 uri  = URI.parse('http://localhost:9292/gems/dpl_test')
 http = Net::HTTP.new(uri.host, uri.port)
 req  = Net::HTTP::Get.new(uri.path)

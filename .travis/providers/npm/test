@@ -3,6 +3,8 @@
 require 'open-uri'
 require 'json'
 
+$stdout.sync = true
+
 expected = ENV['ID']
 url = 'https://registry.npmjs.com/@dpl-test/dpl-test'
 

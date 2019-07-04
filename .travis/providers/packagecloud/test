@@ -3,6 +3,8 @@
 require 'open-uri'
 require 'json'
 
+$stdout.sync = true
+
 expected = ENV['ID']
 url = 'https://packagecloud.io/api/v1/repos/dpl-test/dpl-test/package/gem/dpl_test/versions.json'
 

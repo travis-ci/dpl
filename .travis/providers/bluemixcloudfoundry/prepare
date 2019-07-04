@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+def run(cmd)
+  puts "$ #{cmd}"
+  system(cmd) || abort
+end
+
+mkdir_p 'tmp/dpl_test'
+chdir 'tmp/dpl_test'
+
+File.write 'manifest.yml', <<~str
+  applications:
+  - name: dpl-test
+    instances: 1
+str
+
+File.write 'config.ru', <<~str
+  require 'rack'
+  run ->(env) {  [200, { 'Content-type' => 'text/plain' }, ['#{ENV['ID']}']] }
+str
+
+File.write 'Gemfile', <<~str
+  source 'https://rubygems.org'
+  gem 'rack'
+str
+
+run 'bundle install'

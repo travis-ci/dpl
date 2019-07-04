@@ -5,12 +5,13 @@ require 'open-uri'
 $stdout.sync = true
 
 expected = ENV['ID']
-url = 'https://dpl-test.scalingo.io/'
+url = 'https://dpl-test.eu-gb.mybluemix.net/'
 
 def poll(url)
   uri = URI.parse(url)
   actual = uri.read
 rescue OpenURI::HTTPError => e
+  puts e.message
 end
 
 20.times do

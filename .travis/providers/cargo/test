@@ -3,6 +3,8 @@
 require 'open-uri'
 require 'json'
 
+$stdout.sync = true
+
 expected = ENV['ID']
 url = 'https://crates.io/api/v1/crates/dpl-test'
 

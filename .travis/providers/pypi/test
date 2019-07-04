@@ -3,6 +3,8 @@
 require 'open-uri'
 require 'json'
 
+$stdout.sync = true
+
 expected = ENV['DPL_TEST_VERSION']
 url = 'https://test.pypi.org/pypi/dpl-test/json'
 

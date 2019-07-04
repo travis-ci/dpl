@@ -3,6 +3,8 @@
 require 'open-uri'
 require 'json'
 
+$stdout.sync = true
+
 expected = ENV['ID']
 url = 'https://api.github.com/repos/travis-ci/dpl_test/releases/latest'
 
