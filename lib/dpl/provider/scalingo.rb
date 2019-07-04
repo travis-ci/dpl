@@ -77,8 +77,8 @@ module DPL
         else
           command += ' > /dev/null'
         end
-        command = "#{input} | #{command}" if input != ''
         command = "#{env.join(' ')} timeout #{@timeout} ./scalingo #{command}"
+        command = "#{input} | #{command}" if input != ''
 
         puts "Execute #{command}" if @debug
 
