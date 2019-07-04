@@ -3,6 +3,8 @@
 require 'json'
 require 'open-uri'
 
+$stdout.sync = true
+
 expected = ENV['ID']
 success = nil
 

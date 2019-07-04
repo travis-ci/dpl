@@ -3,6 +3,8 @@
 require 'open-uri'
 require 'json'
 
+$stdout.sync = true
+
 def poll(url)
   URI.parse(url).read
 rescue => e

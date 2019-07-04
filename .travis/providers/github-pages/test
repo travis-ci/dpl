@@ -2,6 +2,8 @@
 
 require 'open-uri'
 
+$stdout.sync = true
+
 expected = ENV['ID']
 
 10.times do

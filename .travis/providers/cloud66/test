@@ -2,6 +2,8 @@
 
 require 'open-uri'
 
+$stdout.sync = true
+
 expected = ENV['ID']
 url = 'http://dpl-test-app-dpl-test.apps.us-west-2.online-starter.openshift.com/'
 
