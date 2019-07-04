@@ -1,0 +1,32 @@
+language: shell
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/cloudfoundry/prepare
+  - cd tmp/dpl_test
+  - ls -al
+
+deploy:
+  - provider: cloudfoundry
+    edge:
+      branch: dpl-2
+    on:
+      branch: dpl-2
+    skip_cleanup: true
+
+    api: https://api.run.pivotal.io
+    username: dpl-test@travis-ci.org
+    password:
+      secure: "cEUSQKSUNkpqz1az/7mJyTCpjaeHAED++DhdQ02YgvjmW5N/r4UE+nv/r7v2SDVbHoVViphezCvf6+owB+9k0Zl05dXQWA3521Cj3At+zVq2p8yXegVHkZy4YLDnUrPPfSLHT1wvpa0MrtiylKs0eo65kEupD494qH3VZPGRRuU="
+    organization: dpl-test
+    space: dev
+    app_name: dpl-test
+    buildpack: ruby_buildpack
+    no_logout: true
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/cloudfoundry/test || TRAVIS_TEST_RESULT=$?
+  - tmp/dpl_test/cf scale dpl-test -i 0
