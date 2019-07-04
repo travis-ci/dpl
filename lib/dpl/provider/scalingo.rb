@@ -7,9 +7,10 @@ module DPL
   class Provider
     class Scalingo < Provider
       def install_deploy_dependencies
+        download_url = 'https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz'
         command = 'curl'
         command = "#{command} --silent" if !@debug
-        command = "#{command} -OL https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz"
+        command = "#{command} --remote-name --location #{download_url}"
         tar_options = 'v' if @debug
         tar_options = "#{tar_options}zxf"
         command = "#{command} && tar -#{tar_options} scalingo_latest_linux_amd64.tar.gz" \
@@ -63,7 +64,7 @@ module DPL
           end
         end
 
-        if !context.shell "git push #{@remote} #{@branch} -f"
+        if !context.shell "git push #{@remote} #{@branch} --force"
           error "Couldn't push your app."
         end
       end
