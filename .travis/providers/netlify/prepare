@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+def run(cmd)
+  puts "$ #{cmd}"
+  system(cmd) || abort
+end
+
+mkdir_p 'tmp/dpl_test'
+chdir 'tmp/dpl_test'
+
+File.write 'index.html', ENV['ID']

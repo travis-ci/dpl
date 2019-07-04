@@ -18,6 +18,10 @@ module Dpl
         @except ||= Array(opts[:except]).map(&:to_s)
       end
 
+      def opts
+        super || {}
+      end
+
       class Parse < Struct.new(:code)
         def gems
           walk(*sexp).flatten.each_slice(3).to_a
