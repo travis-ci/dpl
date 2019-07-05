@@ -31,10 +31,6 @@ module DPL
         @debug = !options[:debug].nil?
       end
 
-      def logged_in
-        scalingo('login', ['DISABLE_INTERACTIVE=true'])
-      end
-
       def check_auth
         token = @options[:api_key] || @options[:api_token]
         if token
@@ -42,17 +38,18 @@ module DPL
         elsif @options[:username] && @options[:password]
           scalingo('login', [], "echo -e \"#{@options[:username]}\n#{@options[:password]}\"")
         end
-        error "Couldn't connect to Scalingo API to check authentication." if !logged_in
       end
 
       def setup_key(file, _type = nil)
-        error "Couldn't connect to Scalingo API to setup the SSH key." if !logged_in
-        error "Couldn't add SSH key." if !scalingo("keys-add dpl_tmp_key #{file}")
+        if !scalingo("keys-add dpl_tmp_key #{file}")
+          error "Couldn't add SSH key."
+        end
       end
 
       def remove_key
-        error "Couldn't connect to Scalingo API to remove the SSH key." if !logged_in
-        error "Couldn't remove SSH key." if !scalingo('keys-remove dpl_tmp_key')
+        if !scalingo('keys-remove dpl_tmp_key')
+          error "Couldn't remove SSH key."
+        end
       end
 
       def push_app

@@ -20,9 +20,6 @@ describe DPL::Provider::Scalingo do
       expect(provider.context).to receive(:shell).with(
         "echo -e \"travis\nsecret\" | SCALINGO_REGION=agora-fr1 timeout 60 ./scalingo login > /dev/null"
       ).and_return(true)
-      expect(provider.context).to receive(:shell).with(
-        'DISABLE_INTERACTIVE=true SCALINGO_REGION=agora-fr1 timeout 60 ./scalingo login > /dev/null'
-      ).and_return(true)
       provider.check_auth
     end
   end
@@ -32,9 +29,6 @@ describe DPL::Provider::Scalingo do
       expect(provider.context).to receive(:shell).with(
         'SCALINGO_REGION=agora-fr1 timeout 60 ./scalingo keys-add dpl_tmp_key key_file > /dev/null'
       ).and_return(true)
-      expect(provider.context).to receive(:shell).with(
-        'DISABLE_INTERACTIVE=true SCALINGO_REGION=agora-fr1 timeout 60 ./scalingo login > /dev/null'
-      ).and_return(true)
       provider.setup_key('key_file')
     end
   end
@@ -43,9 +37,6 @@ describe DPL::Provider::Scalingo do
     example do
       expect(provider.context).to receive(:shell).with(
         'SCALINGO_REGION=agora-fr1 timeout 60 ./scalingo keys-remove dpl_tmp_key > /dev/null'
-      ).and_return(true)
-      expect(provider.context).to receive(:shell).with(
-        'DISABLE_INTERACTIVE=true SCALINGO_REGION=agora-fr1 timeout 60 ./scalingo login > /dev/null'
       ).and_return(true)
       provider.remove_key
     end
