@@ -24,7 +24,7 @@ module DPL
       def initialize(context, options)
         super
         @options = options
-        @remote = options[:remote] || 'scalingo'
+        @remote = options[:remote] || 'scalingo-dpl'
         @branch = options[:branch] || 'master'
         @region = options[:region] || 'agora-fr1'
         @timeout = options[:timeout] || '60'
