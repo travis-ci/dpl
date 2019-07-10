@@ -138,6 +138,26 @@ task :yank, [:version] do |t, args|
   end
 end
 
+desc "Add owner to all gems, including dpl"
+task "add-owner", [:email] do |t, args|
+  email = args.email
+  providers.each do |provider|
+    Rake::Task["add-owner-#{provider}"].invoke(email)
+  end
+  logger.info green("Adding #{email} to owners of dpl")
+  sh "gem owner dpl -a #{email}"
+end
+
+desc "Remove owner from all gems, including dpl"
+task "remove-owner", [:email] do |t, args|
+  email = args.email
+  providers.each do |provider|
+    Rake::Task["remove-owner-#{provider}"].invoke(email)
+  end
+  logger.info green("Removing #{email} from owners of dpl")
+  sh "gem owner dpl -r #{email}"
+end
+
 task :deep_clean do
   Rake::Task[:clean].invoke
   sh "git clean -dfx"
@@ -204,5 +224,19 @@ providers.each do |provider|
   task "yank-#{provider}" do
     logger.info green("Yanking dpl-#{provider} version #{gem_version}")
     sh "gem yank dpl-#{provider} -v #{gem_version}"
+  end
+
+  desc "Add owner with given email address to dpl-#{provider} gem"
+  task "add-owner-#{provider}", [:email] do |t, args|
+    email = args.email
+    logger.info green("Adding #{email} to owners of dpl-#{provider}")
+    sh "gem owner dpl-#{provider} -a #{email}"
+  end
+
+  desc "Remove owner with given email address from dpl-#{provider} gem"
+  task "remove-owner-#{provider}", [:email] do |t, args|
+    email = args.email
+    logger.info green("Removing #{email} from owners of dpl-#{provider}")
+    sh "gem owner dpl-#{provider} -r #{email}"
   end
 end
