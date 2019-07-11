@@ -1,5 +1,6 @@
 #!/bin/bash
-curl -OL https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz && \
-tar -zxvf scalingo_latest_linux_amd64.tar.gz && mv scalingo_*_linux_amd64/scalingo . && \
+curl --remote-name --location https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz && \
+tar -zxvf scalingo_latest_linux_amd64.tar.gz && \
+mv scalingo_*_linux_amd64/scalingo . && \
 rm scalingo_latest_linux_amd64.tar.gz && \
 rm -r scalingo_*_linux_amd64
