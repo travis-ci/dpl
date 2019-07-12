@@ -112,7 +112,7 @@ module Dpl
           end
 
           def curl_opts
-            $stdout.isatty ? '' : ' -sS'
+            tty? ? '' : '-sS'
           end
       end
     end

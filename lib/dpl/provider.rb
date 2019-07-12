@@ -172,7 +172,7 @@ module Dpl
       :git_log, :git_ls_files, :git_remote_urls, :git_rev_parse, :git_sha,
       :git_tag, :machine_name, :node_version, :npm_version, :sleep,
       :ssh_keygen, :success?, :mv, :tmp_dir, :which, :logger, :rendezvous,
-      :file_size, :write_file, :write_netrc, :last_out, :last_err
+      :file_size, :write_file, :write_netrc, :last_out, :last_err, :tty?
 
     attr_reader :repo_name, :key_name
 
