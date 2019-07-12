@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 module DPL
   class Provider
     class Convox < Provider
@@ -69,7 +71,19 @@ module DPL
       end
 
       def build_description
-        options[:description] || "Travis job ##{context.env['TRAVIS_BUILD_NUMBER']}/commit #{context.env['TRAVIS_COMMIT']}"
+        context.shell "export TRAVIS_GIT_COMMIT_AUTHOR=$(git log -1 ${TRAVIS_COMMIT} --pretty=\"%aN\")"
+        desc = {
+          repo_slug: context.env['TRAVIS_REPO_SLUG'],
+          travis_build_id: context.env['TRAVIS_BUILD_ID'],
+          travis_build_number: context.env['TRAVIS_BUILD_NUMBER'],
+          git_commit_sha: context.env['TRAVIS_COMMIT'],
+          git_commit_message: context.env['TRAVIS_COMMIT_MESSAGE'],
+          git_commit_author: context.env['TRAVIS_GIT_COMMIT_AUTHOR'],
+          git_tag: context.env['TRAVIS_TAG'],
+          branch: context.env['TRAVIS_BRANCH'],
+          pull_request: context.env['TRAVIS_PULL_REQUEST']
+        }
+        options[:description] || desc.to_json
       end
 
       def setenvs
@@ -124,9 +138,7 @@ module DPL
         cenvs.concat yenvs
 
         cenvs.map! do |entry|
-          unless entry.include?('=')
-            entry += '=' + (context.env[entry] || '')
-          end
+          entry += '=' + (context.env[entry] || '') unless entry.include?('=')
 
           "'" + entry.gsub(%('), %('"'"')) + "'"
         end
