@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Npm < Provider
-      gem 'json'
+      gem 'json', '~> 2.2.0'
 
       full_name 'npm'
 

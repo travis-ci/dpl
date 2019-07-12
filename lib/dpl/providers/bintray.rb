@@ -5,8 +5,7 @@ require 'find'
 module Dpl
   module Providers
     class Bintray < Provider
-      # gem 'json'
-      require 'json'
+      gem 'json', '~> 2.2.0'
 
       description sq(<<-str)
         tbd
@@ -51,6 +50,10 @@ module Dpl
         version: %i(name desc released vcs_tag github_release_notes_file
           github_use_tag_release_notes attributes)
       }
+
+      def install
+        require 'json'
+      end
 
       def validate
         error :missing_file unless File.exist?(file)

@@ -202,31 +202,15 @@ describe Dpl::Ctx::Bash do
   end
 
   describe 'pip_install' do
-    describe 'cmd exists and version number given' do
-      before { allow(subject).to receive(:`).with('which cmd').and_return('/bin/cmd') }
+    describe 'version req given' do
       before { subject.pip_install('name', 'cmd', '1.0.0') }
-      it { should call_system 'pip uninstall -y name' }
+      it { should call_system 'virtualenv --no-site-packages ~/dpl_venv' }
       it { should call_system 'pip install name==1.0.0' }
     end
 
-    describe 'cmd exists and version req given' do
-      before { allow(subject).to receive(:`).with('which cmd').and_return('/bin/cmd') }
-      before { subject.pip_install('name', 'cmd', '>=1.0.0') }
-      it { should call_system 'pip uninstall -y name' }
-      it { should call_system 'pip install name>=1.0.0' }
-    end
-
-    describe 'cmd exists and no version given' do
-      before { allow(subject).to receive(:`).with('which cmd').and_return('/bin/cmd') }
+    describe 'no version req given' do
       before { subject.pip_install('name', 'cmd') }
-      it { should_not call_system 'pip uninstall -y name' }
-      it { should call_system 'pip install name' }
-    end
-
-    describe 'cmd does not exist' do
-      before { allow(subject).to receive(:`).with('which cmd').and_return('') }
-      before { subject.pip_install('name', 'cmd') }
-      it { should_not call_system 'pip uninstall -y name' }
+      it { should call_system 'virtualenv --no-site-packages ~/dpl_venv' }
       it { should call_system 'pip install name' }
     end
   end

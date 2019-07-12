@@ -17,7 +17,6 @@ Dpl supports the following providers:
   * [AWS S3](#aws-s3)
   * [Azure Web Apps](#azure-web-apps)
   * [Bintray](#bintray)
-  * [Bitballoon](#bitballoon)
   * [Bluemix Cloud Foundry](#bluemix-cloud-foundry)
   * [Boxfuse](#boxfuse)
   * [Cargo](#cargo)
@@ -38,8 +37,9 @@ Dpl supports the following providers:
   * [Heroku API](#heroku-api)
   * [Heroku Git](#heroku-git)
   * [Launchpad](#launchpad)
-  * [NPM](#npm)
-  * [Open Shift](#open-shift)
+  * [Netlify](#netlify)
+  * [npm](#npm)
+  * [OpenShift](#openshift)
   * [Packagecloud](#packagecloud)
   * [Puppet Forge](#puppet-forge)
   * [PyPI](#pypi)
@@ -96,6 +96,7 @@ Options:
   --organization ORG       anynines target organization (type: string, required: true)
   --space SPACE            anynines target space (type: string, required: true)
   --app_name APP           Application name (type: string)
+  --buildpack PACK         Custom buildpack name or Git URL (type: string)
   --manifest FILE          Path to the manifest (type: string)
 
 Common Options:
@@ -277,22 +278,22 @@ Options:
   --memory_size MB                  Amount of memory in MB to allocate to this Lambda (type: string, default: 128)
   --runtime NAME                    Lambda runtime to use (type: string, default: node)
   --[no-]publish                    Create a new version of the code instead of replacing the existing one.
-  --subnet_ids IDS                  List of subnet IDs to be added to the function. Needs the ec2:DescribeSubnets
-                                    and ec2:DescribeVpcs permission for the user of the access/secret key to work.
-                                    (type: array (string, can be given multiple times))
-  --security_group_ids IDS          List of security group IDs to be added to the function. Needs the
-                                    ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the
-                                    access/secret key to work. (type: array (string, can be given multiple times))
+  --subnet_ids IDS                  List of subnet IDs to be added to the function (type: array (string, can be
+                                    given multiple times), note: Needs the ec2:DescribeSubnets and ec2:DescribeVpcs
+                                    permission for the user of the access/secret key to work)
+  --security_group_ids IDS          List of security group IDs to be added to the function (type: array (string, can
+                                    be given multiple times), note: Needs the ec2:DescribeSecurityGroups and
+                                    ec2:DescribeVpcs permission for the user of the access/secret key to work)
   --dead_letter_arn ARN             ARN to an SNS or SQS resource used for the dead letter queue. (type: string)
-  --tracing_mode MODE               Tracing mode (Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role)
-                                    (type: string, default: PassThrough, known values: Active, PassThrough)
-  --environment_variables VARS      List of Environment Variables to add to the function, needs to be in the format
-                                    of KEY=VALUE. Can be encrypted for added security. (type: array (string, can be
-                                    given multiple times))
+  --tracing_mode MODE               Tracing mode (type: string, default: PassThrough, known values: Active,
+                                    PassThrough, note: Needs xray:PutTraceSegments xray:PutTelemetryRecords on the
+                                    role)
+  --environment_variables VARS      List of Environment Variables to add to the function (type: array (string, can
+                                    be given multiple times), format: /[\w\-]+=.+/, note: Can be encrypted for added
+                                    security)
   --kms_key_arn ARN                 KMS key ARN to use to encrypt environment_variables. (type: string)
-  --function_tags TAGS              List of tags to add to the function, needs to be in the format of KEY=VALUE. Can
-                                    be encrypted for added security. (type: array (string, can be given multiple
-                                    times))
+  --function_tags TAGS              List of tags to add to the function (type: array (string, can be given multiple
+                                    times), format: /[\w\-]+=.+/, note: Can be encrypted for added security)
 
 Common Options:
 
@@ -475,41 +476,6 @@ Examples:
   dpl bintray --user user --key key --file file --passphrase phrase --run cmd
 ```
 
-### Bitballoon
-
-```
-Usage: dpl bitballoon [options]
-
-Summary:
-
-  Bitballoon deployment provider
-
-Description:
-
-  BitBallon provides free simple static site hosting.
-  
-  This deployment provider helps you deploy to BitBallon easily.
-
-
-Options:
-
-  --access_token TOKEN      The access token (type: string, required: true)
-  --site_id ID              The side id (type: string, required: true)
-  --local_dir DIR           The sub-directory of the built assets for deployment (type: string, default: .)
-
-Common Options:
-
-  --run CMD                 Command to execute after the deployment finished successfully (type: array
-                            (string, can be given multiple times))
-  --[no-]skip_cleanup       Skip cleaning up build artifacts before the deployment
-  --help                    Get help on this command
-
-Examples:
-
-  dpl bitballoon --access_token token --site_id id
-  dpl bitballoon --access_token token --site_id id --local_dir dir --run cmd --skip_cleanup
-```
-
 ### Bluemix Cloud Foundry
 
 ```
@@ -534,6 +500,7 @@ Options:
                                   au-syd)
   --api URL                       Bluemix api URL (type: string)
   --app_name APP                  Application name (type: string)
+  --buildpack PACK                Custom buildpack name or Git URL (type: string)
   --manifest FILE                 Path to the manifest (type: string)
   --[no-]skip_ssl_validation      Skip SSL validation
 
@@ -570,7 +537,8 @@ Options:
   --secret SECRET          type: string
   --config_file FILE       type: string, alias: configfile (deprecated, please use config_file)
   --payload PAYLOAD        type: string
-  --image IMAGE            type: string
+  --app APP                type: string
+  --version VERSION        type: string
   --env ENV                type: string
   --extra_args ARGS        type: string
 
@@ -583,7 +551,7 @@ Common Options:
 
 Examples:
 
-  dpl boxfuse --user user --secret secret --config_file file --payload payload --image image
+  dpl boxfuse --user user --secret secret --config_file file --payload payload --app app
 ```
 
 ### Cargo
@@ -744,6 +712,7 @@ Options:
   --space SPACE                   Cloud Foundry target space (type: string, required: true)
   --api URL                       Cloud Foundry api URL (type: string, required: true)
   --app_name APP                  Application name (type: string)
+  --buildpack PACK                Custom buildpack name or Git URL (type: string)
   --manifest FILE                 Path to the manifest (type: string)
   --[no-]skip_ssl_validation      Skip SSL validation
 
@@ -887,6 +856,7 @@ Options:
   --project NAME           Firebase project to deploy to (defaults to the one specified in your
                            firebase.json) (type: string)
   --message MSG            Message describing this deployment. (type: string)
+  --only SERVICES          Firebase services to deploy (type: string)
 
 Common Options:
 
@@ -898,7 +868,7 @@ Common Options:
 Examples:
 
   dpl firebase --token token
-  dpl firebase --token token --project name --message msg --run cmd --skip_cleanup
+  dpl firebase --token token --project name --message msg --only services --run cmd
 ```
 
 ### GitHub Pages
@@ -1012,26 +982,27 @@ Description:
 
 Options:
 
-  --project ID                         Project ID used to identify the project on Google Cloud (type: string, required:
-                                       true)
-  --keyfile FILE                       Path to the JSON file containing your Service Account credentials in JSON Web
-                                       Token format. To be obtained via the Google Developers Console. Should be
-                                       handled with care as it contains authorization keys. (type: string, default:
-                                       service-account.json)
-  --config FILE                        Path to your module configuration file (type: string, default: app.yaml)
-  --version VER                        The version of the app that will be created or replaced by this deployment. If
-                                       you do not specify a version, one will be generated for you (type: string)
-  --verbosity LEVEL                    Adjust the log verbosity (type: string, default: warning)
-  --[no-]no_promote                    Do not promote the deployed version
-  --[no-]no_stop_previous_version      Prevent your deployment from stopping the previously promoted version. This is
-                                       from the future, so might not work (yet).
+  --project ID                      Project ID used to identify the project on Google Cloud (type: string, required:
+                                    true)
+  --keyfile FILE                    Path to the JSON file containing your Service Account credentials in JSON Web
+                                    Token format. To be obtained via the Google Developers Console. Should be
+                                    handled with care as it contains authorization keys. (type: string, default:
+                                    service-account.json)
+  --config FILE                     Path to your service configuration file (type: string, default: app.yaml)
+  --version VER                     The version of the app that will be created or replaced by this deployment. If
+                                    you do not specify a version, one will be generated for you (type: string)
+  --verbosity LEVEL                 Adjust the log verbosity (type: string, default: warning)
+  --[no-]promote                    Do not promote the deployed version (default: true)
+  --[no-]stop_previous_version      Prevent your deployment from stopping the previously promoted version. This is
+                                    from the future, so might not work (yet). (default: true)
+  --[no-]install_sdk                Do not install the Google Cloud SDK (default: true)
 
 Common Options:
 
-  --run CMD                            Command to execute after the deployment finished successfully (type: array
-                                       (string, can be given multiple times))
-  --[no-]skip_cleanup                  Skip cleaning up build artifacts before the deployment
-  --help                               Get help on this command
+  --run CMD                         Command to execute after the deployment finished successfully (type: array
+                                    (string, can be given multiple times))
+  --[no-]skip_cleanup               Skip cleaning up build artifacts before the deployment
+  --help                            Get help on this command
 
 Examples:
 
@@ -1058,11 +1029,10 @@ Options:
   --access_key_id ID           GCS Interoperable Access Key ID (type: string, required: true)
   --secret_access_key KEY      GCS Interoperable Access Secret (type: string, required: true)
   --bucket BUCKET              GCS Bucket (type: string, required: true)
-  --acl ACL                    Access control to set for uploaded objects (type: string)
-  --upload_dir DIR             GCS directory to upload to (type: string, default: .)
-  --local_dir DIR              Local directory to upload from. Can be an absolute (~/travis/build) or relative
-                               (build) path. (type: string, default: .)
+  --local_dir DIR              Local directory to upload from (type: string, default: .)
+  --upload_dir DIR             GCS directory to upload to (type: string)
   --[no-]dot_match             Upload hidden files starting with a dot
+  --acl ACL                    Access control to set for uploaded objects (type: string)
   --[no-]detect_encoding       HTTP header Content-Encoding to set for files compressed with gzip and compress
                                utilities.
   --cache_control HEADER       HTTP header Cache-Control to suggest that the browser cache the file. (type:
@@ -1078,7 +1048,7 @@ Common Options:
 Examples:
 
   dpl gcs --access_key_id id --secret_access_key key --bucket bucket
-  dpl gcs --access_key_id id --secret_access_key key --bucket bucket --acl acl --upload_dir dir
+  dpl gcs --access_key_id id --secret_access_key key --bucket bucket --local_dir dir --upload_dir dir
 ```
 
 ### Hackage
@@ -1252,14 +1222,14 @@ Examples:
   dpl launchpad --slug slug --oauth_token token --oauth_token_secret secret --run cmd --skip_cleanup
 ```
 
-### NPM
+### Netlify
 
 ```
-Usage: dpl npm [options]
+Usage: dpl netlify [options]
 
 Summary:
 
-  NPM deployment provider
+  Netlify deployment provider
 
 Description:
 
@@ -1268,10 +1238,12 @@ Description:
 
 Options:
 
-  --email EMAIL            NPM email address (type: string, required: true)
-  --api_key KEY            NPM api key (can be retrieved from your local ~/.npmrc file) (type: string,
-                           required: true)
-  --tag TAGS               NPM distribution tags to add (type: string)
+  --auth TOKEN             An auth token to log in with (type: string, required: true)
+  --site ID                A site ID to deploy to (type: string, required: true)
+  --dir DIR                Specify a folder to deploy (type: string)
+  --functions FUNCS        Specify a functions folder to deploy (type: string)
+  --message MSG            A message to include in the deploy log (type: string)
+  --[no-]prod              Deploy to production
 
 Common Options:
 
@@ -1282,18 +1254,18 @@ Common Options:
 
 Examples:
 
-  dpl npm --email email --api_key key
-  dpl npm --email email --api_key key --tag tags --run cmd --skip_cleanup
+  dpl netlify --auth token --site id
+  dpl netlify --auth token --site id --dir dir --functions funcs --message msg
 ```
 
-### Open Shift
+### npm
 
 ```
-Usage: dpl openshift [options]
+Usage: dpl npm [options]
 
 Summary:
 
-  Open Shift deployment provider
+  npm deployment provider
 
 Description:
 
@@ -1302,23 +1274,58 @@ Description:
 
 Options:
 
-  --user NAME                     OpenShift username (type: string, required: true)
-  --password PASS                 OpenShift password (type: string, required: true)
-  --domain DOMAIN                 OpenShift application domain (type: string, required: true)
-  --app APP                       OpenShift application (type: string, default: repo name)
-  --deployment_branch BRANCH      type: string
+  --api_key KEY            npm api key (can be retrieved from your local ~/.npmrc file) (type: string,
+                           required: true)
+  --email EMAIL            npm email address (type: string)
+  --access ACCESS          access level (type: string, known values: public, private)
+  --registry URL           npm registry url (type: string)
+  --tag TAGS               npm distribution tags to add (type: string)
 
 Common Options:
 
-  --run CMD                       Command to execute after the deployment finished successfully (type: array
-                                  (string, can be given multiple times))
-  --[no-]skip_cleanup             Skip cleaning up build artifacts before the deployment
-  --help                          Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
-  dpl openshift --user name --password pass --domain domain
-  dpl openshift --user name --password pass --domain domain --app app --deployment_branch branch
+  dpl npm --api_key key
+  dpl npm --api_key key --email email --access public --registry url --tag tags
+```
+
+### OpenShift
+
+```
+Usage: dpl openshift [options]
+
+Summary:
+
+  OpenShift deployment provider
+
+Description:
+
+  tbd
+
+
+Options:
+
+  --server SERVER          OpenShift server (type: string, required: true)
+  --token TOKEN            OpenShift token (type: string, required: true)
+  --project PROJECT        OpenShift project (type: string, required: true)
+  --app APP                OpenShift application (type: string, default: repo name)
+
+Common Options:
+
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
+
+Examples:
+
+  dpl openshift --server server --token token --project project
+  dpl openshift --server server --token token --project project --app app --run cmd
 ```
 
 ### Packagecloud
@@ -1413,33 +1420,33 @@ Description:
 
 Options:
 
-  --username NAME                   PyPI Username (type: string, required: true, alias: user)
-  --password PASS                   PyPI Password (type: string, required: true)
-  --server SERVER                   Release to a different index (type: string, default:
-                                    https://upload.pypi.org/legacy/)
-  --distributions DISTS             Space-separated list of distributions to be uploaded to PyPI (type: string,
-                                    default: sdist)
-  --[no-]skip_upload_docs BOOL      Skip uploading documentation. Note that upload.pypi.org does not support
-                                    uploading documentation. (default: true, see:
-                                    https://github.com/travis-ci/dpl/issues/660)
-  --docs_dir DIR                    Path to the directory to upload documentation from (type: string, default:
-                                    build/docs)
-  --[no-]skip_existing              Do not overwrite an existing file with the same name on the server.
-  --setuptools_version VER          type: string
-  --twine_version VER               type: string
-  --wheel_version VER               type: string
+  --username NAME               PyPI Username (type: string, required: true, alias: user)
+  --password PASS               PyPI Password (type: string, required: true)
+  --server SERVER               Release to a different index (type: string, default:
+                                https://upload.pypi.org/legacy/)
+  --distributions DISTS         Space-separated list of distributions to be uploaded to PyPI (type: string,
+                                default: sdist)
+  --docs_dir DIR                Path to the directory to upload documentation from (type: string, default:
+                                build/docs)
+  --[no-]skip_upload_docs       Skip uploading documentation. Note that upload.pypi.org does not support
+                                uploading documentation. (default: true, see:
+                                https://github.com/travis-ci/dpl/issues/660)
+  --[no-]skip_existing          Do not overwrite an existing file with the same name on the server.
+  --setuptools_version VER      type: string, format: /\A\d+(?:\.\d+)*\z/
+  --twine_version VER           type: string, format: /\A\d+(?:\.\d+)*\z/
+  --wheel_version VER           type: string, format: /\A\d+(?:\.\d+)*\z/
 
 Common Options:
 
-  --run CMD                         Command to execute after the deployment finished successfully (type: array
-                                    (string, can be given multiple times))
-  --[no-]skip_cleanup               Skip cleaning up build artifacts before the deployment
-  --help                            Get help on this command
+  --run CMD                     Command to execute after the deployment finished successfully (type: array
+                                (string, can be given multiple times))
+  --[no-]skip_cleanup           Skip cleaning up build artifacts before the deployment
+  --help                        Get help on this command
 
 Examples:
 
   dpl pypi --username name --password pass
-  dpl pypi --username name --password pass --server server --distributions dists --skip_upload_docs
+  dpl pypi --username name --password pass --server server --distributions dists --docs_dir dir
 ```
 
 ### Rubygems
@@ -1501,15 +1508,13 @@ Options:
 
   Either api_key, or username and password are required.
 
+  --app APP                type: string, default: repo name
   --api_key KEY            scalingo API key (type: string, alias: api_token (deprecated, please use
                            api_key))
   --username NAME          scalingo username (type: string)
   --password PASS          scalingo password (type: string)
-  --remote REMOTE          Remote url or git remote name of your git repository. (type: string, default:
-                           scalingo)
-  --branch BRANCH          Branch of your git repository. (type: string, default: master)
-  --app APP                Required if your repository does not contain the appropriate remote (will add a
-                           remote to your local repository) (type: string)
+  --remote REMOTE          Git remote name (type: string, default: scalingo)
+  --branch BRANCH          Git branch (type: string, default: master)
 
 Common Options:
 
@@ -1522,7 +1527,7 @@ Examples:
 
   dpl scalingo --api_key key
   dpl scalingo --username name --password pass
-  dpl scalingo --api_key key --remote remote --branch branch --app app --run cmd
+  dpl scalingo --api_key key --app app --remote remote --branch branch --run cmd
 ```
 
 ### Script
@@ -1620,7 +1625,7 @@ Options:
                            true)
   --domain NAME            Domain to publish to. Not required if the domain is set in the CNAME file in the
                            project folder. (type: string)
-  --project PAHT           Path to project directory relative to repo root (type: string, default: .)
+  --project PATH           Path to project directory relative to repo root (type: string, default: .)
 
 Common Options:
 
@@ -1632,7 +1637,7 @@ Common Options:
 Examples:
 
   dpl surge --login email --token token
-  dpl surge --login email --token token --domain name --project paht --run cmd
+  dpl surge --login email --token token --domain name --project path --run cmd
 ```
 
 ### Testfairy
@@ -1702,8 +1707,11 @@ Description:
 
 Options:
 
-  --username NAME          Transifex username (type: string, required: true)
-  --password PASS          Transifex password (type: string, required: true)
+  Either api_token, or username and password are required.
+
+  --api_token TOKEN        Transifex API token (type: string)
+  --username NAME          Transifex username (type: string)
+  --password PASS          Transifex password (type: string)
   --hostname NAME          Transifex hostname (type: string, default: www.transifex.com)
   --cli_version VER        CLI version to install (type: string, default: >=0.11)
 
@@ -1716,8 +1724,9 @@ Common Options:
 
 Examples:
 
+  dpl transifex --api_token token
   dpl transifex --username name --password pass
-  dpl transifex --username name --password pass --hostname name --cli_version ver --run cmd
+  dpl transifex --api_token token --hostname name --cli_version ver --run cmd --skip_cleanup
 ```
 
 ## Credits
