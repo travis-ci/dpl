@@ -37,11 +37,11 @@ describe Dpl::Providers::Pypi do
     it { should have_run 'python setup.py other' }
   end
 
-  describe 'given --skip_upload_docs false' do
+  describe 'given --no_skip_upload_docs' do
     it { should have_run 'python setup.py upload_docs --upload-dir build/docs -r https://upload.pypi.org/legacy/' }
   end
 
-  describe 'given --skip_upload_docs false --docs_dir ./docs' do
+  describe 'given --no_skip_upload_docs --docs_dir ./docs' do
     it { should have_run 'python setup.py upload_docs --upload-dir ./docs -r https://upload.pypi.org/legacy/' }
   end
 
