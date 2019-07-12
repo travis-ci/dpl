@@ -17,7 +17,6 @@ Dpl supports the following providers:
   * [AWS S3](#aws-s3)
   * [Azure Web Apps](#azure-web-apps)
   * [Bintray](#bintray)
-  * [Bitballoon](#bitballoon)
   * [Bluemix Cloud Foundry](#bluemix-cloud-foundry)
   * [Boxfuse](#boxfuse)
   * [Cargo](#cargo)
@@ -38,8 +37,9 @@ Dpl supports the following providers:
   * [Heroku API](#heroku-api)
   * [Heroku Git](#heroku-git)
   * [Launchpad](#launchpad)
-  * [NPM](#npm)
-  * [Open Shift](#open-shift)
+  * [Netlify](#netlify)
+  * [npm](#npm)
+  * [OpenShift](#openshift)
   * [Packagecloud](#packagecloud)
   * [Puppet Forge](#puppet-forge)
   * [PyPI](#pypi)
@@ -91,19 +91,20 @@ Description:
 
 Options:
 
-  --username USER         anynines username (type: string, required: true)
-  --password PASS         anynines password (type: string, required: true)
-  --organization ORG      anynines target organization (type: string, required: true)
-  --space SPACE           anynines target space (type: string, required: true)
-  --app_name APP          Application name (type: string)
-  --manifest FILE         Path to the manifest (type: string)
+  --username USER          anynines username (type: string, required: true)
+  --password PASS          anynines password (type: string, required: true)
+  --organization ORG       anynines target organization (type: string, required: true)
+  --space SPACE            anynines target space (type: string, required: true)
+  --app_name APP           Application name (type: string)
+  --buildpack PACK         Custom buildpack name or Git URL (type: string)
+  --manifest FILE          Path to the manifest (type: string)
 
 Common Options:
 
-  --run CMD               Command to execute after the deployment finished successfully (type: array
-                          (string, can be given multiple times))
-  --skip_cleanup          Skip cleaning up build artifacts before the deployment
-  --help                  Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -127,27 +128,27 @@ Description:
 
 Options:
 
-  --app APP            The Atlas application to upload to (type: string, required: true)
-  --token TOKEN        The Atlas API token (type: string, required: true)
-  --paths PATH         Files or directories to upload (type: array (string, can be given multiple
-                       times), default: ["."])
-  --address ADDR       The address of the Atlas server (type: string)
-  --include GLOB       Glob pattern of files or directories to include (type: array (string, can be
-                       given multiple times))
-  --exclude GLOB       Glob pattern of files or directories to exclude (type: array (string, can be
-                       given multiple times))
-  --metadata DATA      Arbitrary key=value (string) metadata to be sent with the upload (type: array
-                       (string, can be given multiple times))
-  --vcs                Get lists of files to exclude and include from a VCS (Git, Mercurial or SVN)
-  --args ARGS          Args to pass to the atlas-upload CLI (type: string)
-  --debug              Turn on debug output
+  --app APP                The Atlas application to upload to (type: string, required: true)
+  --token TOKEN            The Atlas API token (type: string, required: true)
+  --paths PATH             Files or directories to upload (type: array (string, can be given multiple
+                           times), default: ["."])
+  --address ADDR           The address of the Atlas server (type: string)
+  --include GLOB           Glob pattern of files or directories to include (type: array (string, can be
+                           given multiple times))
+  --exclude GLOB           Glob pattern of files or directories to exclude (type: array (string, can be
+                           given multiple times))
+  --metadata DATA          Arbitrary key=value (string) metadata to be sent with the upload (type: array
+                           (string, can be given multiple times))
+  --[no-]vcs               Get lists of files to exclude and include from a VCS (Git, Mercurial or SVN)
+  --args ARGS              Args to pass to the atlas-upload CLI (type: string)
+  --[no-]debug             Turn on debug output
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
-                       (string, can be given multiple times))
-  --skip_cleanup       Skip cleaning up build artifacts before the deployment
-  --help               Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -171,28 +172,28 @@ Description:
 
 Options:
 
-  --access_key_id ID            AWS access key (type: string, required: true)
-  --secret_access_key KEY       AWS secret access key (type: string, required: true)
-  --application NAME            CodeDeploy application name (type: string, required: true)
-  --deployment_group GROUP      CodeDeploy deployment group name (type: string)
-  --revision_type TYPE          CodeDeploy revision type (type: string, known values: s3, or, github, downcase:
-                                true)
-  --commit_id SHA               Commit ID in case of GitHub (type: string)
-  --repository NAME             Repository name in case of GitHub (type: string)
-  --bucket NAME                 S3 bucket in case of S3 (type: string)
-  --region REGION               AWS availability zone (type: string, default: us-east-1)
-  --wait_until_deployed         Wait until the deployment has finished
-  --bundle_type TYPE            type: string
-  --endpoint ENDPOINT           type: string
-  --key KEY                     type: string
-  --description DESCR           type: string
+  --access_key_id ID              AWS access key (type: string, required: true)
+  --secret_access_key KEY         AWS secret access key (type: string, required: true)
+  --application NAME              CodeDeploy application name (type: string, required: true)
+  --deployment_group GROUP        CodeDeploy deployment group name (type: string)
+  --revision_type TYPE            CodeDeploy revision type (type: string, known values: s3, or, github, downcase:
+                                  true)
+  --commit_id SHA                 Commit ID in case of GitHub (type: string)
+  --repository NAME               Repository name in case of GitHub (type: string)
+  --bucket NAME                   S3 bucket in case of S3 (type: string)
+  --region REGION                 AWS availability zone (type: string, default: us-east-1)
+  --[no-]wait_until_deployed      Wait until the deployment has finished
+  --bundle_type TYPE              type: string
+  --endpoint ENDPOINT             type: string
+  --key KEY                       type: string
+  --description DESCR             type: string
 
 Common Options:
 
-  --run CMD                     Command to execute after the deployment finished successfully (type: array
-                                (string, can be given multiple times))
-  --skip_cleanup                Skip cleaning up build artifacts before the deployment
-  --help                        Get help on this command
+  --run CMD                       Command to execute after the deployment finished successfully (type: array
+                                  (string, can be given multiple times))
+  --[no-]skip_cleanup             Skip cleaning up build artifacts before the deployment
+  --help                          Get help on this command
 
 Examples:
 
@@ -216,27 +217,27 @@ Description:
 
 Options:
 
-  --access_key_id ID             AWS Access Key ID (type: string, required: true)
-  --secret_access_key KEY        AWS Secret Key (type: string, required: true)
-  --region REGION                AWS Region the Elastic Beanstalk app is running in (type: string, default:
-                                 us-east-1)
-  --app NAME                     Elastic Beanstalk application name (type: string, default: repo name)
-  --env NAME                     Elastic Beanstalk environment name which will be updated (type: string,
-                                 required: true)
-  --bucket_name NAME             Bucket name to upload app to (type: string, required: true)
-  --bucket_path PATH             Location within Bucket to upload app to (type: string)
-  --zip_file PATH                The zip file that you want to deploy (type: string, requires: skip_cleanup)
-  --only_create_app_version      Only create the app version, do not actually deploy it
-  --wait_until_deployed          Wait until the deployment has finished
-  --label LABEL                  type: string
-  --description DESC             type: string
+  --access_key_id ID                  AWS Access Key ID (type: string, required: true)
+  --secret_access_key KEY             AWS Secret Key (type: string, required: true)
+  --region REGION                     AWS Region the Elastic Beanstalk app is running in (type: string, default:
+                                      us-east-1)
+  --app NAME                          Elastic Beanstalk application name (type: string, default: repo name)
+  --env NAME                          Elastic Beanstalk environment name which will be updated (type: string,
+                                      required: true)
+  --bucket_name NAME                  Bucket name to upload app to (type: string, required: true)
+  --bucket_path PATH                  Location within Bucket to upload app to (type: string)
+  --zip_file PATH                     The zip file that you want to deploy (type: string, requires: skip_cleanup)
+  --[no-]only_create_app_version      Only create the app version, do not actually deploy it
+  --[no-]wait_until_deployed          Wait until the deployment has finished
+  --label LABEL                       type: string
+  --description DESC                  type: string
 
 Common Options:
 
-  --run CMD                      Command to execute after the deployment finished successfully (type: array
-                                 (string, can be given multiple times))
-  --skip_cleanup                 Skip cleaning up build artifacts before the deployment
-  --help                         Get help on this command
+  --run CMD                           Command to execute after the deployment finished successfully (type: array
+                                      (string, can be given multiple times))
+  --[no-]skip_cleanup                 Skip cleaning up build artifacts before the deployment
+  --help                              Get help on this command
 
 Examples:
 
@@ -267,7 +268,7 @@ Options:
   --role ROLE                       ARN of the IAM role to assign to the Lambda function (type: string, required:
                                     true)
   --handler_name NAME               Function the Lambda calls to begin executio. (type: string, required: true)
-  --dot_match                       Include hidden .* files to the zipped archive
+  --[no-]dot_match                  Include hidden .* files to the zipped archive
   --module_name NAME                Name of the module that exports the handler (type: string, default: index)
   --zip PATH                        Path to a packaged Lambda, a directory to package, or a single file to package
                                     (type: string, default: .)
@@ -276,29 +277,29 @@ Options:
                                     function (type: string, default: 3)
   --memory_size MB                  Amount of memory in MB to allocate to this Lambda (type: string, default: 128)
   --runtime NAME                    Lambda runtime to use (type: string, default: node)
-  --publish                         Create a new version of the code instead of replacing the existing one.
-  --subnet_ids IDS                  List of subnet IDs to be added to the function. Needs the ec2:DescribeSubnets
-                                    and ec2:DescribeVpcs permission for the user of the access/secret key to work.
-                                    (type: array (string, can be given multiple times))
-  --security_group_ids IDS          List of security group IDs to be added to the function. Needs the
-                                    ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the
-                                    access/secret key to work. (type: array (string, can be given multiple times))
+  --[no-]publish                    Create a new version of the code instead of replacing the existing one.
+  --subnet_ids IDS                  List of subnet IDs to be added to the function (type: array (string, can be
+                                    given multiple times), note: Needs the ec2:DescribeSubnets and ec2:DescribeVpcs
+                                    permission for the user of the access/secret key to work)
+  --security_group_ids IDS          List of security group IDs to be added to the function (type: array (string, can
+                                    be given multiple times), note: Needs the ec2:DescribeSecurityGroups and
+                                    ec2:DescribeVpcs permission for the user of the access/secret key to work)
   --dead_letter_arn ARN             ARN to an SNS or SQS resource used for the dead letter queue. (type: string)
-  --tracing_mode MODE               Tracing mode (Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role)
-                                    (type: string, default: PassThrough, known values: Active, PassThrough)
-  --environment_variables VARS      List of Environment Variables to add to the function, needs to be in the format
-                                    of KEY=VALUE. Can be encrypted for added security. (type: array (string, can be
-                                    given multiple times))
+  --tracing_mode MODE               Tracing mode (type: string, default: PassThrough, known values: Active,
+                                    PassThrough, note: Needs xray:PutTraceSegments xray:PutTelemetryRecords on the
+                                    role)
+  --environment_variables VARS      List of Environment Variables to add to the function (type: array (string, can
+                                    be given multiple times), format: /[\w\-]+=.+/, note: Can be encrypted for added
+                                    security)
   --kms_key_arn ARN                 KMS key ARN to use to encrypt environment_variables. (type: string)
-  --function_tags TAGS              List of tags to add to the function, needs to be in the format of KEY=VALUE. Can
-                                    be encrypted for added security. (type: array (string, can be given multiple
-                                    times))
+  --function_tags TAGS              List of tags to add to the function (type: array (string, can be given multiple
+                                    times), format: /[\w\-]+=.+/, note: Can be encrypted for added security)
 
 Common Options:
 
   --run CMD                         Command to execute after the deployment finished successfully (type: array
                                     (string, can be given multiple times))
-  --skip_cleanup                    Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup               Skip cleaning up build artifacts before the deployment
   --help                            Get help on this command
 
 Examples:
@@ -322,25 +323,25 @@ Description:
 
 Options:
 
-  --access_key_id ID           AWS access key id (type: string, required: true)
-  --secret_access_key KEY      AWS secret key (type: string, required: true)
-  --app_id APP                 The app id (type: string, required: true)
-  --region REGION              AWS region (type: string, default: us-east-1)
-  --instance_ids ID            An instance id (type: array (string, can be given multiple times))
-  --layer_ids ID               A layer id (type: array (string, can be given multiple times))
-  --migrate                    Migrate the database.
-  --wait_until_deployed        Wait until the app is deployed and return the deployment status.
-  --update_on_success          When wait-until-deployed and updated-on-success are both not given, application
-                               source is updated to the current SHA. Ignored when wait-until-deployed is not
-                               given. (alias: update_app_on_success)
-  --custom_json JSON           Custom json options override (overwrites default configuration) (type: string)
+  --access_key_id ID              AWS access key id (type: string, required: true)
+  --secret_access_key KEY         AWS secret key (type: string, required: true)
+  --app_id APP                    The app id (type: string, required: true)
+  --region REGION                 AWS region (type: string, default: us-east-1)
+  --instance_ids ID               An instance id (type: array (string, can be given multiple times))
+  --layer_ids ID                  A layer id (type: array (string, can be given multiple times))
+  --[no-]migrate                  Migrate the database.
+  --[no-]wait_until_deployed      Wait until the app is deployed and return the deployment status.
+  --[no-]update_on_success        When wait-until-deployed and updated-on-success are both not given, application
+                                  source is updated to the current SHA. Ignored when wait-until-deployed is not
+                                  given. (alias: update_app_on_success)
+  --custom_json JSON              Custom json options override (overwrites default configuration) (type: string)
 
 Common Options:
 
-  --run CMD                    Command to execute after the deployment finished successfully (type: array
-                               (string, can be given multiple times))
-  --skip_cleanup               Skip cleaning up build artifacts before the deployment
-  --help                       Get help on this command
+  --run CMD                       Command to execute after the deployment finished successfully (type: array
+                                  (string, can be given multiple times))
+  --[no-]skip_cleanup             Skip cleaning up build artifacts before the deployment
+  --help                          Get help on this command
 
 Examples:
 
@@ -372,10 +373,10 @@ Options:
   --upload_dir DIR                    S3 directory to upload to (type: string)
   --storage_class CLASS               S3 storage class to upload as (type: string, default: STANDARD, known values:
                                       STANDARD, STANDARD_IA, REDUCED_REDUNDANCY)
-  --server_side_encryption            Use S3 Server Side Encryption (SSE-AES256)
+  --[no-]server_side_encryption       Use S3 Server Side Encryption (SSE-AES256)
   --local_dir DIR                     Local directory to upload from (type: string, default: ., e.g.: ~/travis/build
                                       (absolute path) or ./build (relative path))
-  --detect_encoding                   HTTP header Content-Encoding for files compressed with gzip and compress
+  --[no-]detect_encoding              HTTP header Content-Encoding for files compressed with gzip and compress
                                       utilities
   --cache_control STR                 HTTP header Cache-Control to suggest that the browser cache the file (type:
                                       string, default: no-cache, known values: no-cache, no-store, /max-age=\d+/,
@@ -385,7 +386,7 @@ Options:
   --acl ACL                           Access control for the uploaded objects (type: string, default: private, known
                                       values: private, public_read, public_read_write, authenticated_read,
                                       bucket_owner_read, bucket_owner_full_control)
-  --dot_match                         Upload hidden files starting with a dot
+  --[no-]dot_match                    Upload hidden files starting with a dot
   --index_document_suffix SUFFIX      Index document suffix of a S3 website (type: string)
   --default_text_charset CHARSET      Default character set to append to the content-type of text files (type: string)
   --max_threads NUM                   The number of threads to use for S3 file uploads (type: integer, default: 5,
@@ -395,7 +396,7 @@ Common Options:
 
   --run CMD                           Command to execute after the deployment finished successfully (type: array
                                       (string, can be given multiple times))
-  --skip_cleanup                      Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup                 Skip cleaning up build artifacts before the deployment
   --help                              Get help on this command
 
 Examples:
@@ -420,20 +421,20 @@ Description:
 
 Options:
 
-  --site SITE          Web App name (e.g. myapp in myapp.azurewebsites.net) (type: string, required:
-                       true)
-  --username NAME      Web App Deployment Username (type: string, required: true)
-  --password PASS      Web App Deployment Password (type: string, required: true)
-  --slot SLOT          Slot name (if your app uses staging deployment) (type: string)
-  --verbose            Print deployment output from Azure. Warning: If authentication fails, Git prints
-                       credentials in clear text. Correct credentials remain hidden.
+  --site SITE              Web App name (e.g. myapp in myapp.azurewebsites.net) (type: string, required:
+                           true)
+  --username NAME          Web App Deployment Username (type: string, required: true)
+  --password PASS          Web App Deployment Password (type: string, required: true)
+  --slot SLOT              Slot name (if your app uses staging deployment) (type: string)
+  --[no-]verbose           Print deployment output from Azure. Warning: If authentication fails, Git prints
+                           credentials in clear text. Correct credentials remain hidden.
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
-                       (string, can be given multiple times))
-  --skip_cleanup       Skip cleaning up build artifacts before the deployment
-  --help               Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -466,48 +467,13 @@ Common Options:
 
   --run CMD                Command to execute after the deployment finished successfully (type: array
                            (string, can be given multiple times))
-  --skip_cleanup           Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
   --help                   Get help on this command
 
 Examples:
 
   dpl bintray --user user --key key --file file
   dpl bintray --user user --key key --file file --passphrase phrase --run cmd
-```
-
-### Bitballoon
-
-```
-Usage: readme bitballoon [options]
-
-Summary:
-
-  Bitballoon deployment provider
-
-Description:
-
-  BitBallon provides free simple static site hosting.
-  
-  This deployment provider helps you deploy to BitBallon easily.
-
-
-Options:
-
-  --access_token TOKEN      The access token (type: string, required: true)
-  --site_id ID              The side id (type: string, required: true)
-  --local_dir DIR           The sub-directory of the built assets for deployment (type: string, default: .)
-
-Common Options:
-
-  --run CMD                 Command to execute after the deployment finished successfully (type: array
-                            (string, can be given multiple times))
-  --skip_cleanup            Skip cleaning up build artifacts before the deployment
-  --help                    Get help on this command
-
-Examples:
-
-  dpl bitballoon --access_token token --site_id id
-  dpl bitballoon --access_token token --site_id id --local_dir dir --run cmd --skip_cleanup
 ```
 
 ### Bluemix Cloud Foundry
@@ -526,23 +492,24 @@ Description:
 
 Options:
 
-  --username USER            Bluemix username (type: string, required: true)
-  --password PASS            Bluemix password (type: string, required: true)
-  --organization ORG         Bluemix target organization (type: string, required: true)
-  --space SPACE              Bluemix target space (type: string, required: true)
-  --region REGION            Bluemix region (type: string, default: ng, known values: ng, eu-gb, eu-de,
-                             au-syd)
-  --api URL                  Bluemix api URL (type: string)
-  --app_name APP             Application name (type: string)
-  --manifest FILE            Path to the manifest (type: string)
-  --skip_ssl_validation      Skip SSL validation
+  --username USER                 Bluemix username (type: string, required: true)
+  --password PASS                 Bluemix password (type: string, required: true)
+  --organization ORG              Bluemix target organization (type: string, required: true)
+  --space SPACE                   Bluemix target space (type: string, required: true)
+  --region REGION                 Bluemix region (type: string, default: ng, known values: ng, eu-gb, eu-de,
+                                  au-syd)
+  --api URL                       Bluemix api URL (type: string)
+  --app_name APP                  Application name (type: string)
+  --buildpack PACK                Custom buildpack name or Git URL (type: string)
+  --manifest FILE                 Path to the manifest (type: string)
+  --[no-]skip_ssl_validation      Skip SSL validation
 
 Common Options:
 
-  --run CMD                  Command to execute after the deployment finished successfully (type: array
-                             (string, can be given multiple times))
-  --skip_cleanup             Skip cleaning up build artifacts before the deployment
-  --help                     Get help on this command
+  --run CMD                       Command to execute after the deployment finished successfully (type: array
+                                  (string, can be given multiple times))
+  --[no-]skip_cleanup             Skip cleaning up build artifacts before the deployment
+  --help                          Get help on this command
 
 Examples:
 
@@ -566,24 +533,25 @@ Description:
 
 Options:
 
-  --user USER             type: string
-  --secret SECRET         type: string
-  --config_file FILE      type: string, alias: configfile (deprecated, please use config_file)
-  --payload PAYLOAD       type: string
-  --image IMAGE           type: string
-  --env ENV               type: string
-  --extra_args ARGS       type: string
+  --user USER              type: string
+  --secret SECRET          type: string
+  --config_file FILE       type: string, alias: configfile (deprecated, please use config_file)
+  --payload PAYLOAD        type: string
+  --app APP                type: string
+  --version VERSION        type: string
+  --env ENV                type: string
+  --extra_args ARGS        type: string
 
 Common Options:
 
-  --run CMD               Command to execute after the deployment finished successfully (type: array
-                          (string, can be given multiple times))
-  --skip_cleanup          Skip cleaning up build artifacts before the deployment
-  --help                  Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
-  dpl boxfuse --user user --secret secret --config_file file --payload payload --image image
+  dpl boxfuse --user user --secret secret --config_file file --payload payload --app app
 ```
 
 ### Cargo
@@ -602,14 +570,14 @@ Description:
 
 Options:
 
-  --token TOKEN       Cargo registry API token (type: string, required: true)
+  --token TOKEN            Cargo registry API token (type: string, required: true)
 
 Common Options:
 
-  --run CMD           Command to execute after the deployment finished successfully (type: array
-                      (string, can be given multiple times))
-  --skip_cleanup      Skip cleaning up build artifacts before the deployment
-  --help              Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -633,15 +601,15 @@ Description:
 
 Options:
 
-  --target TARGET      The git remote repository to deploy to (type: string, required: true)
-  --path PATH          Path to files to deploy (type: string, default: .)
+  --target TARGET          The git remote repository to deploy to (type: string, required: true)
+  --path PATH              Path to files to deploy (type: string, default: .)
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
-                       (string, can be given multiple times))
-  --skip_cleanup       Skip cleaning up build artifacts before the deployment
-  --help               Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -675,7 +643,7 @@ Common Options:
 
   --run CMD                    Command to execute after the deployment finished successfully (type: array
                                (string, can be given multiple times))
-  --skip_cleanup               Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup          Skip cleaning up build artifacts before the deployment
   --help                       Get help on this command
 
 Examples:
@@ -700,21 +668,21 @@ Description:
 
 Options:
 
-  --username USER       Rackspace username (type: string, required: true)
-  --api_key KEY         Rackspace API key (type: string, required: true)
-  --region REGION       Cloudfiles region (type: string, required: true, known values: ord, dfw, syd,
-                        iad, hkg)
-  --container NAME      Name of the container that files will be uploaded to (type: string, required:
-                        true)
-  --glob GLOB           Paths to upload (type: string, default: **/*)
-  --dot_match           Upload hidden files starting a dot
+  --username USER          Rackspace username (type: string, required: true)
+  --api_key KEY            Rackspace API key (type: string, required: true)
+  --region REGION          Cloudfiles region (type: string, required: true, known values: ord, dfw, syd,
+                           iad, hkg)
+  --container NAME         Name of the container that files will be uploaded to (type: string, required:
+                           true)
+  --glob GLOB              Paths to upload (type: string, default: **/*)
+  --[no-]dot_match         Upload hidden files starting a dot
 
 Common Options:
 
-  --run CMD             Command to execute after the deployment finished successfully (type: array
-                        (string, can be given multiple times))
-  --skip_cleanup        Skip cleaning up build artifacts before the deployment
-  --help                Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -738,21 +706,22 @@ Description:
 
 Options:
 
-  --username USER            Cloud Foundry username (type: string, required: true)
-  --password PASS            Cloud Foundry password (type: string, required: true)
-  --organization ORG         Cloud Foundry target organization (type: string, required: true)
-  --space SPACE              Cloud Foundry target space (type: string, required: true)
-  --api URL                  Cloud Foundry api URL (type: string, required: true)
-  --app_name APP             Application name (type: string)
-  --manifest FILE            Path to the manifest (type: string)
-  --skip_ssl_validation      Skip SSL validation
+  --username USER                 Cloud Foundry username (type: string, required: true)
+  --password PASS                 Cloud Foundry password (type: string, required: true)
+  --organization ORG              Cloud Foundry target organization (type: string, required: true)
+  --space SPACE                   Cloud Foundry target space (type: string, required: true)
+  --api URL                       Cloud Foundry api URL (type: string, required: true)
+  --app_name APP                  Application name (type: string)
+  --buildpack PACK                Custom buildpack name or Git URL (type: string)
+  --manifest FILE                 Path to the manifest (type: string)
+  --[no-]skip_ssl_validation      Skip SSL validation
 
 Common Options:
 
-  --run CMD                  Command to execute after the deployment finished successfully (type: array
-                             (string, can be given multiple times))
-  --skip_cleanup             Skip cleaning up build artifacts before the deployment
-  --help                     Get help on this command
+  --run CMD                       Command to execute after the deployment finished successfully (type: array
+                                  (string, can be given multiple times))
+  --[no-]skip_cleanup             Skip cleaning up build artifacts before the deployment
+  --help                          Get help on this command
 
 Examples:
 
@@ -781,7 +750,7 @@ Common Options:
 
   --run CMD                    Command to execute after the deployment finished successfully (type: array
                                (string, can be given multiple times))
-  --skip_cleanup               Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup          Skip cleaning up build artifacts before the deployment
   --help                       Get help on this command
 
 Examples:
@@ -806,19 +775,19 @@ Description:
 
 Options:
 
-  --controller NAME      Deis controller (type: string, required: true, e.g.: deis.deisapps.com)
-  --username USER        Deis username (type: string, required: true)
-  --password PASS        Deis password (type: string, required: true)
-  --app APP              Deis app (type: string, required: true)
-  --cli_version VER      Install a specific deis cli version (type: string, default: stable)
-  --verbose              Verbose log output
+  --controller NAME        Deis controller (type: string, required: true, e.g.: deis.deisapps.com)
+  --username USER          Deis username (type: string, required: true)
+  --password PASS          Deis password (type: string, required: true)
+  --app APP                Deis app (type: string, required: true)
+  --cli_version VER        Install a specific deis cli version (type: string, default: stable)
+  --[no-]verbose           Verbose log output
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
-                         (string, can be given multiple times))
-  --skip_cleanup         Skip cleaning up build artifacts before the deployment
-  --help                 Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -844,20 +813,20 @@ Options:
 
   Either api_key, or email and password are required.
 
-  --api_key KEY          Engine Yard API key (type: string)
-  --email EMAIL          Engine Yard account email (type: string)
-  --password PASS        Engine Yard password (type: string)
-  --app APP              Engine Yard application name (type: string, default: repo name)
-  --environment ENV      Engine Yard application environment (type: string)
-  --migrate CMD          Engine Yard migration commands (type: string)
-  --account NAME         Engine Yard account name (type: string)
+  --api_key KEY            Engine Yard API key (type: string)
+  --email EMAIL            Engine Yard account email (type: string)
+  --password PASS          Engine Yard password (type: string)
+  --app APP                Engine Yard application name (type: string, default: repo name)
+  --environment ENV        Engine Yard application environment (type: string)
+  --migrate CMD            Engine Yard migration commands (type: string)
+  --account NAME           Engine Yard account name (type: string)
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
-                         (string, can be given multiple times))
-  --skip_cleanup         Skip cleaning up build artifacts before the deployment
-  --help                 Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -882,23 +851,24 @@ Description:
 
 Options:
 
-  --token TOKEN       Firebase CI access token (generate with firebase login:ci) (type: string,
-                      required: true)
-  --project NAME      Firebase project to deploy to (defaults to the one specified in your
-                      firebase.json) (type: string)
-  --message MSG       Message describing this deployment. (type: string)
+  --token TOKEN            Firebase CI access token (generate with firebase login:ci) (type: string,
+                           required: true)
+  --project NAME           Firebase project to deploy to (defaults to the one specified in your
+                           firebase.json) (type: string)
+  --message MSG            Message describing this deployment. (type: string)
+  --only SERVICES          Firebase services to deploy (type: string)
 
 Common Options:
 
-  --run CMD           Command to execute after the deployment finished successfully (type: array
-                      (string, can be given multiple times))
-  --skip_cleanup      Skip cleaning up build artifacts before the deployment
-  --help              Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
   dpl firebase --token token
-  dpl firebase --token token --project name --message msg --run cmd --skip_cleanup
+  dpl firebase --token token --project name --message msg --only services --run cmd
 ```
 
 ### GitHub Pages
@@ -917,29 +887,29 @@ Description:
 
 Options:
 
-  --github_token TOKEN        GitHub oauth token with repo permission (type: string, required: true)
-  --repo SLUG                 Repo slug (type: string, default: repo slug)
-  --target_branch BRANCH      Branch to push force to (type: string, default: gh-pages)
-  --keep_history              Create incremental commit instead of doing push force
-  --allow_empty_commit        Allow an empty commit to be created (requires: keep_history)
-  --committer_from_gh         Use the token's owner name and email for commit. Overrides the email and name
-                              options
-  --verbose                   Be verbose about the deploy process
-  --local_dir DIR             Directory to push to GitHub Pages (type: string, default: .)
-  --fqdn FQDN                 Writes your website's domain name to the CNAME file (type: string)
-  --project_name NAME         Used in the commit message only (defaults to fqdn or the current repo slug)
-                              (type: string)
-  --email EMAIL               Committer email (type: string, default: deploy@travis-ci.org)
-  --name NAME                 Committer name (type: string, default: Deploy Bot)
-  --deployment_file           Enable creation of a deployment-info file
-  --github_url URL            type: string, default: github.com
+  --github_token TOKEN           GitHub oauth token with repo permission (type: string, required: true)
+  --repo SLUG                    Repo slug (type: string, default: repo slug)
+  --target_branch BRANCH         Branch to push force to (type: string, default: gh-pages)
+  --[no-]keep_history            Create incremental commit instead of doing push force
+  --[no-]allow_empty_commit      Allow an empty commit to be created (requires: keep_history)
+  --[no-]committer_from_gh       Use the token's owner name and email for commit. Overrides the email and name
+                                 options
+  --[no-]verbose                 Be verbose about the deploy process
+  --local_dir DIR                Directory to push to GitHub Pages (type: string, default: .)
+  --fqdn FQDN                    Writes your website's domain name to the CNAME file (type: string)
+  --project_name NAME            Used in the commit message only (defaults to fqdn or the current repo slug)
+                                 (type: string)
+  --email EMAIL                  Committer email (type: string, default: deploy@travis-ci.org)
+  --name NAME                    Committer name (type: string, default: Deploy Bot)
+  --[no-]deployment_file         Enable creation of a deployment-info file
+  --github_url URL               type: string, default: github.com
 
 Common Options:
 
-  --run CMD                   Command to execute after the deployment finished successfully (type: array
-                              (string, can be given multiple times))
-  --skip_cleanup              Skip cleaning up build artifacts before the deployment
-  --help                      Get help on this command
+  --run CMD                      Command to execute after the deployment finished successfully (type: array
+                                 (string, can be given multiple times))
+  --[no-]skip_cleanup            Skip cleaning up build artifacts before the deployment
+  --help                         Get help on this command
 
 Examples:
 
@@ -971,11 +941,11 @@ Options:
   --repo SLUG                 GitHub repo slug (type: string, default: repo slug)
   --file FILE                 File to release to GitHub (type: array (string, can be given multiple times),
                               required: true)
-  --file_glob                 Interpret files as globs
-  --overwrite                 Overwrite files with the same name
-  --prerelease                Identify the release as a prerelease
+  --[no-]file_glob            Interpret files as globs
+  --[no-]overwrite            Overwrite files with the same name
+  --[no-]prerelease           Identify the release as a prerelease
   --release_number NUM        Release number (overide automatic release detection) (type: string)
-  --draft                     Identify the release as a draft
+  --[no-]draft                Identify the release as a draft
   --tag_name TAG              Git tag from which to create the release (type: string)
   --target_commitish STR      Commitish value that determines where the Git tag is created from (type: string)
   --name NAME                 Name for the release (type: string)
@@ -985,7 +955,7 @@ Common Options:
 
   --run CMD                   Command to execute after the deployment finished successfully (type: array
                               (string, can be given multiple times))
-  --skip_cleanup              Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup         Skip cleaning up build artifacts before the deployment
   --help                      Get help on this command
 
 Examples:
@@ -1012,26 +982,27 @@ Description:
 
 Options:
 
-  --project ID                    Project ID used to identify the project on Google Cloud (type: string, required:
-                                  true)
-  --keyfile FILE                  Path to the JSON file containing your Service Account credentials in JSON Web
-                                  Token format. To be obtained via the Google Developers Console. Should be
-                                  handled with care as it contains authorization keys. (type: string, default:
-                                  service-account.json)
-  --config FILE                   Path to your module configuration file (type: string, default: app.yaml)
-  --version VER                   The version of the app that will be created or replaced by this deployment. If
-                                  you do not specify a version, one will be generated for you (type: string)
-  --verbosity LEVEL               Adjust the log verbosity (type: string, default: warning)
-  --no_promote                    Do not promote the deployed version
-  --no_stop_previous_version      Prevent your deployment from stopping the previously promoted version. This is
-                                  from the future, so might not work (yet).
+  --project ID                      Project ID used to identify the project on Google Cloud (type: string, required:
+                                    true)
+  --keyfile FILE                    Path to the JSON file containing your Service Account credentials in JSON Web
+                                    Token format. To be obtained via the Google Developers Console. Should be
+                                    handled with care as it contains authorization keys. (type: string, default:
+                                    service-account.json)
+  --config FILE                     Path to your service configuration file (type: string, default: app.yaml)
+  --version VER                     The version of the app that will be created or replaced by this deployment. If
+                                    you do not specify a version, one will be generated for you (type: string)
+  --verbosity LEVEL                 Adjust the log verbosity (type: string, default: warning)
+  --[no-]promote                    Do not promote the deployed version (default: true)
+  --[no-]stop_previous_version      Prevent your deployment from stopping the previously promoted version. This is
+                                    from the future, so might not work (yet). (default: true)
+  --[no-]install_sdk                Do not install the Google Cloud SDK (default: true)
 
 Common Options:
 
-  --run CMD                       Command to execute after the deployment finished successfully (type: array
-                                  (string, can be given multiple times))
-  --skip_cleanup                  Skip cleaning up build artifacts before the deployment
-  --help                          Get help on this command
+  --run CMD                         Command to execute after the deployment finished successfully (type: array
+                                    (string, can be given multiple times))
+  --[no-]skip_cleanup               Skip cleaning up build artifacts before the deployment
+  --help                            Get help on this command
 
 Examples:
 
@@ -1058,12 +1029,11 @@ Options:
   --access_key_id ID           GCS Interoperable Access Key ID (type: string, required: true)
   --secret_access_key KEY      GCS Interoperable Access Secret (type: string, required: true)
   --bucket BUCKET              GCS Bucket (type: string, required: true)
+  --local_dir DIR              Local directory to upload from (type: string, default: .)
+  --upload_dir DIR             GCS directory to upload to (type: string)
+  --[no-]dot_match             Upload hidden files starting with a dot
   --acl ACL                    Access control to set for uploaded objects (type: string)
-  --upload_dir DIR             GCS directory to upload to (type: string, default: .)
-  --local_dir DIR              Local directory to upload from. Can be an absolute (~/travis/build) or relative
-                               (build) path. (type: string, default: .)
-  --dot_match                  Upload hidden files starting with a dot
-  --detect_encoding            HTTP header Content-Encoding to set for files compressed with gzip and compress
+  --[no-]detect_encoding       HTTP header Content-Encoding to set for files compressed with gzip and compress
                                utilities.
   --cache_control HEADER       HTTP header Cache-Control to suggest that the browser cache the file. (type:
                                string)
@@ -1072,13 +1042,13 @@ Common Options:
 
   --run CMD                    Command to execute after the deployment finished successfully (type: array
                                (string, can be given multiple times))
-  --skip_cleanup               Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup          Skip cleaning up build artifacts before the deployment
   --help                       Get help on this command
 
 Examples:
 
   dpl gcs --access_key_id id --secret_access_key key --bucket bucket
-  dpl gcs --access_key_id id --secret_access_key key --bucket bucket --acl acl --upload_dir dir
+  dpl gcs --access_key_id id --secret_access_key key --bucket bucket --local_dir dir --upload_dir dir
 ```
 
 ### Hackage
@@ -1097,15 +1067,15 @@ Description:
 
 Options:
 
-  --username USER      Hackage username (type: string, required: true)
-  --password USER      Hackage password (type: string, required: true)
+  --username USER          Hackage username (type: string, required: true)
+  --password USER          Hackage password (type: string, required: true)
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
-                       (string, can be given multiple times))
-  --skip_cleanup       Skip cleaning up build artifacts before the deployment
-  --help               Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -1129,19 +1099,19 @@ Description:
 
 Options:
 
-  --controller NAME      Hephy controller (type: string, required: true, e.g.: hephy.hephyapps.com)
-  --username USER        Hephy username (type: string, required: true)
-  --password PASS        Hephy password (type: string, required: true)
-  --app APP              Deis app (type: string, required: true)
-  --cli_version VER      Install a specific hephy cli version (type: string, default: stable)
-  --verbose              Verbose log output
+  --controller NAME        Hephy controller (type: string, required: true, e.g.: hephy.hephyapps.com)
+  --username USER          Hephy username (type: string, required: true)
+  --password PASS          Hephy password (type: string, required: true)
+  --app APP                Deis app (type: string, required: true)
+  --cli_version VER        Install a specific hephy cli version (type: string, default: stable)
+  --[no-]verbose           Verbose log output
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
-                         (string, can be given multiple times))
-  --skip_cleanup         Skip cleaning up build artifacts before the deployment
-  --help                 Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -1165,15 +1135,15 @@ Description:
 
 Options:
 
-  --api_key KEY       Heroku API key (type: string, required: true)
+  --api_key KEY            Heroku API key (type: string, required: true)
 
 Common Options:
 
-  --run CMD           Command to execute after the deployment finished successfully (type: array
-                      (string, can be given multiple times))
-  --skip_cleanup      Skip cleaning up build artifacts before the deployment
-  --app APP           Heroku app name (type: string, default: repo name)
-  --help              Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --app APP                Heroku app name (type: string, default: repo name)
+  --help                   Get help on this command
 
 Examples:
 
@@ -1199,18 +1169,18 @@ Options:
 
   Either api_key, or username and password are required.
 
-  --api_key KEY        Heroku API key (type: string)
-  --username USER      Heroku username (type: string, alias: user)
-  --password PASS      Heroku password (type: string)
-  --git URL            type: string
+  --api_key KEY            Heroku API key (type: string)
+  --username USER          Heroku username (type: string, alias: user)
+  --password PASS          Heroku password (type: string)
+  --git URL                type: string
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
-                       (string, can be given multiple times))
-  --skip_cleanup       Skip cleaning up build artifacts before the deployment
-  --app APP            Heroku app name (type: string, default: repo name)
-  --help               Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --app APP                Heroku app name (type: string, default: repo name)
+  --help                   Get help on this command
 
 Examples:
 
@@ -1244,7 +1214,7 @@ Common Options:
 
   --run CMD                        Command to execute after the deployment finished successfully (type: array
                                    (string, can be given multiple times))
-  --skip_cleanup                   Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup              Skip cleaning up build artifacts before the deployment
   --help                           Get help on this command
 
 Examples:
@@ -1252,14 +1222,50 @@ Examples:
   dpl launchpad --slug slug --oauth_token token --oauth_token_secret secret --run cmd --skip_cleanup
 ```
 
-### NPM
+### Netlify
+
+```
+Usage: readme netlify [options]
+
+Summary:
+
+  Netlify deployment provider
+
+Description:
+
+  tbd
+
+
+Options:
+
+  --auth TOKEN             An auth token to log in with (type: string, required: true)
+  --site ID                A site ID to deploy to (type: string, required: true)
+  --dir DIR                Specify a folder to deploy (type: string)
+  --functions FUNCS        Specify a functions folder to deploy (type: string)
+  --message MSG            A message to include in the deploy log (type: string)
+  --[no-]prod              Deploy to production
+
+Common Options:
+
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
+
+Examples:
+
+  dpl netlify --auth token --site id
+  dpl netlify --auth token --site id --dir dir --functions funcs --message msg
+```
+
+### npm
 
 ```
 Usage: readme npm [options]
 
 Summary:
 
-  NPM deployment provider
+  npm deployment provider
 
 Description:
 
@@ -1268,32 +1274,34 @@ Description:
 
 Options:
 
-  --email EMAIL       NPM email address (type: string, required: true)
-  --api_key KEY       NPM api key (can be retrieved from your local ~/.npmrc file) (type: string,
-                      required: true)
-  --tag TAGS          NPM distribution tags to add (type: string)
+  --api_key KEY            npm api key (can be retrieved from your local ~/.npmrc file) (type: string,
+                           required: true)
+  --email EMAIL            npm email address (type: string)
+  --access ACCESS          access level (type: string, known values: public, private)
+  --registry URL           npm registry url (type: string)
+  --tag TAGS               npm distribution tags to add (type: string)
 
 Common Options:
 
-  --run CMD           Command to execute after the deployment finished successfully (type: array
-                      (string, can be given multiple times))
-  --skip_cleanup      Skip cleaning up build artifacts before the deployment
-  --help              Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
-  dpl npm --email email --api_key key
-  dpl npm --email email --api_key key --tag tags --run cmd --skip_cleanup
+  dpl npm --api_key key
+  dpl npm --api_key key --email email --access public --registry url --tag tags
 ```
 
-### Open Shift
+### OpenShift
 
 ```
 Usage: readme openshift [options]
 
 Summary:
 
-  Open Shift deployment provider
+  OpenShift deployment provider
 
 Description:
 
@@ -1302,23 +1310,22 @@ Description:
 
 Options:
 
-  --user NAME                     OpenShift username (type: string, required: true)
-  --password PASS                 OpenShift password (type: string, required: true)
-  --domain DOMAIN                 OpenShift application domain (type: string, required: true)
-  --app APP                       OpenShift application (type: string, default: repo name)
-  --deployment_branch BRANCH      type: string
+  --server SERVER          OpenShift server (type: string, required: true)
+  --token TOKEN            OpenShift token (type: string, required: true)
+  --project PROJECT        OpenShift project (type: string, required: true)
+  --app APP                OpenShift application (type: string, default: repo name)
 
 Common Options:
 
-  --run CMD                       Command to execute after the deployment finished successfully (type: array
-                                  (string, can be given multiple times))
-  --skip_cleanup                  Skip cleaning up build artifacts before the deployment
-  --help                          Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
-  dpl openshift --user name --password pass --domain domain
-  dpl openshift --user name --password pass --domain domain --app app --deployment_branch branch
+  dpl openshift --server server --token token --project project
+  dpl openshift --server server --token token --project project --app app --run cmd
 ```
 
 ### Packagecloud
@@ -1344,7 +1351,7 @@ Options:
   --dist DIST                Required for debian, rpm, and node.js packages (use "node" for node.js
                              packages). The complete list of supported strings can be found on the
                              packagecloud.io docs. (type: string)
-  --force                    Whether package has to be (re)uploaded / deleted before upload
+  --[no-]force               Whether package has to be (re)uploaded / deleted before upload
   --connect_timeout SEC      type: integer, default: 60
   --read_timeout SEC         type: integer, default: 60
   --write_timeout SEC        type: integer, default: 180
@@ -1354,7 +1361,7 @@ Common Options:
 
   --run CMD                  Command to execute after the deployment finished successfully (type: array
                              (string, can be given multiple times))
-  --skip_cleanup             Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup        Skip cleaning up build artifacts before the deployment
   --help                     Get help on this command
 
 Examples:
@@ -1379,17 +1386,17 @@ Description:
 
 Options:
 
-  --user NAME          Puppet Forge user name (type: string, required: true)
-  --password PASS      Puppet Forge password (type: string, required: true)
-  --url URL            Puppet Forge URL to deploy to (type: string, default:
-                       https://forgeapi.puppetlabs.com/)
+  --user NAME              Puppet Forge user name (type: string, required: true)
+  --password PASS          Puppet Forge password (type: string, required: true)
+  --url URL                Puppet Forge URL to deploy to (type: string, default:
+                           https://forgeapi.puppetlabs.com/)
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
-                       (string, can be given multiple times))
-  --skip_cleanup       Skip cleaning up build artifacts before the deployment
-  --help               Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -1413,33 +1420,33 @@ Description:
 
 Options:
 
-  --username NAME                   PyPI Username (type: string, required: true, alias: user)
-  --password PASS                   PyPI Password (type: string, required: true)
-  --server SERVER                   Release to a different index (type: string, default:
-                                    https://upload.pypi.org/legacy/)
-  --distributions DISTS             Space-separated list of distributions to be uploaded to PyPI (type: string,
-                                    default: sdist)
-  --[no-]skip_upload_docs BOOL      Skip uploading documentation. Note that upload.pypi.org does not support
-                                    uploading documentation. (default: true, see:
-                                    https://github.com/travis-ci/dpl/issues/660)
-  --docs_dir DIR                    Path to the directory to upload documentation from (type: string, default:
-                                    build/docs)
-  --skip_existing                   Do not overwrite an existing file with the same name on the server.
-  --setuptools_version VER          type: string
-  --twine_version VER               type: string
-  --wheel_version VER               type: string
+  --username NAME               PyPI Username (type: string, required: true, alias: user)
+  --password PASS               PyPI Password (type: string, required: true)
+  --server SERVER               Release to a different index (type: string, default:
+                                https://upload.pypi.org/legacy/)
+  --distributions DISTS         Space-separated list of distributions to be uploaded to PyPI (type: string,
+                                default: sdist)
+  --docs_dir DIR                Path to the directory to upload documentation from (type: string, default:
+                                build/docs)
+  --[no-]skip_upload_docs       Skip uploading documentation. Note that upload.pypi.org does not support
+                                uploading documentation. (default: true, see:
+                                https://github.com/travis-ci/dpl/issues/660)
+  --[no-]skip_existing          Do not overwrite an existing file with the same name on the server.
+  --setuptools_version VER      type: string, format: /\A\d+(?:\.\d+)*\z/
+  --twine_version VER           type: string, format: /\A\d+(?:\.\d+)*\z/
+  --wheel_version VER           type: string, format: /\A\d+(?:\.\d+)*\z/
 
 Common Options:
 
-  --run CMD                         Command to execute after the deployment finished successfully (type: array
-                                    (string, can be given multiple times))
-  --skip_cleanup                    Skip cleaning up build artifacts before the deployment
-  --help                            Get help on this command
+  --run CMD                     Command to execute after the deployment finished successfully (type: array
+                                (string, can be given multiple times))
+  --[no-]skip_cleanup           Skip cleaning up build artifacts before the deployment
+  --help                        Get help on this command
 
 Examples:
 
   dpl pypi --username name --password pass
-  dpl pypi --username name --password pass --server server --distributions dists --skip_upload_docs
+  dpl pypi --username name --password pass --server server --distributions dists --docs_dir dir
 ```
 
 ### Rubygems
@@ -1473,7 +1480,7 @@ Common Options:
 
   --run CMD                Command to execute after the deployment finished successfully (type: array
                            (string, can be given multiple times))
-  --skip_cleanup           Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
   --help                   Get help on this command
 
 Examples:
@@ -1501,28 +1508,26 @@ Options:
 
   Either api_key, or username and password are required.
 
-  --api_key KEY        scalingo API key (type: string, alias: api_token (deprecated, please use
-                       api_key))
-  --username NAME      scalingo username (type: string)
-  --password PASS      scalingo password (type: string)
-  --remote REMOTE      Remote url or git remote name of your git repository. (type: string, default:
-                       scalingo)
-  --branch BRANCH      Branch of your git repository. (type: string, default: master)
-  --app APP            Required if your repository does not contain the appropriate remote (will add a
-                       remote to your local repository) (type: string)
+  --app APP                type: string, default: repo name
+  --api_key KEY            scalingo API key (type: string, alias: api_token (deprecated, please use
+                           api_key))
+  --username NAME          scalingo username (type: string)
+  --password PASS          scalingo password (type: string)
+  --remote REMOTE          Git remote name (type: string, default: scalingo)
+  --branch BRANCH          Git branch (type: string, default: master)
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
-                       (string, can be given multiple times))
-  --skip_cleanup       Skip cleaning up build artifacts before the deployment
-  --help               Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
   dpl scalingo --api_key key
   dpl scalingo --username name --password pass
-  dpl scalingo --api_key key --remote remote --branch branch --app app --run cmd
+  dpl scalingo --api_key key --app app --remote remote --branch branch --run cmd
 ```
 
 ### Script
@@ -1550,14 +1555,14 @@ Description:
 
 Options:
 
-  --script ./script      The script to execute (type: string, required: true)
+  --script ./script        The script to execute (type: string, required: true)
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
-                         (string, can be given multiple times))
-  --skip_cleanup         Skip cleaning up build artifacts before the deployment
-  --help                 Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -1581,16 +1586,16 @@ Description:
 
 Options:
 
-  --snap STR          Path to the snap to be pushed (can be a glob) (type: string, required: true)
-  --channel CHAN      Channel into which the snap will be released (type: string, default: edge)
-  --token TOKEN       Snap API token (type: string, required: true)
+  --snap STR               Path to the snap to be pushed (can be a glob) (type: string, required: true)
+  --channel CHAN           Channel into which the snap will be released (type: string, default: edge)
+  --token TOKEN            Snap API token (type: string, required: true)
 
 Common Options:
 
-  --run CMD           Command to execute after the deployment finished successfully (type: array
-                      (string, can be given multiple times))
-  --skip_cleanup      Skip cleaning up build artifacts before the deployment
-  --help              Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
@@ -1614,25 +1619,25 @@ Description:
 
 Options:
 
-  --login EMAIL       Surge login (the email address you use with Surge) (type: string, required:
-                      true)
-  --token TOKEN       Surge login token (can be retrieved with `surge token`) (type: string, required:
-                      true)
-  --domain NAME       Domain to publish to. Not required if the domain is set in the CNAME file in the
-                      project folder. (type: string)
-  --project PAHT      Path to project directory relative to repo root (type: string, default: .)
+  --login EMAIL            Surge login (the email address you use with Surge) (type: string, required:
+                           true)
+  --token TOKEN            Surge login token (can be retrieved with `surge token`) (type: string, required:
+                           true)
+  --domain NAME            Domain to publish to. Not required if the domain is set in the CNAME file in the
+                           project folder. (type: string)
+  --project PATH           Path to project directory relative to repo root (type: string, default: .)
 
 Common Options:
 
-  --run CMD           Command to execute after the deployment finished successfully (type: array
-                      (string, can be given multiple times))
-  --skip_cleanup      Skip cleaning up build artifacts before the deployment
-  --help              Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
   dpl surge --login email --token token
-  dpl surge --login email --token token --domain name --project paht --run cmd
+  dpl surge --login email --token token --domain name --project path --run cmd
 ```
 
 ### Testfairy
@@ -1657,27 +1662,27 @@ Options:
   --symbols_file FILE                 Path to the symbols file (type: string)
   --testers_groups GROUPS             Tester groups to be notified about this build (type: string, e.g.: e.g.
                                       group1,group1)
-  --notify                            Send an email with a changelog to your users
-  --auto_update                       Automaticall upgrade all the previous installations of this app this version
+  --[no-]notify                       Send an email with a changelog to your users
+  --[no-]auto_update                  Automaticall upgrade all the previous installations of this app this version
   --video_quality QUALITY             Video quality settings (one of: high, medium or low (type: string, default:
                                       high)
   --screenshot_interval INTERVAL      Interval at which screenshots are taken, in seconds (type: integer, known
                                       values: 1, 2, 10)
   --max_duration DURATION             Maximum session recording length (max: 24h) (type: string, default: 10m, e.g.:
                                       20m or 1h)
-  --data_only_wifi                    Send video and recorded metrics only when connected to a wifi network.
-  --record_on_background              Collect data while the app is on background.
+  --[no-]data_only_wifi               Send video and recorded metrics only when connected to a wifi network.
+  --[no-]record_on_background         Collect data while the app is on background.
   --[no-]video                        Video recording settings (default: true)
   --metrics METRICS                   Comma_separated list of metrics to record (type: string, see:
                                       http://docs.testfairy.com/Upload_API.html)
-  --icon_watermark                    Add a small watermark to the app icon
+  --[no-]icon_watermark               Add a small watermark to the app icon
   --advanced_options OPTS             Comma_separated list of advanced options (type: string, e.g.: option1,option2)
 
 Common Options:
 
   --run CMD                           Command to execute after the deployment finished successfully (type: array
                                       (string, can be given multiple times))
-  --skip_cleanup                      Skip cleaning up build artifacts before the deployment
+  --[no-]skip_cleanup                 Skip cleaning up build artifacts before the deployment
   --help                              Get help on this command
 
 Examples:
@@ -1702,22 +1707,26 @@ Description:
 
 Options:
 
-  --username NAME        Transifex username (type: string, required: true)
-  --password PASS        Transifex password (type: string, required: true)
-  --hostname NAME        Transifex hostname (type: string, default: www.transifex.com)
-  --cli_version VER      CLI version to install (type: string, default: >=0.11)
+  Either api_token, or username and password are required.
+
+  --api_token TOKEN        Transifex API token (type: string)
+  --username NAME          Transifex username (type: string)
+  --password PASS          Transifex password (type: string)
+  --hostname NAME          Transifex hostname (type: string, default: www.transifex.com)
+  --cli_version VER        CLI version to install (type: string, default: >=0.11)
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
-                         (string, can be given multiple times))
-  --skip_cleanup         Skip cleaning up build artifacts before the deployment
-  --help                 Get help on this command
+  --run CMD                Command to execute after the deployment finished successfully (type: array
+                           (string, can be given multiple times))
+  --[no-]skip_cleanup      Skip cleaning up build artifacts before the deployment
+  --help                   Get help on this command
 
 Examples:
 
+  dpl transifex --api_token token
   dpl transifex --username name --password pass
-  dpl transifex --username name --password pass --hostname name --cli_version ver --run cmd
+  dpl transifex --api_token token --hostname name --cli_version ver --run cmd --skip_cleanup
 ```
 
 ## Credits

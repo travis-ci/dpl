@@ -5,7 +5,7 @@ module Dpl
         tbd
       str
 
-      node_js '>= 8.16.0'
+      node_js '>= 8.0.0'
 
       npm 'firebase-tools@^6.3', 'firebase'
 

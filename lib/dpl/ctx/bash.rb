@@ -168,12 +168,15 @@ module Dpl
         Dir.chdir(tmp_dir) do
           require 'bundler/inline'
           info "Installing gem dependencies: #{gems.map { |name, version, _| "#{name} #{"(#{version})" if version}".strip }.join(', ')}"
+          env = ENV.to_h
+          # Bundler.reset!
+          # Gem.loaded_specs.clear
           gemfile do
             source 'https://rubygems.org'
             gems.each { |g| gem *g }
           end
           # https://github.com/bundler/bundler/issues/7181
-          ENV.replace(Bundler.original_env)
+          ENV.replace(env)
         end
       end
 
@@ -197,8 +200,10 @@ module Dpl
       # @param cmd     [String] Executable command installed by that package (optional, defaults to the package name).
       # @param version [String] Package version (optional).
       def pip_install(package, cmd = package, version = nil)
-        shell "pip uninstall -y #{package}" if version && which(cmd) # --user
-        cmd = "pip install #{package}" # --user
+        ENV['VIRTUAL_ENV'] = File.expand_path('~/dpl_venv')
+        ENV['PATH'] = File.expand_path("~/dpl_venv/bin:#{ENV['PATH']}")
+        shell 'virtualenv --no-site-packages ~/dpl_venv', echo: true
+        cmd = "pip install #{package}"
         cmd << pip_version(version) if version
         shell cmd, echo: true, assert: true, retry: true
         shell 'export PATH=$PATH:$HOME/.local/bin'

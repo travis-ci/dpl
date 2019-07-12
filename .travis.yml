@@ -3,9 +3,9 @@ dist: xenial
 
 rvm:
 - 2.2.7
-- 2.3.4
-- 2.4.1
-- 2.5.5
+- 2.3.8
+- 2.4.5
+- 2.5.3
 - 2.6.2
 
 cache:
@@ -23,14 +23,21 @@ jobs:
       install:
       - gem build dpl.gemspec
       - gem install dpl-*.gem
+      - node --version
       script:
       - .travis/test_install
       rvm: 2.2.7
     - <<: *job
-      rvm: 2.3.4
+      rvm: 2.3.8
     - <<: *job
-      rvm: 2.4.1
+      rvm: 2.4.5
     - <<: *job
-      rvm: 2.5.5
+      rvm: 2.5.3
     - <<: *job
       rvm: 2.6.2
+    - <<: *job
+      language: python
+      python: 2.7
+    - <<: *job
+      language: python
+      python: 3.6
