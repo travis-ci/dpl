@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'json'
+require 'shellwords'
+
 module DPL
   class Provider
     class Convox < Provider
@@ -69,7 +72,20 @@ module DPL
       end
 
       def build_description
-        options[:description] || "Travis job ##{context.env['TRAVIS_BUILD_NUMBER']}/commit #{context.env['TRAVIS_COMMIT']}"
+        commit_author = `git log -1 #{context.env['TRAVIS_COMMIT']} --pretty="%aN"`.strip
+
+        desc = {
+          repo_slug: context.env['TRAVIS_REPO_SLUG'],
+          travis_build_id: context.env['TRAVIS_BUILD_ID'],
+          travis_build_number: context.env['TRAVIS_BUILD_NUMBER'],
+          git_commit_sha: context.env['TRAVIS_COMMIT'],
+          git_commit_message: context.env['TRAVIS_COMMIT_MESSAGE'],
+          git_commit_author: commit_author,
+          git_tag: context.env['TRAVIS_TAG'],
+          branch: context.env['TRAVIS_BRANCH'],
+          pull_request: context.env['TRAVIS_PULL_REQUEST']
+        }
+        options[:description] || desc.to_json
       end
 
       def setenvs
@@ -83,13 +99,13 @@ module DPL
       end
 
       def convox_deploy
-        unless convox_exec "deploy --rack #{option(:rack)} --app #{option(:app)} --wait --id --description \"#{build_description}\""
+        unless convox_exec "deploy --rack #{option(:rack)} --app #{option(:app)} --wait --id --description #{Shellwords.escape(build_description)}"
           error 'Convox application deployment failed'
         end
       end
 
       def convox_build
-        unless convox_exec "build --rack #{option(:rack)} --app #{option(:app)} --id --description \"#{build_description}\""
+        unless convox_exec "build --rack #{option(:rack)} --app #{option(:app)} --id --description #{Shellwords.escape(build_description)}"
           error 'Convox application deployment failed'
         end
       end
@@ -124,9 +140,7 @@ module DPL
         cenvs.concat yenvs
 
         cenvs.map! do |entry|
-          unless entry.include?('=')
-            entry += '=' + (context.env[entry] || '')
-          end
+          entry += '=' + (context.env[entry] || '') unless entry.include?('=')
 
           "'" + entry.gsub(%('), %('"'"')) + "'"
         end
