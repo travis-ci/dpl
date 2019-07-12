@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
+require 'shellwords'
 
 module DPL
   class Provider
@@ -71,14 +72,15 @@ module DPL
       end
 
       def build_description
-        context.shell "export TRAVIS_GIT_COMMIT_AUTHOR=$(git log -1 ${TRAVIS_COMMIT} --pretty=\"%aN\")"
+        commit_author = `git log -1 #{context.env['TRAVIS_COMMIT']} --pretty="%aN"`.strip
+
         desc = {
           repo_slug: context.env['TRAVIS_REPO_SLUG'],
           travis_build_id: context.env['TRAVIS_BUILD_ID'],
           travis_build_number: context.env['TRAVIS_BUILD_NUMBER'],
           git_commit_sha: context.env['TRAVIS_COMMIT'],
           git_commit_message: context.env['TRAVIS_COMMIT_MESSAGE'],
-          git_commit_author: context.env['TRAVIS_GIT_COMMIT_AUTHOR'],
+          git_commit_author: commit_author,
           git_tag: context.env['TRAVIS_TAG'],
           branch: context.env['TRAVIS_BRANCH'],
           pull_request: context.env['TRAVIS_PULL_REQUEST']
@@ -97,13 +99,13 @@ module DPL
       end
 
       def convox_deploy
-        unless convox_exec "deploy --rack #{option(:rack)} --app #{option(:app)} --wait --id --description \"#{build_description}\""
+        unless convox_exec "deploy --rack #{option(:rack)} --app #{option(:app)} --wait --id --description #{Shellwords.escape(build_description)}"
           error 'Convox application deployment failed'
         end
       end
 
       def convox_build
-        unless convox_exec "build --rack #{option(:rack)} --app #{option(:app)} --id --description \"#{build_description}\""
+        unless convox_exec "build --rack #{option(:rack)} --app #{option(:app)} --id --description #{Shellwords.escape(build_description)}"
           error 'Convox application deployment failed'
         end
       end
