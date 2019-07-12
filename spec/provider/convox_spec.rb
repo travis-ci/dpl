@@ -74,18 +74,18 @@ describe DPL::Provider::Convox do
       allow(provider).to receive(:update_envs)
       expect(provider).not_to receive(:convox_deploy)
       expect(provider.context).to receive(:shell)
-        .with('convox build --rack sample/rack --app example-app --id --description "MySuperDescription"')
+        .with('convox build --rack sample/rack --app example-app --id --description MySuperDescription')
         .and_return(true)
       provider.push_app
     end
 
     it 'builds and promotes app if promote is set to true' do
       provider.options.update(promote: true)
-      provider.options.update(description: 'MySuperDescription')
+      provider.options.update(description: 'My Extra Description')
       allow(provider).to receive(:update_envs)
       expect(provider).not_to receive(:convox_build)
       expect(provider.context).to receive(:shell)
-        .with('convox deploy --rack sample/rack --app example-app --wait --id --description "MySuperDescription"')
+        .with('convox deploy --rack sample/rack --app example-app --wait --id --description My\ Extra\ Description')
         .and_return(true)
       provider.push_app
     end
