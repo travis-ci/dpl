@@ -500,6 +500,10 @@ module Dpl
         Kernel.sleep(sec)
       end
 
+      def tty?
+        $stdout.isa
+      end
+
       # Returns a copy of the given hash, reduced to the given keys
       def only(hash, *keys)
         hash.select { |key, _| keys.include?(key) }.to_h

@@ -203,6 +203,10 @@ module Dpl
         rc
       end
 
+      def tty?
+        false
+      end
+
       def except(hash, *keys)
         hash.reject { |key, _| keys.include?(key) }
       end
