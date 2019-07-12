@@ -11,7 +11,7 @@ module Dpl
         tbd
       str
 
-      python '~> 2.7.9'
+      python '>= 2.7.9'
 
       opt '--access_key_id ID', 'GCS Interoperable Access Key ID', required: true
       opt '--secret_access_key KEY', 'GCS Interoperable Access Secret', required: true

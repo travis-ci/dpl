@@ -13,8 +13,6 @@ module Dpl
       opt '--username NAME',   'Transifex username'
       opt '--password PASS',   'Transifex password'
       opt '--hostname NAME',   'Transifex hostname', default: 'www.transifex.com'
-      # this used to be 0.11, but that version does not seem to exist in pip.
-      # should check this with transifex though
       opt '--cli_version VER', 'CLI version to install', default: '>=0.11'
 
       cmds status: 'tx status',
@@ -36,15 +34,19 @@ module Dpl
 
       def login
         info :login
-        write_file('~/.transifexrc', interpolate(RC))
-        shell :status
+        write_rc
+        shell :status, echo: true
       end
 
       def deploy
-        shell :push, retry: true, assert: true
+        shell :push, echo: true, retry: true, assert: true
       end
 
       private
+
+        def write_rc
+          write_file '~/.transifexrc', interpolate(RC)
+        end
 
         def username
           super || 'api'

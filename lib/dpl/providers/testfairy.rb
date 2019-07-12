@@ -5,7 +5,7 @@ require 'securerandom'
 module Dpl
   module Providers
     class Testfairy < Provider
-      gem 'json'
+      gem 'json', '~> 2.2.0'
       gem 'multipart-post', '~> 2.0.0', require: 'net/http/post/multipart'
 
       description sq(<<-str)
