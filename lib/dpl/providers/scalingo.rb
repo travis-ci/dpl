@@ -8,7 +8,7 @@ module Dpl
       required :api_key, [:username, :password]
 
       opt '--app APP', default: :repo_name
-      opt '--api_key KEY', 'Scalingo API key', alias: :api_token, deprecated: :api_token
+      opt '--api_token TOKEN', 'Scalingo API token', alias: :api_key, deprecated: :api_key
       opt '--username NAME', 'Scalingo username'
       opt '--password PASS', 'Scalingo password'
       opt '--region REGION', 'Scalingo region', default: 'agora-fr1', enum: %w(agora-fr1 osc-fr1)
@@ -18,8 +18,8 @@ module Dpl
 
       needs :git, :ssh_key
 
-      cmds login_key:   'timeout %{timeout} ./scalingo login --api-token %{api_key} > /dev/null 2>&1',
-           login_creds: 'echo -e \"%{username}\n%{password}\" | timeout %{timeout} ./scalingo login > /dev/null 2>&1',
+      cmds login_key:   'timeout %{timeout} ./scalingo login --api-token %{api_token} > /dev/null',
+           login_creds: 'echo -e \"%{username}\n%{password}\" | timeout %{timeout} ./scalingo login > /dev/null',
            add_key:     'timeout %{timeout} ./scalingo keys-add dpl_tmp_key %{key}',
            remove_key:  'timeout %{timeout} ./scalingo keys-remove dpl_tmp_key',
            git_setup:   './scalingo --app %{app} git-setup --remote %{remote}',
