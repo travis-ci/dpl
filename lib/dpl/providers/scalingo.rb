@@ -5,7 +5,7 @@ module Dpl
         tbd
       str
 
-      required :api_key, [:username, :password]
+      required :api_token, [:username, :password]
 
       opt '--app APP', default: :repo_name
       opt '--api_token TOKEN', 'Scalingo API token', alias: :api_key, deprecated: :api_key
@@ -38,11 +38,7 @@ module Dpl
       end
 
       def login
-        puts `ls -al ~/.dpl`
-        p api_key?
-        shell api_key ? :login_key : :login_creds, assert: err(:login)
-      rescue => e
-        p e
+        shell api_token ? :login_key : :login_creds, assert: err(:login)
       end
 
       def add_key(key, type = nil)
