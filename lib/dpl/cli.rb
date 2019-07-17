@@ -4,7 +4,6 @@ module Dpl
   class Cli < Cl
     def run(args)
       args = with_provider_opt(args)
-      p args
       super
     end
 
