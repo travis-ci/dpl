@@ -178,10 +178,12 @@ describe DPL::Provider::Lambda do
       handler_name = 'HandlerName'
       expected_handler = "#{module_name}.#{handler_name}"    
 
-      example do
+      before do
         expect(provider.options).to receive(:[]).with(:module_name).and_return(nil)
         expect(provider.options).to receive(:[]).with(:runtime).and_return(nil)
         expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
+      end
+      example do
         expect(provider.handler).to eq(expected_handler)
       end
     end
@@ -190,11 +192,12 @@ describe DPL::Provider::Lambda do
       module_name = 'ModuleName'
       handler_name = 'HandlerName'
       expected_handler = "#{module_name}.#{handler_name}"
-
-      example do
+      before do
         expect(provider.options).to receive(:[]).with(:module_name).and_return(module_name)
         expect(provider.options).to receive(:[]).with(:runtime).and_return(nil)
         expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
+      end
+      example do
         expect(provider.handler).to eq(expected_handler)
       end
     end
@@ -204,11 +207,12 @@ describe DPL::Provider::Lambda do
       handler_name = 'HandlerName'
       runtime = "java"
       expected_handler = "#{module_name}::#{handler_name}"
-
-      example do
+      before do
         expect(provider.options).to receive(:[]).with(:module_name).and_return(module_name)
         expect(provider.options).to receive(:[]).with(:runtime).and_return(runtime)
         expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
+      end
+      example do
         expect(provider.handler).to eq(expected_handler)
       end
     end
@@ -218,11 +222,12 @@ describe DPL::Provider::Lambda do
       handler_name = 'HandlerName'
       runtime = "csharp"
       expected_handler = "#{module_name}::#{handler_name}"
-
-      example do
+      before do
         expect(provider.options).to receive(:[]).with(:module_name).and_return(module_name)
         expect(provider.options).to receive(:[]).with(:runtime).and_return(runtime)
         expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
+      end
+      example do
         expect(provider.handler).to eq(expected_handler)
       end
     end
@@ -233,10 +238,13 @@ describe DPL::Provider::Lambda do
       runtime = 'go'
       expected_handler = "#{handler_name}"
 
-      example do
+      before do
         expect(provider.options).to receive(:[]).with(:module_name).and_return(nil)
         expect(provider.options).to receive(:[]).with(:runtime).and_return(runtime)
         expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
+      end
+
+      example do
         expect(provider.handler).to eq(expected_handler)
       end
     end
