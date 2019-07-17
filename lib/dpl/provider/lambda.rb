@@ -114,11 +114,14 @@ module DPL
         runtime = options[:runtime] || default_runtime
         handler_name = option(:handler_name)
 
-        case runtime
-        when  'java', 'csharp'
+        
+        if runtime.include? 'java' then
           #Java uses double colon on handler. Package name is module_name
           separator = "::"
-        when 'go'
+        elsif runtime.include? 'dotnet' then  
+            #dot net uses double colon on handler. Package name is module_name
+            separator = "::"
+        elsif runtime.include? 'go' then
           #Go just appears to call main class main method.
           module_name = ""
           separator = ""
@@ -126,7 +129,8 @@ module DPL
           #Everything else uses dots
           separator = "."
         end
-        #there is still a shortcoming for go here.
+        # there is still a shortcoming for go here.
+        # this assumes they will never have a module.
         "#{module_name}#{separator}#{handler_name}"
       end
 

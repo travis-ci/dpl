@@ -202,10 +202,10 @@ describe DPL::Provider::Lambda do
       end
     end
 
-    context "with a java runtime " do
+    context "with a java8 runtime " do
       module_name = 'Package.Name'
       handler_name = 'HandlerName'
-      runtime = "java"
+      runtime = "java8"
       expected_handler = "#{module_name}::#{handler_name}"
       before do
         expect(provider.options).to receive(:[]).with(:module_name).and_return(module_name)
@@ -217,10 +217,10 @@ describe DPL::Provider::Lambda do
       end
     end
 
-    context "with a csharp runtime " do
+    context "with a dotnetcore2.1 runtime " do
       module_name = 'Module::Name'
       handler_name = 'HandlerName'
-      runtime = "csharp"
+      runtime = "dotnetcore2.1"
       expected_handler = "#{module_name}::#{handler_name}"
       before do
         expect(provider.options).to receive(:[]).with(:module_name).and_return(module_name)
@@ -232,10 +232,10 @@ describe DPL::Provider::Lambda do
       end
     end
 
-    context "with a go runtime " do
+    context "with a go1 runtime " do
       module_name = ''
       handler_name = 'main'
-      runtime = 'go'
+      runtime = 'go1'
       expected_handler = "#{handler_name}"
 
       before do
