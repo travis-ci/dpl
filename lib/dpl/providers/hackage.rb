@@ -5,25 +5,26 @@ module Dpl
         tbd
       str
 
-      apt 'cabal-install'
+      # does not seem to be necessary?
+      # apt 'cabal-install'
 
       opt '--username USER', 'Hackage username', required: true
       opt '--password USER', 'Hackage password', required: true
 
-      cmds validate: 'cabal check',
-           prepare:  'cabal dist',
-           upload:   'cabal upload %{upload_opts} %{path}'
+      cmds check:  'cabal check',
+           sdist:  'cabal sdist',
+           upload: 'cabal upload %{upload_opts} %{path}'
 
-      errs validate: 'cabal check failed',
-           prepare:  'cabal dist failed',
-           upload:   'cabal upload failed'
+      errs check:  'cabal check failed',
+           sdist:  'cabal sdist failed',
+           upload: 'cabal upload failed'
 
       def validate
-        shell 'cabal check', assert: 'cabal check failed'
+        shell :check, echo: true, assert: true
       end
 
       def prepare
-        shell 'cabal sdist', assert: 'cabal sdist failed'
+        shell :sdist, echo: true, assert: true
       end
 
       def deploy

@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require 'net/http'
+require 'open-uri'
+
+$stdout.sync = true
+
+url = 'http://hackage.haskell.org/package/dpl-test-0.0.0/candidate'
+id = ENV['ID']
+
+def exists?(url, expected)
+  puts "Checking #{url} ..."
+  html = URI.parse(url).read
+  actual = html =~ /ID=&quot;(.*)&quot;/ && $1
+  puts "expected: #{expected}"
+  puts "actual: #{actual}"
+  expected == actual
+rescue OpenURI::HTTPError
+  puts 'Not found'
+end
+
+10.times do
+  exit 0 if exists?(url, id)
+  sleep 5
+end
+
+abort 'failed'

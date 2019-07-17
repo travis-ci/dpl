@@ -1,0 +1,28 @@
+language: haskell
+
+env:
+  - secure: "VpE4HJ9rwvP2ARJhlvpuyrnD1cnDjMAPin+s60XqFjZXj6EHxehzynNkBOUNOgE4DhXDwjWA5ZwR72N/o1RF8w1zzt745zad5aj3LhvfBkol6f6nnwLBfx4ZtB3XWZx/ecYiZ8KFN/jaUVt59X8e3su7MWQQjIkTpr/yQiaFGBc="
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/hackage/prepare
+  - cd tmp/dpl_test
+  - cabal check
+
+deploy:
+  - provider: hackage
+    edge:
+      branch: dpl-2
+    on:
+      branch: dpl-2
+    skip_cleanup: true
+
+    username: dpl_test
+    password:
+      secure: "bVOUfRs/zAd5PU0ompXNEhI/MPOaYYtL6VFLWGo2UfmpnW4qS55vdOQina/63GHV2J4IGef/IfvIhyvMt5pozs8QSv7b4L9LZuUcaw+TkzAERuT9AFy5yxqZhVaC4+3BhRSzkvYVKleOxea3D4QO+Jis7V6BaqzAb3fPIzdBZYc="
+
+after_deploy:
+  - cd ../../.travis/providers/hackage/
+  - ./test && ./delete || TRAVIS_TEST_RESULT=$?
