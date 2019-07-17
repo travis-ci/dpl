@@ -112,8 +112,26 @@ module DPL
       def handler
         module_name = options[:module_name] || default_module_name
         handler_name = option(:handler_name)
+        
+        return getHandler(options[:module_name] || default_module_name, option(:handler_name), options(:runtime) || default_runtime)
+      end
 
-        "#{module_name}.#{handler_name}"
+      # Function used to return the correct handler depending on the runtime
+      # @param [String] module_name The name of the module 
+      # @param [String] handler_name The name of the function that will be executed by lambda
+      # @param [String] runtime the type of runtime environment that we will be deploying too
+      # @return [String] the handler name to be used
+      def getHandler(module_name, handler_name, runtime)
+        if handler_name.nil? or handler_name.empty?
+          raise 'Cannot have a blank handler name please provide one'
+        end
+
+        case runtime
+        when 'java8'
+          return "#{module_name}::#{handler_name}"
+        else
+          return "#{module_name}.#{handler_name}"
+        end
       end
 
       def function_zip
