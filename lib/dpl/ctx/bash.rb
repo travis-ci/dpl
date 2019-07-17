@@ -200,10 +200,10 @@ module Dpl
       # @param cmd     [String] Executable command installed by that package (optional, defaults to the package name).
       # @param version [String] Package version (optional).
       def pip_install(package, cmd = package, version = nil)
-        # ENV['VIRTUAL_ENV'] = File.expand_path('~/dpl_venv')
-        # ENV['PATH'] = File.expand_path("~/dpl_venv/bin:#{ENV['PATH']}")
-        # shell 'virtualenv ~/dpl_venv', echo: true #  --no-site-packages
-        # shell 'pip install urllib3[secure]'
+        ENV['VIRTUAL_ENV'] = File.expand_path('~/dpl_venv')
+        ENV['PATH'] = File.expand_path("~/dpl_venv/bin:#{ENV['PATH']}")
+        shell 'virtualenv --no-site-packages ~/dpl_venv', echo: true
+        shell 'pip install urllib3[secure]'
         cmd = "pip install #{package}"
         cmd << pip_version(version) if version
         shell cmd, echo: true, assert: true, retry: true
