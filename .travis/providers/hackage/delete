@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'net/http'
+require 'uri'
+
+$stdout.sync = true
+
+url = 'http://hackage.haskell.org/package/dpl-test-0.0.0/candidate'
+id = ENV['ID']
+
+def delete(url)
+  puts "Deleting package candidate: #{url} ..."
+
+  uri = URI.parse(url)
+  http = Net::HTTP.new(uri.host, uri.port)
+  req = Net::HTTP::Delete.new(uri.path)
+  req.basic_auth('dpl_test', ENV['HACKAGE_PASSWORD'])
+  res = http.request(req)
+
+  if res.code == '303'
+    puts 'Success'
+    true
+  else
+    puts res.code
+    # puts res.body
+    false
+  end
+end
+
+10.times do
+  exit 0 if delete(url)
+  sleep 5
+end
+
+abort 'failed'
