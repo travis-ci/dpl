@@ -244,7 +244,7 @@ module DPL
       def split_string_array_to_hash(arr, delimiter="=")
         variables = {}
         Array(arr).map do |val|
-          keyval = val.split(delimiter)
+          keyval = val.split(delimiter, 2)
           variables[keyval[0]] = keyval[1]
         end
         variables
