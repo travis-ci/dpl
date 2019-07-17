@@ -176,14 +176,12 @@ describe DPL::Provider::Lambda do
     context "without a module name" do
       module_name = 'index'
       handler_name = 'HandlerName'
-      expected_handler = "#{module_name}.#{handler_name}"
-
-      before do
-        expect(provider.options).to receive(:[]).with(:module_name).and_return(nil)
-        expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
-      end
+      expected_handler = "#{module_name}.#{handler_name}"    
 
       example do
+        expect(provider.options).to receive(:[]).with(:module_name).and_return(nil)
+        expect(provider.options).to receive(:[]).with(:runtime).and_return(nil)
+        expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
         expect(provider.handler).to eq(expected_handler)
       end
     end
@@ -193,12 +191,52 @@ describe DPL::Provider::Lambda do
       handler_name = 'HandlerName'
       expected_handler = "#{module_name}.#{handler_name}"
 
-      before do
+      example do
         expect(provider.options).to receive(:[]).with(:module_name).and_return(module_name)
+        expect(provider.options).to receive(:[]).with(:runtime).and_return(nil)
         expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
+        expect(provider.handler).to eq(expected_handler)
       end
+    end
+
+    context "with a java runtime " do
+      module_name = 'Package.Name'
+      handler_name = 'HandlerName'
+      runtime = "java"
+      expected_handler = "#{module_name}::#{handler_name}"
 
       example do
+        expect(provider.options).to receive(:[]).with(:module_name).and_return(module_name)
+        expect(provider.options).to receive(:[]).with(:runtime).and_return(runtime)
+        expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
+        expect(provider.handler).to eq(expected_handler)
+      end
+    end
+
+    context "with a csharp runtime " do
+      module_name = 'Module::Name'
+      handler_name = 'HandlerName'
+      runtime = "csharp"
+      expected_handler = "#{module_name}::#{handler_name}"
+
+      example do
+        expect(provider.options).to receive(:[]).with(:module_name).and_return(module_name)
+        expect(provider.options).to receive(:[]).with(:runtime).and_return(runtime)
+        expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
+        expect(provider.handler).to eq(expected_handler)
+      end
+    end
+
+    context "with a go runtime " do
+      module_name = ''
+      handler_name = 'main'
+      runtime = 'go'
+      expected_handler = "#{handler_name}"
+
+      example do
+        expect(provider.options).to receive(:[]).with(:module_name).and_return(nil)
+        expect(provider.options).to receive(:[]).with(:runtime).and_return(runtime)
+        expect(provider.options).to receive(:fetch).with(:handler_name).and_return(handler_name)
         expect(provider.handler).to eq(expected_handler)
       end
     end

@@ -111,9 +111,23 @@ module DPL
 
       def handler
         module_name = options[:module_name] || default_module_name
+        runtime = options[:runtime] || default_runtime
         handler_name = option(:handler_name)
 
-        "#{module_name}.#{handler_name}"
+        case runtime
+        when  'java', 'csharp'
+          #Java uses double colon on handler. Package name is module_name
+          separator = "::"
+        when 'go'
+          #Go just appears to call main class main method.
+          module_name = ""
+          separator = ""
+        else
+          #Everything else uses dots
+          separator = "."
+        end
+        #there is still a shortcoming for go here.
+        "#{module_name}#{separator}#{handler_name}"
       end
 
       def function_zip
