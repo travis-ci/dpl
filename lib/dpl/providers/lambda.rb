@@ -164,7 +164,7 @@ module Dpl
         end
 
         def split_vars(vars)
-          vars.map { |var| var.split('=') }.to_h
+          vars.map { |var| var.split('=', 2) }.to_h
         end
 
         def tmp_filename
