@@ -36,7 +36,7 @@ Dpl supports the following providers:
 * [Lambda](#lambda)
 * [Launchpad](#launchpad)
 * [Nodejitsu](#nodejitsu)
-* [NPM](#npm)
+* [npm](#npm)
 * [OpenShift](#openshift)
 * [packagecloud](#packagecloud)
 * [Puppet Forge](#puppet-forge)
@@ -294,16 +294,16 @@ This _overrides_ the `gemspec` option.
     dpl --provider=pypi --user=<username> --password=<password>
     dpl --provider=pypi --user=<username> --password=<password> --server='https://mypackageindex.com/index' --distributions='sdist bdist_wheel'
 
-### NPM:
+### npm:
 
 #### Options:
 
-* **email**: NPM email.
-* **api-key**: NPM api key. Can be retrieved from your ~/.npmrc file.
+* **email**: npm account email.
+* **api-key**: your [npm token](https://docs.npmjs.com/creating-and-viewing-authentication-tokens). _Can be retrieved from your ~/.npmrc file._
 
 #### Examples:
 
-    dpl --provider=npm --email=<email> --api-key=<api-key>
+    dpl --provider=npm --email=<email> --api-key=<token>
 
 ### S3:
 

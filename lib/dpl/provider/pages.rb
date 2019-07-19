@@ -138,6 +138,7 @@ module DPL
         unless context.shell "git clone --quiet --branch='#{@target_branch}' --depth=1 '#{gh_remote_url}' '#{target_dir}' > /dev/null 2>&1"
           # if such branch doesn't exist at remote, init it from scratch
           print_step "Cloning #{@target_branch} branch failed"
+          FileUtils.rm_rf(target_dir)
           Dir.mkdir(target_dir)  # Restore dir destroyed by failed `git clone`
           github_init(target_dir)
         end
@@ -196,7 +197,7 @@ module DPL
 
             FileUtils.cd(workdir, :verbose => true) do
               print_step "Copying #{@build_dir} contents to #{workdir} (workdir: #{Dir.pwd})..."
-              context.shell "rsync -r --exclude .git --delete '#{@build_dir}/' '#{workdir}'" or error "Could not copy #{@build_dir}."
+              context.shell "rsync -rl --exclude .git --delete '#{@build_dir}/' '#{workdir}'" or error "Could not copy #{@build_dir}."
 
               github_configure
               github_commit

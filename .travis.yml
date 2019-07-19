@@ -8,6 +8,7 @@ rvm:
 jobs:
   include:
     - stage: deploy
+      if: branch = master AND NOT type IN (pull_request)
       cache: false
       before_deploy:
         - sed -i.bak "s/VERSION = '.*'/VERSION = '${DPL_VERSION}'/g" lib/dpl/version.rb
@@ -17,7 +18,6 @@ jobs:
         - git commit -m "Update DPL::Version"
       deploy:
         - provider: rubygems
-          script: skip
           edge:
             branch: master
           api_key:
@@ -26,7 +26,6 @@ jobs:
           gemspec_glob: 'dpl*.gemspec'
           on:
             repo: travis-ci/dpl
-          if: branch = master AND NOT type IN (pull_request)
   allow_failures:
 
 env:
