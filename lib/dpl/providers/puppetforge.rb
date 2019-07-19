@@ -10,7 +10,7 @@ module Dpl
         tbd
       str
 
-      opt '--user NAME', 'Puppet Forge user name', required: true
+      opt '--username NAME', 'Puppet Forge user name', required: true, alias: :user
       opt '--password PASS', 'Puppet Forge password', required: true
       opt '--url URL', 'Puppet Forge URL to deploy to', default: 'https://forgeapi.puppetlabs.com/'
 
@@ -35,7 +35,7 @@ module Dpl
       end
 
       def forge
-        @forge ||= Blacksmith::Forge.new(user, password, url)
+        @forge ||= Blacksmith::Forge.new(username, password, url)
       end
     end
   end

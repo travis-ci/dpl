@@ -41,7 +41,7 @@ module Dpl
         end
 
         def data
-          {'ws.op' => 'requestImport'}
+          { 'ws.op' => 'requestImport' }
         end
 
         def authorization
