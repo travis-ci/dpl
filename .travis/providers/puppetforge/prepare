@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+dir = 'tmp/dpl_test'
+mkdir_p dir
+chdir dir
+
+File.write 'metadata.json', <<~str
+  {
+    "name": "dpltest-test",
+    "version": "0.0.0-test.#{ENV['ID']}",
+    "author": "Dpl Test",
+    "summary": "Dpl Test Module",
+    "license": "MIT",
+    "source": "https://github.com/travis-ci/dpl",
+    "dependencies": [
+        {
+        "name":"puppetlabs-stdlib",
+        "version_requirement":">= 1.0.0"
+      }
+    ]
+  }
+str
+
+cmd = '$ puppet module build'
+puts cmd
+system cmd
+
