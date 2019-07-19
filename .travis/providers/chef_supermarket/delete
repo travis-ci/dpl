@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+# it appears deleting cookbooks is disabled on Chef Supermarket:
+#
+#   status: 403
+#   body: {"error_code":"FORBIDDEN","error_messages":["You are not authorized to destroy this cookbook. If you are the cookbook owner, this Supermarket has disabled artifact removal by owner per Chef RFC072. Contact the administrators if there are concerns."]}
+
+# require 'openssl'
+# require 'openssl/digest'
+# require 'mixlib/authentication/signedheaderauth'
+# require 'net/http'
+#
+# url  = 'https://supermarket.chef.io/api/v1/cookbooks/dpl_test'
+# user = 'dpl-test'
+# key  = 'tmp/dpl_test/private_key'
+#
+# uri = URI.parse(url)
+# key = OpenSSL::PKey::RSA.new(File.read(key))
+# now = Time.now.utc.iso8601
+#
+# sign = {
+#   http_method: 'DELETE',
+#   path: uri.path,
+#   body: '',
+#   user_id: user,
+#   timestamp: now
+# }
+#
+# headers = Mixlib::Authentication::SignedHeaderAuth.signing_object(sign).sign(key)
+#
+# req = Net::HTTP::Delete.new(uri.path, headers)
+# http = Net::HTTP.new(uri.host, uri.port)
+# http.use_ssl = true
+#
+# res = http.request(req)
+# puts res.code
+# puts res.body
+#
