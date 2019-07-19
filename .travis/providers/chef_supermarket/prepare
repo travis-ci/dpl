@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+dir = 'tmp/dpl_test'
+mkdir_p "#{dir}/recipes"
+chdir dir
+
+File.write 'README.md', <<~str
+  Travis CI Dpl Test
+str
+
+File.write 'metadata.json', <<~str
+  {
+    "name": "dpl_test",
+    "version": "0.0.#{ENV['TRAVIS_BUILD_NUMBER']}",
+    "description": "Test package for integration testing Travis CI deployment integration with Chef Supermarket",
+    "maintainer": "Travis CI Dpl Test",
+    "maintainer_email": "contact@travis-ci.com",
+    "license": "MIT",
+    "recipes": {
+      "dpl-test": "Travis CI Dpl Test"
+    }
+  }
+str
+
+File.write 'recipes/default.rb', <<~str
+  log "#{ENV['ID']}"
+str

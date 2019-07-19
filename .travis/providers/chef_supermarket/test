@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+require 'open-uri'
+require 'json'
+
+$stdout.sync = true
+
+expected = ENV['TRAVIS_BUILD_NUMBER']
+url = 'https://supermarket.chef.io/api/v1/cookbooks/dpl_test'
+
+def poll(url)
+  puts "Checking #{url}"
+  uri = URI.parse(url)
+  data = JSON.load(uri)
+  data['latest_version'] =~ /0\.0\.(.*)/ && $1
+rescue => e
+  puts e.message
+  nil
+end
+
+10.times do
+  actual = poll(url)
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual == expected
+  sleep 5
+end
+
+abort 'failed'
