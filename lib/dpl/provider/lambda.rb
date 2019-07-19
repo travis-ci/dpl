@@ -222,7 +222,7 @@ module DPL
       end
 
       def default_timeout
-        3 # seconds
+        15 # seconds
       end
 
       def default_description
@@ -230,7 +230,7 @@ module DPL
       end
 
       def default_memory_size
-        128
+        512
       end
 
       def default_module_name

@@ -433,7 +433,7 @@ describe DPL::Provider::Lambda do
 
   describe '#default_timeout' do
     example do
-      expect(provider.default_timeout).to eq(3)
+      expect(provider.default_timeout).to eq(15)
     end
   end
 
@@ -455,7 +455,7 @@ describe DPL::Provider::Lambda do
 
   describe '#default_memory_size' do
     example do
-      expect(provider.default_memory_size).to eq(128)
+      expect(provider.default_memory_size).to eq(512)
     end
   end
 
