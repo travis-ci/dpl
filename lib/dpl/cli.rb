@@ -2,6 +2,10 @@ require 'cl'
 
 module Dpl
   class Cli < Cl
+    def self.new(ctx = nil, cmd = nil)
+      super(ctx || Dpl::Ctx::Bash.new, cmd || 'dpl')
+    end
+
     def run(args)
       args = with_provider_opt(args)
       super

@@ -13,8 +13,8 @@ module Dpl
 
       apt 'snapd', 'snap'
 
-      cmds login:          'snapcraft login --with %{token}',
-           install:        'sudo snap install snapcraft --classic',
+      cmds install:        'sudo snap install snapcraft --classic',
+           login:          'snapcraft login --with %{token}',
            deploy:         'snapcraft push %{snap_path} --release=%{channel}'
 
       msgs login:          'Attemping to login ...',
