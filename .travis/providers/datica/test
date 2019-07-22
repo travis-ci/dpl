@@ -1,0 +1,25 @@
+# #!/usr/bin/env ruby
+#
+# require 'open-uri'
+#
+# $stdout.sync = true
+#
+# expected = ENV['ID']
+# url = '...'
+#
+# def poll(url)
+#   uri = URI.parse(url)
+#   actual = uri.read
+# rescue OpenURI::HTTPError => e
+#   puts e.message
+# end
+#
+# 20.times do
+#   actual = poll(url)
+#   puts "expected: #{expected.inspect}"
+#   puts "actual: #{actual.inspect}"
+#   exit 0 if actual == expected
+#   sleep 5
+# end
+#
+# abort 'failed'

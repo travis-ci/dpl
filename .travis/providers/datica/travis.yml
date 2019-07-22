@@ -1,0 +1,20 @@
+language: ruby
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/datica/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: datica
+    edge:
+      branch: dpl-2
+    on:
+      branch: dpl-2
+    skip_cleanup: true
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/datica/test || TRAVIS_TEST_RESULT=$?
