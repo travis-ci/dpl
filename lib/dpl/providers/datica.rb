@@ -1,24 +1,26 @@
 module Dpl
   module Providers
-    class Catalyze < Provider
+    class Datica < Provider
+      register :datica, :catalyze
+
       description sq(<<-str)
         tbd
       str
 
-      env :catalyze
+      env :datica, :catalyze
 
       opt '--target TARGET', 'The git remote repository to deploy to', required: true
       opt '--path PATH', 'Path to files to deploy', default: '.'
 
       needs :git
 
-      cmds push:     'git push --force %{target} HEAD:master',
-           checkout: 'git checkout HEAD',
+      cmds checkout: 'git checkout HEAD',
            add:      'git add %{path} --all --force',
-           commit:   'git commit -m "%{message}" --quiet'
+           commit:   'git commit -m "%{message}" --quiet',
+           push:     'git push --force %{target} HEAD:master'
 
       msgs commit:   'Committing build files for deployment',
-           deploy:   'Deploying to Catalyze: %{target}'
+           deploy:   'Deploying to Datica: %{target}'
 
       def setup
         commit if skip_cleanup?

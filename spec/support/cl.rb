@@ -10,6 +10,7 @@ module Support
     end
 
     def self.included(base)
+      base.let(:provider) { described_class.registry_key }
       base.let(:args) { |e| args_from_description(e) }
       base.subject { cmd }
       base.extend Sq
@@ -26,7 +27,7 @@ module Support
 
     def runner(args = nil)
       args ||= respond_to?(:args) ? self.args : args_from_description
-      args = [described_class.registry_key.to_s, *args]
+      args = [provider.to_s, *args]
       Dpl::Cli.new(ctx, 'dpl').runner(args)
     end
 
