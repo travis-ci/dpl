@@ -31,11 +31,15 @@ module Dpl
            remove_key: 'Failed to remove the ssh key.'
 
       def install
-        script :install, assert: true
+        script :install, assert: true, echo: true
       end
 
       def login
+        puts `ls -al ~/.dpl`
+        p api_key?
         shell api_key ? :login_key : :login_creds, assert: err(:login)
+      rescue => e
+        p e
       end
 
       def add_key(key, type = nil)
