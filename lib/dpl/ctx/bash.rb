@@ -506,7 +506,7 @@ module Dpl
       end
 
       def tty?
-        $stdout.isa
+        $stdout.isatty
       end
 
       # Returns a copy of the given hash, reduced to the given keys
