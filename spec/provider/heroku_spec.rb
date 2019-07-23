@@ -231,7 +231,7 @@ describe DPL::Provider::Heroku, :api do
       expect(provider).to receive(:faraday).at_least(:once).and_return(faraday)
       expect(provider).to receive(:get_url).and_return 'http://example.com/source.tgz'
       expect(provider).to receive(:version).and_return 'v1.3.0'
-      expect(provider.context).to receive(:shell).with("curl https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef -H 'Accept: application/vnd.heroku+json; version=3' -H 'User-Agent: dpl/#{DPL::VERSION}'")
+      expect(provider.context).to receive(:shell).with("curl -sS https://build-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef -H 'Accept: application/vnd.heroku+json; version=3' -H 'User-Agent: dpl/#{DPL::VERSION}'")
       provider.trigger_build
       expect(provider.build_id).to eq('01234567-89ab-cdef-0123-456789abcdef')
     end
