@@ -20,7 +20,7 @@ describe Dpl::Providers::Heroku::Api do
     it { should have_run '[print] Checking for app dpl ... ' }
     it { should have_run '[info] success.' }
     it { should have_run '[info] Creating application archive' }
-    it { should have_run %r(tar -zcf /.*/.dpl.dpl.tgz --exclude \.git \.) }
+    it { should have_run %r(tar -zcf .*/.dpl.dpl.tgz --exclude \.git \.) }
     it { should have_run '[info] Uploading application archive' }
     it { should have_run %r(curl -sS put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: .*dpl/.*" --data-binary @.*/.dpl.dpl.tgz) }
     it { should have_run '[info] Triggering Heroku build (deployment)' }

@@ -11,7 +11,7 @@ describe Dpl::Providers::Scalingo do
     describe 'given --api_key key', record: true do
       it { should have_run %r(curl -OL https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz) }
       it { should have_run %r(./scalingo login --api-token key) }
-      it { should have_run './scalingo keys-add dpl_tmp_key .dpl/id_rsa.pub' }
+      it { should have_run './scalingo keys-add dpl_tmp_key ~/.dpl/id_rsa.pub' }
       it { should have_run 'git push scalingo HEAD:master -f' }
       it { should have_run './scalingo keys-remove dpl_tmp_key' }
       it { should have_run_in_order }
@@ -20,7 +20,7 @@ describe Dpl::Providers::Scalingo do
     describe 'given --username user --password pass', record: true do
       it { should have_run %r(curl -OL https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz) }
       it { should have_run %r(./scalingo login) }
-      it { should have_run './scalingo keys-add dpl_tmp_key .dpl/id_rsa.pub' }
+      it { should have_run './scalingo keys-add dpl_tmp_key ~/.dpl/id_rsa.pub' }
       it { should have_run 'git push scalingo HEAD:master -f' }
       it { should have_run './scalingo keys-remove dpl_tmp_key' }
       it { should have_run_in_order }
