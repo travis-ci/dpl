@@ -14,9 +14,8 @@ module Dpl
     # bc with travis-build dpl v1 integration
     def with_provider_opt(args)
       return args unless arg = args.detect { |arg| arg.include?('--provider') }
-      provider = arg.split('=').last
       args.delete(arg)
-      [provider, *args]
+      [arg.split('=').last, *args]
     end
   end
 end
