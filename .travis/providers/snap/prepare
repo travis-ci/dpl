@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+mkdir_p 'tmp/dpl-test/snap'
+chdir 'tmp/dpl-test'
+
+File.write 'snap/snapcraft.yaml', <<~str
+  name: dpl-test
+  version: "0.0.0-test.#{ENV['ID'][0..5]}"
+  summary: Travis CI dpl canary test snap
+  description: Travis CI dpl canary test snap.
+  apps:
+    dpl-test:
+      command: dpl-test
+  parts:
+    dpl-test:
+      plugin: ruby
+      source: https://github.com/travis-ci/dpl.git
+str
+
+cmd = 'snapcraft build'
+puts cmd
+system cmd
