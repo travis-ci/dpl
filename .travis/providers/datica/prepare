@@ -24,13 +24,6 @@ File.write 'package.json', <<~str
   }
 str
 
-File.write 'package-lock.json', <<~str
-  {
-    "name": "dpl-test",
-    "lockfileVersion": 1
-  }
-str
-
 File.write 'main.js', <<~str
   const http = require('http');
 
