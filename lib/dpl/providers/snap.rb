@@ -7,9 +7,9 @@ module Dpl
 
       env :snap
 
-      opt '--snap STR', 'Path to the snap to be pushed (can be a glob)', required: true
-      opt '--channel CHAN', 'Channel into which the snap will be released', default: 'edge'
       opt '--token TOKEN', 'Snap API token', required: true
+      opt '--snap STR', 'Path to the snap to be pushed (can be a glob)', default: '**/*.snap'
+      opt '--channel CHAN', 'Channel into which the snap will be released', default: 'edge'
 
       apt 'snapd', 'snap'
 

@@ -1,0 +1,24 @@
+dist: xenial
+language: python
+python: 3.6
+
+script:
+  - true
+
+before_deploy:
+  - sudo snap install snapcraft --classic
+  - .travis/providers/snap/prepare
+  - cd tmp/dpl-test
+
+deploy:
+  - provider: snap
+    edge:
+      branch: dpl-2
+    on:
+      branch: dpl-2
+    skip_cleanup: true
+    snap: '**/*.snap'
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/pypi/test || TRAVIS_TEST_RESULT=$?
