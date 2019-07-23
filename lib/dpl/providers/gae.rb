@@ -9,7 +9,7 @@ module Dpl
 
       python '>= 2.7.9'
 
-      env :googlecloud, :cloudsdk_core
+      env :googlecloud, :cloudsdk_core, allow_skip_underscore: true
 
       opt '--project ID', 'Project ID used to identify the project on Google Cloud', required: true
       opt '--keyfile FILE', 'Path to the JSON file containing your Service Account credentials in JSON Web Token format. To be obtained via the Google Developers Console. Should be handled with care as it contains authorization keys.', default: 'service-account.json'
@@ -36,8 +36,6 @@ module Dpl
 
       def install
         return unless install_sdk?
-        # return if which 'gcloud'
-        # shell 'sudo apt-get remove google-cloud-sdk' if which 'gcloud'
         shell :install, echo: true, assert: true
         shell :bootstrap, echo: true, assert: true
       end

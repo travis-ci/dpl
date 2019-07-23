@@ -9,19 +9,17 @@ module Dpl
       attr_reader :env_prefixes
 
       def env(*strs)
+        opts = strs.last.is_a?(Hash) ? strs.pop : {}
         if strs.any?
-          # this should not have the additional prefix str without the underscore
-          # appended to it, but only the one with an underscore. however, we have
-          # accepted unconventional ENV vars such as GOOGLECLOUDKEYFILE, so for the
-          # time being this accepts both variants.
-          @env_prefixes = strs.map do |str|
-            ["#{str.to_s.upcase}_", str.to_s.upcase]
-          end.flatten
-        elsif !env_prefixes
-          {}
-        else
+          strs = strs.map(&:to_s).map(&:upcase)
+          @env_prefixes = strs.map { |str| "#{str.to_s.upcase}_" }
+          # allow unconventional ENV vars such as GOOGLECLOUDKEYFILE
+          @env_prefixes += strs if opts[:allow_skip_underscore]
+        elsif env_prefixes
           opts = ENV.select { |key, _| prefixed?(key) }
           opts.map { |key, value| [unprefix(key).downcase.to_sym, value] }.to_h
+        else
+          {}
         end
       end
 
