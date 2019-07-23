@@ -11,4 +11,16 @@ describe Dpl::Providers::Netlify do
   describe 'given --dir ./dir' do
     it { should have_run 'netlify deploy --site="id" --auth="token" --dir="./dir"' }
   end
+
+  describe 'given --functions ./functions' do
+    it { should have_run 'netlify deploy --site="id" --auth="token" --functions="./functions"' }
+  end
+
+  describe 'given --message message' do
+    it { should have_run 'netlify deploy --site="id" --auth="token" --message="message"' }
+  end
+
+  describe 'given --prod' do
+    it { should have_run 'netlify deploy --site="id" --auth="token" --prod' }
+  end
 end
