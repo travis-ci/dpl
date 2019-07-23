@@ -109,9 +109,6 @@ module Dpl
       end
     end
 
-    # Default artifacts to keep during cleanup.
-    KEEP = %w(.dpl)
-
     # Fold names to display in the build log.
     FOLDS = {
       init:     'Initialize deployment',
@@ -239,7 +236,7 @@ module Dpl
     #
     # This will:
     #
-    # * Setup the local .dpl directory
+    # * Setup a ~/.dpl working directory
     # * Create a temporary, per build SSH key, and call `add_key` if the feature `ssh_key` has been declared as required.
     # * Setup git config (email and user name) if the feature `git` has been declared as required.
     # * Either set or unset the environment variable `GIT_HTTP_USER_AGENT` depending if the feature `git_http_user_agent` has been declared as required.
@@ -313,10 +310,10 @@ module Dpl
       shell 'git stash pop'
     end
 
-    # Creates the directory `.dpl` as an internal working directory.
+    # Creates the directory `~/.dpl` as an internal working directory.
     def setup_dpl_dir
-      rm_rf '.dpl'
-      mkdir_p '.dpl'
+      rm_rf '~/.dpl'
+      mkdir_p '~/.dpl'
     end
 
     # Creates an SSH key, and sets up git-ssh if needed.
@@ -327,9 +324,9 @@ module Dpl
     # * Setup a `git-ssh` executable to use that key.
     # * Call the method `add_key` if implemented by the provider.
     def setup_ssh_key
-      ssh_keygen(key_name, '.dpl/id_rsa')
-      setup_git_ssh('.dpl/id_rsa')
-      add_key('.dpl/id_rsa.pub') if respond_to?(:add_key)
+      ssh_keygen(key_name, '~/.dpl/id_rsa')
+      setup_git_ssh('~/.dpl/id_rsa')
+      add_key('~/.dpl/id_rsa.pub') if respond_to?(:add_key)
     end
 
     # Setup git config
@@ -344,16 +341,16 @@ module Dpl
     # Sets up `git-ssh` and the GIT_SSH env var
     def setup_git_ssh(key)
       info :setup_git_ssh
-      file, key = File.expand_path('.dpl/git-ssh'), File.expand_path(key)
-      File.open(file, 'w+') { |file| file.write(asset(:dpl, :git_ssh).read % key) }
-      chmod(0740, file)
-      ENV['GIT_SSH'] = file
+      path, conf = '~/.dpl/git-ssh', asset(:dpl, :git_ssh).read % expand(key)
+      open(path, 'w+') { |file| file.write(conf) }
+      chmod(0740, path)
+      ENV['GIT_SSH'] = expand(path)
     end
 
     # Generates an SSH key.
-    def ssh_keygen(*args)
+    def ssh_keygen(key, path)
       info :ssh_keygen
-      ctx.ssh_keygen(*args)
+      ctx.ssh_keygen(key, expand(path))
     end
 
     # Sets or unsets the environment variable `GIT_HTTP_USER_AGENT`.
@@ -586,6 +583,26 @@ module Dpl
       else
         obj
       end
+    end
+
+    def mkdir_p(path)
+      super(expand(path))
+    end
+
+    def chmod(perm, path)
+      super(perm, expand(path))
+    end
+
+    def rm_rf(path)
+      super(expand(path))
+    end
+
+    def open(path, *args)
+      File.open(expand(path), *args)
+    end
+
+    def expand(path)
+      File.expand_path(path)
     end
   end
 end
