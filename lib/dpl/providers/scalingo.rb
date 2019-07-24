@@ -10,7 +10,7 @@ module Dpl
       opt '--app APP', default: :repo_name
       opt '--api_token TOKEN', 'Scalingo API token', alias: :api_key, deprecated: :api_key
       opt '--username NAME', 'Scalingo username'
-      opt '--password PASS', 'Scalingo password'
+      opt '--password PASS', 'Scalingo password', secret: true
       opt '--region REGION', 'Scalingo region', default: 'agora-fr1', enum: %w(agora-fr1 osc-fr1)
       opt '--remote REMOTE', 'Git remote name', default: 'scalingo-dpl'
       opt '--branch BRANCH', 'Git branch', default: 'master'

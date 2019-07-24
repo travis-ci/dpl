@@ -7,7 +7,7 @@ module Dpl
 
       opt '--controller NAME', 'Hephy controller', required: true, example: 'hephy.hephyapps.com'
       opt '--username USER',   'Hephy username', required: true
-      opt '--password PASS',   'Hephy password', required: true
+      opt '--password PASS',   'Hephy password', required: true, secret: true
       opt '--app APP',         'Deis app', required: true
       opt '--cli_version VER', 'Install a specific hephy cli version', default: 'stable'
       opt '--verbose',         'Verbose log output'
@@ -36,28 +36,28 @@ module Dpl
       end
 
       def login
-        shell :login, assert: true
+        shell :login
       end
 
       def add_key(key)
-        shell :add_key, key: key, assert: true
+        shell :add_key, key: key
         wait_for_ssh_access(host, port)
       end
 
       def validate
-        shell :validate, assert: true
+        shell :validate
       end
 
       def deploy
-        shell :deploy, assert: true
+        shell :deploy
       end
 
       def run_cmd(cmd)
-        shell :run, app: app, cmd: cmd, echo: true, assert: true
+        shell :run, app: app, cmd: cmd
       end
 
       def remove_key
-        shell :remove_key, assert: true
+        shell :remove_key
       end
 
       def verbose

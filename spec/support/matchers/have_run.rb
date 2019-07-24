@@ -35,7 +35,7 @@ module Support
       attr_reader :actual
 
       def matches?(cmd)
-        @actual = cmd.ctx.cmds.map { |str| expected.detect { |cmd| match?(str, cmd) } }.compact
+        @actual = cmd.ctx.cmds.map { |str| expected.detect { |cmd| match?(str, cmd) } }.compact.uniq
         expected == actual
       end
 

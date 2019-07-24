@@ -12,7 +12,7 @@ module Dpl
       VERSION = /\A\d+(?:\.\d+)*\z/
 
       opt '--username NAME', 'PyPI Username', required: true, alias: :user
-      opt '--password PASS', 'PyPI Password', required: true
+      opt '--password PASS', 'PyPI Password', required: true, secret: true
       opt '--server SERVER', 'Release to a different index', default: 'https://upload.pypi.org/legacy/'
       opt '--distributions DISTS', 'Space-separated list of distributions to be uploaded to PyPI', default: 'sdist'
       opt '--docs_dir DIR', 'Path to the directory to upload documentation from', default: 'build/docs'
@@ -38,7 +38,7 @@ module Dpl
 
 
       def install
-        script :install, assert: true
+        script :install
       end
 
       def login
@@ -47,8 +47,8 @@ module Dpl
       end
 
       def deploy
-        shell :setup_py, assert: true
-        shell :twine_upload, assert: true
+        shell :setup_py
+        shell :twine_upload
         shell :rm_dist
         upload_docs unless skip_upload_docs?
       end
@@ -66,12 +66,16 @@ module Dpl
         rc
 
         def write_config
-          write_file('~/.pypirc', interpolate(PYPIRC))
+          write_file('~/.pypirc', pypirc)
+        end
+
+        def pypirc
+          interpolate(PYPIRC, opts, secure: true)
         end
 
         def upload_docs
           info :upload_docs
-          shell :upload_docs, assert: true
+          shell :upload_docs
         end
 
         def skip_existing_option

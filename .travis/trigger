@@ -18,6 +18,7 @@ require 'yaml'
 def parse_opts(opts)
   ARGV.options do |o|
     o.on('-t', '--token TOKEN') { |obj| opts[:token] = obj }
+    o.on('-b', '--branch BRANCH') { |obj| opts[:branch] = obj }
     o.parse!
   end
   opts
@@ -41,22 +42,27 @@ def paths
   Dir[".travis/providers/{#{glob}}/*.yml"].sort
 end
 
-def jobs
+def jobs(opts)
   paths.map do |path|
     job = YAML.load(File.read(path))
-    job[:name] = path =~ %r(providers/(.+)/travis\.yml) && $1
+    job['name'] = path =~ %r(providers/(.+)/travis\.yml) && $1
+    job['deploy'][0].update(edge: opts, on: opts)
     job
   end
 end
 
-opts = parse_opts(token: ENV['TRAVIS_API_TOKEN'])
+def only(hash, *keys)
+  hash.select { |key, _| keys.include?(key) }.to_h
+end
+
+opts = parse_opts(token: ENV['TRAVIS_API_TOKEN'], branch: 'dpl-2')
 
 uri = URI.parse('https://api.travis-ci.org/repo/travis-ci%2Fdpl/requests')
 
 body = {
   request: {
     branch: 'dpl-2',
-    message: "test dpl #{ARGV.any? ? ARGV.join(', ') : '(all providers)'} #{Time.now}",
+    message: "test dpl (#{branch}) #{ARGV.any? ? ARGV.join(', ') : '(all providers)'} #{Time.now}",
     config: {
       import: './.travis/blank.yml', # skips .travis.yml
       env: {
@@ -65,7 +71,7 @@ body = {
         }
       },
       matrix: {
-        include: jobs
+        include: jobs(only(opts, :branch))
       }
     }
   }

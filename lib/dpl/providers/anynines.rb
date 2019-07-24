@@ -6,7 +6,7 @@ module Dpl
       str
 
       opt '--username USER',    'anynines username', required: true
-      opt '--password PASS',    'anynines password', required: true
+      opt '--password PASS',    'anynines password', required: true, secret: true
       opt '--organization ORG', 'anynines target organization', required: true
       opt '--space SPACE',      'anynines target space', required: true
       opt '--app_name APP',     'Application name'
@@ -22,8 +22,6 @@ module Dpl
            push:    './cf push %{args}',
            logout:  './cf logout'
 
-      msgs login:   '$ ./cf login -u %{username} -p %{obfuscated_password} -o %{organization} -s %{space}'
-
       errs install: 'Failed to install CLI tools',
            api:     'Failed to set api',
            login:   'Failed to login',
@@ -32,21 +30,20 @@ module Dpl
            logout:  'Failed to logout'
 
       def install
-        shell :install, echo: true, assert: true
+        shell :install
       end
 
       def login
-        shell :api, echo: true, assert: true
-        info  :login
-        shell :login, assert: true
+        shell :api
+        shell :login
       end
 
       def deploy
-        shell :push, echo: true, assert: true
+        shell :push
       end
 
       def finish
-        shell :logout, echo: true, assert: true if logout?
+        shell :logout if logout?
       end
 
       private

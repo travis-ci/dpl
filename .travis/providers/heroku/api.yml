@@ -11,10 +11,6 @@ deploy:
   - provider: heroku
     strategy: api
     app: dpl-test-heroku-api
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     api_key:
       # Heroku API token from dpl-test@travis-ci.org
       # expires in June 2020, heroku authorizations:add to create a permanent one

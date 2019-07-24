@@ -8,7 +8,7 @@ module Dpl
       str
 
       opt '--server SERVER',   'OpenShift server', required: true
-      opt '--token TOKEN',     'OpenShift token', required: true
+      opt '--token TOKEN',     'OpenShift token', required: true, secret: true
       opt '--project PROJECT', 'OpenShift project', required: true
       opt '--app APP',         'OpenShift application', default: :repo_name
 
@@ -25,19 +25,19 @@ module Dpl
       URL = 'https://mirror.openshift.com/pub/openshift-v4/clients/oc/4.1/linux/oc.tar.gz'
 
       def install
-        shell :install, assert: true, echo: true
+        shell :install
       end
 
       def login
-        shell :login, assert: true
+        shell :login
       end
 
       def prepare
-        shell :prepare, assert: true, echo: true
+        shell :prepare
       end
 
       def deploy
-        shell :deploy, assert: true, echo: true
+        shell :deploy
       end
     end
   end

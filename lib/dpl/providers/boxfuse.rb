@@ -7,8 +7,8 @@ module Dpl
 
       env :boxfuse
 
-      opt '--user USER'
-      opt '--secret SECRET'
+      opt '--user USER', required: true
+      opt '--secret SECRET', required: true, secret: true
       opt '--config_file FILE', alias: :configfile, deprecated: :configfile
       opt '--payload PAYLOAD'
       opt '--app APP'
@@ -21,13 +21,8 @@ module Dpl
       cmds install: 'curl -L %{URL} | tar xz',
            deploy:  'boxfuse/boxfuse run %{deploy_opts}'
 
-      # def login
-      #   ENV['BOXFUSE_USER'] = user
-      #   ENV['BOXFUSE_SECRET'] = secret
-      # end
-
       def validate
-        # check if the config file exists (it seems `boxfuse` doesn't)
+        # TODO check if the config file exists (it seems `boxfuse` doesn't)
       end
 
       def install

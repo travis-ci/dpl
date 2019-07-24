@@ -1,9 +1,9 @@
 describe Dpl::Providers::Npm do
-  let(:args) { |e| %w(--email email --api_key key) + args_from_description(e) }
+  let(:args) { |e| %w(--email email --api_key 12345) + args_from_description(e) }
 
   let(:npmrc) do
     sq(<<-rc)
-      _auth = key
+      _auth = 12345
       email = email
     rc
   end
@@ -12,8 +12,8 @@ describe Dpl::Providers::Npm do
 
   describe 'by default', record: true do
     it { should have_run '[info] npm version: 1' }
-    it { should have_run '[info] Authenticated with API key ********************' }
-    it { should have_run '[info] ~/.npmrc size: 25' }
+    it { should have_run '[info] Authenticated with API key 1*******************' }
+    it { should have_run '[info] ~/.npmrc size: 27' }
     it { should have_run 'npm config set registry "registry.npmjs.org"' }
     it { should have_run 'npm publish' }
     it { should have_run_in_order }

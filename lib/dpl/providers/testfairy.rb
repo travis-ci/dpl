@@ -12,7 +12,7 @@ module Dpl
         tbd
       str
 
-      opt '--api_key KEY', 'TestFairy API key', required: true
+      opt '--api_key KEY', 'TestFairy API key', required: true, secret: true
       opt '--app_file FILE', 'Path to the app file that will be generated after the build (APK/IPA)', required: true
       opt '--symbols_file FILE', 'Path to the symbols file'
       opt '--testers_groups GROUPS', 'Tester groups to be notified about this build', example: 'e.g. group1,group1'

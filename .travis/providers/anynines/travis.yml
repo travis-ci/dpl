@@ -10,10 +10,6 @@ before_deploy:
 
 deploy:
   - provider: anynines
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     skip_cleanup: true
 
     username: dpl-test@travis-ci.org

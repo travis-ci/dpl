@@ -12,7 +12,7 @@ module Dpl
       str
 
       opt '--user USER', 'Bintray user', required: true
-      opt '--key KEY', 'Bintray API key', required: true
+      opt '--key KEY', 'Bintray API key', required: true, secret: true
       opt '--file FILE', 'Path to a descriptor file for the Bintray upload', required: true
       opt '--passphrase PHRASE', 'Passphrase as configured on Bintray (if GPG signing is used)'
       # mentioned in code
@@ -249,7 +249,7 @@ module Dpl
       end
 
       def path(resource, args = {})
-        interpolate(PATHS[resource], args)
+        interpolate(PATHS[resource], args, secure: true)
       end
 
       def parse(json)

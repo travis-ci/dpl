@@ -10,10 +10,6 @@ before_deploy:
 
 deploy:
   - provider: bluemixcloudfoundry
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     skip_cleanup: true
 
     api: https://api.eu-gb.bluemix.net

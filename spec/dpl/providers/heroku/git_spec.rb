@@ -25,9 +25,7 @@ describe Dpl::Providers::Heroku::Git do
 
     describe 'by default', record: true do
       it { should have_run '[print] Authenticating ... ' }
-      it { should have_run '[info] success.' }
       it { should have_run '[print] Checking for app dpl ... ' }
-      it { should have_run '[info] success.' }
       it { should have_run 'git fetch origin $TRAVIS_BRANCH --unshallow' }
       it { should have_run 'git push https://git.heroku.com/dpl.git HEAD:refs/heads/master -f' }
       it { should have_requested :get, 'https://api.heroku.com/account' }

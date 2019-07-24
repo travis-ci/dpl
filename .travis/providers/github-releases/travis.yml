@@ -10,10 +10,6 @@ before_deploy:
 deploy:
   - provider: releases
     repo: travis-ci/dpl_test
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
 
     target_commitish: 'master'
     name: 'dpl test'

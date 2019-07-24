@@ -14,8 +14,8 @@ module Dpl
 
       env :aws
 
-      opt '--access_key_id ID',           'AWS access key id', required: true
-      opt '--secret_access_key KEY',      'AWS secret key', required: true
+      opt '--access_key_id ID',           'AWS access key id', required: true, secret: true
+      opt '--secret_access_key KEY',      'AWS secret key', required: true, secret: true
       opt '--region REGION',              'AWS region the Lambda function is running in', default: 'us-east-1'
       opt '--function_name FUNC',         'Name of the Lambda being created or updated', required: true
       opt '--role ROLE',                  'ARN of the IAM role to assign to the Lambda function', required: true
@@ -36,7 +36,7 @@ module Dpl
       opt '--kms_key_arn ARN',            'KMS key ARN to use to encrypt environment_variables.'
       opt '--function_tags TAGS',         'List of tags to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security'
 
-      msgs login:           'Using Access Key: %{obfuscated_access_key_id}',
+      msgs login:           'Using Access Key: %{access_key_id}',
            create_function: 'Creating function %{function_name}.',
            update_config:   'Updating existing function %{function_name}.',
            update_tags:     'Updating tags.',

@@ -7,8 +7,15 @@ module Dpl
     end
 
     def run(args)
+      args = untaint(args)
       args = with_provider_opt(args)
       super
+    end
+
+    # Tainting is being used for automatically obfuscating values for secure
+    # options, so we want to untaint all incoming args here.
+    def untaint(args)
+      args.map(&:dup).each(&:untaint)
     end
 
     # bc with travis-build dpl v1 integration

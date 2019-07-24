@@ -13,8 +13,8 @@ module Dpl
 
       python '>= 2.7.9'
 
-      opt '--access_key_id ID', 'GCS Interoperable Access Key ID', required: true
-      opt '--secret_access_key KEY', 'GCS Interoperable Access Secret', required: true
+      opt '--access_key_id ID', 'GCS Interoperable Access Key ID', required: true, secret: true
+      opt '--secret_access_key KEY', 'GCS Interoperable Access Secret', required: true, secret: true
       opt '--bucket BUCKET', 'GCS Bucket', required: true
       opt '--local_dir DIR', 'Local directory to upload from', default: '.'
       opt '--upload_dir DIR', 'GCS directory to upload to'
@@ -26,7 +26,7 @@ module Dpl
       cmds install: 'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
            copy:    'gsutil %{gs_opts}cp %{copy_opts}-r %{source} %{target}'
 
-      msgs login: 'Authenticating with access key: %{obfuscated_access_key_id}'
+      msgs login: 'Authenticating with access key: %{access_key_id}'
 
       errs copy:  'Failed uploading files.'
 
@@ -59,7 +59,7 @@ module Dpl
       private
 
         def write_boto
-          write_file '~/.boto', interpolate(BOTO), 0600
+          write_file '~/.boto', interpolate(BOTO, opts, secure: true), 0600
         end
 
         def source_files
@@ -67,7 +67,7 @@ module Dpl
         end
 
         def copy(source)
-          shell :copy, gs_opts: gs_opts(source), source: source, assert: true, echo: true
+          shell :copy, gs_opts: gs_opts(source), source: source
         end
 
         def gs_opts(path)

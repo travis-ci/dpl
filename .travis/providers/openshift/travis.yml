@@ -14,10 +14,6 @@ before_deploy:
 
 deploy:
   - provider: openshift
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     server: https://api.us-west-2.online-starter.openshift.com:6443
     project: dpl-test
     app: dpl-test-app

@@ -51,7 +51,7 @@ describe Dpl::Providers::Lambda do
     let(:exists) { false }
 
     describe 'by default', record: true do
-      it { should have_run '[info] Using Access Key: ********************' }
+      it { should have_run '[info] Using Access Key: i*******************' }
       it { should have_run '[info] Creating function func.' }
       it { should have_run_in_order }
 
@@ -119,7 +119,7 @@ describe Dpl::Providers::Lambda do
     let(:exists) { true }
 
     describe 'by default' do
-      it { should have_run '[info] Using Access Key: ********************' }
+      it { should have_run '[info] Using Access Key: i*******************' }
       it { should have_run '[info] Updating existing function func.' }
       it { should have_run '[info] Updating code.' }
 

@@ -47,7 +47,7 @@ describe Dpl::Providers::Codedeploy do
   let(:s3_revision) { { revisionType: 'S3', s3Location: { bucket: 'bucket', bundleType: 'zip', version: 'ObjectVersionId', eTag: 'ETag' } } }
 
   describe 'by default', record: true do
-    it { should have_run '[info] Using Access Key: ********************' }
+    it { should have_run '[info] Using Access Key: i*******************' }
     it { should create_deployment applicationName: 'app' }
     it { should create_deployment description: 'Deploy build 1 via Travis CI' }
     it { should create_deployment revision: github_revision }

@@ -16,10 +16,6 @@ before_deploy:
 
 deploy:
   - provider: gae
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     project_id: dpl-test-244917
     skip_cleanup: true
 

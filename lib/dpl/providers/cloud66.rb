@@ -5,7 +5,7 @@ module Dpl
         tbd
       str
 
-      opt '--redeployment_hook URL', 'The redeployment hook URL', required: true
+      opt '--redeployment_hook URL', 'The redeployment hook URL', required: true, secret: true
 
       msgs failed: 'Redeployment failed (%s)'
 
