@@ -91,8 +91,10 @@ module Dpl
         msgs.each { |msg| stderr.puts("\e[31;1m#{msg}\e[0m") }
       end
 
-      # Outputs an error message to stderr, and raises an error, halting the
-      # deployment process.
+      # Raises an exception, halting the deployment process.
+      #
+      # The calling executable `bin/dpl` will catch the exception, and abort
+      # the ruby process with the given error message.
       #
       # This method is intended to be used for all error conditions that
       # require the deployment process to be aborted.
