@@ -381,9 +381,17 @@ module Dpl
     # Folds any log output from the given block into a fold with the given
     # name.
     def fold(name, &block)
-      return yield if name == :init
+      return yield unless fold?(name)
       title = FOLDS[name] || "deploy.#{name}"
       ctx.fold(title, &block)
+    end
+
+    # Checks if the given stage needs to be folded.
+    #
+    # Depends on the option `--fold`, also omits folds for the init and finish
+    # stages.
+    def fold?(name)
+      super() && !%i(init finish).include?(name)
     end
 
     # Runs a script as a shell command.
