@@ -10,7 +10,7 @@ module Support
     end
 
     def self.included(base)
-      base.let(:provider) { described_class.registry_key }
+      base.let(:provider) { described_class.is_a?(Symbol) ? described_class : described_class.registry_key }
       base.let(:args) { |e| args_from_description(e) }
       base.subject { cmd }
       base.extend Sq
