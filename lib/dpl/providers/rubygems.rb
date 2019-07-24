@@ -13,7 +13,6 @@ module Dpl
       opt '--gem NAME', 'Name of the gem to release', default: :repo_name
       opt '--gemspec FILE', 'Gemspec file to use to build the gem'
       opt '--gemspec_glob GLOB', 'Glob pattern to search for gemspec files when multiple gems are generated in the repository (overrides the gemspec option)'
-      # only mentioned in code
       opt '--username USER', 'Rubygems user name', alias: :user
       opt '--password PASS', 'Rubygems password'
       opt '--host URL'
