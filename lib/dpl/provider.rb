@@ -187,7 +187,7 @@ module Dpl
       stages.each { |stage| run_stage(stage) }
       run_cmds
     ensure
-      run_stage(:finish) if finish?
+      run_stage(:finish, fold: false) if finish?
     end
 
     # Whether or not a stage needs to be run
@@ -207,8 +207,8 @@ module Dpl
     #
     # Any log output from both the before stage and stage method is going to be
     # folded in the resulting build log.
-    def run_stage(stage)
-      fold(stage) do
+    def run_stage(stage, opts = {})
+      fold(stage, opts) do
         send(:"before_#{stage}") if respond_to?(:"before_#{stage}")
         send(stage) if respond_to?(stage)
       end
@@ -380,8 +380,8 @@ module Dpl
     #
     # Folds any log output from the given block into a fold with the given
     # name.
-    def fold(name, &block)
-      return yield unless fold?(name)
+    def fold(name, opts = {}, &block)
+      return yield unless fold?(name, opts)
       title = FOLDS[name] || "deploy.#{name}"
       ctx.fold(title, &block)
     end
@@ -389,9 +389,9 @@ module Dpl
     # Checks if the given stage needs to be folded.
     #
     # Depends on the option `--fold`, also omits folds for the init and finish
-    # stages.
-    def fold?(name)
-      super() && !%i(init finish).include?(name)
+    # stages. Can be overwritten by passing `fold: false`.
+    def fold?(name, opts = {})
+      !opts[:fold].is_a?(FalseClass) && super() && !%i(init).include?(name)
     end
 
     # Runs a script as a shell command.
