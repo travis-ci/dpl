@@ -8,7 +8,7 @@ module Dpl
           tbd
         str
 
-        opt '--api_key KEY', 'Heroku API key', required: true
+        opt '--api_key KEY', 'Heroku API key', required: true, secret: true
         opt '--version VERSION', internal: true # used in triggering a build, not sure this should be exposed?
 
         msgs pack:    'Creating application archive',

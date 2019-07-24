@@ -14,7 +14,7 @@ module Dpl
       env :surge
 
       opt '--login EMAIL', 'Surge login (the email address you use with Surge)', required: true
-      opt '--token TOKEN', 'Surge login token (can be retrieved with `surge token`)', required: true
+      opt '--token TOKEN', 'Surge login token (can be retrieved with `surge token`)', required: true, secret: true
       opt '--domain NAME', 'Domain to publish to. Not required if the domain is set in the CNAME file in the project folder.'
       opt '--project PATH', 'Path to project directory relative to repo root', default: '.'
 

@@ -11,7 +11,7 @@ module Dpl
       str
 
       opt '--username NAME', 'Puppet Forge user name', required: true, alias: :user
-      opt '--password PASS', 'Puppet Forge password', required: true
+      opt '--password PASS', 'Puppet Forge password', required: true, secret: true
       opt '--url URL', 'Puppet Forge URL to deploy to', default: 'https://forgeapi.puppetlabs.com/'
 
       msgs upload: 'Uploading to Puppet Forge %s/%s'

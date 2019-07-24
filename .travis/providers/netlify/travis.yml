@@ -8,10 +8,6 @@ before_deploy:
 
 deploy:
   - provider: netlify
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     skip_cleanup: true
 
     site: 192d4997-a87a-4cce-9c00-899ddc073766

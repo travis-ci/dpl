@@ -13,10 +13,6 @@ before_deploy:
 
 deploy:
   - provider: bintray
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     file: tmp/dpl_test/upload.json
     user: dpl-test
     key:

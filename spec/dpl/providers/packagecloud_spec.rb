@@ -31,7 +31,7 @@ describe Dpl::Providers::Packagecloud do
     file 'one.tgz'
     before { subject.run }
 
-    it { should have_run '[info] Logging in to https://packagecloud.io with user:****************oken' }
+    it { should have_run '[info] Logging in to https://packagecloud.io with user:t*******************' }
     it { should have_run '[info] Timeouts: connect_timeout=60 read_timeout=60 write_timeout=180' }
     it { should have_run '[info] Supported packages: one.tgz' }
     it { should have_run '[info] Pushing package: one.tgz to user/repo' }

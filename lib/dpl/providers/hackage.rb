@@ -9,7 +9,7 @@ module Dpl
       # apt 'cabal-install'
 
       opt '--username USER', 'Hackage username', required: true
-      opt '--password USER', 'Hackage password', required: true
+      opt '--password USER', 'Hackage password', required: true, secret: true
 
       cmds check:  'cabal check',
            sdist:  'cabal sdist',
@@ -20,16 +20,16 @@ module Dpl
            upload: 'cabal upload failed'
 
       def validate
-        shell :check, echo: true, assert: true
+        shell :check
       end
 
       def prepare
-        shell :sdist, echo: true, assert: true
+        shell :sdist
       end
 
       def deploy
         tar_files.each do |path|
-          shell :upload, path: path, assert: true
+          shell :upload, path: path
         end
       end
 

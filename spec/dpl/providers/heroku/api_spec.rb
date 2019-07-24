@@ -16,9 +16,7 @@ describe Dpl::Providers::Heroku::Api do
 
   describe 'by default', record: true do
     it { should have_run '[print] Authenticating ... ' }
-    it { should have_run '[info] success.' }
     it { should have_run '[print] Checking for app dpl ... ' }
-    it { should have_run '[info] success.' }
     it { should have_run '[info] Creating application archive' }
     it { should have_run %r(tar -zcf .*/.dpl.dpl.tgz --exclude \.git \.) }
     it { should have_run '[info] Uploading application archive' }

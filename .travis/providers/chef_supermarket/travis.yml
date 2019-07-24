@@ -11,10 +11,6 @@ before_deploy:
 
 deploy:
   - provider: chef_supermarket
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     skip_cleanup: true
 
     user_id: dpl-test

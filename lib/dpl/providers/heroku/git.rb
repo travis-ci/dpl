@@ -15,9 +15,9 @@ module Dpl
         # readme says username/password are allowed, but the code does not seem to
         # use them for writing the netrc https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/heroku/git.rb
         # so the api key is required in any case?
-        opt '--api_key KEY',   'Heroku API key'
+        opt '--api_key KEY',   'Heroku API key', secret: true
         opt '--username USER', 'Heroku username', alias: :user
-        opt '--password PASS', 'Heroku password'
+        opt '--password PASS', 'Heroku password', secret: true
         # mentioned in the code
         opt '--git URL'
 
@@ -31,8 +31,8 @@ module Dpl
         end
 
         def deploy
-          shell :fetch, echo: true
-          shell :push, echo: true
+          shell :fetch
+          shell :push
         end
 
         private

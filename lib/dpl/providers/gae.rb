@@ -36,16 +36,16 @@ module Dpl
 
       def install
         return unless install_sdk?
-        shell :install, echo: true, assert: true
-        shell :bootstrap, echo: true, assert: true
+        shell :install
+        shell :bootstrap
       end
 
       def login
-        shell :login, echo: true, assert: true
+        shell :login
       end
 
       def deploy
-        shell :deploy, echo: true
+        shell :deploy
         failed unless success?
       end
 

@@ -1,3 +1,5 @@
+require 'uri'
+
 module Dpl
   module Interpolate
     # Interpolates variables in the given string.
@@ -45,19 +47,42 @@ module Dpl
     #
     # Implementors are encouraged to use named variables when possible, but
     # are free to choose according to their needs.
-    def interpolate(str, args = [])
+    def interpolate(str, args = [], opts = {})
       return str % args if args.is_a?(Array) && args.any?
       args = {} if args.is_a?(Array)
-      Interpolate.new(str, self, args || {}).apply
+      Interpolator.new(str, self, args || {}, opts).apply
     end
 
-    class Interpolate < Struct.new(:str, :obj, :args)
+    # Obfuscates the given string.
+    #
+    # Replaces all but the first N characters with asterisks, and paddes
+    # the string to a standard length of 20 characters. N depends on the
+    # length of the original string.
+    def obfuscate(str, opts = {})
+      return str if opts[:secure] || !str.tainted?
+      keep = (str.length / (4.0 + str.length / 5).round).round
+      keep = 1 if keep == 0
+      str[0, keep] + '*' * (20 - keep)
+    end
+
+    class Interpolator < Struct.new(:str, :obj, :args, :opts)
+      include Interpolate
+
       MODIFIER = %i(obfuscate escape quote)
       PATTERN  = /%\{(\w+)\}/
       UPCASE   = /^[A-Z_]+$/
 
       def apply
-        str.gsub(PATTERN) { |match| lookup($1.to_sym) }
+        str = self.str.gsub(PATTERN) { lookup($1.to_sym) }
+        str = obfuscate(str) unless opts[:secure]
+        str = str.gsub('  ', ' ') if str.lines.size == 1
+        str
+      end
+
+      def obfuscate(str)
+        obj.opts.inject(str) do |str, (key, value)|
+          value.tainted? ? str.gsub(value, super(value)) : str
+        end
       end
 
       def lookup(key)

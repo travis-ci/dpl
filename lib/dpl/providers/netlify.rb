@@ -7,8 +7,8 @@ module Dpl
         tbd
       str
 
-      opt '--auth TOKEN',      'An auth token to log in with', required: true
       opt '--site ID',         'A site ID to deploy to', required: true
+      opt '--auth TOKEN',      'An auth token to log in with', required: true, secret: true
       opt '--dir DIR',         'Specify a folder to deploy'
       opt '--functions FUNCS', 'Specify a functions folder to deploy'
       opt '--message MSG',     'A message to include in the deploy log'

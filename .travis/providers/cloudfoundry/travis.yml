@@ -10,10 +10,6 @@ before_deploy:
 
 deploy:
   - provider: cloudfoundry
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     skip_cleanup: true
 
     api: https://api.run.pivotal.io

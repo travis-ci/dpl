@@ -5,10 +5,12 @@ module Dpl
         tbd
       str
 
-      opt '--token TOKEN', 'Cargo registry API token', required: true
+      opt '--token TOKEN', 'Cargo registry API token', required: true, secret: true
+
+      cmds publish: 'cargo publish --token %{token}'
 
       def deploy
-        shell "cargo publish --token #{token}", assert: 'Publish failed'
+        shell :publish
       end
     end
   end

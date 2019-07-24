@@ -12,10 +12,6 @@ before_deploy:
 
 deploy:
   - provider: snap
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     skip_cleanup: true
     snap: '**/*.snap'
 

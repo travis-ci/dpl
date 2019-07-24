@@ -13,8 +13,8 @@ module Dpl
 
       env :aws
 
-      opt '--access_key_id ID', 'AWS access key', required: true
-      opt '--secret_access_key KEY', 'AWS secret access key', required: true
+      opt '--access_key_id ID', 'AWS access key', required: true, secret: true
+      opt '--secret_access_key KEY', 'AWS secret access key', required: true, secret: true
       opt '--application NAME', 'CodeDeploy application name', required: true
       opt '--deployment_group GROUP', 'CodeDeploy deployment group name'
       opt '--revision_type TYPE', 'CodeDeploy revision type', enum: %w(s3 or github), downcase: true
@@ -30,7 +30,7 @@ module Dpl
       # mentioned only in the code
       opt '--description DESCR'
 
-      msgs login:                 'Using Access Key: %{obfuscated_access_key_id}',
+      msgs login:                 'Using Access Key: %{access_key_id}',
            deploy_triggered:      'Deployment triggered: %s',
            register_revision:     'Registering app revision with version=%s, etag=%s',
            waiting_for_deploy:    'Waiting for the deployment to finish ',

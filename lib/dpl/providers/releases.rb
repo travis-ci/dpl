@@ -13,9 +13,9 @@ module Dpl
 
       required :api_key, [:user, :password]
 
-      opt '--api_key TOKEN', 'GitHub oauth token (needs public_repo or repo permission)'
+      opt '--api_key TOKEN', 'GitHub oauth token (needs public_repo or repo permission)', secret: true
       opt '--username LOGIN', 'GitHub login name', alias: :user
-      opt '--password PASS', 'GitHub password'
+      opt '--password PASS', 'GitHub password', secret: true
       opt '--repo SLUG', 'GitHub repo slug', default: :repo_slug
       opt '--file FILE', 'File to release to GitHub', required: true, type: :array
       opt '--file_glob', 'Interpret files as globs'
