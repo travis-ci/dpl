@@ -61,8 +61,8 @@ uri = URI.parse('https://api.travis-ci.org/repo/travis-ci%2Fdpl/requests')
 
 body = {
   request: {
-    branch: 'dpl-2',
-    message: "test dpl (#{branch}) #{ARGV.any? ? ARGV.join(', ') : '(all providers)'} #{Time.now}",
+    branch: opts[:branch],
+    message: "test dpl (#{opts[:branch]}) #{ARGV.any? ? ARGV.join(', ') : '(all providers)'} #{Time.now}",
     config: {
       import: './.travis/blank.yml', # skips .travis.yml
       env: {
