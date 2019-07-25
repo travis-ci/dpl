@@ -300,14 +300,14 @@ module Dpl
     # This method is called unless the option # `--skip_cleanup` was given.
     def cleanup
       info :cleanup
-      keep.each { |path| shell "mv ./#{path} ~/#{path}", echo: false }
+      keep.each { |path| shell "mv ./#{path} ~/#{path}", echo: false, assert: false }
       shell 'git stash --all'
-      keep.each { |path| shell "mv ~/#{path} ./#{path}", echo: false }
+      keep.each { |path| shell "mv ~/#{path} ./#{path}", echo: false, assert: false }
     end
 
     # Restore files that have been cleaned up.
     def uncleanup
-      shell 'git stash pop'
+      shell 'git stash pop', assert: false
     end
 
     # Creates the directory `~/.dpl` as an internal working directory.
@@ -334,8 +334,8 @@ module Dpl
     # This adds the current user's name and email address (as user@localhost)
     # to the git config.
     def setup_git_config
-      shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost", echo: false
-      shell "git config user.name  >/dev/null 2>/dev/null || git config user.name  `whoami`", echo: false
+      shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost", echo: false, assert: false
+      shell "git config user.name  >/dev/null 2>/dev/null || git config user.name  `whoami`", echo: false, assert: false
     end
 
     # Sets up `git-ssh` and the GIT_SSH env var
@@ -366,14 +366,14 @@ module Dpl
     # retrying 30 times, waiting a second inbetween retries.
     def wait_for_ssh_access(host, port)
       info :ssh_remote_host, host, port
-      1.upto(30) { try_ssh_access(host, port) && break || sleep(1) }
+      1.upto(20) { try_ssh_access(host, port) && break || sleep(3) }
       success? ? info(:ssh_connected) : error(:ssh_failed)
     end
 
     # Tries to connect to the given SSH host and port.
     def try_ssh_access(host, port)
       info :ssh_try_connect
-      shell "#{ENV['GIT_SSH']} #{host} -p #{port}  2>&1 | grep -c 'PTY allocation request failed' > /dev/null"
+      shell "#{ENV['GIT_SSH']} #{host} -p #{port} 2>&1 | grep -c 'PTY allocation request failed' > /dev/null", echo: false, assert: false
     end
 
     # Creates a log fold.
@@ -605,8 +605,8 @@ module Dpl
       super(expand(path))
     end
 
-    def open(path, *args)
-      File.open(expand(path), *args)
+    def open(path, *args, &block)
+      File.open(expand(path), *args, &block)
     end
 
     def expand(path)
