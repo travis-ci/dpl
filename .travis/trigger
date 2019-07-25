@@ -46,7 +46,7 @@ def jobs(opts)
   paths.map do |path|
     job = YAML.load(File.read(path))
     job['name'] = path =~ %r(providers/(.+)/travis\.yml) && $1
-    job['deploy'][0].update(edge: opts, on: opts)
+    job['deploy'][0].update(edge: opts, on: opts) if job['deploy']
     job
   end
 end
@@ -57,7 +57,7 @@ end
 
 opts = parse_opts(token: ENV['TRAVIS_API_TOKEN'], branch: 'dpl-2')
 
-uri = URI.parse('https://api.travis-ci.org/repo/travis-ci%2Fdpl/requests')
+uri = URI.parse('https://api.travis-ci.com/repo/travis-ci%2Fdpl/requests')
 
 body = {
   request: {

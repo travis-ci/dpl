@@ -20,7 +20,7 @@ module Dpl
       cmds login:      './deis login %{controller} --username=%{username} --password=%{password}',
            add_key:    './deis keys:add %{key}',
            validate:   './deis apps:info --app=%{app}',
-           deploy:     "bash -c 'git push %{verbose} %{url} HEAD:refs/heads/master -f 2>&1 | tr -dc \"[:alnum:][:space:][:punct:]\" | sed -E \"s/remote: (\\[1G)+//\" | sed \"s/\\[K$//\"; exit ${PIPESTATUS[0]}'",
+           deploy:     'git push %{verbose} %{url} HEAD:refs/heads/master -f',
            run:        './deis run -a %{app} -- %{cmd}',
            remove_key: './deis keys:remove %{key_name}'
 
@@ -49,6 +49,8 @@ module Dpl
       end
 
       def deploy
+        puts '~/.dpl/git-ssh'
+        puts File.read(expand('~/.dpl/git-ssh'))
         shell :deploy
       end
 
