@@ -10,10 +10,6 @@ before_deploy:
 
 deploy:
   - provider: azure_web_apps
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     site: dpl-test
     username: dpltest
     password:

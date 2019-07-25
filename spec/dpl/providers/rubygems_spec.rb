@@ -11,8 +11,8 @@ describe Dpl::Providers::Rubygems do
   before { stub_request(:post, %r(/gems)).and_return(body: "Successfully registered gem: #{name}") }
   before { subject.run }
 
-  describe 'given --api_key key', record: true do
-    it { should have_run '[info] Authenticating with api key.' }
+  describe 'given --api_key 1234', record: true do
+    it { should have_run '[info] Authenticating with api key 1*******************' }
     it { should have_run '[print] Looking up gem dpl ... ' }
     it { should have_run '[info] found.' }
     it { should have_run 'gem build dpl.gemspec' }
@@ -23,8 +23,8 @@ describe Dpl::Providers::Rubygems do
     it { should_not have_run 'gem build other.gemspec' }
   end
 
-  describe 'given --user user --password pass' do
-    it { should have_run '[info] Authenticating with username user and password.' }
+  describe 'given --user user --password 1234' do
+    it { should have_run '[info] Authenticating with username user and password 1*******************' }
   end
 
   context do

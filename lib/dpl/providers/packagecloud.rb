@@ -12,7 +12,7 @@ module Dpl
       str
 
       opt '--username USER', 'The packagecloud.io username.', required: true
-      opt '--token TOKEN', 'The packagecloud.io api token.', required: true
+      opt '--token TOKEN', 'The packagecloud.io api token.', required: true, secret: true
       opt '--repository REPO', 'The repository to push to.', required: true
       opt '--local_dir DIR', 'The sub-directory of the built assets for deployment.', default: '.'
       opt '--dist DIST', 'Required for debian, rpm, and node.js packages (use "node" for node.js packages). The complete list of supported strings can be found on the packagecloud.io docs.'
@@ -29,7 +29,7 @@ module Dpl
       # readme (and thus above).
       NEED_DIST = %w(rpm deb dsc whl egg egg-info gz zip tar bz2 z tgz)
 
-      msgs authenticate:       'Logging in to https://packagecloud.io with %{username}:%{obfuscated_token}',
+      msgs authenticate:       'Logging in to https://packagecloud.io with %{username}:%{token}',
            timeouts:           'Timeouts: %{timeout_info}',
            unauthenticated:    'Could not authenticate to https://packagecloud.io, please check the credentials',
            supported_packages: 'Supported packages: %s',

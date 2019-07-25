@@ -9,8 +9,8 @@ module Dpl
         tbd
       str
 
-      opt '--api_key KEY', 'npm api key (can be retrieved from your local ~/.npmrc file)', required: true
       opt '--email EMAIL', 'npm email address'
+      opt '--api_key KEY', 'npm api key (can be retrieved from your local ~/.npmrc file)', required: true, secret: true
       opt '--access ACCESS', 'access level', enum: %w(public private)
       opt '--registry URL', 'npm registry url'
       opt '--tag TAGS', 'npm distribution tags to add'
@@ -19,7 +19,7 @@ module Dpl
       NPMRC = '~/.npmrc'
 
       msgs version:  'npm version: %{npm_version}',
-           login:    'Authenticated with API key %{obfuscated_api_key}'
+           login:    'Authenticated with API key %{api_key}'
 
       cmds registry: 'npm config set registry "%{registry}"',
            deploy:   'npm publish %{publish_opts}'
@@ -31,11 +31,11 @@ module Dpl
         info :version
         info :login
         write_npmrc
-        shell :registry, assert: true
+        shell :registry
       end
 
       def deploy
-        shell :deploy, assert: true
+        shell :deploy
       end
 
       def finish

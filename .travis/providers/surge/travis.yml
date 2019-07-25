@@ -9,10 +9,6 @@ before_deploy:
 
 deploy:
   - provider: surge
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     login:
       dpl-test@travis-ci.org
     token:

@@ -8,7 +8,7 @@ module Dpl
       experimental
 
       opt '--app APP',       'The Atlas application to upload to', required: true
-      opt '--token TOKEN',   'The Atlas API token', required: true
+      opt '--token TOKEN',   'The Atlas API token', required: true, secret: true
       opt '--paths PATH',    'Files or directories to upload', type: :array, default: ['.']
       opt '--address ADDR',  'The address of the Atlas server'
       opt '--include GLOB',  'Glob pattern of files or directories to include', type: :array
@@ -17,6 +17,8 @@ module Dpl
       opt '--vcs',           'Get lists of files to exclude and include from a VCS (Git, Mercurial or SVN)'
       opt '--args ARGS',     'Args to pass to the atlas-upload CLI'
       opt '--debug',         'Turn on debug output'
+
+      cmds upload: 'atlas-upload %{args} %{app} %{path}'
 
       def setup
         ENV['ATLAS_TOKEN'] = token
@@ -33,7 +35,8 @@ module Dpl
       private
 
         def upload(path)
-          shell ['atlas-upload', args, app, path].compact.join(' ')
+          shell :upload, path: path
+          # shell ['atlas-upload', args, app, path].compact.join(' ')
         end
 
         ARGS = %i(address exclude include metadata vcs debug)

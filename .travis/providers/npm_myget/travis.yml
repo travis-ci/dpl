@@ -9,10 +9,6 @@ before_deploy:
 
 deploy:
   - provider: npm
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     skip_cleanup: true
 
     registry: https://www.myget.org/F/dpl-test/npm/

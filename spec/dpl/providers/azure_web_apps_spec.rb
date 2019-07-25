@@ -5,15 +5,16 @@ describe Dpl::Providers::AzureWebApps do
     before { subject.run }
 
     describe 'by default' do
-      it { should have_run "git push --force --quiet https://name:pass@site.scm.azurewebsites.net:443/site.git HEAD:refs/heads/master > /dev/null 2>&1" }
+      it { should have_run '[info] $ git push --force --quiet https://name:p*******************@site.scm.azurewebsites.net:443/site.git HEAD:refs/heads/master > /dev/null 2>&1' }
+      it { should have_run 'git push --force --quiet https://name:pass@site.scm.azurewebsites.net:443/site.git HEAD:refs/heads/master > /dev/null 2>&1' }
     end
 
     describe 'given --slot slot' do
-      it { should have_run "git push --force --quiet https://name:pass@slot.scm.azurewebsites.net:443/site.git HEAD:refs/heads/master > /dev/null 2>&1" }
+      it { should have_run 'git push --force --quiet https://name:pass@slot.scm.azurewebsites.net:443/site.git HEAD:refs/heads/master > /dev/null 2>&1' }
     end
 
     describe 'given --verbose' do
-      it { should have_run "git push --force --quiet https://name:pass@site.scm.azurewebsites.net:443/site.git HEAD:refs/heads/master" }
+      it { should have_run 'git push --force --quiet https://name:pass@site.scm.azurewebsites.net:443/site.git HEAD:refs/heads/master' }
     end
 
     describe 'given --skip_cleanup' do
@@ -31,6 +32,6 @@ describe Dpl::Providers::AzureWebApps do
 
     before { subject.run }
 
-    it { should have_run "git push --force --quiet https://name:pass@slot.scm.azurewebsites.net:443/site.git HEAD:refs/heads/master > /dev/null 2>&1" }
+    it { should have_run 'git push --force --quiet https://name:pass@slot.scm.azurewebsites.net:443/site.git HEAD:refs/heads/master > /dev/null 2>&1' }
   end
 end

@@ -12,7 +12,7 @@ module Dpl
       str
 
       opt '--username USER',  'Rackspace username', required: true
-      opt '--api_key KEY',    'Rackspace API key', required: true
+      opt '--api_key KEY',    'Rackspace API key', required: true, secret: true
       opt '--region REGION',  'Cloudfiles region', required: true, enum: %w(ord dfw syd iad hkg)
       opt '--container NAME', 'Name of the container that files will be uploaded to', required: true
       opt '--glob GLOB',      'Paths to upload', default: '**/*'

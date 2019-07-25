@@ -6,8 +6,8 @@ module Dpl
       str
 
       opt '--slug SLUG', 'Launchpad project slug', format: /^~[^\/]+\/[^\/]+\/[^\/]+$/, example: '~user-name/project-name/branch-name'
-      opt '--oauth_token TOKEN', 'Launchpad OAuth token'
-      opt '--oauth_token_secret SECRET', 'Launchpad OAuth token secret'
+      opt '--oauth_token TOKEN', 'Launchpad OAuth token', secret: true
+      opt '--oauth_token_secret SECRET', 'Launchpad OAuth token secret', secret: true
 
       msgs invalid_credentials: 'Invalid credentials (%s)',
            unknown_error:       'Error: %s (%s)'

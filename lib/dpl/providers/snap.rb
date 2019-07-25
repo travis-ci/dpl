@@ -7,7 +7,7 @@ module Dpl
 
       env :snap
 
-      opt '--token TOKEN', 'Snap API token', required: true
+      opt '--token TOKEN', 'Snap API token', required: true, secret: true
       opt '--snap STR', 'Path to the snap to be pushed (can be a glob)', default: '**/*.snap'
       opt '--channel CHAN', 'Channel into which the snap will be released', default: 'edge'
 

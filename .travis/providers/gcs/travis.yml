@@ -10,10 +10,6 @@ before_deploy:
 
 deploy:
   - provider: gcs
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
 
     # dpl_test
     access_key_id:

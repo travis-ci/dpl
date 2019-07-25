@@ -10,7 +10,7 @@ module Dpl
         tbd
       str
 
-      opt '--github_token TOKEN', 'GitHub oauth token with repo permission', required: true
+      opt '--github_token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true
       opt '--repo SLUG', 'Repo slug', default: :repo_slug
       opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
       opt '--keep_history', 'Create incremental commit instead of doing push force'
@@ -109,7 +109,7 @@ module Dpl
 
       def copy_files
         debug :copy_files
-        shell :copy_files, assert: true
+        shell :copy_files
       end
 
       def git_clone
@@ -120,12 +120,12 @@ module Dpl
 
       def git_init
         debug :git_init
-        shell :git_init, assert: true
+        shell :git_init
       end
 
       def git_checkout
         debug :git_checkout
-        shell :git_checkout, assert: true
+        shell :git_checkout
       end
 
       def git_config
@@ -145,7 +145,7 @@ module Dpl
 
       def git_push
         info :git_push
-        shell :git_push, assert: true
+        shell :git_push
       end
 
       def git_status

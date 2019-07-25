@@ -9,16 +9,16 @@ module Dpl
 
       required :api_token, [:username, :password]
 
-      opt '--api_token TOKEN', 'Transifex API token'
+      opt '--api_token TOKEN', 'Transifex API token', secret: true
       opt '--username NAME',   'Transifex username'
-      opt '--password PASS',   'Transifex password'
+      opt '--password PASS',   'Transifex password', secret: true
       opt '--hostname NAME',   'Transifex hostname', default: 'www.transifex.com'
       opt '--cli_version VER', 'CLI version to install', default: '>=0.11'
 
       cmds status: 'tx status',
            push:   'tx push --source --no-interactive'
 
-      msgs login:  'Writing ~/.transifexrc (user: %{username}, password: %{obfuscated_password})'
+      msgs login:  'Writing ~/.transifexrc (user: %{username}, password: %{password})'
       errs push:   'Failure pushing to Transifex'
 
       RC = sq(<<-rc)
@@ -45,7 +45,7 @@ module Dpl
       private
 
         def write_rc
-          write_file '~/.transifexrc', interpolate(RC)
+          write_file '~/.transifexrc', interpolate(RC, opts, secure: true)
         end
 
         def username

@@ -1,5 +1,5 @@
 describe Dpl::Providers::Pypi do
-  let(:args)   { |e| %w(--username user --password pass) + args_from_description(e) }
+  let(:args)   { |e| %w(--username user --password 1234) + args_from_description(e) }
   let(:server) { 'https://upload.pypi.org/legacy/' }
 
   # TODO test env mappings
@@ -12,7 +12,7 @@ describe Dpl::Providers::Pypi do
       [pypi]
       repository: #{server}
       username: user
-      password: pass
+      password: 1234
     rc
   end
 
@@ -22,7 +22,7 @@ describe Dpl::Providers::Pypi do
     it { should have_run %r(pip install .* setuptools twine wheel) }
     it { should have_run '[info] Authenticated as user' }
     it { should have_run 'python setup.py sdist' }
-    it { should have_run 'twine upload  -r pypi dist/*' }
+    it { should have_run 'twine upload -r pypi dist/*' }
     it { should have_run 'rm -rf dist/*' }
     it { should have_written '~/.pypirc', pypirc }
     it { should have_run_in_order }

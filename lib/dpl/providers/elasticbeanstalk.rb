@@ -15,8 +15,8 @@ module Dpl
 
       env :aws, :elastic_beanstalk
 
-      opt '--access_key_id ID', 'AWS Access Key ID', required: true
-      opt '--secret_access_key KEY', 'AWS Secret Key', required: true
+      opt '--access_key_id ID', 'AWS Access Key ID', required: true, secret: true
+      opt '--secret_access_key KEY', 'AWS Secret Key', required: true, secret: true
       opt '--region REGION', 'AWS Region the Elastic Beanstalk app is running in', default: 'us-east-1'
       opt '--app NAME', 'Elastic Beanstalk application name', default: :repo_name
       opt '--env NAME', 'Elastic Beanstalk environment name which will be updated', required: true

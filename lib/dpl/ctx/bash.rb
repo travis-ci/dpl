@@ -257,18 +257,24 @@ module Dpl
       # @return [Boolean] whether or not the command was successful (has exited with the exit code 0)
       def shell(cmd, opts = {})
         cmd = "sudo #{cmd}" if opts[:sudo]
-        cmd = "#{cmd} > /dev/null 2>&1" if opts[:silence]
-        cmd = with_python(cmd, opts[:python]) if opts[:python]
+        cmd = with_silence(cmd, opts)
+        cmd = with_python(cmd, opts)
 
-        info "$ #{cmd}" if opts[:echo]
+        msg = opts[:msg] ? with_silence(opts[:msg], opts) : cmd
+        info "$ #{msg}" unless opts[:echo].is_a?(FalseClass)
+
         @last_out, @last_err, @last_status = retrying(opts[:retry] ? 2 : 0) do
           opts[:capture] ? open3(cmd, opts) : system(cmd, opts)
         end
 
         info opts[:info] % { out: last_out } if opts[:info] && success?
-        error assert(cmd, opts) % { err: last_err } if opts[:assert] && !success?
+        error assert(cmd, opts) % { err: last_err } unless success? || opts[:assert].is_a?(FalseClass)
 
         @last_status
+      end
+
+      def with_silence(str, opts)
+        opts[:silence] ? "#{str} > /dev/null 2>&1" : str
       end
 
       def retrying(max, tries = 0, status = false)
@@ -334,7 +340,8 @@ module Dpl
       #
       # Wraps the given command in a bash command that enforces the given
       # Python version to be used.
-      def with_python(cmd, version)
+      def with_python(cmd, opts)
+        return cmd unless version = opts[:python]
         "bash -c 'source $HOME/virtualenv/python#{version}/bin/activate; #{cmd.gsub(/'/, "'\\\\''")}'"
       end
 

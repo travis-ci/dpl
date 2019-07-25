@@ -8,7 +8,7 @@ module Dpl
       str
 
       opt '--username USER',       'Bluemix username', required: true
-      opt '--password PASS',       'Bluemix password', required: true
+      opt '--password PASS',       'Bluemix password', required: true, secret: true
       opt '--organization ORG',    'Bluemix target organization', required: true
       opt '--space SPACE',         'Bluemix target space', required: true
       opt '--region REGION',       'Bluemix region', default: 'ng', enum: %w(ng eu-gb eu-de au-syd)
@@ -33,8 +33,6 @@ module Dpl
            push:    './cf push %{push_args}',
            logout:  './cf logout'
 
-      msgs login:   '$ ./cf login -u %{username} -p %{obfuscated_password} -o %{organization} -s %{space}'
-
       errs install: 'Failed to install CLI tools',
            api:     'Failed to set api %{api}',
            login:   'Failed to login',
@@ -45,7 +43,7 @@ module Dpl
       msgs manifest_missing: 'Application must have a manifest.yml for unattended deployment'
 
       def install
-        shell :install, echo: true, assert: true
+        shell :install
       end
 
       def validate
@@ -53,18 +51,17 @@ module Dpl
       end
 
       def login
-        shell :api, echo: true, assert: true
-        info  :login
-        shell :login, assert: true
-        shell :target, echo: true, assert: true
+        shell :api
+        shell :login
+        shell :target
       end
 
       def deploy
-        shell :push, echo: true, assert: true
+        shell :push
       end
 
       def finish
-        shell :logout, echo: true, assert: true if logout?
+        shell :logout if logout?
       end
 
       private

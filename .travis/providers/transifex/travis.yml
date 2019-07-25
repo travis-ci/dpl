@@ -15,10 +15,6 @@ before_deploy:
 
 deploy:
   - provider: transifex
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     username:
       dpl_test
     password:

@@ -1,5 +1,5 @@
 describe Dpl::Providers::Gcs do
-  let(:args) { |e| %w(--access_key_id id --secret_access_key key --bucket bucket) + args_from_description(e) }
+  let(:args) { |e| %w(--access_key_id id --secret_access_key 12345 --bucket bucket) + args_from_description(e) }
 
   file 'one'
   file 'two/two'
@@ -12,7 +12,7 @@ describe Dpl::Providers::Gcs do
     it { should have_run 'mv /etc/boto.cfg /tmp/boto.cfg' }
     it { should have_run '[validate:runtime] python (>= 2.7.9)' }
     it { should have_run 'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-252.0.0-linux-x86_64.tar.gz | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false' }
-    it { should have_run '[info] Authenticating with access key: ********************' }
+    it { should have_run '[info] Authenticating with access key: i*******************' }
     it { should have_run 'git stash --all' }
     it { should have_run 'gsutil cp -r one gs://bucket/' }
     it { should have_run 'gsutil cp -r two/two gs://bucket/' }

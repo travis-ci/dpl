@@ -300,9 +300,9 @@ module Dpl
     # This method is called unless the option # `--skip_cleanup` was given.
     def cleanup
       info :cleanup
-      keep.each { |path| shell "mv ./#{path} ~/#{path}" }
+      keep.each { |path| shell "mv ./#{path} ~/#{path}", echo: false }
       shell 'git stash --all'
-      keep.each { |path| shell "mv ~/#{path} ./#{path}" }
+      keep.each { |path| shell "mv ~/#{path} ./#{path}", echo: false }
     end
 
     # Restore files that have been cleaned up.
@@ -334,8 +334,8 @@ module Dpl
     # This adds the current user's name and email address (as user@localhost)
     # to the git config.
     def setup_git_config
-      shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost"
-      shell "git config user.name  >/dev/null 2>/dev/null || git config user.name  `whoami`"
+      shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost", echo: false
+      shell "git config user.name  >/dev/null 2>/dev/null || git config user.name  `whoami`", echo: false
     end
 
     # Sets up `git-ssh` and the GIT_SSH env var
@@ -410,7 +410,7 @@ module Dpl
     # See Ctx::Bash#shell for details on the options accepted.
     def script(name, opts = {})
       opts[:assert] = name if opts[:assert].is_a?(TrueClass)
-      shell(asset(name).read, opts)
+      shell(asset(name).read, opts.merge(echo: false))
     end
 
     # Runs a single shell command.
@@ -421,9 +421,16 @@ module Dpl
     # See Ctx::Bash#shell for details on the options accepted.
     def shell(cmd, *args)
       opts = args.last.is_a?(Hash) ? args.pop : {}
-      # opts[:assert] = interpolate(err(cmd, opts[:assert]), args) if opts[:assert].is_a?(TrueClass) || opts[:assert].is_a?(Symbol)
-      opts[:assert] = err(cmd, opts[:assert]) if opts[:assert].is_a?(TrueClass) || opts[:assert].is_a?(Symbol)
-      cmd = interpolate(self.cmd(cmd), opts).strip if cmd.is_a?(Symbol)
+
+      if opts[:assert].is_a?(TrueClass) || opts[:assert].is_a?(Symbol)
+        opts[:assert] = err(cmd, opts[:assert])
+      end
+
+      if cmd.is_a?(Symbol)
+        opts[:msg] = interpolate(self.cmd(cmd), opts).strip
+        cmd = interpolate(self.cmd(cmd), opts, secure: true).strip
+      end
+
       ctx.shell(cmd, opts)
     end
 
@@ -518,21 +525,14 @@ module Dpl
       define_method(name) do |*keys|
         keys = keys.select { |key| key.is_a?(Symbol) }
         str = keys.map { |key| self.class.send(:"#{name}s")[key] }.first
-        str || raise("Could not find #{name}: #{keys.join(', ')}")
+        return str if str
+        name == :err ? raise("Could not find #{name}: #{keys.join(', ')}") : 'Failed'
       end
     end
 
     # Escapes the given string so it can be safely used in Bash.
     def escape(str)
       Shellwords.escape(str)
-    end
-
-    # Obfuscates the given string.
-    #
-    # Replaces all but the last 4 characters with asterisks, and paddes
-    # the string to a standard length of 20 characters.
-    def obfuscate(str)
-      str[-4, 4].to_s.rjust(20, '*')
     end
 
     # Double quotes the given string.

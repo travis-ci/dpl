@@ -15,10 +15,6 @@ before_deploy:
 
 deploy:
   - provider: boxfuse
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
     skip_cleanup: true
     user:
       secure: "TmfDWdpCryBNzDEiPwMdjQQt9IE1Pt8L7VMF597YjWl1xC2OAFvxQ5hk7gqDioYPz2/5xzMfLdRuyejcL9u6QQxMuCgHhfadJn6dwnhbO6uR9x72KY6FLXL5bsW/+XQTS+HwUvGq7xwka7An8QNUGMsFfvdHy5VZT5qRvPVWIN4="

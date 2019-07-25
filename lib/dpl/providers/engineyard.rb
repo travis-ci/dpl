@@ -11,10 +11,9 @@ module Dpl
 
       required :api_key, [:email, :password]
 
-      opt '--api_key KEY',     'Engine Yard API key'
-      # docs say it's username, but the code says it's email
+      opt '--api_key KEY',     'Engine Yard API key', secret: true
       opt '--email EMAIL',     'Engine Yard account email'
-      opt '--password PASS',   'Engine Yard password'
+      opt '--password PASS',   'Engine Yard password', secret: true
       opt '--app APP',         'Engine Yard application name', default: :repo_name
       opt '--environment ENV', 'Engine Yard application environment'
       opt '--migrate CMD',     'Engine Yard migration commands'

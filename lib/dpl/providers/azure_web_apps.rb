@@ -11,21 +11,21 @@ module Dpl
 
       opt '--site SITE',     'Web App name (e.g. myapp in myapp.azurewebsites.net)', required: true
       opt '--username NAME', 'Web App Deployment Username', required: true
-      opt '--password PASS', 'Web App Deployment Password', required: true
+      opt '--password PASS', 'Web App Deployment Password', required: true, secret: true
       opt '--slot SLOT',     'Slot name (if your app uses staging deployment)'
       opt '--verbose',       'Print deployment output from Azure. Warning: If authentication fails, Git prints credentials in clear text. Correct credentials remain hidden.'
 
       needs :git
 
-      cmds git_push:     'git push --force --quiet %{url} HEAD:refs/heads/master',
-           git_checkout: 'git checkout HEAD',
-           git_add:      'git add . --all --force',
-           git_commit:   'git commit -m "Skip cleanup commit"'
+      cmds push:     'git push --force --quiet %{url} HEAD:refs/heads/master',
+           checkout: 'git checkout HEAD',
+           add:      'git add . --all --force',
+           commit:   'git commit -m "Skip cleanup commit"'
 
-      msgs commit: 'Skipping cleanup, committing any changes',
-           deploy: 'Deploying to Azure Web App: %{site}'
+      msgs commit:   'Skipping cleanup, committing any changes',
+           deploy:   'Deploying to Azure Web App: %{site}'
 
-      errs git_push: 'Failed pushing to Azure Web Apps'
+      errs push:     'Failed pushing to Azure Web Apps'
 
       URL = 'https://%s:%s@%s.scm.azurewebsites.net:443/%s.git'
 
@@ -35,7 +35,7 @@ module Dpl
 
       def deploy
         info :deploy
-        shell :git_push, silence: !verbose?, assert: true
+        shell :push, silence: !verbose?
       end
 
       private
@@ -50,9 +50,9 @@ module Dpl
 
         def commit
           info :commit
-          shell :git_checkout
-          shell :git_add
-          shell :git_commit
+          shell :checkout
+          shell :add
+          shell :commit
         end
     end
   end
