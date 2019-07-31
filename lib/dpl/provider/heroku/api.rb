@@ -13,6 +13,7 @@ module DPL
           upload_archive
           trigger_build
           verify_build
+          delete_archive_file
         end
 
         def archive_file
@@ -21,7 +22,7 @@ module DPL
 
         def pack_archive
           log "creating application archive"
-          context.shell "tar -zcf #{archive_file} --exclude .git ."
+          context.shell "tar -C tmp/storage -zcf #{archive_file} --exclude .git deploy_test_app"
         end
 
         def upload_archive
@@ -66,6 +67,12 @@ module DPL
               error "deploy failed"
             end
           end
+        end
+
+        def delete_archive_file
+          log "build successfull, deleting archive file"
+          context.shell "rm #{archive_file}"
+
         end
 
         def get_url

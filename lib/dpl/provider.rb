@@ -87,10 +87,10 @@ module DPL
             install_cmd = "gem install #{local_gem}"
           end
 
-          context.shell(install_cmd)
-          Gem.clear_paths
+          # context.shell(install_cmd)
+          # Gem.clear_paths
 
-          require "dpl/provider/#{GEM_NAME_OF[class_name]}"
+          # require "dpl/provider/#{GEM_NAME_OF[class_name]}"
           provider = const_get(class_name).new(context, options)
         rescue DPL::Error
           if opt_lower
@@ -180,6 +180,7 @@ module DPL
 
     def deploy
       setup_git_credentials
+      clone_git_repo
       rm_rf ".dpl"
       mkdir_p ".dpl"
 
@@ -193,7 +194,7 @@ module DPL
           setup_git_ssh(".dpl/git-ssh", ".dpl/id_rsa")
         end
 
-        cleanup
+        # cleanup
       end
 
       context.fold("Deploying application") { push_app }
@@ -209,7 +210,7 @@ module DPL
       if needs_key?
         remove_key rescue nil
       end
-      uncleanup
+    #   uncleanup
     end
 
     def sha
@@ -249,6 +250,16 @@ module DPL
     def setup_git_credentials
       context.shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost"
       context.shell "git config user.name >/dev/null 2>/dev/null || git config user.name `whoami`@localhost"
+    end
+
+    def clone_git_repo
+      username = options[:username]
+      password = options[:password]
+      repository = options[:repository]
+      if(File.directory? "tmp/storage/#{repository}")
+        context.shell 'rm -rf -v !(".keep")'
+      end
+      context.shell "git clone https://#{username}:#{password}@github.com/#{username}/#{repository}.git tmp/storage/#{repository}"
     end
 
     def setup_git_ssh(path, key_path)
