@@ -45,7 +45,7 @@ end
 def jobs(opts)
   paths.map do |path|
     job = YAML.load(File.read(path))
-    job['name'] = path =~ %r(providers/(.+)/travis\.yml) && $1
+    job['name'] = path =~ %r(providers/(.+)/(.+)\.yml) && [$1, $2 == 'travis' ? nil : $2].compact.join(':')
     job['deploy'][0].update(edge: opts, on: opts) if job['deploy']
     job
   end

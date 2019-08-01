@@ -17,13 +17,11 @@ module Dpl
 
       INSTALL = 'https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh'
 
-      # curl -sL https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh | bash -s v2.20.0 && sudo mv deis /usr/local/bin/
-
       cmds install:    'curl -sSL %{INSTALL} | bash -x -s %{cli_version} && mv deis ~/.dpl',
            login:      'deis login %{controller} --username=%{username} --password=%{password}',
            add_key:    'deis keys:add %{key}',
            validate:   'deis apps:info --app=%{app}',
-           deploy:     'git push %{verbose} %{url} HEAD:refs/heads/master -f',
+           deploy:     'filter_log git push %{verbose} %{url} HEAD:refs/heads/master -f',
            run:        'deis run -a %{app} -- %{cmd}',
            remove_key: 'deis keys:remove %{key_name}'
 
@@ -36,6 +34,10 @@ module Dpl
 
       def install
         shell :install
+      end
+
+      def setup
+        install_hephy_log_filter
       end
 
       def login
@@ -87,6 +89,10 @@ module Dpl
 
       def host
         controller.gsub(/https?:\/\//, '').split(':')[0]
+      end
+
+      def install_hephy_log_filter
+        asset(:filter_log).copy('~/.dpl/')
       end
     end
   end
