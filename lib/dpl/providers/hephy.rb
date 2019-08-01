@@ -13,18 +13,19 @@ module Dpl
       opt '--verbose',         'Verbose log output'
 
       needs :git, :ssh_key
-      keep 'deis'
+      path '~/.dpl'
 
       INSTALL = 'https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh'
 
       # curl -sL https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh | bash -s v2.20.0 && sudo mv deis /usr/local/bin/
 
-      cmds login:      './deis login %{controller} --username=%{username} --password=%{password}',
-           add_key:    './deis keys:add %{key}',
-           validate:   './deis apps:info --app=%{app}',
+      cmds install:    'curl -sSL %{INSTALL} | bash -x -s %{cli_version} && mv deis ~/.dpl',
+           login:      'deis login %{controller} --username=%{username} --password=%{password}',
+           add_key:    'deis keys:add %{key}',
+           validate:   'deis apps:info --app=%{app}',
            deploy:     'git push %{verbose} %{url} HEAD:refs/heads/master -f',
-           run:        './deis run -a %{app} -- %{cmd}',
-           remove_key: './deis keys:remove %{key_name}'
+           run:        'deis run -a %{app} -- %{cmd}',
+           remove_key: 'deis keys:remove %{key_name}'
 
       errs login:      'Login failed.',
            add_key:    'Adding keys failed.',
@@ -34,7 +35,7 @@ module Dpl
            remove_key: 'Removing keys failed.'
 
       def install
-        shell "curl -sSL #{INSTALL} | bash -x -s #{cli_version}"
+        shell :install
       end
 
       def login
