@@ -1,7 +1,17 @@
+require 'fileutils'
+
 module Dpl
   module Assets
     class Asset < Struct.new(:provider, :namespace, :name)
+      include FileUtils
+
       DIR = File.expand_path('../../assets', __FILE__)
+
+      def copy(target)
+        system 'ls -al ~'
+        system 'ls -al ~/.dpl'
+        cp path, File.expand_path(target)
+      end
 
       def read
         exists? ? provider.interpolate(File.read(path)) : unknown
