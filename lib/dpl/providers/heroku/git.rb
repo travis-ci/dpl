@@ -31,7 +31,7 @@ module Dpl
         end
 
         def deploy
-          shell :fetch
+          shell :fetch, assert: false
           shell :push
         end
 

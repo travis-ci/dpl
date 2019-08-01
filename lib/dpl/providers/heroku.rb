@@ -4,7 +4,7 @@ module Dpl
       def self.new(ctx, args)
         # can this be a generic dispatch feature in Cl?
         return super unless registry_key.to_sym == :heroku
-        arg = args.detect { |arg| arg.include?('--provider') }
+        arg = args.detect { |arg| arg.include?('--strategy') }
         strategy = arg ? arg.split('=').last : 'api'
         Provider[:"heroku:#{strategy}"].new(ctx, args)
       end
