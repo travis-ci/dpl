@@ -507,7 +507,6 @@ module Dpl
         netrc = Netrc.read
         netrc[machine] = [login, password]
         netrc.save
-        puts File.read('/Users/sven/.netrc')
       end
 
       def sleep(sec)

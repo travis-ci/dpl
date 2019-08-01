@@ -17,6 +17,8 @@ module Dpl
 
       INSTALL = 'https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh'
 
+      # curl -sL https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh | bash -s v2.20.0 && sudo mv deis /usr/local/bin/
+
       cmds login:      './deis login %{controller} --username=%{username} --password=%{password}',
            add_key:    './deis keys:add %{key}',
            validate:   './deis apps:info --app=%{app}',
@@ -49,7 +51,7 @@ module Dpl
       end
 
       def deploy
-        puts '~/.dpl/git-ssh'
+        puts '$ cat ~/.dpl/git-ssh'
         puts File.read(expand('~/.dpl/git-ssh'))
         shell :deploy
       end
