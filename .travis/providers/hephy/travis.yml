@@ -14,8 +14,8 @@ before_deploy:
 deploy:
   - provider: hephy
     controller: deis.172.17.0.2.xip.io
-    username: user
-    password: pass
+    username: dpl-user
+    password: dpl-pass
     app: dpl-test
     skip_cleanup: true
 

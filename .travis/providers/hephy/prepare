@@ -64,7 +64,7 @@ until run deis register $controller --username=admin --password=admin --email=dp
   run kubectl -n deis get pods
   sleep 5
 done
-run deis register $controller --username=user --password=pass --email=dpl-test@travis-ci.com
+run deis register $controller --username=dpl-user --password=dpl-pass --email=dpl-test@travis-ci.com
 run deis create dpl-test
 run deis config:set PORT=3000 -a dpl-test
 

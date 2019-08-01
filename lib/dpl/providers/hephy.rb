@@ -51,8 +51,6 @@ module Dpl
       end
 
       def deploy
-        puts '$ cat ~/.dpl/git-ssh'
-        puts File.read(expand('~/.dpl/git-ssh'))
         shell :deploy
       end
 
