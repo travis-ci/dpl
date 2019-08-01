@@ -5,7 +5,7 @@ require 'open-uri'
 $stdout.sync = true
 
 expected = ENV['ID']
-url = 'dpl-test.172.17.0.2.xip.io'
+url = 'http://dpl-test.172.17.0.2.xip.io'
 
 def poll(url)
   uri = URI.parse(url)
