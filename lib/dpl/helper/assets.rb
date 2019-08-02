@@ -8,8 +8,6 @@ module Dpl
       DIR = File.expand_path('../../assets', __FILE__)
 
       def copy(target)
-        system 'ls -al ~'
-        system 'ls -al ~/.dpl'
         cp path, File.expand_path(target)
       end
 

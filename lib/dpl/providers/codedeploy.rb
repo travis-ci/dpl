@@ -17,7 +17,7 @@ module Dpl
       opt '--secret_access_key KEY', 'AWS secret access key', required: true, secret: true
       opt '--application NAME', 'CodeDeploy application name', required: true
       opt '--deployment_group GROUP', 'CodeDeploy deployment group name'
-      opt '--revision_type TYPE', 'CodeDeploy revision type', enum: %w(s3 or github), downcase: true
+      opt '--revision_type TYPE', 'CodeDeploy revision type', enum: %w(s3 github), downcase: true
       opt '--commit_id SHA', 'Commit ID in case of GitHub'
       opt '--repository NAME', 'Repository name in case of GitHub'
       opt '--bucket NAME', 'S3 bucket in case of S3'
