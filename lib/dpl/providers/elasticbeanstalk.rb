@@ -11,7 +11,7 @@ module Dpl
         tbd
       str
 
-      experimental
+      # experimental
 
       env :aws, :elastic_beanstalk
 

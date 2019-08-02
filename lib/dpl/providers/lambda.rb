@@ -26,7 +26,7 @@ module Dpl
       opt '--description DESCR',          'Description of the Lambda being created or updated'
       opt '--timeout SECS',               'Function execution time (in seconds) at which Lambda should terminate the function', default: 3
       opt '--memory_size MB',             'Amount of memory in MB to allocate to this Lambda', default: 128
-      opt '--runtime NAME',               'Lambda runtime to use', default: 'node'
+      opt '--runtime NAME',               'Lambda runtime to use', default: 'nodejs8.10', enum: %w(java8 nodejs8.10 nodejs10.x python2.7 python3.6 python3.7 dotnetcore2.1 go1.x ruby2.5)
       opt '--publish',                    'Create a new version of the code instead of replacing the existing one.'
       opt '--subnet_ids IDS',             'List of subnet IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSubnets and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--security_group_ids IDS',     'List of security group IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the access/secret key to work'

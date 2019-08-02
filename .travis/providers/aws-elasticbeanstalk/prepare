@@ -5,7 +5,7 @@ require 'fileutils'
 include FileUtils
 
 dir = 'tmp/dpl_test'
-mkdir_p dir
+mkdir_p "#{dir}/.ebextensions"
 chdir dir
 
 File.write 'Gemfile', <<~str
@@ -18,4 +18,28 @@ File.write 'config.ru', <<~str
   run ->(env) {  [200, { 'Content-type' => 'text/plain' }, ['#{ENV['ID']}']] }
 str
 
-system 'bundle install --path vendor/bundle'
+File.write '.ebextensions/gem_install_bundler.config', <<~str
+  files:
+    # Runs before `./10_bundle_install.sh`:
+    "/opt/elasticbeanstalk/hooks/appdeploy/pre/09_gem_install_bundler.sh" :
+      mode: "000775"
+      owner: root
+      group: users
+      content: |
+        #!/usr/bin/env bash
+
+        EB_APP_STAGING_DIR=$(/opt/elasticbeanstalk/bin/get-config container -k app_staging_dir)
+        EB_SCRIPT_DIR=$(/opt/elasticbeanstalk/bin/get-config container -k script_dir)
+        # Source the application's ruby, i.e. 2.6. Otherwise it will be 2.3, which will give this error: `bundler requires Ruby version >= 2.3.0`
+        . $EB_SCRIPT_DIR/use-app-ruby.sh
+
+        cd $EB_APP_STAGING_DIR
+        echo "Installing compatible bundler"
+        gem install bundler -v 2.0.1
+str
+
+# system 'bundle install --path vendor/bundle'
+
+system 'git init'
+system 'git add .'
+system 'git commit -am "dpl test"'

@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+dir = 'tmp/dpl_test'
+mkdir_p dir
+chdir dir
+
+File.write 'index.js', <<~str
+  exports.handler = async (event, context) => {
+      return '#{ENV['ID']}';
+  };
+str
+
