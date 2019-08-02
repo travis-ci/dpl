@@ -22,7 +22,7 @@ module Dpl
     end
 
     def zip_file
-      create(File.dirname(src), target, [src])
+      create([src])
     end
 
     def create(files)
@@ -42,7 +42,7 @@ module Dpl
       File.directory?(path)
     end
 
-    def cp
+    def copy
       FileUtils.cp(src, dest)
     end
 
