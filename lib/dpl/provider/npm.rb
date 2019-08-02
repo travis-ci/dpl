@@ -25,12 +25,19 @@ module DPL
         log "Authenticated with email #{option(:email)} and API key #{option(:api_key)[-4..-1].rjust(20, '*')}"
       end
 
+      def src_dir
+        context.env['TRAVIS_BUILD_DIR'] or Dir.pwd
+      end
+
       def push_app
         log "NPM API key format changed recently. If your deployment fails, check your API key in ~/.npmrc."
         log "http://docs.travis-ci.com/user/deployment/npm/"
         log "#{NPMRC_FILE} size: #{File.size(File.expand_path(NPMRC_FILE))}"
 
-        command = "env NPM_API_KEY=#{option(:api_key)} npm publish"
+        @build_dir = File.absolute_path(options[:local_dir] || '.', src_dir)
+        log "The target dir for deployment is '#{@build_dir}'."
+
+        command = "env NPM_API_KEY=#{option(:api_key)} npm publish #{@build_dir}"
         command << " --tag #{option(:tag)}" if options[:tag]
         context.shell "#{command}"
         FileUtils.rm(File.expand_path(NPMRC_FILE))
