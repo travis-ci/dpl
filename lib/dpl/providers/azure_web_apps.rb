@@ -20,9 +20,9 @@ module Dpl
       cmds push:     'git push --force --quiet %{url} HEAD:refs/heads/master',
            checkout: 'git checkout HEAD',
            add:      'git add . --all --force',
-           commit:   'git commit -m "Skip cleanup commit"'
+           commit:   'git commit -m "Cleanup commit"'
 
-      msgs commit:   'Skipping cleanup, committing any changes',
+      msgs commit:   'Skipping cleanup, committing changes to git',
            deploy:   'Deploying to Azure Web App: %{site}'
 
       errs push:     'Failed pushing to Azure Web Apps'
@@ -30,7 +30,7 @@ module Dpl
       URL = 'https://%s:%s@%s.scm.azurewebsites.net:443/%s.git'
 
       def setup
-        commit if skip_cleanup?
+        commit unless cleanup?
       end
 
       def deploy

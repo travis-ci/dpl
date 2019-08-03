@@ -17,7 +17,6 @@ deploy:
     username: dpl-user
     password: dpl-pass
     app: dpl-test
-    skip_cleanup: true
 
 after_deploy:
   - cd ../..

@@ -16,7 +16,6 @@ deploy:
       secure: "q7S5tf3vVoT8UEGWetIKvb+Nd2iAhFtDA3lfYSL1xOV3ZxIVhOgl18xLDHSfu8zAZ0kbcdrVy6I6+/ZGEYqgBAtjBth6DaUlvDv7Xqw+E/Ad7vTJyR7VE2gW07Gs5Ear3bN6ty3PKMaysjO7NXhqfSACWvBK1+DDdpLJ4eW2qAQ="
     project: ./tmp/dpl_test
     domain: travis-ci-dpl-test.surge.sh
-    skip_cleanup: true
 
 after_deploy:
   - .travis/providers/surge/test || TRAVIS_TEST_RESULT=$?

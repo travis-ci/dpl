@@ -22,7 +22,7 @@ module Dpl
       opt '--env NAME', 'Elastic Beanstalk environment name which will be updated', required: true
       opt '--bucket_name NAME', 'Bucket name to upload app to', required: true
       opt '--bucket_path PATH', 'Location within Bucket to upload app to'
-      opt '--zip_file PATH', 'The zip file that you want to deploy', requires: :skip_cleanup
+      opt '--zip_file PATH', 'The zip file that you want to deploy'
       opt '--only_create_app_version', 'Only create the app version, do not actually deploy it'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
       # only mentioned in the code, only on env vars

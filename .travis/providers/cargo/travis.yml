@@ -12,7 +12,6 @@ deploy:
   - provider: cargo
     token:
       secure: "nlMiqpZRZdJ7Q66jpsIaHst/qNQS5sGQyIZrpjWUWw/mKe0Hdgxdu0FzLA46rmJK2hwE5hIw2oGtlMyy6zaAitRu3GI60fd0ABN/HOwntcyL+IrcftQe0ZqaEMW9dWoQo7I2UWNujVFYPDTrckRogN8AXrEwK0bnOPS1fuxmJ4U="
-    skip_cleanup: true
 
 after_deploy:
   - cd ../..

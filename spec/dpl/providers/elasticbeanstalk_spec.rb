@@ -77,10 +77,6 @@ describe Dpl::Providers::Elasticbeanstalk do
   end
 
   describe 'given --zip_file other.zip' do
-    it { expect { subject.run }.to raise_error 'Missing option: skip_cleanup (required by zip_file)' }
-  end
-
-  describe 'given --skip_cleanup --zip_file other.zip' do
     before { subject.run }
     it { expect(File.exist?('other.zip')).to be true }
     it { should create_app_version with: /S3Key=travis-sha-.*.zip/ }

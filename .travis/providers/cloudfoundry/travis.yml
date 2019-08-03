@@ -10,7 +10,6 @@ before_deploy:
 
 deploy:
   - provider: cloudfoundry
-    skip_cleanup: true
 
     api: https://api.run.pivotal.io
     username: dpl-test@travis-ci.org

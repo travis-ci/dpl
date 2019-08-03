@@ -21,7 +21,6 @@ deploy:
     acl: public_read
     cache_control: "private, max-age=0, no-transform"
     detect_encoding: true
-    skip_cleanup: true
 
 # why does deploy.run not work here?
 after_deploy:

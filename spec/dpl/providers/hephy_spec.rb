@@ -8,10 +8,8 @@ describe Dpl::Providers::Hephy do
     it { should have_run 'deis login hephy.hephyapps.com --username=user --password=pass' }
     it { should have_run 'deis keys:add ~/.dpl/id_rsa.pub' }
     it { should have_run %r(dpl/.dpl/git-ssh hephy-builder.hephyapps.com -p 2222  2>&1 | grep -c 'PTY allocation request failed' > /dev/null) }
-    it { should have_run 'git stash --all' }
     it { should have_run %r(git push.*ssh://git@hephy-builder.hephyapps.com:2222/app.git) }
     it { should have_run "deis keys:remove machine_name" }
-    it { should have_run 'git stash pop' }
     it { should have_run_in_order }
   end
 

@@ -16,7 +16,6 @@ deploy:
     password:
       secure: "SGbyj5bmjkckk7K7FSnL+oZlmEgRylebE8WEtnOffv0r/c90hf+yPZHX8wpbxFOECfQrAMsGgN53q+DQfIbuA6KTNPWBegXrQWN0ehWYZWCUr1vMOrYb5dN/vepMEcfj4c+cRZohw8rubJFlGVxAXJGVcjZ6F+c1kzRxHXY9lLU="
     server: https://test.pypi.org/legacy/
-    skip_cleanup: true
 
 after_deploy:
   - cd ../..

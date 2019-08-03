@@ -23,7 +23,7 @@ module Dpl
            deploy:   'Deploying to Datica: %{target}'
 
       def setup
-        commit if skip_cleanup?
+        commit unless cleanup?
       end
 
       def deploy

@@ -17,7 +17,6 @@ before_deploy:
 deploy:
   - provider: gae
     project_id: dpl-test-244917
-    skip_cleanup: true
 
 after_deploy:
   - cd ../..

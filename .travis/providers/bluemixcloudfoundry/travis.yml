@@ -10,7 +10,6 @@ before_deploy:
 
 deploy:
   - provider: bluemixcloudfoundry
-    skip_cleanup: true
 
     api: https://api.eu-gb.bluemix.net
     username: dpl-test@travis-ci.org

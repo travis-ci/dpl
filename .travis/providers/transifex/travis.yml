@@ -19,7 +19,6 @@ deploy:
       dpl_test
     password:
       secure: "YcD1Dh+mdRLMbCZ8dWoP61nM0wjHp5mALspIqACKltZ4Rx/+2DEWfmbX+8haNtNi5/dsfxrsh1dSygpLBVMd6EJYcXgrw0fya8QCAeobM559WUZXgHkx641xr16yTpoGRDpkO5yM3DUVGWqAjTrUFEHVeQ/Gnlx98D7aS/azBQQ="
-    skip_cleanup: true
 
 after_deploy:
   - cd ../..

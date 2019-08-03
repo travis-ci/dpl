@@ -60,13 +60,14 @@ module Dpl
   # Dependencies declared as required, such as APT, NPM, or Python are going to
   # be installed as part of the `before_install` stage .
   #
-  # Cleanup is run as part of the `before_prepare` stage, unless the option
-  # `--skip_cleanup` has been given. This will use `git stash --all` in order
-  # to reset the working directory to the committed state, and cleanup any left
-  # over artifacts from the build process. Providers can use the DSL method
-  # `keep` in order to declare known artifacts (such as CLI tooling installed
-  # to the working directory) that needs to be moved out of the way and
-  # restored after the cleanup process.
+  # Cleanup is run as part of the `before_prepare` stage if the option
+  # `--cleanup` was given. This will use `git stash --all` in order to reset
+  # the working directory to the committed state, and cleanup any left over
+  # artifacts from the build process. Providers can use the DSL method `keep`
+  # in order to declare known artifacts (such as CLI tooling installed to the
+  # working directory) that needs to be moved out of the way and restored after
+  # the cleanup process. (It is recommended to place such artifacts outside of
+  # the build working directory though, for example in `~/.dpl`).
   #
   # The method `run_cmd` is called for each command specified using the `--run`
   # option. By default, these command are going to be run as local shell
@@ -143,15 +144,15 @@ module Dpl
 
     arg :provider, 'The provider name', required: true
 
-    opt '--run CMD',       'Command to execute after the deployment finished successfully', type: :array
-    opt '--skip_cleanup',  'Skip cleaning up build artifacts before the deployment'
-    opt '--stage NAME',    type: :array, internal: true, default: STAGES
-    opt '--fold',          internal: true
+    opt '--run CMD',      'Command to execute after the deployment finished successfully', type: :array
+    opt '--cleanup',      'Skip cleaning up build artifacts before the deployment', negate: %w(skip)
+    opt '--stage NAME',   type: :array, internal: true, default: STAGES
+    opt '--fold',         internal: true
 
     msgs before_install:  'Installing deployment dependencies',
          before_setup:    'Setting the build environment up for the deployment',
          setup_git_ssh:   'Setting up git-ssh',
-         cleanup:         'Cleaning up git repository with `git stash --all`. If you need build artifacts for deployment, set `deploy.skip_cleanup: true`. See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup.',
+         cleanup:         'Cleaning up git repository with `git stash --all`',
          experimental:    '%s support is experimental',
          ssh_keygen:      'Generating SSH key',
          setup_git_ua:    'Setting up git HTTP user agent',
@@ -252,7 +253,7 @@ module Dpl
     #
     # @see Provider#cleanup
     def before_prepare
-      cleanup unless skip_cleanup?
+      cleanup if cleanup?
     end
 
     # Runs each command as given by the user using the `--run` option.
@@ -284,7 +285,7 @@ module Dpl
     #   during `cleanup`.
     def before_finish
       remove_key if needs?(:ssh_key) && respond_to?(:remove_key)
-      uncleanup unless skip_cleanup?
+      uncleanup if cleanup?
       unmove_files(ctx)
     end
 
@@ -296,8 +297,6 @@ module Dpl
     # to declare known artifacts (such as CLI tooling installed to the working
     # directory) that needs to be moved out of the way and restored after the
     # cleanup process.
-    #
-    # This method is called unless the option # `--skip_cleanup` was given.
     def cleanup
       info :cleanup
       keep.each { |path| shell "mv ./#{path} ~/#{path}", echo: false, assert: false }

@@ -10,7 +10,6 @@ before_deploy:
 
 deploy:
   - provider: anynines
-    skip_cleanup: true
 
     username: dpl-test@travis-ci.org
     password:

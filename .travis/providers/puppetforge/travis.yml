@@ -10,7 +10,6 @@ before_deploy:
 
 deploy:
   - provider: puppetforge
-    skip_cleanup: true
 
     username: dpltest
     password:

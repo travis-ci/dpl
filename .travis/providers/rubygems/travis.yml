@@ -18,7 +18,6 @@ deploy:
       secure: "HNromDkeUbrKu+uvYt3SOQ/OCB//A2oxvlRudU1ECuh+5lyyLnXLR6vVxbAEUc7GNNNQp722lyV9Ni4y1GroIDGH7ysviA3u1cUaY8d1PHs3/xBxjgOnNcvnz4d4LUWIEhdELpacLPqe1U0H+EmfbyxV3EZ7Xo8IU7QrEMQyytw="
     gem: dpl_test
     gemspec_glob: ./dpl_*.gemspec
-    skip_cleanup: true
     host: http://localhost:9292
 
 after_deploy:
