@@ -56,15 +56,8 @@ module Dpl
       end
 
       def shell(cmd, opts = {})
-        cmd = with_silence(cmd, opts)
-        cmd = "[python:#{opts[:python]}] #{cmd}" if opts[:python]
-        msg = opts[:msg] ? with_silence(opts[:msg], opts) : cmd
-        info "$ #{msg}" unless opts[:echo].is_a?(FalseClass)
-        cmds << cmd
-      end
-
-      def with_silence(str, opts)
-        opts[:silence] ? "#{str} > /dev/null 2>&1" : str
+        info "$ #{cmd.msg}" unless opts[:echo].is_a?(FalseClass)
+        cmds << cmd.cmd
       end
 
       def success?

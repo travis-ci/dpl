@@ -1,6 +1,7 @@
 require 'stringio'
 
 describe Dpl::Ctx::Bash do
+  let(:provider) { Class.new(Dpl::Provider).new(ctx, []) }
   let(:stdout) { StringIO.new }
   let(:stderr) { StringIO.new }
   let(:status) { true }
@@ -232,7 +233,7 @@ describe Dpl::Ctx::Bash do
     describe 'python' do
       let!(:result) { subject.shell('echo one', python: '2.7') }
       it { expect(result).to be true }
-      it { should call_system "bash -c 'source $HOME/virtualenv/python2.7/bin/activate; echo one'" }
+      it { should call_system 'source $HOME/virtualenv/python2.7/bin/activate && echo one' }
     end
 
     describe 'info' do

@@ -3,6 +3,7 @@ require 'fileutils'
 require 'forwardable'
 require 'shellwords'
 require 'dpl/helper/assets'
+require 'dpl/helper/cmd'
 require 'dpl/helper/env'
 require 'dpl/helper/interpolate'
 require 'dpl/helper/squiggle'
@@ -420,17 +421,8 @@ module Dpl
     # See Ctx::Bash#shell for details on the options accepted.
     def shell(cmd, *args)
       opts = args.last.is_a?(Hash) ? args.pop : {}
-
-      if opts[:assert].is_a?(TrueClass) || opts[:assert].is_a?(Symbol)
-        opts[:assert] = err(cmd, opts[:assert])
-      end
-
-      if cmd.is_a?(Symbol)
-        opts[:msg] = interpolate(self.cmd(cmd), opts).strip
-        cmd = interpolate(self.cmd(cmd), opts, secure: true).strip
-      end
-
-      ctx.shell(cmd, opts)
+      cmd = Cmd.new(self, cmd, opts)
+      ctx.shell(cmd)
     end
 
     # @!method print
@@ -491,11 +483,9 @@ module Dpl
     # method `shell` in order to execute shell commands.
 
     # @!method err
-    # Looks up an error message from the error messgaes declared by the
+    # Looks up an error message from the error messages declared by the
     # provider (using the class level DSL), as needed by the option `assert`
     # when passed to the method `shell`.
-    #
-    # Not usually useful to be used by provider implementors directly.
 
     # @!method msg
     # Looks up a message from the messages declared by the provider (using the
@@ -517,13 +507,10 @@ module Dpl
     #
     # Note that the the method `interpolate` needs to be used in order to
     # interpolate variables used in a message (if any).
-
     %i(cmd err msg).each do |name|
       define_method(name) do |*keys|
-        keys = keys.select { |key| key.is_a?(Symbol) }
-        str = keys.map { |key| self.class.send(:"#{name}s")[key] }.first
-        return str if str
-        name == :err ? raise("Could not find #{name}: #{keys.join(', ')}") : 'Failed'
+        key = keys.detect { |key| key.is_a?(Symbol) }
+        self.class.send(:"#{name}s")[key] if key
       end
     end
 

@@ -247,7 +247,6 @@ module Dpl
       #
       # @option opts [Boolean] :echo    output the command to stdout before running it
       # @option opts [Boolean] :silence silence all log output by redirecting stdout and stderr to `/dev/null`
-      # @option opts [Boolean] :sudo    run the command with sudo prepended
       # @option opts [Boolean] :capture use `Open3.capture3` to capture stdout and stderr
       # @option opts [String]  :python  wrap the command into Bash code that enforces the given Python version to be used
       # @option opts [String]  :retry   retries the command 2 more times if it fails
@@ -256,25 +255,17 @@ module Dpl
       #
       # @return [Boolean] whether or not the command was successful (has exited with the exit code 0)
       def shell(cmd, opts = {})
-        cmd = "sudo #{cmd}" if opts[:sudo]
-        cmd = with_silence(cmd, opts)
-        cmd = with_python(cmd, opts)
+        cmd = Cmd.new(nil, cmd, opts) if cmd.is_a?(String)
+        info "$ #{cmd.msg}" if cmd.echo?
 
-        msg = opts[:msg] ? with_silence(opts[:msg], opts) : cmd
-        info "$ #{msg}" unless opts[:echo].is_a?(FalseClass)
-
-        @last_out, @last_err, @last_status = retrying(opts[:retry] ? 2 : 0) do
-          opts[:capture] ? open3(cmd, opts) : system(cmd, opts)
+        @last_out, @last_err, @last_status = retrying(cmd.retry ? 2 : 0) do
+          send(cmd.capture? ? :open3 : :system, cmd.cmd, cmd.opts)
         end
 
-        info opts[:info] % { out: last_out } if opts[:info] && success?
-        error assert(cmd, opts) % { err: last_err } unless success? || opts[:assert].is_a?(FalseClass)
+        info cmd.info % { out: last_out } if success? && cmd.info?
+        error cmd.err % { err: last_err } if failed? && cmd.assert?
 
         @last_status
-      end
-
-      def with_silence(str, opts)
-        opts[:silence] ? "#{str} > /dev/null 2>&1" : str
       end
 
       def retrying(max, tries = 0, status = false)
@@ -283,10 +274,6 @@ module Dpl
           out, err, status = yield
           return [out, err, status] if status || tries > max
         end
-      end
-
-      def assert(cmd, opts)
-        opts[:assert].is_a?(String) ? opts[:assert] : "Failed: #{cmd}"
       end
 
       # Runs a shell command and captures stdout, stderr, and the exit status
@@ -323,6 +310,11 @@ module Dpl
         !!@last_status
       end
 
+      # Whether or not the last executed shell command has failed.
+      def failed?
+        !success?
+      end
+
       # Returns the last child process' exit status
       #
       # Internal, and not to be used by implementors. $? is a read-only
@@ -334,15 +326,6 @@ module Dpl
       # Whether or not the current Ruby process runs with superuser priviledges.
       def sudo?
         Process::UID.eid == 0
-      end
-
-      # Enforces a Python version to be used.
-      #
-      # Wraps the given command in a bash command that enforces the given
-      # Python version to be used.
-      def with_python(cmd, opts)
-        return cmd unless version = opts[:python]
-        "bash -c 'source $HOME/virtualenv/python#{version}/bin/activate; #{cmd.gsub(/'/, "'\\\\''")}'"
       end
 
       # Returns current repository name
