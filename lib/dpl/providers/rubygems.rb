@@ -64,7 +64,7 @@ module Dpl
 
         def build
           Dir[gemspec_glob].each do |gemspec|
-            shell :gem_build, gemspec: gemspec.untaint, echo: true, assert: true
+            shell :gem_build, gemspec: gemspec.untaint
           end
         end
 

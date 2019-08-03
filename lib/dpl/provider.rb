@@ -495,9 +495,7 @@ module Dpl
     # provider (using the class level DSL), as needed by the option `assert`
     # when passed to the method `shell`.
     #
-    # Not usually useful to be used by provider implementors directly. Pass the
-    # option `assert: true` to the method `shell` in order to raise errors on
-    # failed shell commands.
+    # Not usually useful to be used by provider implementors directly.
 
     # @!method msg
     # Looks up a message from the messages declared by the provider (using the

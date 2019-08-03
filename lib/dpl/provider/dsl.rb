@@ -216,10 +216,10 @@ module Dpl
       # provides, rather than the details of (potentially long winded) error
       # message strings.
       #
-      # The method `shell` takes an option `assert`, which, if set to `true`
-      # will raise an error if the given shell command fails (returns a
-      # non-zero exit code). In this case the error message declared using
-      # `errs` will be used to raise with the eror.
+      # The method `shell` will raise an error if the given shell command fails
+      # (returns a non-zero exit code) unless it is called with the option
+      # `assert: false`. The error message declared using `errs` will be used
+      # to raise with the eror.
       #
       # For example, an error message declared on the class body like so:
       #
@@ -227,12 +227,11 @@ module Dpl
       #   errs git_push: 'Failed to push to %{target}'
       #   ```
       #
-      # will be included to the raised error if method `shell` was called
-      # with the option `assert: true`, and the given command has failed:
+      # will be included to the raised error if the given command has failed:
       #
       #   ```ruby
       #   def deploy
-      #     shell :git_push, assert: true
+      #     shell :git_push
       #   end
       #   ```
       #

@@ -35,11 +35,11 @@ module Dpl
       def login
         info :login
         write_rc
-        shell :status, echo: true
+        shell :status
       end
 
       def deploy
-        shell :push, echo: true, retry: true, assert: true
+        shell :push, retry: true
       end
 
       private
