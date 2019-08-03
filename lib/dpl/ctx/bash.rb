@@ -147,11 +147,11 @@ module Dpl
       def apt_get(package, cmd = package, opts = {})
         return if which(cmd)
         apt_update unless opts[:update].is_a?(FalseClass)
-        shell "sudo apt-get -qq install #{package}", echo: true, assert: true, retry: true
+        shell "sudo apt-get -qq install #{package}", retry: true
       end
 
       def apt_update
-        shell 'sudo apt-get update', echo: true, assert: true, retry: true
+        shell 'sudo apt-get update', retry: true
       end
 
       # Requires source files from Ruby gems, installing them on demand if required
@@ -190,7 +190,7 @@ module Dpl
       # @param package [String] the package name
       # @param cmd [String] an executable installed by the package, defaults to the package name
       def npm_install(package, cmd = package)
-        shell "npm install -g #{package}", echo: true, assert: true, retry: true unless which(cmd)
+        shell "npm install -g #{package}", retry: true unless which(cmd)
       end
 
       # Installs a Python package
@@ -208,7 +208,7 @@ module Dpl
         shell 'pip install urllib3[secure]'
         cmd = "pip install #{package}"
         cmd << pip_version(version) if version
-        shell cmd, echo: true, assert: true, retry: true
+        shell cmd, retry: true
       end
 
       def pip_version(version)

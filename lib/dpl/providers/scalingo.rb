@@ -33,7 +33,7 @@ module Dpl
            push:       'Failed to push the app.'
 
       def install
-        script :install, assert: true, echo: true
+        script :install
         ENV['SCALINGO_REGION'] = region if region?
       end
 
@@ -42,19 +42,19 @@ module Dpl
       end
 
       def add_key(key, type = nil)
-        shell :add_key, key: key, assert: true, echo: true
+        shell :add_key, key: key
       end
 
       def setup
-        shell :git_setup, assert: true, echo: true
+        shell :git_setup
       end
 
       def deploy
-        shell :push, assert: true, echo: true
+        shell :push
       end
 
       def remove_key
-        shell :remove_key, assert: true, echo: true
+        shell :remove_key
       end
     end
   end
