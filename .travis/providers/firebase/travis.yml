@@ -12,7 +12,6 @@ deploy:
     project: dpl-test-bf4fc
     token:
       secure: "KUowxrr0mZjo6UvjQMYL4ahDnVNsBJCFw16S/evIssXDP28FBLVCpxsty1MlkMzVQlQPm/hlgvByuiuOOKK1AhSvr8PBJqzAZIcg7Ijfn2vI3H2Qj1rCUJpEFhF0f7rnnoIV1kNEoWb3pcJrsporh2FT9yStcNlyvEbDVAJBh3A="
-    skip_cleanup: true
 
 after_deploy:
   - cd ../..

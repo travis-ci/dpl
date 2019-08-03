@@ -13,7 +13,6 @@ before_deploy:
 
 deploy:
   - provider: lambda
-    skip_cleanup: true
 
     # dpl_test
     access_key_id:
@@ -29,6 +28,5 @@ deploy:
 
 after_deploy:
   - cd ../..
-  # - gem install aws-sdk --version '~> 2.0'
   - gem install aws-sdk-lambda
   - .travis/providers/aws-lambda/test || TRAVIS_TEST_RESULT=$?

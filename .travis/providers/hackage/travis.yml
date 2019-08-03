@@ -17,7 +17,6 @@ deploy:
       branch: dpl-2
     on:
       branch: dpl-2
-    skip_cleanup: true
 
     username: dpl_test
     password:

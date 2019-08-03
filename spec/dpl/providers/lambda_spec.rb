@@ -56,7 +56,7 @@ describe Dpl::Providers::Lambda do
       it { should have_run_in_order }
 
       it { should have_called :create_function, FunctionName: 'func' }
-      it { should have_called :create_function, Runtime: 'node' }
+      it { should have_called :create_function, Runtime: 'nodejs8.10' }
       it { should have_called :create_function, Role: 'role' }
       it { should have_called :create_function, Handler: 'index.handler' }
       it { should have_called :create_function, Code: { ZipFile: instance_of(String) } }
@@ -82,8 +82,8 @@ describe Dpl::Providers::Lambda do
       it { should have_called :create_function, MemorySize: 64 }
     end
 
-    describe 'given --runtime python' do
-      it { should have_called :create_function, Runtime: 'python' }
+    describe 'given --runtime python2.7' do
+      it { should have_called :create_function, Runtime: 'python2.7' }
     end
 
     describe 'given --subnet_ids one --subnet_ids two' do
@@ -123,7 +123,7 @@ describe Dpl::Providers::Lambda do
       it { should have_run '[info] Updating existing function func.' }
       it { should have_run '[info] Updating code.' }
 
-      it { should have_called :update_function_config, Runtime: 'node' }
+      it { should have_called :update_function_config, Runtime: 'nodejs8.10' }
       it { should have_called :update_function_config, Role: 'role' }
       it { should have_called :update_function_config, Handler: 'index.handler' }
       it { should have_called :update_function_config, Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
@@ -149,8 +149,8 @@ describe Dpl::Providers::Lambda do
       it { should have_called :update_function_config, MemorySize: 64 }
     end
 
-    describe 'given --runtime python' do
-      it { should have_called :update_function_config, Runtime: 'python' }
+    describe 'given --runtime python2.7' do
+      it { should have_called :update_function_config, Runtime: 'python2.7' }
     end
 
     describe 'given --subnet_ids one --subnet_ids two' do

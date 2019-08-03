@@ -9,7 +9,6 @@ before_deploy:
 
 deploy:
   - provider: elasticbeanstalk
-    skip_cleanup: true
 
     # dpl_test
     access_key_id:

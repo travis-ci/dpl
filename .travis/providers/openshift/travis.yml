@@ -19,7 +19,6 @@ deploy:
     app: dpl-test-app
     token:
       secure: "ow46ArHZy2lQWdTCMz7zxmxGD6Jrgokw8DR0mNBLPl5kUSgq7x4LNI0SI5r/iS1Nus8cFe5JPQvgX/niYfPYplF4fNR42aRw3Who2OjaA98eeYqbkExP6nV48h5LGEOF8wgzVSgxUCO8SGduQqmjcJUwW30mOmmA1VUa8DFhgs0="
-    skip_cleanup: true
 
 after_deploy:
   - cd ../..

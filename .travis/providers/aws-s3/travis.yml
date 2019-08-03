@@ -17,7 +17,6 @@ deploy:
 
     bucket: travis-dpl-test
     local_dir: ./tmp/dpl_test
-    skip_cleanup: true
 
 # why does deploy.run not work here?
 after_deploy:

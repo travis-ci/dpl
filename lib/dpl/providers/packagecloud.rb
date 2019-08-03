@@ -37,7 +37,7 @@ module Dpl
            delete_package:     'Deleting package: %s on %s',
            push_package:       'Pushing package: %s to %s/%s',
            source_fragment:    'Found source fragment: %s for %s',
-           missing_packages:   'No supported packages found. Perhaps try skip_cleanup: true',
+           missing_packages:   'No supported packages found',
            missing_dist:       'Distribution needed for rpm, deb, python, and dsc packages (e.g. dist: ubuntu/breezy)',
            unknown_dist:       'Failed to find distribution %{dist}',
            error:              'Error: %s'

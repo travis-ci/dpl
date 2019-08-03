@@ -11,7 +11,6 @@ before_deploy:
 
 deploy:
   - provider: chef_supermarket
-    skip_cleanup: true
 
     user_id: dpl-test
     client_key: private_key

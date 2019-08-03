@@ -22,7 +22,6 @@ describe Dpl::Providers::Pages do
     it { should have_run 'git show --stat-count=10 HEAD' }
     it { should have_run '[info] Pushing to github.com/travis-ci/dpl.git' }
     it { should have_run 'git push --force --quiet "https://token@github.com/travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
-    it { should have_run 'git stash pop' }
     it { should have_run_in_order }
   end
 

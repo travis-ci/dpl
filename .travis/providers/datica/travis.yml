@@ -9,7 +9,6 @@ before_deploy:
 
 deploy:
   - provider: datica
-    skip_cleanup: true
 
 after_deploy:
   - cd ../..

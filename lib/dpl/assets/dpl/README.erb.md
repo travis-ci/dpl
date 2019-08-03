@@ -30,9 +30,17 @@ gem install dpl
 
 Running `dpl` in a terminal that saves history is potentially insecure as credentials may be saved as plain text in the history file, depending on the provider used.
 
-### Note
+### Cleaning up the Git working directory
 
-Dpl will deploy by default from the latest commit. Use the `--skip_cleanup` option to deploy from the current file system state, which may include artifacts left by your build process. Note that providers that deploy via git may ignore this option.
+Dpl v1 has cleaned up the Git working directory by default, using `git stash
+--all`. The default for this option has been changed in dpl v2, and users now
+need to opt in to cleaning up any left over artifacts from the build process
+by passing the option `--cleanup`.
+
+The status of the working directory is relevant only to providers that package
+and push it to the respective remote service (e.g. `heroku` when using the
+`api` strategy, package registry providers, etc.). Most providers will either
+push the latest Git commit, or pull code from a remote repository.
 
 ## Providers
 <% providers.each do |key, name|%>

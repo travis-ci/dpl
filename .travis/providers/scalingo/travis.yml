@@ -17,7 +17,6 @@ deploy:
     app: dpl-test
     api_key:
       secure: "Gtk9nEqjD8meGWVBB2oH7VGy4dFyQh9GmhICRWBXa2YNxQy98bikuXTPoDQJ395S4hWATLR1TWvp/rZ4H59GcOnyp8GuF9/O25DcLvZ1H0WCW75WckkpBPF8YEElVQlC17LmC3zAVG7qtp1QnmawhWXxJX7PL1B97tuqwXhVlcI="
-    skip_cleanup: true
 
 after_deploy:
   - cd ../..

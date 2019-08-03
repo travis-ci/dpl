@@ -78,7 +78,7 @@ describe Dpl::Providers::Packagecloud do
   end
 
   describe 'no packages' do
-    it { expect { subject.run }.to raise_error 'No supported packages found. Perhaps try skip_cleanup: true' }
+    it { expect { subject.run }.to raise_error 'No supported packages found' }
   end
 
       # opt '--package_glob', type: :array, default: ['**/*']
