@@ -1,8 +1,23 @@
 # Dpl [![Build Status](https://travis-ci.org/travis-ci/dpl.svg?branch=master)](https://travis-ci.org/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Gem Version](https://badge.fury.io/rb/dpl.png)](http://badge.fury.io/rb/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github)](https://coveralls.io/github/travis-ci/dpl?branch=master)
 
-## Development
+Dpl is command line tool for deploying code, html, packages, or build artifacts
+to various service providers.
 
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute to Dpl.
+It is tightly integrated into Travis CI's [deployment integration](https://docs.travis-ci.com/user/deployment),
+but also used, and recommended by others, such as [GitLab](https://docs.gitlab.com/ee/ci/examples/deployment/).
+
+It is maintained by Travis CI, largely community driven, and it has existed
+since 2013. If you find support your preferred deployment target missing,
+please do not hesitate to get in touch, and we'll help you [add it](#contributing-to-dpl).
+
+## Table of Contents
+
+* Supported Providers
+* Requirements
+* Installation
+* Usage
+  * Cleaning up the Git working directory
+* Providers
 
 ## Supported Providers
 
@@ -16,6 +31,12 @@ Dpl supports the following providers:
 
 Dpl requires Ruby 2.2 or later.
 
+Depending on the deployment target dpl might require additional runtimes (e.g.
+Go, Node.js, or Python) to be installed. It also might require sudo access in
+order to install a Debian package.
+
+Dpl is generally optimized for usage on Linux systems.
+
 ## Installation
 
 Installation:
@@ -26,9 +47,25 @@ gem install dpl
 
 ## Usage
 
-### Security Warning
+Dpl is meant and optimized for usage in ephemeral build environments, such
+as Travis CI, or any other CI/CD pipeline.
 
-Running `dpl` in a terminal that saves history is potentially insecure as credentials may be saved as plain text in the history file, depending on the provider used.
+Dpl is integrated to Travis CI's build configuration and build script compilation
+tooling, so all you need to do is add the proper configuration to your `.travis.yml`
+file. Please refer to [the documentation](https://docs.travis-ci.com/user/deployment)
+for details.
+
+For usage outside of Travis CI dpl can be executed as follows: Please refer to
+the respective [providers](#supported-providers) for details.
+
+```
+dpl [provider] [options]
+```
+
+Dpl can be used locally, e.g. on your development machine, but it might leave
+artifacts that may alter the behaviour of your system. If you encounter this
+behaviour and it presents a serious issue to you then please open an
+[issue](https://github.com/travis-ci/dpl/issues/new).
 
 ### Cleaning up the Git working directory
 
@@ -51,9 +88,24 @@ push the latest Git commit, or pull code from a remote repository.
 ```
 <% end -%>
 
+<%= File.read('./CONTRIBUTING.md').gsub(/^#/, '##') %>
+
+## Automatic closure of old issues
+
+If an issue has been left open and untouched for 90 days or more, we
+automatically close them. We do this to ensure that new issues are more easily
+noticeable, and that old issues that have been resolved or are no longer
+relevant are closed. You can read more about this [here](https://blog.travis-ci.com/2018-03-09-closing-old-issues).
+
+## Code of Conduct
+
+Please see [our code of conduct](CODE_OF_CONDUCT.md) for how to interact with
+this project and its community.
+
 ## Credits
 
-TBD
+A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors).
+This tool would not exist without your help.
 
 ## License
 
