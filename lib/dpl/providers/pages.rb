@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Pages < Provider
-      status :dev
+      status :alpha
 
       full_name 'GitHub Pages'
 

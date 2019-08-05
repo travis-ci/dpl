@@ -2,7 +2,7 @@ module Dpl
   module Providers
     class Heroku
       class Git < Heroku
-        status :dev
+        status :alpha
 
         full_name 'Heroku Git'
 

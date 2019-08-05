@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Openshift < Provider
-      status :dev
+      status :alpha
 
       full_name 'OpenShift'
 

@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Puppetforge < Provider
-      status :dev
+      status :alpha
 
       full_name 'Puppet Forge'
 

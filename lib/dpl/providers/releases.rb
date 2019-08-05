@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Releases < Provider
-      status :dev
+      status :alpha
 
       full_name 'GitHub Releases'
 

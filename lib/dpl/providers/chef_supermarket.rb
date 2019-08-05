@@ -5,7 +5,7 @@ module Dpl
       register :'chef-supermarket'
       register :chef_supermarket
 
-      status :dev
+      status :alpha
 
       full_name 'Chef Supermarket'
 
