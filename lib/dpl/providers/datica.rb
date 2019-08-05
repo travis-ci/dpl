@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Datica < Provider
+      status :dev
+
       register :datica, :catalyze
 
       description sq(<<-str)

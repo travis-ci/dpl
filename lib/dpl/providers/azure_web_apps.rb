@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class AzureWebApps < Provider
+      status :dev
+
       full_name 'Azure Web Apps'
 
       description sq(<<-str)

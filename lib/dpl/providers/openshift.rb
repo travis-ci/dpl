@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Openshift < Provider
+      status :dev
+
       full_name 'OpenShift'
 
       description sq(<<-str)

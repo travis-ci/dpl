@@ -2,8 +2,7 @@
 module Dpl
   module Providers
     class Elasticbeanstalk < Provider
-      gem 'aws-sdk', '~> 2.0'
-      gem 'rubyzip', '~> 1.2.2', require: 'zip'
+      status :dev
 
       full_name 'AWS Elastic Beanstalk'
 
@@ -11,7 +10,8 @@ module Dpl
         tbd
       str
 
-      # experimental
+      gem 'aws-sdk', '~> 2.0'
+      gem 'rubyzip', '~> 1.2.2', require: 'zip'
 
       env :aws, :elastic_beanstalk
 

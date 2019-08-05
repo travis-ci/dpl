@@ -3,14 +3,16 @@ require 'dpl/helper/zip'
 module Dpl
   module Providers
     class Lambda < Provider
-      gem 'aws-sdk', '~> 2.0'
-      gem 'rubyzip', '~> 1.2.2', require: 'zip'
+      status :dev
 
       full_name 'AWS Lambda'
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'aws-sdk', '~> 2.0'
+      gem 'rubyzip', '~> 1.2.2', require: 'zip'
 
       env :aws
 

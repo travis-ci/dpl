@@ -2,6 +2,8 @@ module Dpl
   module Providers
     class Heroku
       class Api < Heroku
+        status :dev
+
         full_name 'Heroku API'
 
         description sq(<<-str)

@@ -1,15 +1,17 @@
 module Dpl
   module Providers
     class Releases < Provider
-      gem 'octokit', '~> 4.14.0'
-      gem 'mime-types', '~> 3.2.2'
-      gem 'public_suffix', '~> 3.0.3'
+      status :dev
 
       full_name 'GitHub Releases'
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'octokit', '~> 4.14.0'
+      gem 'mime-types', '~> 3.2.2'
+      gem 'public_suffix', '~> 3.0.3'
 
       required :api_key, [:user, :password]
 

@@ -1,11 +1,11 @@
 module Dpl
   module Providers
     class Atlas < Provider
+      status :dev
+
       description sq(<<-str)
         tbd
       str
-
-      experimental
 
       opt '--app APP',       'The Atlas application to upload to', required: true
       opt '--token TOKEN',   'The Atlas API token', required: true, secret: true

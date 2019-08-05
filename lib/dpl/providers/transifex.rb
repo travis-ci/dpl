@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Transifex < Provider
+      status :dev
+
       description sq(<<-str)
         tbd
       str

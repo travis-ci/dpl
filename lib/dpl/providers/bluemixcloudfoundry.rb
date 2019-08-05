@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Bluemixcloudfoundry < Provider
+      status :dev
+
       full_name 'Bluemix Cloud Foundry'
 
       description sq(<<-str)

@@ -1,14 +1,16 @@
 module Dpl
   module Providers
     class Pages < Provider
-      gem 'octokit', '~> 4.14.0'
-      gem 'public_suffix', '~> 3.0.3'
+      status :dev
 
       full_name 'GitHub Pages'
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'octokit', '~> 4.14.0'
+      gem 'public_suffix', '~> 3.0.3'
 
       opt '--github_token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true
       opt '--repo SLUG', 'Repo slug', default: :repo_slug

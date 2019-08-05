@@ -1,13 +1,13 @@
 module Dpl
   module Providers
     class Opsworks < Provider
+      status :dev
+
       full_name 'AWS OpsWorks'
 
       description sq(<<-str)
         tbd
       str
-
-      experimental
 
       env :aws
 

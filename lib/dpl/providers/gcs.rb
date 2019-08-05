@@ -3,13 +3,15 @@ require 'kconv'
 module Dpl
   module Providers
     class Gcs < Provider
-      gem 'mime-types', '~> 3.2.2'
+      status :dev
 
       full_name 'Google Cloud Store'
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'mime-types', '~> 3.2.2'
 
       python '>= 2.7.9'
 

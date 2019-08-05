@@ -5,11 +5,13 @@ require 'find'
 module Dpl
   module Providers
     class Bintray < Provider
-      gem 'json', '~> 2.2.0'
+      status :dev
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'json', '~> 2.2.0'
 
       opt '--user USER', 'Bintray user', required: true
       opt '--key KEY', 'Bintray API key', required: true, secret: true

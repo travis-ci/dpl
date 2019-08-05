@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Script < Provider
+      status :dev
+
       summary 'Minimal provider that executes a custom command'
 
       description sq(<<-str)

@@ -3,13 +3,15 @@ module Dpl
     # split this up to CodeDeploy::Github and CodeDeploy::S3 using the
     # revision_type, in order to make opts more strict
     class Codedeploy < Provider
-      gem 'aws-sdk', '~> 2.0'
+      status :dev
 
       full_name 'AWS Code Deploy'
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'aws-sdk', '~> 2.0'
 
       env :aws
 

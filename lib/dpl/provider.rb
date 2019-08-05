@@ -154,7 +154,6 @@ module Dpl
          before_setup:    'Setting the build environment up for the deployment',
          setup_git_ssh:   'Setting up git-ssh',
          cleanup:         'Cleaning up git repository with `git stash --all`',
-         experimental:    '%s support is experimental',
          ssh_keygen:      'Generating SSH key',
          setup_git_ua:    'Setting up git HTTP user agent',
          ssh_remote_host: 'SSH remote is %s at port %s',
@@ -162,9 +161,9 @@ module Dpl
          ssh_connected:   'SSH connection established.',
          ssh_failed:      'Failed to establish SSH connection.'
 
-    def_delegators :'self.class', :experimental, :experimental?, :full_name,
-      :install_deps, :install_deps?, :keep, :move_files, :unmove_files,
-      :needs?, :runtimes, :validate_runtimes, :user_agent
+    def_delegators :'self.class', :status, :full_name, :install_deps,
+      :install_deps?, :keep, :move_files, :unmove_files, :needs?, :runtimes,
+      :validate_runtimes, :user_agent
 
     def_delegators :ctx, :apt_get, :gem_require, :npm_install, :pip_install,
       :build_dir, :build_number, :repo_slug, :encoding, :git_commit_msg,
@@ -221,7 +220,7 @@ module Dpl
     # Displays warning messages about experimental providers, and deprecated
     # options used.
     def before_init
-      warn msg(:experimental) % full_name if experimental?
+      send *status.announce if status && status.announce?
       deprecations.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
       move_files(ctx)
     end
