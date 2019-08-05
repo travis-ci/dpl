@@ -37,9 +37,12 @@ def post(uri, body, opts)
   http.request(req)
 end
 
+SKIP = /(cloud66|datica|snap)/
+
 def paths
   glob = ARGV.any? ? ARGV.join(',') : '*'
-  Dir[".travis/providers/{#{glob}}/*.yml"].sort
+  paths = Dir[".travis/providers/{#{glob}}/*.yml"].sort
+  paths.reject { |path| path =~ SKIP }
 end
 
 def jobs(opts)
