@@ -12,20 +12,15 @@ please do not hesitate to get in touch, and we'll help you [add it](#contributin
 
 ## Table of Contents
 
-* Supported Providers
-* Requirements
-* Installation
-* Usage
-  * Cleaning up the Git working directory
-* Providers
-
-## Supported Providers
-
-Dpl supports the following providers:
-
-<% providers.each do |key, name| -%>
-  * <%= "[#{name}](##{name.gsub(/\W+/, '-').downcase})" %>
-<% end -%>
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Supported Providers](#supported-providers)
+* [Contributing to Dpl](#contributing-to-dpl)
+* [Old Issues](#old-issues)
+* [Code of Conduct](#code-of-conduct)
+* [Credits](#credits)
+* [License](#license)
 
 ## Requirements
 
@@ -55,7 +50,7 @@ tooling, so all you need to do is add the proper configuration to your `.travis.
 file. Please refer to [the documentation](https://docs.travis-ci.com/user/deployment)
 for details.
 
-For usage outside of Travis CI dpl can be executed as follows: Please refer to
+For usage outside of Travis CI dpl can be executed as follows. Please refer to
 the respective [providers](#supported-providers) for details.
 
 ```
@@ -79,7 +74,14 @@ and push it to the respective remote service (e.g. `heroku` when using the
 `api` strategy, package registry providers, etc.). Most providers will either
 push the latest Git commit, or pull code from a remote repository.
 
-## Providers
+## Supported Providers
+
+Dpl supports the following providers:
+
+<% providers.each do |key, name| -%>
+  * <%= "[#{name}](##{name.gsub(/\W+/, '-').downcase})" %>
+<% end -%>
+
 <% providers.each do |key, name|%>
 ### <%= name %>
 
@@ -90,7 +92,7 @@ push the latest Git commit, or pull code from a remote repository.
 
 <%= File.read('./CONTRIBUTING.md').gsub(/^#/, '##') %>
 
-## Automatic closure of old issues
+## Old issues
 
 If an issue has been left open and untouched for 90 days or more, we
 automatically close them. We do this to ensure that new issues are more easily

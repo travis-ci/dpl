@@ -1,4 +1,4 @@
-# Dpl [![Build Status](https://travis-ci.com/travis-ci/dpl.svg?branch=master)](https://travis-ci.com/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Gem Version](https://badge.fury.io/rb/dpl.png)](http://badge.fury.io/rb/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github)](https://coveralls.io/github/travis-ci/dpl?branch=master)
+# Dpl [![Build Status](https://travis-ci.com/travis-ci/dpl.svg?branch=master)](https://travis-ci.com/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github)](https://coveralls.io/github/travis-ci/dpl?branch=master) [![Gem Version](https://badge.fury.io/rb/dpl.png)](http://badge.fury.io/rb/dpl)
 
 Dpl is command line tool for deploying code, html, packages, or build artifacts
 to various service providers.
@@ -12,12 +12,67 @@ please do not hesitate to get in touch, and we'll help you [add it](#contributin
 
 ## Table of Contents
 
-* Supported Providers
-* Requirements
-* Installation
-* Usage
-  * Cleaning up the Git working directory
-* Providers
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Supported Providers](#supported-providers)
+* [Contributing to Dpl](#contributing-to-dpl)
+* [Old Issues](#old-issues)
+* [Code of Conduct](#code-of-conduct)
+* [Credits](#credits)
+* [License](#license)
+
+## Requirements
+
+Dpl requires Ruby 2.2 or later.
+
+Depending on the deployment target dpl might require additional runtimes (e.g.
+Go, Node.js, or Python) to be installed. It also might require sudo access in
+order to install a Debian package.
+
+Dpl is generally optimized for usage on Linux systems.
+
+## Installation
+
+Installation:
+
+```
+gem install dpl
+```
+
+## Usage
+
+Dpl is meant and optimized for usage in ephemeral build environments, such
+as Travis CI, or any other CI/CD pipeline.
+
+Dpl is integrated to Travis CI's build configuration and build script compilation
+tooling, so all you need to do is add the proper configuration to your `.travis.yml`
+file. Please refer to [the documentation](https://docs.travis-ci.com/user/deployment)
+for details.
+
+For usage outside of Travis CI dpl can be executed as follows. Please refer to
+the respective [providers](#supported-providers) for details.
+
+```
+dpl [provider] [options]
+```
+
+Dpl can be used locally, e.g. on your development machine, but it might leave
+artifacts that may alter the behaviour of your system. If you encounter this
+behaviour and it presents a serious issue to you then please open an
+[issue](https://github.com/travis-ci/dpl/issues/new).
+
+### Cleaning up the Git working directory
+
+Dpl v1 has cleaned up the Git working directory by default, using `git stash
+--all`. The default for this option has been changed in dpl v2, and users now
+need to opt in to cleaning up any left over artifacts from the build process
+by passing the option `--cleanup`.
+
+The status of the working directory is relevant only to providers that package
+and push it to the respective remote service (e.g. `heroku` when using the
+`api` strategy, package registry providers, etc.). Most providers will either
+push the latest Git commit, or pull code from a remote repository.
 
 ## Supported Providers
 
@@ -65,59 +120,6 @@ Dpl supports the following providers:
   * [Testfairy](#testfairy)
   * [Transifex](#transifex)
 
-## Requirements
-
-Dpl requires Ruby 2.2 or later.
-
-Depending on the deployment target dpl might require additional runtimes (e.g.
-Go, Node.js, or Python) to be installed. It also might require sudo access in
-order to install a Debian package.
-
-Dpl is generally optimized for usage on Linux systems.
-
-## Installation
-
-Installation:
-
-```
-gem install dpl
-```
-
-## Usage
-
-Dpl is meant and optimized for usage in ephemeral build environments, such
-as Travis CI, or any other CI/CD pipeline.
-
-Dpl is integrated to Travis CI's build configuration and build script compilation
-tooling, so all you need to do is add the proper configuration to your `.travis.yml`
-file. Please refer to [the documentation](https://docs.travis-ci.com/user/deployment)
-for details.
-
-For usage outside of Travis CI dpl can be executed as follows: Please refer to
-the respective [providers](#supported-providers) for details.
-
-```
-dpl [provider] [options]
-```
-
-Dpl can be used locally, e.g. on your development machine, but it might leave
-artifacts that may alter the behaviour of your system. If you encounter this
-behaviour and it presents a serious issue to you then please open an
-[issue](https://github.com/travis-ci/dpl/issues/new).
-
-### Cleaning up the Git working directory
-
-Dpl v1 has cleaned up the Git working directory by default, using `git stash
---all`. The default for this option has been changed in dpl v2, and users now
-need to opt in to cleaning up any left over artifacts from the build process
-by passing the option `--cleanup`.
-
-The status of the working directory is relevant only to providers that package
-and push it to the respective remote service (e.g. `heroku` when using the
-`api` strategy, package registry providers, etc.). Most providers will either
-push the latest Git commit, or pull code from a remote repository.
-
-## Providers
 
 ### Anynines
 
@@ -1745,6 +1747,21 @@ Examples:
 
 ## Contributing to Dpl
 
+### Table of Contents
+
+* [Resources](#resources)
+* [Navigating the Codebase](#navigating-the-codebase)
+* [Lifecycle of the Deployment Process](#lifecycle-of-the-deployment-process)
+* [Deployment Tooling](#deployment-tooling)
+* [Runtime Dependencies](#runtime-dependencies)
+* [Unit Tests](#unit-tests)
+* [Runtime Dependency Installation Tests](#runtime-dependency-installation-tests)
+* [Integration Tests](#integration-tests)
+* [Testing Dpl Branches or Forks on Travis CI](#testing-dpl-branches-or-forks-on-travis-ci)
+* [Code Conventions](#code-conventions)
+* [Naming Conventions](#naming-conventions)
+* [Updating the README](#updating-the-readme)
+
 Dpl is a central component in Travis CI, and has been around for a long time.
 
 This library always has been a community effort first. There probably is not a
@@ -1762,6 +1779,8 @@ interactions with the project.
 Dpl is written in Ruby, and we assume that you familiarize yourself with our
 documentation as much as needed.
 
+### Resources
+
 Hopefully helpful resources are:
 
 * This [document](CONTRIBUTING.md)
@@ -1769,7 +1788,7 @@ Hopefully helpful resources are:
 * The [dpl API docs](https://www.rubydoc.info/github/travis-ci/dpl) on rubydocs.info
 * The [cl README](https://github.com/svenfuchs/cl/blob/master/README.md)
 
-### Navigating the codebase
+### Navigating the Codebase
 
 All provider specific classes live in [dpl/providers](lib/dpl/providers).
 These represent the CLI commands that are executed when the command line
@@ -1834,7 +1853,7 @@ lib
         └── ⋮
 ```
 
-#### Lifecycle of the deployment process
+### Lifecycle of the Deployment Process
 
 When a provider class is instantiated and run it will go through a number
 of stages that make up the deployment process.
@@ -1849,7 +1868,7 @@ stages have to be filled in or implmented. The `Provider` base class checks for
 these methods, and runs them, if present, so that implementors can choose
 semantically fitting names for their providers.
 
-### Deployment tooling
+### Deployment Tooling
 
 If you are adding a new deployment provider please choose the tooling you are
 going to use carefully.
@@ -1877,7 +1896,7 @@ provider client implementation, please only do so if the gem is supported by
 the respective company officially. We may choose to reject including runtime
 dependencies that do not look stable or widely supported.
 
-### Runtime dependencies and local development
+### Runtime Dependencies
 
 Runtime dependencies can be declared on the provider class using the
 [DSL](/travis-ci/dpl/blob/masterlib/dpl/provider/dsl.rb).
@@ -1889,7 +1908,7 @@ Ruby gem dependencies will be installed using Bundler's [inline API](https://git
 at the beginning of the deployment process, so they are available in the same
 Ruby process from then on.
 
-### Unit tests
+### Unit Tests
 
 `Dpl` uses [RSpec](https://github.com/rspec) for tests. The specs reside in
 `spec`, and each provider class has a corresponding file
@@ -1908,7 +1927,7 @@ If your provider has to talk to an external HTTP API then ideally use
 any means possible try to avoid mocking or stubbing Ruby client classes (this
 is not always possible, but should be considered).
 
-#### Running unit tests locally
+#### Running Unit Tests Locally
 
 You can run the unit test suite locally as follows:
 
@@ -1931,7 +1950,7 @@ bundle exec rspec spec/dpl/providers/[provider]_spec.rb:25
 
 These tests can be run safely on any development machine, anywhere.
 
-### Runtime dependency installation tests
+### Runtime Dependency Installation Tests
 
 We additionally run tests that exercise runtime dependency installation on
 Travis CI.
@@ -1940,7 +1959,7 @@ These live in [.travis/test_install.rb](.travis/test_install.rb). It is not
 advisable to run these tests outside of an ephemeral VM or container that can
 be safely discarded, as they are going to leave various artifacts around.
 
-### Integration tests
+### Integration Tests
 
 In order to ensure proper integration with the service providers supported
 we also periodically run a test suite that exercises actual deployments to
@@ -1986,7 +2005,7 @@ export TRAVIS_API_TOKEN=[token]
 The `trigger` script accepts multiple provider names as arguments. If no
 arguments are given then tests for all providers will be run.
 
-#### Integration test configuration
+#### Integration Test Configuration
 
 In the build config YAML snippet make sure to use the branch of your fork for the
 deployment tooling, and allow the deployment to run on your branch:
@@ -2043,7 +2062,7 @@ fashion, but you have a successful deployment that can be verified manually,
 please still open a pull request, and talk to us. Any test is better than no
 test.
 
-### Testing dpl branches or forks on Travis CI
+### Testing Dpl Branches or Forks on Travis CI
 
 It is possible to test a new deployment provider or new functionality of dpl on
 Travis CI. In order to do so, add proper configuraiton on the `edge` key to
@@ -2068,7 +2087,7 @@ When submitting a pull request, please be sure to run at least one deployment
 with the new configuration, and provide a link to the build in your pull
 request.
 
-### Code conventions
+### Code Conventions
 
 Dpl does not follow any strict code styleguide.
 
@@ -2088,7 +2107,7 @@ If you are rather unfamiliar with Ruby, and have trouble following our code
 style then please submit your pull request anyway, or get in touch, so we can
 help.
 
-### Naming conventions
+### Naming Conventions
 
 Dpl uses constant names following Ruby naming conventions. I.e. constant
 names use `CamelCase`, and they live in files named in `snake_case.rb`.
@@ -2106,8 +2125,19 @@ even though Amazon Web Services brand name is `AWS` the module name
 they chose in their [aws-sdk](https://github.com/aws/aws-sdk-ruby) is
 `Aws`, not `AWS`.
 
+### Updating the README
 
-## Automatic closure of old issues
+The [README](/travis-ci/dpl/blob/master/README.md) is generated from a
+[template](/travis-ci/dpl/blob/master/lib/dpl/assets/dpl/README.erb.md).
+
+In order to update the README please edit the template, and run the command:
+
+```
+bin/readme > README.md
+```
+
+
+## Old issues
 
 If an issue has been left open and untouched for 90 days or more, we
 automatically close them. We do this to ensure that new issues are more easily
