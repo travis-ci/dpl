@@ -4,10 +4,10 @@ module Dpl
       STATUS = %i(dev alpha beta stable deprecated)
 
       MSG = {
-        dev:        'Support for %s is in development',
-        alpha:      'Support for %s is in alpha',
-        beta:       'Support for %s is in beta',
-        deprecated: 'Support for %s is deprecated',
+        dev:        'Support for deployments to %s is in development',
+        alpha:      'Support for deployments to %s is in alpha',
+        beta:       'Support for deployments to %s is in beta',
+        deprecated: 'Support for deployments to %s is deprecated',
         pre_stable: 'Please see our documentation on maturity statuses: %s'
       }
 
@@ -22,22 +22,14 @@ module Dpl
         !stable?
       end
 
-      def announce
-        [log_level, msg]
+      def msg
+        msg = "#{MSG[status] % name}"
+        msg << "(#{info})" if info
+        msg << ". #{MSG[:pre_stable] % DOCS}" if pre_stable?
+        "\n#{msg}\n"
       end
 
       private
-
-        def log_level
-          deprecated? ? :warn : :info
-        end
-
-        def msg
-          msg = "#{MSG[status] % name}"
-          msg << "(#{info})" if info
-          msg << ". #{MSG[:pre_stable] % DOCS}" if pre_stable?
-          msg
-        end
 
         def name
           provider.full_name

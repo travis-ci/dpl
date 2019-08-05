@@ -220,7 +220,7 @@ module Dpl
     # Displays warning messages about experimental providers, and deprecated
     # options used.
     def before_init
-      send *status.announce if status && status.announce?
+      warn status.msg if status && status.announce?
       deprecations.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
       move_files(ctx)
     end
