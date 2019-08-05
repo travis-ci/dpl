@@ -8,15 +8,24 @@ require 'uri'
 
 $stdout.sync = true
 
-uri  = URI.parse('http://localhost:9292/gems/dpl_test')
-http = Net::HTTP.new(uri.host, uri.port)
-req  = Net::HTTP::Get.new(uri.path)
+url = 'http://localhost:9292/gems/dpl_test'
+
+def poll(url)
+  uri = URI.parse(url)
+  http = Net::HTTP.new(uri.host, uri.port)
+  req = Net::HTTP::Get.new(uri.path)
+  res = http.request(req)
+  res.code
+rescue => e
+  puts e.message
+end
+
 
 5.times do
-  res  = http.request(req)
+  status = poll(url)
   puts 'GET http://localhost:9292/gems/dpl_test'
-  puts "Status: #{res.code}"
-  exit 0 if res.code.to_i == 200
+  puts "Status: #{status}"
+  exit 0 if status.to_i == 200
   sleep 3
 end
 

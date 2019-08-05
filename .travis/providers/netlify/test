@@ -8,9 +8,9 @@ expected = ENV['ID']
 url = 'https://dpl-test.netlify.com'
 
 def poll(url)
-  uri = URI.parse(url)
-  actual = uri.read
-rescue OpenURI::HTTPError => e
+  URI.parse(url).read
+rescue => e
+  puts e.message
 end
 
 20.times do

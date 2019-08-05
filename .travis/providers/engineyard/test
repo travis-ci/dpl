@@ -6,11 +6,17 @@ require 'open-uri'
 $stdout.sync = true
 
 expected = ENV['ID']
+url = 'http://ec2-3-219-122-248.compute-1.amazonaws.com/'
 success = nil
 
+def poll(url)
+  URI.parse(url).read
+rescue => e
+  puts e.message
+end
+
 20.times do
-  uri = URI.parse('http://ec2-3-219-122-248.compute-1.amazonaws.com/')
-  actual = uri.read
+  actual = poll(url)
   puts "expected: #{expected.inspect}"
   puts "actual: #{actual.inspect}"
   sleep(5) && next unless actual == expected

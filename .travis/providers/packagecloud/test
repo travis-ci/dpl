@@ -8,11 +8,15 @@ $stdout.sync = true
 expected = ENV['ID']
 url = 'https://packagecloud.io/api/v1/repos/dpl-test/dpl-test/package/gem/dpl_test/versions.json'
 
+def poll(url)
+  URI.parse(url).read(http_basic_authentication: [ENV['PACKAGECLOUD_TOKEN'], ''])
+rescue => e
+  puts e.message
+end
+
 10.times do
   puts "Checking #{url}"
-  uri = URI.parse(url)
-  json = uri.read(http_basic_authentication: [ENV['PACKAGECLOUD_TOKEN'], ''])
-  data = JSON.load(json)
+  data = JSON.load(poll(url))
   actual = data.map { |version| version['version'].split('.').last }
   puts "expected: #{expected.inspect}"
   puts "actual: #{actual.inspect}"

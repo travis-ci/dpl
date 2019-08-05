@@ -5,14 +5,14 @@ require 'json'
 
 $stdout.sync = true
 
+expected = ENV['ID']
+url = "https://www.myget.org/F/dpl-test/npm/@dpl-test/dpl-test/-/@dpl-test/dpl-test-1.0.0-#{ENV['ID']}.tgz"
+
 def poll(url)
   URI.parse(url).read
 rescue => e
   puts e.message
 end
-
-expected = ENV['ID']
-url = "https://www.myget.org/F/dpl-test/npm/@dpl-test/dpl-test/-/@dpl-test/dpl-test-1.0.0-#{ENV['ID']}.tgz"
 
 10.times do
   puts "Checking #{url}"

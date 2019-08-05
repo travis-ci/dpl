@@ -8,10 +8,15 @@ $stdout.sync = true
 expected = ENV['ID']
 url = 'https://api.github.com/repos/travis-ci/dpl_test/releases/latest'
 
+def poll(url)
+  URI.parse(url).read
+rescue => e
+  puts e.message
+end
+
 10.times do
   puts "Checking #{url}"
-  uri = URI.parse(url)
-  actual = JSON.load(uri.read)['tag_name']
+  actual = JSON.load(poll(url))['tag_name']
   puts "expected: #{expected.inspect}"
   puts "actual: #{actual.inspect}"
   exit 0 if actual == expected

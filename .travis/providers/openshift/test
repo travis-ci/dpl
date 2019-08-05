@@ -5,10 +5,16 @@ require 'open-uri'
 $stdout.sync = true
 
 expected = ENV['ID']
+url = 'http://dpl-test-app-dpl-test.apps.us-west-2.online-starter.openshift.com/'
+
+def poll(url)
+  URI.parse(url).read
+rescue => e
+  puts e.message
+end
 
 20.times do
-  uri = URI.parse('http://dpl-test-app-dpl-test.apps.us-west-2.online-starter.openshift.com/')
-  actual = uri.read
+  actual = poll(url)
   puts "expected: #{expected.inspect}"
   puts "actual: #{actual.inspect}"
   exit 0 if actual == expected
