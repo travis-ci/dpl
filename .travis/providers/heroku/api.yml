@@ -5,7 +5,7 @@ script:
 
 before_deploy:
   - .travis/providers/heroku/prepare
-  - cd tmp/dpl_test_heroku
+  - cd tmp/dpl_test
 
 deploy:
   - provider: heroku
