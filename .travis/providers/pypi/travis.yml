@@ -6,7 +6,7 @@ script:
   - true
 
 before_deploy:
-  - export DPL_TEST_VERSION=$(curl -s https://test.pypi.org/pypi/dpl-test/json | jq -r '.releases | keys[]' | sort | tail -n 1 | ruby -e 'v = $stdin.read.chomp.split("."); v = %w(0 0 0) if v.empty?; v[2] = v[2].to_i + 1; puts v.join(".")')
+  - export DPL_TEST_VERSION=$(curl -s https://test.pypi.org/pypi/dpl-test/json | jq -r '.releases | keys[]' | sort -n | tail -n 1 | ruby -e 'v = $stdin.read.chomp.split("."); v = %w(0 0 0) if v.empty?; v[2] = v[2].to_i + 1; puts v.join(".")')
   - .travis/providers/pypi/prepare
   - cd tmp/dpl-test
 

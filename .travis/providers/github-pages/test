@@ -5,10 +5,16 @@ require 'open-uri'
 $stdout.sync = true
 
 expected = ENV['ID']
+url = 'https://raw.githubusercontent.com/travis-ci/dpl_test/gh-pages/index.html'
+
+def poll(url)
+  URI.parse(url).read
+rescue => e
+  puts e.message
+end
 
 10.times do
-  uri = URI.parse('https://raw.githubusercontent.com/travis-ci/dpl_test/gh-pages/index.html')
-  actual = uri.read.chomp
+  actual = poll(url).chomp
   puts "expected: #{expected.inspect}"
   puts "actual: #{actual.inspect}"
   exit 0 if actual == expected

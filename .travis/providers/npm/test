@@ -8,10 +8,15 @@ $stdout.sync = true
 expected = ENV['ID']
 url = 'https://registry.npmjs.com/@dpl-test/dpl-test'
 
+def poll(url)
+  URI.parse(url).read
+rescue => e
+  puts e.message
+end
+
 10.times do
   puts "Checking #{url}"
-  uri = URI.parse(url)
-  data = JSON.load(uri)
+  data = JSON.load(poll(url))
   actual = data['versions'].keys.map { |key| key.split('-').last }
   puts "expected: #{expected.inspect}"
   puts "actual: #{actual.inspect}"

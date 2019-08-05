@@ -8,9 +8,8 @@
 # url = '...'
 #
 # def poll(url)
-#   uri = URI.parse(url)
-#   actual = uri.read
-# rescue OpenURI::HTTPError => e
+#   URI.parse(url).read
+# rescue => e
 #   puts e.message
 # end
 #
