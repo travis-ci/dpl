@@ -32,7 +32,7 @@ module Dpl
       URL = 'https://%s:%s@%s.scm.azurewebsites.net:443/%s.git'
 
       def setup
-        commit unless cleanup?
+        commit if git_dirty? && !cleanup?
       end
 
       def deploy

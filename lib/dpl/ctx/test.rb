@@ -105,6 +105,10 @@ module Dpl
         'commit msg'
       end
 
+      def git_dirty?
+        true
+      end
+
       def git_log(args)
         'commits'
       end

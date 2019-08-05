@@ -391,6 +391,11 @@ module Dpl
         `git log #{git_sha} -n 1 --pretty=%B`.chomp
       end
 
+      # Whether or not the git working directory is dirty
+      def git_dirty?
+        !system('git diff --quiet')
+      end
+
       # Returns the output of `git log`, using the given args.
       def git_log(args)
         `git log #{args}`.chomp
