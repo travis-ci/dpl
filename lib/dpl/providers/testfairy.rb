@@ -5,7 +5,7 @@ require 'securerandom'
 module Dpl
   module Providers
     class Testfairy < Provider
-      status :dev
+      status :alpha
 
       description sq(<<-str)
         tbd

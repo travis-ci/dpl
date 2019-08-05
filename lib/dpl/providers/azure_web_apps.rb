@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class AzureWebApps < Provider
-      status :dev
+      status :alpha
 
       full_name 'Azure Web Apps'
 

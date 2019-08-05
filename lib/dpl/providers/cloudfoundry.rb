@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Cloudfoundry < Provider
-      status :dev
+      status :alpha
 
       full_name 'Cloud Foundry'
 

@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Hephy < Provider
-      status :dev
+      status :alpha
 
       description sq(<<-str)
         tbd

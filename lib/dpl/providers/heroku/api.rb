@@ -2,7 +2,7 @@ module Dpl
   module Providers
     class Heroku
       class Api < Heroku
-        status :dev
+        status :alpha
 
         full_name 'Heroku API'
 
