@@ -85,10 +85,10 @@ module Dpl
       # This method is intended to be used for warning messages that are
       # supposed to show up in the build log, but do not qualify as errors that
       # would abort the deployment process. The warning will be highlighted as
-      # red text. Use sparingly.
+      # yellow text. Use sparingly.
       def warn(*msgs)
         msgs = msgs.join("\n").lines
-        msgs.each { |msg| stderr.puts("\e[31;1m#{msg}\e[0m") }
+        msgs.each { |msg| stderr.puts("\e[33;1m#{msg}\e[0m") }
       end
 
       # Raises an exception, halting the deployment process.
