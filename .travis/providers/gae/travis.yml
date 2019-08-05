@@ -9,8 +9,7 @@ env:
 
 before_deploy:
   - .travis/providers/gae/prepare
-  - openssl aes-256-cbc -K $encrypted_81cf70da4be5_key -iv $encrypted_81cf70da4be5_iv -in .travis/providers/gae/service-account.json.enc -out tmp/dpl_test/service-account.json -d
-  # - .travis/providers/gae/start
+  - openssl aes-256-cbc -K $encrypted_b24ece17e78a_key -iv $encrypted_b24ece17e78a_iv -in .travis/providers/gae/service-account.json.enc -out tmp/dpl_test/service-account.json -d
   - cd tmp/dpl_test
   - ls -al .
 
@@ -19,6 +18,6 @@ deploy:
     project_id: dpl-test-244917
 
 after_deploy:
-  - cd ../..
-  - .travis/providers/gae/test || TRAVIS_TEST_RESULT=$?
-  # - .travis/providers/gae/stop
+  - ../../.travis/providers/gae/test || TRAVIS_TEST_RESULT=$?
+  - gcloud -q auth activate-service-account --key-file service-account.json
+  - gcloud app versions list --project=dpl-test-244917 | grep -v VERSION | awk '{ print $2 }' | head -n -1 | xargs gcloud app versions delete --project=dpl-test-244917
