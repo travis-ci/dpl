@@ -1,3 +1,5 @@
+require 'dpl/provider/status'
+
 module Dpl
   class Provider < Cl::Cmd
     # DSL available on the provider's class body.
@@ -6,6 +8,25 @@ module Dpl
     # apply to your provider.
     module Dsl
       include Squiggle
+
+      # Declare the full name of the provider. Required if the proper provider
+      # name does not match the provider's class name.
+      #
+      # @param name [String] The provider's full name
+      # @return The previously declared full name if no argument is given
+      def full_name(name = nil)
+        name ? @full_name = name : @full_name || self.name.split('::').last
+      end
+
+      # Summary of the provider's functionality.
+      def summary(summary = nil)
+        summary ? super : @summary || "#{full_name} deployment provider"
+      end
+
+      # Set or read the provider's maturity status with an optional message
+      def status(status = nil, msg = nil)
+        status ? @status = Status.new(self, status, msg) : @status
+      end
 
       # @!method env
       # Declare an environment variable prefix to accept env vars as options
@@ -35,27 +56,6 @@ module Dpl
       # to declare command line options.
       #
       # @see https://github.com/svenfuchs/cl
-
-      # Mark the provider as deprecated, with a warning message that will be
-      # printed to the stderr.
-      def deprecated(msg = nil)
-        msg ? @deprecated = msg : @deprecated
-      end
-
-      # Whether or not the provider has deprecation warnings.
-      def deprecated?
-        !!@deprecated
-      end
-
-      # Mark the provider experimental, a warning will be printed to stderr.
-      def experimental
-        @experimental = true
-      end
-
-      # Whether or not the provider has been marked experimental.
-      def experimental?
-        !!@experimental
-      end
 
       def path(path)
         ENV['PATH'] = "#{File.expand_path(path)}:#{ENV['PATH']}"
@@ -154,20 +154,6 @@ module Dpl
       # Whether or not the provider depends on any Python packages.
       def pip?
         pip.any?
-      end
-
-      # Declare the full name of the provider. Required if the proper provider
-      # name does not match the provider's class name.
-      #
-      # @param name [String] The provider's full name
-      # @return The previously declared full name if no argument is given
-      def full_name(name = nil)
-        name ? @full_name = name : @full_name || self.name.split('::').last
-      end
-
-      # Summary of the provider's functionality.
-      def summary(summary = nil)
-        summary ? super : @summary || "#{full_name} deployment provider"
       end
 
       # Declare shell commands used by the provider.

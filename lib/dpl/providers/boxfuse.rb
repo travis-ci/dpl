@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Boxfuse < Provider
+      status :dev
+
       description sq(<<-str)
         BitBallon does something.
       str

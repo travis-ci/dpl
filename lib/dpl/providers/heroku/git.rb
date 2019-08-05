@@ -2,6 +2,8 @@ module Dpl
   module Providers
     class Heroku
       class Git < Heroku
+        status :dev
+
         full_name 'Heroku Git'
 
         description sq(<<-str)

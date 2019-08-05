@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Gae < Provider
+      status :dev
+
       full_name 'Google App Engine'
 
       description sq(<<-str)

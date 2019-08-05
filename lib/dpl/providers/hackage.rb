@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Hackage < Provider
+      status :dev
+
       description sq(<<-str)
         tbd
       str

@@ -1,9 +1,17 @@
 module Dpl
   module Providers
     class ChefSupermarket < Provider
-      unregister
+      # unregister
       register :'chef-supermarket'
       register :chef_supermarket
+
+      status :dev
+
+      full_name 'Chef Supermarket'
+
+      description sq(<<-str)
+        tbd
+      str
 
       gem 'chef', '~> 12.0', require: %w(
         chef/cookbook_loader
@@ -14,12 +22,6 @@ module Dpl
       gem 'mime-types', '~> 3.2.2'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
       gem 'rack'
-
-      full_name 'Chef Supermarket'
-
-      description sq(<<-str)
-        tbd
-      str
 
       opt '--user_id ID',            'Chef Supermarket user name', required: true
       opt '--client_key KEY',        'Client API key file name', required: true

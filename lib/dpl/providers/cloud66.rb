@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Cloud66 < Provider
+      status :dev
+
       description sq(<<-str)
         tbd
       str

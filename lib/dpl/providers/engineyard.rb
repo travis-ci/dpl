@@ -1,13 +1,13 @@
 module Dpl
   module Providers
     class Engineyard < Provider
-      # maybe use the cli (https://github.com/engineyard/engineyard) instead,
-      # and get rid of the runtime gem dependency (also a lot easier to test)
-      gem 'engineyard-cloud-client', '~> 2.1.0'
+      status :dev
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'engineyard-cloud-client', '~> 2.1.0'
 
       required :api_key, [:email, :password]
 

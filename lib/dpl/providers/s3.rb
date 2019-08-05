@@ -6,14 +6,16 @@ Thread.abort_on_exception = true
 module Dpl
   module Providers
     class S3 < Provider
-      gem 'aws-sdk', '~> 2.0', require: ['aws-sdk', 'dpl/support/aws_sdk_patch']
-      gem 'mime-types', '~> 3.2.2'
+      status :dev
 
       full_name 'AWS S3'
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'aws-sdk', '~> 2.0', require: ['aws-sdk', 'dpl/support/aws_sdk_patch']
+      gem 'mime-types', '~> 3.2.2'
 
       env :aws
 

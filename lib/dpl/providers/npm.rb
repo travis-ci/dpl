@@ -1,13 +1,15 @@
 module Dpl
   module Providers
     class Npm < Provider
-      gem 'json', '~> 2.2.0'
+      status :dev
 
       full_name 'npm'
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'json', '~> 2.2.0'
 
       opt '--email EMAIL', 'npm email address'
       opt '--api_key KEY', 'npm api key (can be retrieved from your local ~/.npmrc file)', required: true, secret: true

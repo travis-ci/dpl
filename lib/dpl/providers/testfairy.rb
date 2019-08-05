@@ -5,12 +5,14 @@ require 'securerandom'
 module Dpl
   module Providers
     class Testfairy < Provider
-      gem 'json', '~> 2.2.0'
-      gem 'multipart-post', '~> 2.0.0', require: 'net/http/post/multipart'
+      status :dev
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'json', '~> 2.2.0'
+      gem 'multipart-post', '~> 2.0.0', require: 'net/http/post/multipart'
 
       opt '--api_key KEY', 'TestFairy API key', required: true, secret: true
       opt '--app_file FILE', 'Path to the app file that will be generated after the build (APK/IPA)', required: true

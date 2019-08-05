@@ -5,11 +5,13 @@
 module Dpl
   module Providers
     class Packagecloud < Provider
-      gem 'packagecloud-ruby', '~> 1.0.8', require: 'packagecloud'
+      status :dev
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'packagecloud-ruby', '~> 1.0.8', require: 'packagecloud'
 
       opt '--username USER', 'The packagecloud.io username.', required: true
       opt '--token TOKEN', 'The packagecloud.io api token.', required: true, secret: true

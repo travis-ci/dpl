@@ -1,11 +1,13 @@
 module Dpl
   module Providers
     class Rubygems < Provider
-      gem 'gems', '~> 1.1.1'
+      status :dev
 
       description sq(<<-str)
         tbd
       str
+
+      gem 'gems', '~> 1.1.1'
 
       required :api_key, [:user, :password]
 

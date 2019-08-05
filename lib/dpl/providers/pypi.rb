@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Pypi < Provider
+      status :dev
+
       full_name 'PyPI'
 
       description sq(<<-str)

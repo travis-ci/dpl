@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Cloudfoundry < Provider
+      status :dev
+
       full_name 'Cloud Foundry'
 
       description sq(<<-str)
