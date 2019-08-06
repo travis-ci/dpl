@@ -91,7 +91,6 @@ module Dpl
 
       def deploy
         git_clone? ? git_clone : git_init
-        git_checkout
         copy_files
         git_config
         git_commit
@@ -115,9 +114,6 @@ module Dpl
       def git_init
         info :git_init
         shell :git_init
-      end
-
-      def git_checkout
         info :git_checkout
         shell :git_checkout
       end

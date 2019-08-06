@@ -14,7 +14,6 @@ describe Dpl::Providers::Pages do
     it { should have_run '[info] Deploying branch gh-pages to github.com' }
     it { should have_run '[info] Cloning the branch gh-pages from the remote repo' }
     it { should have_run 'git clone --quiet --branch="gh-pages" --depth=1 "https://token@github.com/travis-ci/dpl.git" . > /dev/null 2>&1' }
-    it { should have_run 'git checkout --orphan "gh-pages"' }
     it { should have_run "rsync -rl --exclude .git --delete \"#{cwd}/\" ." }
     it { should have_run 'git config user.name "Deploy Bot (from Travis CI)"' }
     it { should have_run 'git config user.email "deploy@travis-ci.org"' }
@@ -31,7 +30,6 @@ describe Dpl::Providers::Pages do
     it { should have_run '[info] Deploying branch gh-pages to github.com' }
     it { should have_run '[info] Using temporary work directory tmp' }
     it { should have_run "[info] Cloning the branch gh-pages from the remote repo" }
-    it { should have_run '[info] Checking out orphan branch gh-pages' }
     it { should have_run "[info] Copying #{cwd} contents to tmp" }
     it { should have_run '[info] Configuring git committer to be Deploy Bot (from Travis CI) <deploy@travis-ci.org>' }
     it { should have_run '[info] Preparing to deploy gh-pages branch to gh-pages' }
