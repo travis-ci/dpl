@@ -14,7 +14,7 @@ describe Dpl::Providers::Pages do
     it { should have_run '[info] Deploying branch gh-pages to github.com' }
     it { should have_run 'git init .' }
     it { should have_run 'git checkout --orphan "gh-pages"' }
-    it { should have_run "rsync -r --exclude .git --delete \"#{cwd}/\" ." }
+    it { should have_run "rsync -rl --exclude .git --delete \"#{cwd}/\" ." }
     it { should have_run 'git config user.name "Deploy Bot (from Travis CI)"' }
     it { should have_run 'git config user.email "deploy@travis-ci.org"' }
     it { should have_run 'git add -A .' }
@@ -63,7 +63,7 @@ describe Dpl::Providers::Pages do
   end
 
   describe 'given --local_dir ./dir --verbose' do
-    it { should have_run "rsync -r --exclude .git --delete \"#{cwd}/dir/\" ." }
+    it { should have_run "rsync -rl --exclude .git --delete \"#{cwd}/dir/\" ." }
     it { should have_run "[info] The source dir for deployment is #{cwd}/dir" }
     it { should have_run "[info] Copying #{cwd}/dir contents to tmp" }
   end

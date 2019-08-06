@@ -51,7 +51,7 @@ module Dpl
            git_commit:          'Preparing to deploy %{target_branch} branch to gh-pages',
            git_push:            'Pushing to %{url}'
 
-      cmds copy_files:          'rsync -r --exclude .git --delete "%{src_dir}/" .',
+      cmds copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
            git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{url_with_token}" . > /dev/null 2>&1',
            git_init:            'git init .',
            git_checkout:        'git checkout --orphan "%{target_branch}"',
