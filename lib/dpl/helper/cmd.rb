@@ -39,7 +39,8 @@ module Dpl
     # If the option `python` was passed then the virtualenv with the given
     # Python version will be activated before executing the command.
     def msg
-      msg = lookup(:msg, opts[:msg], str) || lookup(:cmd, str)
+      msg = lookup(:msg, opts[:msg], str)
+      msg ||= "$ #{lookup(:cmd, str)}" if lookup(:cmd, str)
       msg || error(:msg, opts[:msg], str)
       msg = interpolate(msg, opts).strip
       msg = silence(msg) if silence?

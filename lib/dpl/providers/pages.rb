@@ -15,7 +15,7 @@ module Dpl
       opt '--github_token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true
       opt '--repo SLUG', 'Repo slug', default: :repo_slug
       opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
-      opt '--keep_history', 'Create incremental commit instead of doing push force'
+      opt '--keep_history', 'Create incremental commit instead of doing push force', default: true
       opt '--allow_empty_commit', 'Allow an empty commit to be created', requires: :keep_history
       opt '--committer_from_gh', 'Use the token\'s owner name and email for commit. Overrides the email and name options'
       opt '--verbose', 'Be verbose about the deploy process'
@@ -42,19 +42,18 @@ module Dpl
            work_dir:            'Using temporary work directory %{work_dir}',
            committer_from_gh:   'The repo is configured to use committer user and email.',
            setup_dir:           'The source dir for deployment is %s',
-           copy_files:          'Copying %{src_dir} contents to %{work_dir}',
-           git_clone:           'Trying to clone the branch %{target_branch} from the remote repo',
-           git_clone_failed:    'Cloning %{target_branch} branch failed',
+           git_clone:           'Cloning the branch %{target_branch} from the remote repo',
            git_init:            'Initializing local git repo in %{cwd}',
            git_checkout:        'Checking out orphan branch %{target_branch}',
+           copy_files:          'Copying %{src_dir} contents to %{work_dir}',
            git_config:          'Configuring git committer to be %{committer_name} <%{committer_email}>',
            git_commit:          'Preparing to deploy %{target_branch} branch to gh-pages',
            git_push:            'Pushing to %{url}'
 
-      cmds copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
-           git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{url_with_token}" . > /dev/null 2>&1',
+      cmds git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{url_with_token}" . > /dev/null 2>&1',
            git_init:            'git init .',
            git_checkout:        'git checkout --orphan "%{target_branch}"',
+           copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
            git_config_email:    'git config user.email "%{committer_email}"',
            git_config_name:     'git config user.name "%{committer_name}"',
            deployment_file:     'touch "deployed at %{now} by %{committer_name}"',
@@ -70,8 +69,8 @@ module Dpl
            git_push:            'Failed to push the build to %{url}:%{target_branch}'
 
       def setup
-        debug :setup_dir, src_dir
-        debug :committer_from_gh if committer_from_gh?
+        info :setup_dir, src_dir
+        info :committer_from_gh if committer_from_gh?
       end
 
       def login
@@ -84,15 +83,14 @@ module Dpl
 
       def prepare
         info :deploy
-        debug :keep_history if keep_history?
+        info :keep_history if keep_history?
         debug :work_dir
         @cwd = Dir.pwd
         Dir.chdir(work_dir)
       end
 
       def deploy
-        git_clone if keep_history?
-        git_init
+        git_clone? ? git_clone : git_init
         git_checkout
         copy_files
         git_config
@@ -105,39 +103,38 @@ module Dpl
         Dir.chdir(@cwd) if @cwd
       end
 
-      def cwd
-        Dir.pwd
-      end
-
-      def copy_files
-        debug :copy_files
-        shell :copy_files
+      def git_clone?
+        keep_history? && git_branch_exists?
       end
 
       def git_clone
-        debug :git_clone
-        shell :git_clone
-        debug :git_clone_failed unless success?
+        info :git_clone
+        shell :git_clone, echo: false
       end
 
       def git_init
-        debug :git_init
+        info :git_init
         shell :git_init
       end
 
       def git_checkout
-        debug :git_checkout
+        info :git_checkout
         shell :git_checkout
       end
 
+      def copy_files
+        info :copy_files
+        shell :copy_files
+      end
+
       def git_config
-        debug :git_config
-        shell :git_config_name
-        shell :git_config_email
+        info :git_config
+        shell :git_config_name, echo: false
+        shell :git_config_email, echo: false
       end
 
       def git_commit
-        debug :git_commit
+        info :git_commit
         shell :deployment_file if deployment_file?
         shell :cname if fqdn?
         shell :git_add
@@ -147,15 +144,19 @@ module Dpl
 
       def git_push
         info :git_push
-        shell :git_push
+        shell :git_push, echo: false
       end
 
       def git_status
         shell 'git status'
       end
 
+      def git_branch_exists?
+        git_ls_remote?(url_with_token, target_branch)
+      end
+
       def git_commit_opts
-        ' --allow-empty' if allow_empty_commit? && keep_history?
+        ' --allow-empty' if allow_empty_commit?
       end
 
       def git_push_opts
@@ -212,6 +213,10 @@ module Dpl
 
       def api_endpoint
         github_url == 'github.com' ? "https://api.github.com/" : "https://#{github_url}/api/v3/"
+      end
+
+      def cwd
+        Dir.pwd
       end
 
       def now

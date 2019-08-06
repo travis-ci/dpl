@@ -65,24 +65,24 @@ describe Dpl::Cmd do
       describe 'interpolating an opt' do
         let(:body) { ->(*) { cmds cmd: 'cmd %{var}' } }
         let(:opts) { { var: :var } }
-        it { expect(subject.msg).to eq 'cmd var' }
+        it { expect(subject.msg).to eq '$ cmd var' }
       end
 
       describe 'interpolating a secure opt' do
         let(:body) { ->(*) { cmds cmd: 'cmd %{var}' } }
         let(:opts) { { var: 'secure' } }
         before { allow(provider).to receive(:opts).and_return var: 'secure'.taint }
-        it { expect(subject.msg).to eq 'cmd s*******************' }
+        it { expect(subject.msg).to eq '$ cmd s*******************' }
       end
 
       describe 'interpolating a method' do
         let(:body) { ->(*) { cmds cmd: 'cmd %{var}'; def var; 'var'; end } }
-        it { expect(subject.msg).to eq 'cmd var' }
+        it { expect(subject.msg).to eq '$ cmd var' }
       end
 
       describe 'interpolating a const' do
         let(:body) { ->(c) { cmds cmd: 'cmd %{VAR}'; c.const_set(:VAR, 'var') } }
-        it { expect(subject.msg).to eq 'cmd var' }
+        it { expect(subject.msg).to eq '$ cmd var' }
       end
     end
 
