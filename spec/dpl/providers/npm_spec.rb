@@ -12,7 +12,7 @@ describe Dpl::Providers::Npm do
 
   describe 'by default', record: true do
     it { should have_run '[info] npm version: 1' }
-    it { should have_run '[info] Authenticated with API key 1*******************' }
+    it { should have_run '[info] Authenticated with API token 1*******************' }
     it { should have_run '[info] ~/.npmrc size: 27' }
     it { should have_run 'npm config set registry "registry.npmjs.org"' }
     it { should have_run 'npm publish' }

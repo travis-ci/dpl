@@ -11,8 +11,8 @@ module Dpl
 
       gem 'json', '~> 2.2.0'
 
-      opt '--email EMAIL', 'npm email address'
-      opt '--api_key KEY', 'npm api key (can be retrieved from your local ~/.npmrc file)', required: true, secret: true
+      opt '--email EMAIL', 'npm account email'
+      opt '--api_token TOKEN', 'npm api token', alias: :api_key, required: true, secret: true, note: 'can be retrieved from your local ~/.npmrc file', see: 'https://docs.npmjs.com/creating-and-viewing-authentication-tokens'
       opt '--access ACCESS', 'access level', enum: %w(public private)
       opt '--registry URL', 'npm registry url'
       opt '--tag TAGS', 'npm distribution tags to add'
@@ -21,7 +21,7 @@ module Dpl
       NPMRC = '~/.npmrc'
 
       msgs version:  'npm version: %{npm_version}',
-           login:    'Authenticated with API key %{api_key}'
+           login:    'Authenticated with API token %{api_token}'
 
       cmds registry: 'npm config set registry "%{registry}"',
            deploy:   'npm publish %{publish_opts}'
@@ -65,9 +65,9 @@ module Dpl
 
         def npmrc
           if npm_version =~ /^1/
-            "_auth = #{api_key}\nemail = #{email}"
+            "_auth = #{api_token}\nemail = #{email}"
           else
-            "//#{registry.sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_key}"
+            "//#{registry.sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_token}"
           end
         end
 
