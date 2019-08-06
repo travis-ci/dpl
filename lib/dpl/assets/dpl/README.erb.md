@@ -15,9 +15,9 @@ please do not hesitate to get in touch, and we'll help you [add it](#contributin
 * [Requirements](#requirements)
 * [Installation](#installation)
 * [Usage](#usage)
+* [Maturity Levels](#maturity-levels)
 * [Supported Providers](#supported-providers)
 * [Contributing to Dpl](#contributing-to-dpl)
-* [Maturity Levels](#maturity-levels)
 * [Old Issues](#old-issues)
 * [Code of Conduct](#code-of-conduct)
 * [Credits](#credits)
@@ -75,6 +75,17 @@ and push it to the respective remote service (e.g. `heroku` when using the
 `api` strategy, package registry providers, etc.). Most providers will either
 push the latest Git commit, or pull code from a remote repository.
 
+## Maturity Levels
+
+In order to communicate the current development status and maturity of dpl's
+support for a particular service the respective provider is marked with one of
+the following maturity levels, according to the given criteria:
+
+* `dev` - the provider is in development (initial level)
+* `alpha` - the provider is fully tested
+* `beta` - the provider has been in alpha for at least a month, and successful real-world production deployments have been observed
+* `stable` - the provider has been in beta for at least two months, and there are no open issues that qualify as critical (such as deployments failing, documented functionality broken, etc)
+
 ## Supported Providers
 
 Dpl supports the following providers:
@@ -92,17 +103,6 @@ Dpl supports the following providers:
 <% end -%>
 
 <%= File.read('./CONTRIBUTING.md').gsub(/^#/, '##') %>
-
-## Maturity Levels
-
-In order to communicate the current development status and maturity of dpl's
-support for a particular service the respective provider is marked with one of
-the following maturity levels, according to the given criteria:
-
-* `dev` - the provider is in development (initial level)
-* `alpha` - the provider is fully tested
-* `beta` - the provider has been in alpha for at least a month, and successful real-world production deployments have been observed
-* `stable` - the provider has been in beta for at least two months, and there are no open issues that qualify as critical (such as deployments failing, documented functionality broken, etc)
 
 ## Old Issues
 
