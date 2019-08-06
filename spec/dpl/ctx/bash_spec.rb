@@ -102,7 +102,7 @@ describe Dpl::Ctx::Bash do
 
   describe 'warn' do
     before { subject.warn('str') }
-    it { should have_stderr "\e[31;1mstr\e[0m\n" }
+    it { should have_stderr "\e[33;1mstr\e[0m\n" }
   end
 
   describe 'error' do
