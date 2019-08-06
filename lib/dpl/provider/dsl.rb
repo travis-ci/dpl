@@ -23,6 +23,12 @@ module Dpl
         summary ? super : @summary || "#{full_name} deployment provider"
       end
 
+      # Summary of the provider's functionality.
+      def description(str = nil)
+        str << status.msg if str && status && status.announce?
+        super
+      end
+
       # Set or read the provider's maturity status with an optional message
       def status(status = nil, msg = nil)
         status ? @status = Status.new(self, status, msg) : @status

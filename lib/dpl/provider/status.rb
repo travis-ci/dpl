@@ -8,10 +8,10 @@ module Dpl
         alpha:      'Support for deployments to %s is in alpha',
         beta:       'Support for deployments to %s is in beta',
         deprecated: 'Support for deployments to %s is deprecated',
-        pre_stable: 'Please see our documentation on maturity statuses: %s'
+        pre_stable: 'Please see here: %s'
       }
 
-      DOCS = 'https://docs.travis-ci.com/user/deployment/#maturity-status'
+      URL = 'https://github.com/travis-ci/dpl/#maturity-levels'
 
       def initialize(provider, status, info)
         unknown!(status) unless known?(status)
@@ -25,7 +25,7 @@ module Dpl
       def msg
         msg = "#{MSG[status] % name}"
         msg << "(#{info})" if info
-        msg << ". #{MSG[:pre_stable] % DOCS}" if pre_stable?
+        msg << ". #{MSG[:pre_stable] % URL}" if pre_stable?
         "\n#{msg}\n"
       end
 
