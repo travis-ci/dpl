@@ -4,7 +4,7 @@ module Dpl
       status :alpha
 
       description sq(<<-str)
-        BitBallon does something.
+        tbd
       str
 
       env :boxfuse

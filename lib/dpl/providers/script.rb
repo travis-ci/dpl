@@ -18,7 +18,7 @@ module Dpl
         status.
       str
 
-      opt '--script ./script', 'The script to execute', required: true
+      opt '-s', '--script SCRIPT', 'The script to execute', required: true
 
       def deploy
         shell script, assert: 'Script failed with status %{status}'

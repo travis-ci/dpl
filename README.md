@@ -17,6 +17,7 @@ please do not hesitate to get in touch, and we'll help you [add it](#contributin
 * [Usage](#usage)
 * [Supported Providers](#supported-providers)
 * [Contributing to Dpl](#contributing-to-dpl)
+* [Maturity Levels](#maturity-levels)
 * [Old Issues](#old-issues)
 * [Code of Conduct](#code-of-conduct)
 * [Credits](#credits)
@@ -133,6 +134,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Anynines is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -170,6 +173,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Atlas is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -214,6 +219,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to AWS Code Deploy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -259,6 +266,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to AWS Elastic Beanstalk is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -303,6 +312,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to AWS Lambda is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -367,6 +378,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to AWS OpsWorks is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -409,6 +422,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to AWS S3 is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -465,6 +480,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Azure Web Apps is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -502,6 +519,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Bintray is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -536,6 +555,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Bluemix Cloud Foundry is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -576,7 +597,9 @@ Summary:
 
 Description:
 
-  BitBallon does something.
+  tbd
+  
+  Support for deployments to Boxfuse is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -615,6 +638,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Cargo is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -646,6 +671,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Chef Supermarket is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -681,6 +708,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Cloud Files is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -719,6 +748,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Cloud Foundry is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -757,6 +788,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Cloud66 is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -788,6 +821,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Datica is in development. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -820,6 +855,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Engineyard is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -860,6 +897,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Firebase is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -896,6 +935,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to GitHub Pages is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -942,6 +983,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to GitHub Releases is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -991,6 +1034,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Google App Engine is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1035,6 +1080,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Google Cloud Store is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1076,6 +1123,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Hackage is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1108,6 +1157,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Hephy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1144,6 +1195,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Heroku API is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1176,6 +1229,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Heroku Git is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1214,6 +1269,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Launchpad is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1247,6 +1304,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Netlify is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1283,6 +1342,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to npm is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1319,6 +1380,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to OpenShift is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1353,6 +1416,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Packagecloud is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1395,6 +1460,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Puppet Forge is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1429,6 +1496,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to PyPI is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1474,6 +1543,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Rubygems is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1515,6 +1586,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Scalingo is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1567,23 +1640,25 @@ Description:
   
   Deployment will be marked a failure if the script exits with nonzero
   status.
+  
+  Support for deployments to Script is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
 
-  --script ./script      The script to execute (type: string, required: true)
+  -s --script SCRIPT      The script to execute (type: string, required: true)
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
-                         (string, can be given multiple times))
-  --[no-]cleanup         Skip cleaning up build artifacts before the deployment
-  --help                 Get help on this command
+  --run CMD               Command to execute after the deployment finished successfully (type: array
+                          (string, can be given multiple times))
+  --[no-]cleanup          Skip cleaning up build artifacts before the deployment
+  --help                  Get help on this command
 
 Examples:
 
-  dpl script --script ./script
-  dpl script --script ./script --run cmd --cleanup
+  dpl script --script script
+  dpl script --script script --run cmd --cleanup
 ```
 
 ### Snap
@@ -1598,6 +1673,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Snap is in development. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1631,6 +1708,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Surge is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1668,6 +1747,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Testfairy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -1719,6 +1800,8 @@ Summary:
 Description:
 
   tbd
+  
+  Support for deployments to Transifex is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 
 Options:
@@ -2137,7 +2220,18 @@ bin/readme > README.md
 ```
 
 
-## Old issues
+## Maturity Levels
+
+In order to communicate the current development status and maturity of dpl's
+support for a particular service the respective provider is marked with one of
+the following maturity levels, according to the given criteria:
+
+* `dev` - the provider is in development (initial level)
+* `alpha` - the provider is fully tested
+* `beta` - the provider has been in alpha for at least a month, and successful real-world production deployments have been observed
+* `stable` - the provider has been in beta for at least two months, and there are no open issues that qualify as critical (such as deployments failing, documented functionality broken, etc)
+
+## Old Issues
 
 If an issue has been left open and untouched for 90 days or more, we
 automatically close them. We do this to ensure that new issues are more easily
