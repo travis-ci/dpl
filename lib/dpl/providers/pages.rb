@@ -68,17 +68,17 @@ module Dpl
            git_checkout:        'Failed to create the orphan branch',
            git_push:            'Failed to push the build to %{url}:%{target_branch}'
 
-      def setup
-        info :setup_dir, src_dir
-        info :committer_from_gh if committer_from_gh?
-      end
-
       def login
         user.login
         info :login, user.login, user.name
         error :insufficient_scopes unless sufficient_scopes?
       rescue Octokit::Unauthorized => e
         error :invalid_token, e.message
+      end
+
+      def setup
+        info :setup_dir, src_dir
+        info :committer_from_gh if committer_from_gh?
       end
 
       def prepare

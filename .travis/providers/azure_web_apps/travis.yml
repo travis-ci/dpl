@@ -14,7 +14,6 @@ deploy:
     username: dpltest
     password:
       secure: "qW6Hw1lOeIpL/ISP0XVfoYveVxaWnZ+1yyTvEZ3whM9QS3tnepv45IOYem+yOkV0jzQH62rw2dQNBWsQjZkG3uTqmsRQ33BQq2l6Pg/9XeepkycNlpB1e4AEPnsjch1MtqaYnRafEaCc8f34ykOXBZtzuP4pyAXWczywJ2f55m8="
-    verbose: true
 
 after_deploy:
   - cd ../..

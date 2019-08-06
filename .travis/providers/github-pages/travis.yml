@@ -14,8 +14,9 @@ deploy:
       # personal access token with repo scope on travis-dpl-test
       secure: "fRVQWM14TO7/nHNyXB3fHZPKCqZxNPxN3wKmVsxVqTj99SSPsonr1AvQXziFtLEc44+pmlg0J5diFhhwzWU2W4/UxDaFyrdhkmZWRkRlJTjkgO0kDOJPJFza4stXAsavn4bLpz6YuCD0ZprPTBJu2wDA7e1IvXGRu0nb/PIaRko="
     committer_from_gh: true
-    verbose: true
     deployment_file: true
+    no_keep_history: true
+    verbose: true
 
 after_deploy:
   - cd ../..

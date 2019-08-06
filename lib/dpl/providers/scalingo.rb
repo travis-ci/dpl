@@ -16,7 +16,7 @@ module Dpl
       opt '--region REGION', 'Scalingo region', default: 'agora-fr1', enum: %w(agora-fr1 osc-fr1)
       opt '--remote REMOTE', 'Git remote name', default: 'scalingo-dpl'
       opt '--branch BRANCH', 'Git branch', default: 'master'
-      opt '--timeout SEC', 'Timeout for Scalingo CLI commands', default: 60
+      opt '--timeout SEC', 'Timeout for Scalingo CLI commands', default: 60, type: :integer
 
       needs :git, :ssh_key
 
