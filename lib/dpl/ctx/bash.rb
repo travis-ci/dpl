@@ -256,7 +256,7 @@ module Dpl
       # @return [Boolean] whether or not the command was successful (has exited with the exit code 0)
       def shell(cmd, opts = {})
         cmd = Cmd.new(nil, cmd, opts) if cmd.is_a?(String)
-        info "$ #{cmd.msg}" if cmd.echo?
+        info cmd.msg if cmd.echo?
 
         @last_out, @last_err, @last_status = retrying(cmd.retry ? 2 : 0) do
           send(cmd.capture? ? :open3 : :system, cmd.cmd, cmd.opts)
@@ -407,6 +407,11 @@ module Dpl
       # NULs, rather than newline characters.
       def git_ls_files
         `git ls-files -z`.split("\x0")
+      end
+
+      # Returns true if the given ref exists remotely
+      def git_ls_remote?(url, ref)
+        system("git ls-remote --exit-code #{url} #{ref} > /dev/null 2>&1")
       end
 
       # Returns known Git remote URLs

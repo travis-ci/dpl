@@ -167,10 +167,11 @@ module Dpl
 
     def_delegators :ctx, :apt_get, :gem_require, :npm_install, :pip_install,
       :build_dir, :build_number, :repo_slug, :encoding, :git_commit_msg,
-      :git_dirty?, :git_log, :git_ls_files, :git_remote_urls, :git_rev_parse,
-      :git_sha, :git_tag, :machine_name, :node_version, :npm_version, :sleep,
-      :ssh_keygen, :success?, :mv, :tmp_dir, :which, :logger, :rendezvous,
-      :file_size, :write_file, :write_netrc, :last_out, :last_err, :tty?
+      :git_dirty?, :git_log, :git_ls_files, :git_ls_remote?, :git_remote_urls,
+      :git_rev_parse, :git_sha, :git_tag, :machine_name, :node_version,
+      :npm_version, :sleep, :ssh_keygen, :success?, :mv, :tmp_dir, :which,
+      :logger, :rendezvous, :file_size, :write_file, :write_netrc, :last_out,
+      :last_err, :tty?
 
     attr_reader :repo_name, :key_name
 

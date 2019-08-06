@@ -56,7 +56,7 @@ module Dpl
       end
 
       def shell(cmd, opts = {})
-        info "$ #{cmd.msg}" unless opts[:echo].is_a?(FalseClass)
+        info cmd.msg if cmd.echo?
         cmds << cmd.cmd
       end
 
@@ -115,6 +115,10 @@ module Dpl
 
       def git_ls_files
         %w(one two)
+      end
+
+      def git_ls_remote?(url, ref)
+        true
       end
 
       def git_remote_urls
