@@ -1,5 +1,5 @@
-describe Dpl::Providers::Pages do
-  let(:args)    { |e| %w(--github_token token) + args_from_description(e) }
+describe Dpl::Providers::Pages::Git do
+  let(:args)    { |e| %w(--strategy git --github_token token) + args_from_description(e) }
   let(:user)    { JSON.dump(login: 'login', name: 'name', email: 'email') }
   let(:headers) { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
   let(:cwd)     { File.expand_path('.') }
