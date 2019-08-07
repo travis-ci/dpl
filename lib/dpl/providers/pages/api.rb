@@ -1,5 +1,4 @@
 require 'timeout'
-require 'octokit'
 
 module Dpl
   module Providers
