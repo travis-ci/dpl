@@ -36,8 +36,8 @@ module Dpl
 
           error :pages_not_found unless pages_enabled?
 
-          unless git_branch == pages_branch
-            error :branch_name_mismatch, git_branch, pages_branch
+          unless ENV['TRAVIS_BRANCH'] == pages_branch
+            error :branch_name_mismatch, ENV['TRAVIS_BRANCH'], pages_branch
           end
         end
 
