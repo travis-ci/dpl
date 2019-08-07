@@ -17,6 +17,7 @@ require 'yaml'
 
 def parse_opts(opts)
   ARGV.options do |o|
+    o.on('-u', '--url URL') { |obj| opts[:url] = obj }
     o.on('-t', '--token TOKEN') { |obj| opts[:token] = obj }
     o.on('-b', '--branch BRANCH') { |obj| opts[:branch] = obj }
     o.parse!
@@ -60,7 +61,7 @@ end
 
 opts = parse_opts(token: ENV['TRAVIS_API_TOKEN'], branch: 'dpl-2')
 
-uri = URI.parse('https://api.travis-ci.com/repo/travis-ci%2Fdpl/requests')
+uri = URI.parse(opts[:url] || 'https://api.travis-ci.com/repo/travis-ci%2Fdpl/requests')
 
 body = {
   request: {

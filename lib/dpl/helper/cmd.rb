@@ -3,48 +3,47 @@ module Dpl
   class Cmd < Struct.new(:provider, :str, :opts)
     # Returns the shell command string
     #
-    # The command will be interpolated, and can include secrets. See
-    # `Dpl::Interpolate` for details on interpolating variables.
-    #
     # If a Symbol was passed as a command then the command will be looked
     # up from the provider class' `cmds` declaration.
+    #
+    # The command will be interpolated, and can include secrets. See
+    # `Dpl::Interpolate` for details on interpolating variables.
     #
     # If the option `silence` was passed then stdout and stderr will be
     # redirected to `/dev/null`.
     #
     # If the option `python` was passed then the virtualenv with the given
     # Python version will be activated before executing the command.
-    def cmd
+    def cmd(secure = true)
       cmd = lookup(:cmd, str) || error(:cmd, str)
-      cmd = interpolate(cmd, opts, secure: true).strip
+      cmd = interpolate(cmd, opts, secure: secure).strip
       cmd = silence(cmd) if silence?
       cmd = python(cmd) if python?
       cmd
     end
 
+    # Returns a log message version of the command string
+    #
+    # This is the same as #cmd, except that included secrets will be
+    # obfuscated, and a prompt (dollar and space) will be prepended. See
+    # `Dpl::Interpolate` for details on interpolating variables.
+    def echo
+      "$ #{cmd(false)}"
+    end
+
     # Returns the log message for announcing a command
+    #
+    # If the option `msg` was given as a String then it will be used. If the
+    # option `msg` was given as a Symbol then it will be looked up from the
+    # provider class' `msgs` declaration.
     #
     # The message string will be interpolated, but included secrets will be
     # obfuscated. See `Dpl::Interpolate` for details on interpolating
     # variables.
-    #
-    # If the option `msg` was given as a String then it will be used. If the
-    # option `msg` was given as a Symbol then it will be looked up from the
-    # provider class' `msgs` declaration. If the option `msg` was not given
-    # then the `cmd` string will be used.
-    #
-    # If the option `silence` was passed then stdout and stderr will be
-    # redirected to `/dev/null`.
-    #
-    # If the option `python` was passed then the virtualenv with the given
-    # Python version will be activated before executing the command.
     def msg
-      msg = lookup(:msg, opts[:msg], str)
-      msg ||= "$ #{lookup(:cmd, str)}" if lookup(:cmd, str)
+      msg = lookup(:msg, opts[:msg])
       msg || error(:msg, opts[:msg], str)
-      msg = interpolate(msg, opts).strip
-      msg = silence(msg) if silence?
-      msg = python(msg) if python?
+      msg = interpolate(msg, opts, secure: false).strip
       msg
     end
 

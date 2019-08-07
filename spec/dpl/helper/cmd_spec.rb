@@ -49,41 +49,7 @@ describe Dpl::Cmd do
   describe 'msg' do
     describe 'given a msg, interpolating opts' do
       let(:opts) { { msg: 'msg %{var}', var: :var } }
-      let(:cmd) { 'cmd' }
       it { expect(subject.msg).to eq 'msg var' }
-    end
-
-    describe 'given a str, interpolating opts' do
-      let(:opts) { { var: :var } }
-      let(:cmd) { 'cmd %{var}' }
-      it { expect(subject.msg).to eq 'cmd var' }
-    end
-
-    describe 'given a symbol, with the cmd mapping present' do
-      let(:cmd) { :cmd }
-
-      describe 'interpolating an opt' do
-        let(:body) { ->(*) { cmds cmd: 'cmd %{var}' } }
-        let(:opts) { { var: :var } }
-        it { expect(subject.msg).to eq '$ cmd var' }
-      end
-
-      describe 'interpolating a secure opt' do
-        let(:body) { ->(*) { cmds cmd: 'cmd %{var}' } }
-        let(:opts) { { var: 'secure' } }
-        before { allow(provider).to receive(:opts).and_return var: 'secure'.taint }
-        it { expect(subject.msg).to eq '$ cmd s*******************' }
-      end
-
-      describe 'interpolating a method' do
-        let(:body) { ->(*) { cmds cmd: 'cmd %{var}'; def var; 'var'; end } }
-        it { expect(subject.msg).to eq '$ cmd var' }
-      end
-
-      describe 'interpolating a const' do
-        let(:body) { ->(c) { cmds cmd: 'cmd %{VAR}'; c.const_set(:VAR, 'var') } }
-        it { expect(subject.msg).to eq '$ cmd var' }
-      end
     end
 
     describe 'given a symbol, with the cmd mapping missing' do

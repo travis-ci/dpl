@@ -56,7 +56,7 @@ module Dpl
       end
 
       def shell(cmd, opts = {})
-        info cmd.msg if cmd.echo?
+        info cmd.echo if cmd.echo?
         cmds << cmd.cmd
       end
 
