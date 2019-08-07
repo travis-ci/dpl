@@ -2,7 +2,7 @@ describe Dpl::Providers::Pages do
   let(:args)    { |e| %w(--github_token token) + args_from_description(e) }
   let(:user)    { JSON.dump(login: 'login', name: 'name', email: 'email') }
   let(:headers) { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
-  let(:cwd)     { File.expand_path('.') }
+  let!(:cwd)    { File.expand_path('.') }
   let(:tmp)     { File.expand_path('tmp') }
 
   before { stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers: headers) }
@@ -14,7 +14,7 @@ describe Dpl::Providers::Pages do
     it { should have_run '[info] Deploying branch gh-pages to github.com' }
     it { should have_run '[info] Cloning the branch gh-pages from the remote repo' }
     it { should have_run 'git clone --quiet --branch="gh-pages" --depth=1 "https://token@github.com/travis-ci/dpl.git" . > /dev/null 2>&1' }
-    it { should have_run "rsync -rl --exclude .git --delete \"#{cwd}/\" ." }
+    it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" .) }
     it { should have_run 'git config user.name "Deploy Bot (from Travis CI)"' }
     it { should have_run 'git config user.email "deploy@travis-ci.org"' }
     it { should have_run 'git add -A .' }
@@ -48,10 +48,10 @@ describe Dpl::Providers::Pages do
   end
 
   describe 'given --no_keep_history' do
-    it { should have_run '[info] Initializing local git repo in /private/tmp/dpl/tmp' }
+    it { should have_run '[info] Initializing local git repo' }
     it { should have_run 'git init .' }
     it { should have_run 'git checkout --orphan "gh-pages"' }
-    it { should have_run 'rsync -rl --exclude .git --delete "/private/tmp/dpl/" .' }
+    it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" .) }
     it { should have_run 'git add -A .' }
     it { should have_run 'git commit -qm "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages"' }
     it { should have_run 'git show --stat-count=10 HEAD' }

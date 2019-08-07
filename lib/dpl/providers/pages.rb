@@ -43,7 +43,7 @@ module Dpl
            committer_from_gh:   'The repo is configured to use committer user and email.',
            setup_dir:           'The source dir for deployment is %s',
            git_clone:           'Cloning the branch %{target_branch} from the remote repo',
-           git_init:            'Initializing local git repo in %{cwd}',
+           git_init:            'Initializing local git repo',
            git_checkout:        'Checking out orphan branch %{target_branch}',
            copy_files:          'Copying %{src_dir} contents to %{work_dir}',
            git_config:          'Configuring git committer to be %{committer_name} <%{committer_email}>',
@@ -85,7 +85,6 @@ module Dpl
         info :deploy
         info :keep_history if keep_history?
         debug :work_dir
-        @cwd = Dir.pwd
         Dir.chdir(work_dir)
       end
 
@@ -96,10 +95,6 @@ module Dpl
         git_commit
         git_push
         git_status if verbose?
-      end
-
-      def finish
-        Dir.chdir(@cwd) if @cwd
       end
 
       def git_clone?
@@ -209,10 +204,6 @@ module Dpl
 
       def api_endpoint
         github_url == 'github.com' ? "https://api.github.com/" : "https://#{github_url}/api/v3/"
-      end
-
-      def cwd
-        Dir.pwd
       end
 
       def now
