@@ -1,6 +1,7 @@
 language: shell
 
 script:
-  - git fetch origin master --unshallow
+  - cat .git/config | sed 's/fetch.*/fetch = +refs\/heads\/*:refs\/remotes\/origin\/*/' > .git/config
+  - git fetch origin master
   - git checkout -b master origin/master
   - .travis/trigger -t $TRAVIS_API_TOKEN
