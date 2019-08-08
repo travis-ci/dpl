@@ -7,3 +7,4 @@ script:
   - git branch -v -a
   - git checkout -b master origin/master
   - .travis/trigger -t $TRAVIS_API_TOKEN
+  - sleep 3
