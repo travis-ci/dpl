@@ -1,7 +1,9 @@
 language: shell
 
 script:
-  - cat .git/config | sed 's/fetch.*/fetch = +refs\/heads\/*:refs\/remotes\/origin\/*/' > .git/config
+  - git remote rm origin
+  - git remote add origin https://github.com/travis-ci/dpl.git
   - git fetch origin master
+  - git branch -v -a
   - git checkout -b master origin/master
   - .travis/trigger -t $TRAVIS_API_TOKEN
