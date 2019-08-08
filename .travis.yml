@@ -1,6 +1,6 @@
 language: shell
 
 script:
-  - git fetch origin master
+  - git fetch origin master --unshallow
   - git checkout -b master origin/master
   - .travis/trigger -t $TRAVIS_API_TOKEN
