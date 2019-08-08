@@ -18,24 +18,22 @@ describe Dpl::Providers::Pages::Api do
     }.to_json
   }
   let(:pages_latest_builds_response_body) {
-    [
-      {
-        "url": "https://api.github.com/repos/travis-ci/dpl/pages/builds/5472601",
-        "status": "built",
-        "error": {
-          "message": nil
-        },
-        "pusher": {
-          login: 'login',
-          name: 'name',
-          email: 'email'
-        },
-        "commit": "351391cdcb88ffae71ec3028c91f375a8036a26b",
-        "duration": 2104,
-        "created_at": "2019-02-10T19:00:49Z",
-        "updated_at": "2019-02-10T19:00:51Z"
-      }
-    ].to_json
+    {
+      "url": "https://api.github.com/repos/travis-ci/dpl/pages/builds/5472601",
+      "status": "built",
+      "error": {
+        "message": nil
+      },
+      "pusher": {
+        login: 'login',
+        name: 'name',
+        email: 'email'
+      },
+      "commit": "351391cdcb88ffae71ec3028c91f375a8036a26b",
+      "duration": 2104,
+      "created_at": "2019-02-10T19:00:49Z",
+      "updated_at": "2019-02-10T19:00:51Z"
+    }.to_json
   }
   let(:pages_build_request_response_body) {
     {
@@ -46,7 +44,7 @@ describe Dpl::Providers::Pages::Api do
 
   before { stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers: headers) }
   before { stub_request(:get, 'https://api.github.com/repos/travis-ci/dpl/pages').and_return(status: 200, body: pages_response_body, headers: headers) }
-  before { stub_request(:get, 'https://api.github.com/repos/travis-ci/dpl/pages/builds').and_return(status: 200, body: pages_latest_builds_response_body, headers: headers) }
+  before { stub_request(:get, 'https://api.github.com/repos/travis-ci/dpl/pages/builds/latest').and_return(status: 200, body: pages_latest_builds_response_body, headers: headers) }
   before { stub_request(:post, 'https://api.github.com/repos/travis-ci/dpl/pages/builds').and_return(status: 200, body: pages_build_request_response_body, headers: headers) }
 
   before { subject.run }
