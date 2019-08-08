@@ -955,7 +955,7 @@ Options:
   --github_token TOKEN           GitHub oauth token with repo permission (type: string, required: true)
   --repo SLUG                    Repo slug (type: string, default: repo slug)
   --target_branch BRANCH         Branch to push force to (type: string, default: gh-pages)
-  --[no-]keep_history            Create incremental commit instead of doing push force
+  --[no-]keep_history            Create incremental commit instead of doing push force (default: true)
   --[no-]allow_empty_commit      Allow an empty commit to be created (requires: keep_history)
   --[no-]committer_from_gh       Use the token's owner name and email for commit. Overrides the email and name
                                  options
@@ -1359,24 +1359,25 @@ Description:
 
 Options:
 
-  --email EMAIL        npm email address (type: string)
-  --api_key KEY        npm api key (can be retrieved from your local ~/.npmrc file) (type: string,
-                       required: true)
-  --access ACCESS      access level (type: string, known values: public, private)
-  --registry URL       npm registry url (type: string)
-  --tag TAGS           npm distribution tags to add (type: string)
+  --email EMAIL          npm account email (type: string)
+  --api_token TOKEN      npm api token (type: string, required: true, alias: api_key, note: can be
+                         retrieved from your local ~/.npmrc file, see:
+                         https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
+  --access ACCESS        access level (type: string, known values: public, private)
+  --registry URL         npm registry url (type: string)
+  --tag TAGS             npm distribution tags to add (type: string)
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
-                       (string, can be given multiple times))
-  --[no-]cleanup       Skip cleaning up build artifacts before the deployment
-  --help               Get help on this command
+  --run CMD              Command to execute after the deployment finished successfully (type: array
+                         (string, can be given multiple times))
+  --[no-]cleanup         Skip cleaning up build artifacts before the deployment
+  --help                 Get help on this command
 
 Examples:
 
-  dpl npm --api_key key
-  dpl npm --api_key key --email email --access public --registry url --tag tags
+  dpl npm --api_token token
+  dpl npm --api_token token --email email --access public --registry url --tag tags
 ```
 
 ### OpenShift
@@ -1614,7 +1615,7 @@ Options:
                          osc-fr1)
   --remote REMOTE        Git remote name (type: string, default: scalingo-dpl)
   --branch BRANCH        Git branch (type: string, default: master)
-  --timeout SEC          Timeout for Scalingo CLI commands (type: string, default: 60)
+  --timeout SEC          Timeout for Scalingo CLI commands (type: integer, default: 60)
 
 Common Options:
 
