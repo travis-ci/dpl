@@ -13,6 +13,7 @@ gems.each do |name, version, opts|
 end
 
 group :test do
+  gem 'coveralls'
   gem 'rspec'
   gem 'webmock'
 end

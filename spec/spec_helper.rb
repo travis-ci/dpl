@@ -1,6 +1,9 @@
+require 'coveralls'
 require 'webmock/rspec'
 require 'dpl'
 require 'support'
+
+Coveralls.wear! if ENV['TRAVIS']
 
 RSpec.configure do |c|
   c.include Support::Cl
