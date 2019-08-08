@@ -16,6 +16,8 @@ module Dpl
 
         gem 'octokit', '~> 4.14.0'
 
+        opt '--force', 'force GitHub Pages build even if this is not the branch for which Pages is configured', default: false
+
         status :alpha
 
         full_name 'GitHub Pages using API'
@@ -29,14 +31,15 @@ module Dpl
                'or GitHub Pages is not enabled for this repo (see https://github.com/%{slug}/settings)',
              build_pages_request_timeout: 'GitHub Pages build request timed out',
              deploy_start:                'Requesting GitHub Pages build using API',
-             branch_name_mismatch:        'The current git branch \'%s\' does not match GitHub Pages branch \'%s\''
+             branch_name_mismatch:        'The current git branch \'%s\' does not match GitHub Pages branch \'%s\'. ' \
+                'Override this check with `--force=true`'
 
         def validate
           ::Octokit.default_media_type = PAGES_PREVIEW_MEDIA_TYPE
 
           error :pages_not_found unless pages_enabled?
 
-          unless ENV['TRAVIS_BRANCH'] == pages_branch
+          unless ENV['TRAVIS_BRANCH'] == pages_branch && !force
             error :branch_name_mismatch, ENV['TRAVIS_BRANCH'], pages_branch
           end
         end
