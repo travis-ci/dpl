@@ -50,7 +50,6 @@ describe Dpl::Providers::Pages::Api do
   before { subject.run }
 
   describe 'by default', record: true do
-    it { should have_run '[info] GitHub Pages using API' }
     it { should have_run_in_order }
   end
 end
