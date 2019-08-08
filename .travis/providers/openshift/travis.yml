@@ -1,0 +1,27 @@
+language: ruby
+
+env:
+  # GITHUB_TOKEN=[personal access token with repo scope on travis-dpl-test]
+  secure: "o7IxUSrMNTYoVqWO+LkmGn3wccPEEi9CewntdP/KGgH1g8YdDuEjZvSmSlNacEsXfibz+F3pWM1aNb3Qx5Is0fQizm0eVaAXs/4qwPZOyByzOt5QdO0PXw4BRuojc6kByW0QcsbUceyxUSFNQeWernpinlZAnblpLBjTpqbPKSw="
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/openshift/prepare
+  - export TRAVIS_COMMIT=$(GIT_DIR=tmp/dpl_test/.git git rev-parse HEAD | tr -d '\n')
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: openshift
+    server: https://api.us-west-2.online-starter.openshift.com:6443
+    project: dpl-test
+    app: dpl-test-app
+    token:
+      secure: "ow46ArHZy2lQWdTCMz7zxmxGD6Jrgokw8DR0mNBLPl5kUSgq7x4LNI0SI5r/iS1Nus8cFe5JPQvgX/niYfPYplF4fNR42aRw3Who2OjaA98eeYqbkExP6nV48h5LGEOF8wgzVSgxUCO8SGduQqmjcJUwW30mOmmA1VUa8DFhgs0="
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/openshift/test || TRAVIS_TEST_RESULT=$?
+  # - ./oc scale rc --replicas=0 --all
+  # - ./oc delete pod --all

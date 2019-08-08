@@ -1,0 +1,13 @@
+#!/bin/bash
+
+mkdir -p tmp/dpl_test
+cat .travis/providers/boxfuse/main.go | sed "s/__ID__/$ID/g" > tmp/dpl_test/main.go
+
+cd tmp/dpl_test
+
+export GOOS=linux
+
+go build -ldflags="-s"
+
+mkdir conf
+echo 'ports.http=8080' > boxfuse.conf

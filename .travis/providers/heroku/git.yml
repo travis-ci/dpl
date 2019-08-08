@@ -1,0 +1,21 @@
+language: shell
+
+script:
+  - true
+
+before_deploy:
+  - .travis/providers/heroku/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: heroku
+    strategy: git
+    app: dpl-test-heroku-git
+    api_key:
+      # Heroku API token from dpl-test@travis-ci.org
+      # expires in June 2020, heroku authorizations:add to create a permanent one
+      secure: "nnU3RBUg6cBo5TVWo8fnPiKI2R43a/gselqkSAR6btQgmy1OMmM9UM4EPEc1fcSa+OB0jX1aGqSRS4KRLEZBusr+ZewY+vtgM1c8kgSOZItYsYz8MizD/QtDE2iXSwUozuK5Jy2e9mnEPBLaU0W2DTnIEJLnAFN2LSodqf5efJI="
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/heroku/test https://dpl-test-heroku-git.herokuapp.com/ || TRAVIS_TEST_RESULT=$?

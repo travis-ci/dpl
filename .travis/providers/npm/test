@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require 'open-uri'
+require 'json'
+
+$stdout.sync = true
+
+expected = ENV['ID']
+url = 'https://registry.npmjs.com/@dpl-test/dpl-test'
+
+def poll(url)
+  URI.parse(url).read
+rescue => e
+  puts e.message
+end
+
+10.times do
+  puts "Checking #{url}"
+  data = JSON.load(poll(url))
+  actual = data['versions'].keys.map { |key| key.split('-').last }
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual.include?(expected)
+  sleep 5
+end
+
+abort 'failed'

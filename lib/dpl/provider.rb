@@ -1,312 +1,602 @@
-require 'dpl/error'
-require 'dpl/version'
+require 'cl'
 require 'fileutils'
+require 'forwardable'
+require 'shellwords'
+require 'dpl/helper/assets'
+require 'dpl/helper/cmd'
+require 'dpl/helper/env'
+require 'dpl/helper/interpolate'
+require 'dpl/helper/squiggle'
+require 'dpl/provider/dsl'
+require 'dpl/provider/examples'
+require 'dpl/version'
 
-module DPL
-  class Provider
-    include FileUtils
+module Dpl
+  # Base class for all concrete providers that `dpl` supports.
+  #
+  # These are subclasses of `Cl::Cmd` which means they are going to be detected
+  # by the first argument passed to `dpl [provider]`, instantiated, and run.
+  #
+  # Implementors are encouraged to use the provider DSL to declare various
+  # features, requirements, and attributes that apply to their provider, to
+  # implement any of the following stages (methods) according to their needs
+  # and semantics:
+  #
+  #   * init
+  #   * install
+  #   * login
+  #   * setup
+  #   * validate
+  #   * prepare
+  #   * deploy
+  #   * finish
+  #
+  # The main logic should sit in the `deploy` stage.
+  #
+  # If at any time the method `error` is called, or any exception raised the
+  # deploy process will be halted, and subsequent stages skipped. However, the
+  # stage `finish` will run even if previous stages have raised an error,
+  # giving the provider the opportunity to potentially clean up stage.
+  #
+  # In addition to this the following methods will be called if implemented
+  # by the provider:
+  #
+  #   * run_cmd
+  #   * add_key
+  #   * remove_key
+  #
+  # Like the `finish` stage, the method `remove_key` will be called even if
+  # previous stages have raised an error.
+  #
+  # See the respective method's documentation for details on these.
+  #
+  # The following stages are not meant to be overwritten, but considered
+  # internal:
+  #
+  #   * before_install
+  #   * before_setup
+  #   * before_prepare
+  #   * before_finish
+  #
+  # Dependencies declared as required, such as APT, NPM, or Python are going to
+  # be installed as part of the `before_install` stage .
+  #
+  # Cleanup is run as part of the `before_prepare` stage if the option
+  # `--cleanup` was given. This will use `git stash --all` in order to reset
+  # the working directory to the committed state, and cleanup any left over
+  # artifacts from the build process. Providers can use the DSL method `keep`
+  # in order to declare known artifacts (such as CLI tooling installed to the
+  # working directory) that needs to be moved out of the way and restored after
+  # the cleanup process. (It is recommended to place such artifacts outside of
+  # the build working directory though, for example in `~/.dpl`).
+  #
+  # The method `run_cmd` is called for each command specified using the `--run`
+  # option. By default, these command are going to be run as local shell
+  # commands, but providers can choose to overwrite this method in order to run
+  # the command on a remote machine.
+  #
+  # @see https://github.com/svenfuchs/cl Cl's documentation for details on how
+  # providers (commands) are declared and run.
 
-    # map of DPL provider class name constants to their corresponding
-    # file names. There is no simple rule to map them automatically
-    # (camel-cases, snake-cases, call-caps, etc.), so we need an explicit
-    # map.
-    GEM_NAME_OF = {
-      'Anynines'            => 'anynines',
-      'Appfog'              => 'appfog',
-      'Atlas'               => 'atlas',
-      'AzureWebApps'        => 'azure_webapps',
-      'Bintray'             => 'bintray',
-      'BitBalloon'          => 'bitballoon',
-      'BluemixCloudFoundry' => 'bluemix_cloud_foundry',
-      'Boxfuse'             => 'boxfuse',
-      'Catalyze'            => 'catalyze',
-      'ChefSupermarket'     => 'chef_supermarket',
-      'Cloud66'             => 'cloud66',
-      'CloudFiles'          => 'cloud_files',
-      'CloudFoundry'        => 'cloud_foundry',
-      'CodeDeploy'          => 'code_deploy',
-      'Cargo'               => 'cargo',
-      'Deis'                => 'deis',
-      'ElasticBeanstalk'    => 'elastic_beanstalk',
-      'EngineYard'          => 'engine_yard',
-      'Firebase'            => 'firebase',
-      'GAE'                 => 'gae',
-      'GCS'                 => 'gcs',
-      'Hackage'             => 'hackage',
-      'Hephy'               => 'hephy',
-      'Heroku'              => 'heroku',
-      'Lambda'              => 'lambda',
-      'Launchpad'           => 'launchpad',
-      'Nodejitsu'           => 'nodejitsu',
-      'NPM'                 => 'npm',
-      'Openshift'           => 'openshift',
-      'OpsWorks'            => 'ops_works',
-      'Packagecloud'        => 'packagecloud',
-      'Pages'               => 'pages',
-      'PuppetForge'         => 'puppet_forge',
-      'PyPI'                => 'pypi',
-      'Releases'            => 'releases',
-      'RubyGems'            => 'rubygems',
-      'S3'                  => 's3',
-      'Scalingo'            => 'scalingo',
-      'Script'              => 'script',
-      'Snap'                => 'snap',
-      'Surge'               => 'surge',
-      'TestFairy'           => 'testfairy',
-      'Transifex'           => 'transifex',
+  class Provider < Cl::Cmd
+    extend Dsl, Forwardable
+    include Assets, Env, FileUtils, Interpolate, Squiggle
+
+    class << self
+      def examples
+        @examples ||= super || Examples.new(self).cmds
+      end
+
+      def move_files(ctx)
+        ctx.move_files(move) if move.any?
+      end
+
+      def unmove_files(ctx)
+        ctx.unmove_files(move) if move.any?
+      end
+
+      def install_deps?
+        apt? || gem? || npm? || pip?
+      end
+
+      def install_deps(ctx)
+        ctx.apts_get(apt) if apt?
+        ctx.gems_require(gem) if gem?
+        npm.each { |npm| ctx.npm_install *npm } if npm?
+        pip.each { |pip| ctx.pip_install *pip } if pip?
+      end
+
+      def validate_runtimes(ctx)
+        ctx.validate_runtimes(runtimes) if runtimes.any?
+      end
+    end
+
+    # Fold names to display in the build log.
+    FOLDS = {
+      init:     'Initialize deployment',
+      setup:    'Setup deployment',
+      validate: 'Validate deployment',
+      install:  'Install deployment dependencies',
+      login:    'Authenticate deployment',
+      prepare:  'Prepare deployment',
+      deploy:   'Run deployment',
+      finish:   'Finish deployment',
     }
 
-    def self.new(context, options)
-      return super if self < Provider
+    # Deployment process stages.
+    #
+    # In addition to the stages listed here the stage `finish` will be run at
+    # the end of the process.
+    #
+    # Also, the methods `add_key` (called before `setup`), `remove_key` (called
+    # before `finish`), and `run_cmd` (called after `deploy`) may be of
+    # interest to implementors.
+    STAGES = %i(
+      init
+      install
+      login
+      setup
+      validate
+      prepare
+      deploy
+    )
 
-      # when requiring the file corresponding to the provider name
-      # given in the options, the general strategy is to normalize
-      # the option to lower-case alphanumeric, then
-      # use that key to find the file name using the GEM_NAME_OF map.
+    abstract
 
-      context.fold("Installing deploy dependencies") do
-        begin
-          opt_lower = super.option(:provider).to_s.downcase
-          opt = opt_lower.gsub(/[^a-z0-9]/, '')
-          class_name = class_of(opt)
-          raise Error, "could not find provider %p" % opt unless class_name
-          require "dpl/provider/#{GEM_NAME_OF[class_name]}"
-          provider = const_get(class_name).new(context, options)
-        rescue NameError, LoadError => e
-          if /uninitialized constant DPL::Provider::(?<provider_wanted>\S+)/ =~ e.message
-            provider_gem_name = GEM_NAME_OF[provider_wanted]
-          elsif %r(cannot load such file -- dpl/provider/(?<provider_file_name>\S+)) =~ e.message
-            provider_gem_name = GEM_NAME_OF[class_name]
-          else
-            # don't know what to do with this error
-            raise e
-          end
-          install_cmd = "gem install dpl-#{provider_gem_name || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
+    arg :provider, 'The provider name', required: true
 
-          if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{GEM_NAME_OF[provider_gem_name] || opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
-            install_cmd = "gem install #{local_gem}"
-          end
+    opt '--run CMD',      'Command to execute after the deployment finished successfully', type: :array
+    opt '--cleanup',      'Skip cleaning up build artifacts before the deployment', negate: %w(skip)
+    opt '--stage NAME',   type: :array, internal: true, default: STAGES
+    opt '--fold',         internal: true
 
-          context.shell(install_cmd)
-          Gem.clear_paths
+    msgs before_install:  'Installing deployment dependencies',
+         before_setup:    'Setting the build environment up for the deployment',
+         setup_git_ssh:   'Setting up git-ssh',
+         cleanup:         'Cleaning up git repository with `git stash --all`',
+         ssh_keygen:      'Generating SSH key',
+         setup_git_ua:    'Setting up git HTTP user agent',
+         ssh_remote_host: 'SSH remote is %s at port %s',
+         ssh_try_connect: 'Waiting for SSH connection ...',
+         ssh_connected:   'SSH connection established.',
+         ssh_failed:      'Failed to establish SSH connection.'
 
-          require "dpl/provider/#{GEM_NAME_OF[class_name]}"
-          provider = const_get(class_name).new(context, options)
-        rescue DPL::Error
-          if opt_lower
-            provider = const_get(opt.capitalize).new(context, options)
-          else
-            raise Error, 'missing provider'
-          end
-        end
+    def_delegators :'self.class', :status, :full_name, :install_deps,
+      :install_deps?, :keep, :move_files, :unmove_files, :needs?, :runtimes,
+      :validate_runtimes, :user_agent
 
-        if options[:no_deploy]
-          def provider.deploy; end
-        else
-          provider.install_deploy_dependencies if provider.respond_to? :install_deploy_dependencies
-        end
+    def_delegators :ctx, :apt_get, :gem_require, :npm_install, :pip_install,
+      :build_dir, :build_number, :repo_slug, :encoding, :git_commit_msg,
+      :git_dirty?, :git_log, :git_ls_files, :git_ls_remote?, :git_remote_urls,
+      :git_rev_parse, :git_sha, :git_tag, :machine_name, :node_version,
+      :npm_version, :sleep, :ssh_keygen, :success?, :mv, :tmp_dir, :which,
+      :logger, :rendezvous, :file_size, :write_file, :write_netrc, :last_out,
+      :last_err, :tty?
 
-        provider
-      end
+    attr_reader :repo_name, :key_name
+
+    def initialize(ctx, *args)
+      @repo_name = ctx.repo_name
+      @key_name = ctx.machine_name
+      super
     end
 
-    def self.experimental(name)
-      puts "", "!!! #{name} support is experimental !!!", ""
-    end
-
-    def self.deprecated(*lines)
-      puts ''
-      lines.each do |line|
-        puts "\e[31;1m#{line}\e[0m"
-      end
-      puts ''
-    end
-
-    def self.context
-      self
-    end
-
-    def self.shell(command, options = {})
-      system(command)
-    end
-
-    def self.apt_get(name, command = name)
-      context.shell("sudo apt-get -qq install #{name}", retry: true) if `which #{command}`.chop.empty?
-    end
-
-    def self.pip(name, command = name, version = nil)
-      if version
-        puts "pip install --user #{name}==#{version}"
-        context.shell("pip uninstall --user -y #{name}") unless `which #{command}`.chop.empty?
-        context.shell("pip install --user #{name}==#{version}", retry: true)
-      else
-        puts "pip install --user #{name}"
-        context.shell("pip install --user #{name}", retry: true) if `which #{command}`.chop.empty?
-      end
-      context.shell("export PATH=$PATH:$HOME/.local/bin")
-    end
-
-    def self.npm_g(name, command = name)
-      context.shell("npm install -g #{name}", retry: true) if `which #{command}`.chop.empty?
-    end
-
-    def self.class_of(filename)
-      GEM_NAME_OF.keys.detect { |p| p.to_s.downcase == filename }
-    end
-
-    attr_reader :context, :options
-
-    def initialize(context, options)
-      @context, @options = context, options
-      if options.key?(:needs_git_http_user_agent) && !options[:needs_git_http_user_agent]
-        context.env.delete 'GIT_HTTP_USER_AGENT'
-      else
-        context.env['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
-      end
-    end
-
-    def user_agent(*strings)
-      strings.unshift "dpl/#{DPL::VERSION}"
-      strings.unshift "travis/0.1.0" if context.env['TRAVIS']
-      strings = strings.flat_map { |e| Hash === e ? e.map { |k,v| "#{k}/#{v}" } : e }
-      strings.join(" ").gsub(/\s+/, " ").strip
-    end
-
-    def option(name, *alternatives)
-      options.fetch(name) do
-        alternatives.any? ? option(*alternatives) : raise(Error, "missing #{name}")
-      end
-    end
-
-    def deploy
-      setup_git_credentials
-      rm_rf ".dpl"
-      mkdir_p ".dpl"
-
-      context.fold("Preparing deploy") do
-        check_auth
-        check_app
-
-        if needs_key?
-          create_key(".dpl/id_rsa")
-          setup_key(".dpl/id_rsa.pub")
-          setup_git_ssh(".dpl/git-ssh", ".dpl/id_rsa")
-        end
-
-        cleanup
-      end
-
-      context.fold("Deploying application") { push_app }
-
-      Array(options[:run]).each do |command|
-        if command == 'restart'
-          context.fold("Restarting application") { restart }
-        else
-          context.fold("Running %p" % command) { run(command) }
-        end
-      end
+    # Runs all stages, all commands provided by the user, as well as the final
+    # stage `finish` (which will be run even if an error has been raised during
+    # previous stages).
+    def run
+      stages = stage.select { |stage| run_stage?(stage) }
+      stages.each { |stage| run_stage(stage) }
+      run_cmds
     ensure
-      if needs_key?
-        remove_key rescue nil
+      run_stage(:finish, fold: false) if finish?
+    end
+
+    # Whether or not a stage needs to be run
+    def run_stage?(stage)
+      respond_to?(:"before_#{stage}") || respond_to?(stage)
+    end
+
+    def finish?
+      stage.size == STAGES.size
+    end
+
+    # Runs a single stage.
+    #
+    # For each stage the base class has the opportunity to implement a `before`
+    # stage method, in order to apply default behaviour. Provider implementors
+    # are asked to not overwrite these methods.
+    #
+    # Any log output from both the before stage and stage method is going to be
+    # folded in the resulting build log.
+    def run_stage(stage, opts = {})
+      fold(stage, opts) do
+        send(:"before_#{stage}") if respond_to?(:"before_#{stage}")
+        send(stage) if respond_to?(stage)
       end
-      uncleanup
     end
 
-    def sha
-      @sha ||= context.env['TRAVIS_COMMIT'] || `git rev-parse HEAD`.strip
+    # Initialize the deployment process.
+    #
+    # Displays warning messages about experimental providers, and deprecated
+    # options used.
+    def before_init
+      warn status.msg if status && status.announce?
+      deprecations.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
+      move_files(ctx)
     end
 
-    def commit_msg
-      @commit_msg ||= %x{git log #{sha} -n 1 --pretty=%B}.strip
+    # Install APT, NPM, and Python dependencies as declared by the provider.
+    def before_install
+      validate_runtimes(ctx)
+      return unless install_deps?
+      info :before_install
+      install_deps(ctx)
     end
 
+    # Sets the build environment up for the deployment.
+    #
+    # This will:
+    #
+    # * Setup a ~/.dpl working directory
+    # * Create a temporary, per build SSH key, and call `add_key` if the feature `ssh_key` has been declared as required.
+    # * Setup git config (email and user name) if the feature `git` has been declared as required.
+    # * Either set or unset the environment variable `GIT_HTTP_USER_AGENT` depending if the feature `git_http_user_agent` has been declared as required.
+    def before_setup
+      info :before_setup
+      setup_dpl_dir
+      setup_ssh_key if needs?(:ssh_key)
+      setup_git_config if needs?(:git)
+      setup_git_http_user_agent
+    end
+
+    # Prepares the deployment by cleaning up the working directory.
+    #
+    # @see Provider#cleanup
+    def before_prepare
+      cleanup if cleanup?
+    end
+
+    # Runs each command as given by the user using the `--run` option.
+    #
+    # For a command that matches `restart` the method `restart` will be called
+    # (which can be overwritten by providers, e.g. in order to restart service
+    # instances).
+    #
+    # All other commands will be passed to the method `run_cmd`. By default this
+    # will be run as a shell command locally, but providers can choose to
+    # overwrite this method in order to run the command on a remote machine.
+    def run_cmds
+      Array(opts[:run]).each do |cmd|
+        cmd.downcase == 'restart' ? restart : run_cmd(cmd)
+      end
+    end
+
+    def run_cmd(cmd)
+      cmd.downcase == 'restart' ? restart : shell(cmd)
+    end
+
+    # Finalizes the deployment process.
+    #
+    # This will:
+    #
+    # * Call the method `remove_key` if implemented by the provider, and if the
+    #   feature `ssh_key` has been declared as required.
+    # * Revert the cleanup process, i.e. restore files moved out of the way
+    #   during `cleanup`.
+    def before_finish
+      remove_key if needs?(:ssh_key) && respond_to?(:remove_key)
+      uncleanup if cleanup?
+      unmove_files(ctx)
+    end
+
+    # Resets the current working directory to the commited state.
+    #
+    # Cleanup will use `git stash --all` in order to reset the working
+    # directory to the committed state, and cleanup any left over artifacts
+    # from the build process. Providers can use the DSL method `keep` in order
+    # to declare known artifacts (such as CLI tooling installed to the working
+    # directory) that needs to be moved out of the way and restored after the
+    # cleanup process.
     def cleanup
-      return if options[:skip_cleanup]
-      context.shell "mv .dpl ~/dpl"
-      log "Cleaning up git repository with `git stash --all`. " \
-        "If you need build artifacts for deployment, set `deploy.skip_cleanup: true`. " \
-        "See https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup."
-      context.shell "git stash --all"
-      context.shell "mv ~/dpl .dpl"
+      info :cleanup
+      keep.each { |path| shell "mv ./#{path} ~/#{path}", echo: false, assert: false }
+      shell 'git stash --all'
+      keep.each { |path| shell "mv ~/#{path} ./#{path}", echo: false, assert: false }
     end
 
+    # Restore files that have been cleaned up.
     def uncleanup
-      return if options[:skip_cleanup]
-      context.shell "git stash pop"
+      shell 'git stash pop', assert: false
     end
 
-    def needs_key?
-      true
+    # Creates the directory `~/.dpl` as an internal working directory.
+    def setup_dpl_dir
+      rm_rf '~/.dpl'
+      mkdir_p '~/.dpl'
     end
 
-    def check_app
+    # Creates an SSH key, and sets up git-ssh if needed.
+    #
+    # This will:
+    #
+    # * Create a temporary, per build SSH key.
+    # * Setup a `git-ssh` executable to use that key.
+    # * Call the method `add_key` if implemented by the provider.
+    def setup_ssh_key
+      ssh_keygen(key_name, '~/.dpl/id_rsa')
+      setup_git_ssh('~/.dpl/id_rsa')
+      add_key('~/.dpl/id_rsa.pub') if respond_to?(:add_key)
     end
 
-    def create_key(file)
-      context.shell "ssh-keygen -t rsa -N \"\" -C #{option(:key_name)} -f #{file}"
+    # Setup git config
+    #
+    # This adds the current user's name and email address (as user@localhost)
+    # to the git config.
+    def setup_git_config
+      shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost", echo: false, assert: false
+      shell "git config user.name  >/dev/null 2>/dev/null || git config user.name  `whoami`", echo: false, assert: false
     end
 
-    def setup_git_credentials
-      context.shell "git config user.email >/dev/null 2>/dev/null || git config user.email `whoami`@localhost"
-      context.shell "git config user.name >/dev/null 2>/dev/null || git config user.name `whoami`@localhost"
-    end
-
-    def setup_git_ssh(path, key_path)
-      key_path = File.expand_path(key_path)
-      path     = File.expand_path(path)
-
-      File.open(path, 'w') do |file|
-        file.write "#!/bin/sh\n"
-        file.write "exec ssh -o StrictHostKeychecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -i #{key_path} -- \"$@\"\n"
-      end
-
+    # Sets up `git-ssh` and the GIT_SSH env var
+    def setup_git_ssh(key)
+      info :setup_git_ssh
+      path, conf = '~/.dpl/git-ssh', asset(:dpl, :git_ssh).read % expand(key)
+      open(path, 'w+') { |file| file.write(conf) }
       chmod(0740, path)
-      context.env['GIT_SSH'] = path
+      ENV['GIT_SSH'] = expand(path)
     end
 
-    def detect_encoding?
-      options[:detect_encoding]
+    # Generates an SSH key.
+    def ssh_keygen(key, path)
+      info :ssh_keygen
+      ctx.ssh_keygen(key, expand(path))
     end
 
-    def default_text_charset?
-      options[:default_text_charset]
+    # Sets or unsets the environment variable `GIT_HTTP_USER_AGENT`.
+    def setup_git_http_user_agent
+      return ENV.delete('GIT_HTTP_USER_AGENT') unless needs?(:git_http_user_agent)
+      info :setup_git_ua
+      ENV['GIT_HTTP_USER_AGENT'] = user_agent(git: `git --version`[/[\d\.]+/])
     end
 
-    def default_text_charset
-      options[:default_text_charset].downcase
+    # Waits for SSH access on the given host and port.
+    #
+    # This will try to connect to the given SSH host and port, and keep
+    # retrying 30 times, waiting a second inbetween retries.
+    def wait_for_ssh_access(host, port)
+      info :ssh_remote_host, host, port
+      1.upto(20) { try_ssh_access(host, port) && break || sleep(3) }
+      success? ? info(:ssh_connected) : error(:ssh_failed)
     end
 
-    def install_deploy_dependencies
+    # Tries to connect to the given SSH host and port.
+    def try_ssh_access(host, port)
+      info :ssh_try_connect
+      shell "#{ENV['GIT_SSH']} #{host} -p #{port} 2>&1 | grep -c 'PTY allocation request failed' > /dev/null", echo: false, assert: false
     end
 
-    def encoding_for(path)
-      file_cmd_output = `file '#{path}'`
-      case file_cmd_output
-      when /gzip compressed/
-        'gzip'
-      when /compress'd/
-        'compress'
-      when /text/
-        'text'
-      when /data/
-        # Shrugs?
+    # Creates a log fold.
+    #
+    # Folds any log output from the given block into a fold with the given
+    # name.
+    def fold(name, opts = {}, &block)
+      return yield unless fold?(name, opts)
+      title = FOLDS[name] || "deploy.#{name}"
+      ctx.fold(title, &block)
+    end
+
+    # Checks if the given stage needs to be folded.
+    #
+    # Depends on the option `--fold`, also omits folds for the init and finish
+    # stages. Can be overwritten by passing `fold: false`.
+    def fold?(name, opts = {})
+      !opts[:fold].is_a?(FalseClass) && super() && !%i(init).include?(name)
+    end
+
+    # Runs a script as a shell command.
+    #
+    # Scripts can be stored as separate files (assets) in the directory
+    # `lib/dpl/assets/[provider]`.
+    #
+    # This is meant for large shell commands that would be hard to read if
+    # embedded in Ruby code. Storing them as separate files helps with proper
+    # syntax highlighting etc in editors, and allows to execute them for
+    # testing purposes.
+    #
+    # Scripts can have interpolation variables. See Dpl::Interpolate for
+    # details on interpolating variables.
+    #
+    # See Ctx::Bash#shell for details on the options accepted.
+    def script(name, opts = {})
+      opts[:assert] = name if opts[:assert].is_a?(TrueClass)
+      shell(asset(name).read, opts.merge(echo: false))
+    end
+
+    # Runs a single shell command.
+    #
+    # Shell commands can have interpolation variables. See Dpl::Interpolate for
+    # details on interpolating variables.
+    #
+    # See Ctx::Bash#shell for details on the options accepted.
+    def shell(cmd, *args)
+      opts = args.last.is_a?(Hash) ? args.pop : {}
+      cmd = Cmd.new(self, cmd, opts)
+      ctx.shell(cmd)
+    end
+
+    # @!method print
+    # Prints a partial message to stdout
+    #
+    # This method does not append a newline character to the given message,
+    # which usually is not the desired behaviour. The method is intended to be
+    # used if an initial, partial message is supposed to be printed, which will
+    # be completed later (using the method `info`).
+    #
+    # For example:
+    #
+    #   print 'Starting a long running task ...'
+    #   run_long_running_task
+    #   info 'done.'
+    #
+    # Messages support interpolation variables. See Dpl::Interpolate for
+    # details on interpolating variables.
+
+    # @!method info
+    # Outputs an info message to stdout
+    #
+    # This method is intended to be used for default, info level messages that
+    # are supposed to show up in the build log.
+    #
+    # @!method warn
+    # Outputs an warning message to stderr
+    #
+    # This method is intended to be used for warning messages that are supposed
+    # to show up in the build log, but do not qualify as errors that would
+    # abort the deployment process. The warning will be highlighted as red
+    # text. Use sparingly.
+    #
+    # Messages support interpolation variables. See Dpl::Interpolate for
+    # details on interpolating variables.
+
+    # @!method error
+    # Outputs an error message to stderr, and raises an error, halting the
+    # deployment process.
+    #
+    # This method is intended to be used for all error conditions that require
+    # the deployment process to be aborted.
+    #
+    # Messages support interpolation variables. See Dpl::Interpolate for
+    # details on interpolating variables.
+    %i(print info warn error).each do |level|
+      define_method(level) do |msg, *args|
+        msg = interpolate(self.msg(msg), args) if msg.is_a?(Symbol)
+        ctx.send(level, msg)
       end
     end
 
-    def log(message)
-      $stderr.puts(message)
+    # @!method cmd
+    # Looks up a shell command from the commands declared by the provider
+    # (using the class level DSL).
+    #
+    # Not usually useful to be used by provider implementors directly. Use the
+    # method `shell` in order to execute shell commands.
+
+    # @!method err
+    # Looks up an error message from the error messages declared by the
+    # provider (using the class level DSL), as needed by the option `assert`
+    # when passed to the method `shell`.
+
+    # @!method msg
+    # Looks up a message from the messages declared by the provider (using the
+    # class level DSL).
+    #
+    # For example, a message declared on the class body like so:
+    #
+    #   ```ruby
+    #   msgs commit_msg: 'Commit build artifacts on build %{build_number}'
+    #   ```
+    #
+    # could be used by the implementation like so:
+    #
+    #   ```ruby
+    #   def commit_msg
+    #     interpolate(msg(:commit_msg))
+    #   end
+    #   ```
+    #
+    # Note that the the method `interpolate` needs to be used in order to
+    # interpolate variables used in a message (if any).
+    %i(cmd err msg).each do |name|
+      define_method(name) do |*keys|
+        key = keys.detect { |key| key.is_a?(Symbol) }
+        self.class.send(:"#{name}s")[key] if key
+      end
     end
 
-    def warn(message)
-      log "\e[31;1m#{message}\e[0m"
+    # Escapes the given string so it can be safely used in Bash.
+    def escape(str)
+      Shellwords.escape(str)
     end
 
-    def run(command)
-      error "running commands not supported"
+    # Double quotes the given string.
+    def quote(str)
+      %("#{str}")
     end
 
-    def error(message)
-      raise Error, message
+    # Outdents the given string.
+    #
+    # @see Dpl::Squiggle
+    def sq(str)
+      self.class.sq(str)
+    end
+
+    # Generate shell option strings to be passed to a shell command.
+    #
+    # This generates strings like `--key="value"` for the option keys passed.
+    # These keys are supposed to correspond to methods on the provider
+    # instance, which will be called in order to determine the option value.
+    #
+    # If the returned value is an array then the option will be repeated
+    # multiple times. If it is a String then it will be double quoted.
+    # Otherwise it is assumed to be a flag that does not have a value.
+    #
+    # @option prefix [String] Use this to set a single dash as an option prefix (defaults to two dashes).
+    # @option dashed [Boolean] Use this to dasherize the option key (rather than underscore it, defaults to underscore).
+    def opts_for(keys, opts = {})
+      strs = Array(keys).map { |key| opt_for(key, opts) if send(:"#{key}?") }.compact
+      strs.join(' ') if strs.any?
+    end
+
+    def opt_for(key, opts = {})
+      case value = send(key)
+      when String then "#{opt_key(key, opts)}=#{value.inspect}"
+      when Array  then value.map { |value| "#{opt_key(key, opts)}=#{value.inspect}" }
+      else opt_key(key, opts)
+      end
+    end
+
+    def opt_key(key, opts)
+      "#{opts[:prefix] || '--'}#{opts[:dashed] ? key.to_s.gsub('_', '-') : key}"
+    end
+
+    # Compacts the given hash by rejecting nil values.
+    def compact(hash)
+      hash.reject { |_, value| value.nil? }
+    end
+
+    # Deep symbolizes the given hash's keys
+    def symbolize(obj)
+      case obj
+      when Hash
+        obj.map { |key, obj| [key.to_sym, symbolize(obj)] }.to_h
+      when Array
+        obj.map { |obj| symbolize(obj) }
+      else
+        obj
+      end
+    end
+
+    def mkdir_p(path)
+      super(expand(path))
+    end
+
+    def chmod(perm, path)
+      super(perm, expand(path))
+    end
+
+    def rm_rf(path)
+      super(expand(path))
+    end
+
+    def open(path, *args, &block)
+      File.open(expand(path), *args, &block)
+    end
+
+    def expand(path)
+      File.expand_path(path)
     end
   end
 end
+
+require 'dpl/providers'

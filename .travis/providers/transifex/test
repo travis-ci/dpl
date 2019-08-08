@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'open-uri'
+require 'json'
+
+$stdout.sync = true
+
+expected = ENV['ID']
+
+def poll
+  uri = URI.parse('https://www.transifex.com/api/2/project/dpl_test/resource/test/translation/en/?mode=default&file')
+  puts "polling #{uri.to_s} ..."
+  json = uri.read(http_basic_authentication: ['dpl_test', ENV['TRANSIFEX_PASSWORD']])
+  data = JSON.parse(json)
+  data['test']
+rescue => e
+  puts e.message
+end
+
+20.times do
+  actual = poll
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual == expected
+  sleep 5
+end
+
+abort 'failed'

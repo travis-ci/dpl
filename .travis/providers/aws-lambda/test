@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+$stdout.sync = true
+$stderr.sync = true
+
+require 'aws-sdk-lambda'
+
+expected = ENV['ID']
+
+creds = Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
+client = Aws::Lambda::Client.new(region: 'eu-central-1', credentials: creds)
+
+def poll(client)
+  resp = client.invoke(
+    function_name: 'dpl-test',
+    invocation_type: 'RequestResponse'
+  )
+  resp.payload.read.to_s.gsub('"', '')
+rescue => e
+  puts e.message
+end
+
+20.times do
+  actual = poll(client)
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual == expected
+  sleep 5
+end
+
+abort 'failed'

@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+mkdir_p 'tmp/dpl_test/src'
+chdir 'tmp/dpl_test'
+
+File.write 'Cargo.toml', <<~str
+[package]
+name = "dpl_test"
+version = "0.0.1-test.#{ENV['ID']}"
+description = "Travis CI dpl test package"
+license = "MIT"
+authors = ["Travis CI <contact@travis-ci.org>"]
+str
+
+File.write 'src/lib.rs', <<~str
+mod tests {
+    #[test]
+    fn it_works() {
+    }
+}
+str

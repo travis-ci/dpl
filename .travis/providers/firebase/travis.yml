@@ -1,0 +1,18 @@
+language: ruby
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/firebase/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: firebase
+    project: dpl-test-bf4fc
+    token:
+      secure: "KUowxrr0mZjo6UvjQMYL4ahDnVNsBJCFw16S/evIssXDP28FBLVCpxsty1MlkMzVQlQPm/hlgvByuiuOOKK1AhSvr8PBJqzAZIcg7Ijfn2vI3H2Qj1rCUJpEFhF0f7rnnoIV1kNEoWb3pcJrsporh2FT9yStcNlyvEbDVAJBh3A="
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/firebase/test || TRAVIS_TEST_RESULT=$?

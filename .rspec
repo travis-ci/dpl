@@ -1,2 +1,4 @@
+--require spec_helper
 --color
 --tty
+--tag ~skip

@@ -1,0 +1,13 @@
+{
+  "resolver": {
+    "errors": [
+      "No environment found matching \"notfound\"."
+    ],
+    "suggestions": [
+
+    ],
+    "matches": [
+
+    ]
+  }
+}

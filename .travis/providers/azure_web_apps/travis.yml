@@ -1,0 +1,21 @@
+language: ruby
+
+install: true
+script: true
+
+before_deploy:
+  # - .travis/providers/azure_web_apps/scale 1
+  - .travis/providers/azure_web_apps/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: azure_web_apps
+    site: dpl-test
+    username: dpltest
+    password:
+      secure: "qW6Hw1lOeIpL/ISP0XVfoYveVxaWnZ+1yyTvEZ3whM9QS3tnepv45IOYem+yOkV0jzQH62rw2dQNBWsQjZkG3uTqmsRQ33BQq2l6Pg/9XeepkycNlpB1e4AEPnsjch1MtqaYnRafEaCc8f34ykOXBZtzuP4pyAXWczywJ2f55m8="
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/azure_web_apps/test || TRAVIS_TEST_RESULT=$?
+  # - .travis/providers/azure_web_apps/scale 0

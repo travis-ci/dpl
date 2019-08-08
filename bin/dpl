@@ -1,5 +1,13 @@
 #!/usr/bin/env ruby
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 
-require 'dpl/cli'
-DPL::CLI.run(ARGV)
+$stdout.sync = true
+$stderr.sync = true
+
+require 'dpl'
+
+begin
+  Dpl::Cli.new.run(ARGV)
+rescue Dpl::Error => e
+  abort "\e[31m#{e.message}\e[0m"
+end

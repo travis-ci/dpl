@@ -1,0 +1,23 @@
+language: shell
+
+env:
+  - secure: "ndun8GB7oj0YOcRLb9C+gSXTSNBJMpNV6kb+jrwyoDZxcrye0XQt/r5LqaVjovbVHA1EulNICoFmOS/nK3xGjTrjlmFUPLvmiQGvSYDxzdwKOROCQ5eJcQNP3tZzuLKxuAZa69qTho0A0WcSdD/HgJ1+4iRuDzx3OSaoqZcmJkE="
+
+script:
+  - true
+
+before_deploy:
+  - .travis/providers/packagecloud/prepare
+
+deploy:
+  - provider: packagecloud
+
+    username: dpl-test
+    repository: dpl-test
+    token:
+      secure: "KM+8hKLSHGV1q+R5n5/mHcvEs9WjgPRb9h53wHFuvNTH7qXjuhNRqLvjRB5KJU/yh8JoErZ8AoqTOT1EJ5ma6E72w20+rFK6OD1fgV0E1rfFoX32ip2zVsikoAdQDjmcGzYC/lDIx/Ezw1iGi2xf6CO905dZNpTRSva9KLBSSXU="
+    local_dir: tmp/dpl_test
+    dist: node
+
+after_deploy:
+  - .travis/providers/packagecloud/test || TRAVIS_TEST_RESULT=$?

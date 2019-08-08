@@ -1,0 +1,64 @@
+{
+  "resolver": {
+    "errors": [
+
+    ],
+    "suggestions": [
+
+    ],
+    "matches": [
+      {
+        "id": 6,
+        "environment": {
+          "id": 7,
+          "ssh_username": "turkey",
+          "name": "giblets",
+          "instances_count": 7,
+          "app_server_stack_name": "nginx_mongrel",
+          "load_balancer_ip_address": "127.0.0.0",
+          "framework_env": "production",
+          "account": {
+            "id": 7,
+            "name": "main"
+          }
+        },
+        "app": {
+          "id": 7,
+          "name": "rails232app",
+          "repository_uri": "user@git.host:path/to/repo.git",
+          "app_type_id": null,
+          "account": {
+            "id": 7,
+            "name": "main"
+          }
+        }
+      },
+      {
+        "id": 7,
+        "environment": {
+          "id": 8,
+          "ssh_username": "turkey",
+          "name": "giblets",
+          "instances_count": 7,
+          "app_server_stack_name": "nginx_mongrel",
+          "load_balancer_ip_address": "127.0.0.0",
+          "framework_env": "production",
+          "account": {
+            "id": 8,
+            "name": "account_2"
+          }
+        },
+        "app": {
+          "id": 8,
+          "name": "rails232app",
+          "repository_uri": "user@git.host:path/to/repo.git",
+          "app_type_id": null,
+          "account": {
+            "id": 8,
+            "name": "account_2"
+          }
+        }
+      }
+    ]
+  }
+}

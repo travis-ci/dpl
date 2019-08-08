@@ -1,0 +1,22 @@
+language: ruby
+
+env:
+  # BINTRAY_API_KEY=[api key]
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/bintray/prepare
+  - ls -al tmp tmp/dpl_test
+  - cat tmp/dpl_test/upload.json
+
+deploy:
+  - provider: bintray
+    file: tmp/dpl_test/upload.json
+    user: dpl-test
+    key:
+      secure: "sPWJoIT7PTw3n68hGQOWDS5vduDuSO691yb8n0pJ8RuOM07ogN3P1c0WsdYyViV7g9FilEJLJs2GvtQ7Uhkwwrz/RS3SyuzNk/aD9H5kAIghTdJ+MZl7wQTPXHIhqqcA9nbJoGUOON5/zL3qv94+5BPDdVJhmxW0guidue4x/6U="
+
+after_deploy:
+  - .travis/providers/bintray/test || TRAVIS_TEST_RESULT=$?

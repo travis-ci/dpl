@@ -1,0 +1,22 @@
+dist: xenial
+language: python
+python: 3.6
+
+script:
+  - true
+
+before_deploy:
+  - export DPL_TEST_VERSION=$(curl -s https://test.pypi.org/pypi/dpl-test/json | jq -r '.info | .version' | ruby -e 'v = $stdin.read.chomp.split("."); v = %w(0 0 0) if v.empty?; v[2] = v[2].to_i + 1; puts v.join(".")')
+  - .travis/providers/pypi/prepare
+  - cd tmp/dpl-test
+
+deploy:
+  - provider: pypi
+    username: dpl-test
+    password:
+      secure: "SGbyj5bmjkckk7K7FSnL+oZlmEgRylebE8WEtnOffv0r/c90hf+yPZHX8wpbxFOECfQrAMsGgN53q+DQfIbuA6KTNPWBegXrQWN0ehWYZWCUr1vMOrYb5dN/vepMEcfj4c+cRZohw8rubJFlGVxAXJGVcjZ6F+c1kzRxHXY9lLU="
+    server: https://test.pypi.org/legacy/
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/pypi/test || TRAVIS_TEST_RESULT=$?

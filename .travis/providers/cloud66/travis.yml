@@ -1,0 +1,19 @@
+language: ruby
+
+env:
+  # GITHUB_TOKEN=[personal access token with repo scope on travis-dpl-test]
+  secure: "o7IxUSrMNTYoVqWO+LkmGn3wccPEEi9CewntdP/KGgH1g8YdDuEjZvSmSlNacEsXfibz+F3pWM1aNb3Qx5Is0fQizm0eVaAXs/4qwPZOyByzOt5QdO0PXw4BRuojc6kByW0QcsbUceyxUSFNQeWernpinlZAnblpLBjTpqbPKSw="
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/cloud66/prepare
+
+deploy:
+  - provider: cloud66
+    redeployment_hook:
+      secure: "rINFSEWO0rOOpxFoHUTDxzRs4rJgaKlNpqRPZ5HAG8UPyaGtw9qqMENWUHIMJaNPOtYFQYfEbCGYdluTrJ1rvBMuZ3RpS7ylrzC3obKi1mVpZvrbFujkFHlUCQFm4tiSXlpbClmq4aXq/1EW9R6+8n8+9hzelzomQMn/ItNb2QE="
+
+after_deploy:
+  - .travis/providers/cloud66/test || TRAVIS_TEST_RESULT=$?

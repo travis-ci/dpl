@@ -1,0 +1,15 @@
+language: ruby
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/datica/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: datica
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/datica/test || TRAVIS_TEST_RESULT=$?

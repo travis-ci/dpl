@@ -1,0 +1,28 @@
+language: ruby
+
+env:
+  # GITHUB_TOKEN=[personal access token with repo scope on travis-dpl-test]
+  - secure: "o7IxUSrMNTYoVqWO+LkmGn3wccPEEi9CewntdP/KGgH1g8YdDuEjZvSmSlNacEsXfibz+F3pWM1aNb3Qx5Is0fQizm0eVaAXs/4qwPZOyByzOt5QdO0PXw4BRuojc6kByW0QcsbUceyxUSFNQeWernpinlZAnblpLBjTpqbPKSw="
+  # ENGINEYARD_TOKEN=[api key]
+  - secure: "KXIVseBmqNgkefqqmVLNExDFpJwfVlvDw4jQSLMfTnuQpFi3VC8sTKIQywdtIHBr0xBuXsmj9jDiFb3DGIefsABDJ4ajdSqF0flabtEbTT9zUBHLcKSODX0QR5AER+rjFUrHV6U3HQfETKkRU4cDX1wEYEg03xrNQoQqZc4QAWs="
+
+
+install: true
+script: true
+
+before_deploy:
+  - curl -L -o ey https://github.com/ess/ey/releases/download/v0.0.1/ey-v0.0.1-linux-386
+  - chmod +x ey
+  - .travis/providers/engineyard/prepare
+  - cd tmp/dpl_test
+  - export TRAVIS_COMMIT=$(git rev-parse HEAD | tr -d '\n')
+
+deploy:
+  - provider: engineyard
+    app: travis_dpl_test
+    api_key:
+      secure: "maQqcDA51oW/kVsaC6LmB7iKy2XoRxU6UStQZfGucqkryorC19RkHaKYjtEeQQORZT/Jh3+1kCMe2vXBHSsZA1lIIfIpj/HojwUGD0qeLSefDhdR2BTf78sRL+HsRE78GX8k2ORt+OQT6JcaA+rCb6/7Wk4/IygbcHHYMS+doK0="
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/engineyard/test || TRAVIS_TEST_RESULT=$?

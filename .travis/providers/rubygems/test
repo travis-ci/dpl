@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+require 'net/http'
+require 'uri'
+
+# not sure why, but strangely, this doesn't list the gem, as it would, locally
+# puts Net::HTTP.get(URI.parse('http://localhost:9292/'))
+
+$stdout.sync = true
+
+url = 'http://localhost:9292/gems/dpl_test'
+
+def poll(url)
+  uri = URI.parse(url)
+  http = Net::HTTP.new(uri.host, uri.port)
+  req = Net::HTTP::Get.new(uri.path)
+  res = http.request(req)
+  res.code
+rescue => e
+  puts e.message
+end
+
+
+5.times do
+  status = poll(url)
+  puts 'GET http://localhost:9292/gems/dpl_test'
+  puts "Status: #{status}"
+  exit 0 if status.to_i == 200
+  sleep 3
+end
+
+abort 'failed'

@@ -1,0 +1,20 @@
+language: shell
+
+script:
+  - true
+
+before_deploy:
+  - gem install puppet
+  - .travis/providers/puppetforge/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: puppetforge
+
+    username: dpltest
+    password:
+      secure: "HKQfOdPKG6lOWM0cdD3tSq2i93uNRFFH8xYDISsoJ7uftngqU9nKvCWGDtI54Wxfj6eDzadqA0Apm4OnhWaAsXkxUD1BfbaO+ceonK8Ye09iKRfP9kgPW4Owqq/EUmOEfvqXELO+rtJDKlXZl2WnHK3Isq2tvHxcqMMgdKHVkL8="
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/puppetforge/test || TRAVIS_TEST_RESULT=$?

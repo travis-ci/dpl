@@ -1,0 +1,23 @@
+language: shell
+
+services:
+  - docker
+
+script: true
+
+before_deploy:
+  - .travis/providers/hephy/prepare
+  - export KUBECONFIG="$(kind get kubeconfig-path)"
+  - kubectl cluster-info
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: hephy
+    controller: deis.172.17.0.2.xip.io
+    username: dpl-user
+    password: dpl-pass
+    app: dpl-test
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/hephy/test || TRAVIS_TEST_RESULT=$?

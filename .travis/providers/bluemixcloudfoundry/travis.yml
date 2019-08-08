@@ -1,0 +1,27 @@
+language: shell
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/bluemixcloudfoundry/prepare
+  - cd tmp/dpl_test
+  - ls -al
+
+deploy:
+  - provider: bluemixcloudfoundry
+
+    api: https://api.eu-gb.bluemix.net
+    username: dpl-test@travis-ci.org
+    password:
+      secure: "pQoIDL66z8G+I4fVs/TLBM3hwGisuk1yXVvoULXXiR4ivqVgisaOK1cZ/syPwOjhZXhychpWhebX34oPkUHE8N4kCfyGbKC/y83fnKkcQ7Pt5XDOTVMcG/Bd4i7jFGhvnz4Mz7tdYO98uD2xuDyU1Qth5lF7ae921Ig2XygmxnQ="
+    organization: dpl-test
+    space: dev
+    app_name: dpl-test
+    buildpack: ruby_buildpack
+    no_logout: true
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/bluemixcloudfoundry/test || TRAVIS_TEST_RESULT=$?
+  - tmp/dpl_test/cf scale dpl-test -i 0

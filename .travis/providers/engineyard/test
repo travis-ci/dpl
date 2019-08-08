@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'open-uri'
+
+$stdout.sync = true
+
+expected = ENV['ID']
+url = 'http://ec2-3-219-122-248.compute-1.amazonaws.com/'
+success = nil
+
+def poll(url)
+  URI.parse(url).read
+rescue => e
+  puts e.message
+end
+
+20.times do
+  actual = poll(url)
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  sleep(5) && next unless actual == expected
+  success = true
+  break
+end
+
+def run(cmd)
+  puts "$ #{cmd}"
+  system(cmd) || abort
+end
+
+def headers
+  {
+    'X-EY-TOKEN' => ENV['ENGINEYARD_TOKEN'],
+    'Content-Type' => 'application/json',
+    'Accept' => 'application/vnd.engineyard.v3+json',
+  }
+end
+
+def servers
+  uri = URI.parse('https://api.engineyard.com/servers')
+  data = JSON.parse(uri.read(headers))
+  data['servers']
+end
+
+servers.each do |server|
+  run "EY_TOKEN=$ENGINEYARD_TOKEN ./ey servers stop #{server['provisioned_id']}"
+end
+
+abort 'failed' unless success

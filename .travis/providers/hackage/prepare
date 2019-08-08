@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+mkdir_p 'tmp/dpl_test/library'
+chdir 'tmp/dpl_test'
+
+File.write 'dpl-test.cabal', <<~str
+  name: dpl-test
+  version: 0.0.0
+  cabal-version: >=1.10
+  build-type: Simple
+  synopsis: Travis CI dpl test package
+  description: Travis CI dpl test package. ID="#{ENV['ID']}"
+  category: test
+  license: MIT
+  license-file: MIT.md
+  copyright: 2015 Travis CI <contact@travis-ci.com>
+  maintainer: Travis CI <contact@travis-ci.com>
+  author: Travis CI <contact@travis-ci.com>
+
+  library
+      exposed-modules: DplTest
+      hs-source-dirs: library
+      default-language: Haskell2010
+str
+
+File.write 'library/DplTest.hs', <<~str
+  module DplTest (module DplTest) where
+str
+
+File.write 'MIT.md', ''

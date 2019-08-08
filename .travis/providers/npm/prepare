@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+dir = 'tmp/dpl_test'
+mkdir_p dir
+chdir dir
+
+File.write 'package.json', <<~str
+  {
+    "name": "@dpl-test/dpl-test",
+    "description": "testing travis ci/dpl npm integration",
+    "version": "1.0.0-#{ENV['ID']}"
+  }
+str

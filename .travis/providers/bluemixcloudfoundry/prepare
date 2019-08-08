@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+mkdir_p 'tmp/dpl_test'
+chdir 'tmp/dpl_test'
+
+File.write 'manifest.yml', <<~str
+  applications:
+  - name: dpl-test
+    instances: 1
+str
+
+File.write 'config.ru', <<~str
+  require 'rack'
+  run ->(env) {  [200, { 'Content-type' => 'text/plain' }, ['#{ENV['ID']}']] }
+str
+
+File.write 'Gemfile', <<~str
+  source 'https://rubygems.org'
+  ruby '2.5.3'
+  gem 'rack'
+str
+
+File.write 'Gemfile.lock', <<~str
+  GEM
+    remote: https://rubygems.org/
+    specs:
+      rack (2.0.7)
+
+  PLATFORMS
+    ruby
+
+  DEPENDENCIES
+    rack
+str

@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+mkdir_p 'tmp/dpl_test'
+chdir 'tmp/dpl_test'
+
+mkdir '.tx'
+mkdir 'locales'
+
+File.write '.tx/config', <<~str
+[main]
+host = https://www.transifex.com
+
+[dpl_test.test]
+file_filter = locales/<lang>.json
+source_file = locales/en.json
+source_lang = en
+type = KEYVALUEJSON
+str
+
+File.write 'locales/en.json', <<~str
+{
+  "test": "#{ENV['ID']}"
+}
+str

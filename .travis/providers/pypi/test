@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'open-uri'
+require 'json'
+
+$stdout.sync = true
+
+expected = ENV['DPL_TEST_VERSION']
+url = 'https://test.pypi.org/pypi/dpl-test/json'
+
+def poll(url)
+  data = JSON.load(URI.parse(url).read)
+  data['releases'].keys.map { |key| key.split('-').last }
+rescue => e
+  puts e.message
+end
+
+10.times do
+  puts "Checking #{url}"
+  uri = URI.parse(url)
+  actual = poll(url)
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual.include?(expected)
+  sleep 5
+end
+
+abort 'failed'

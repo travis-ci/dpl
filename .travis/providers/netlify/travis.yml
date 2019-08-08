@@ -1,0 +1,19 @@
+language: ruby
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/netlify/prepare
+
+deploy:
+  - provider: netlify
+
+    site: 192d4997-a87a-4cce-9c00-899ddc073766
+    auth:
+      secure: "mLjntGlkBhuzIPd0GNZpCBFjEGv7YSPJx1NC1Tu4LWPshXWcLyvzIR3EDT0JCNlk9zrua/PZwv70nE/H19c6C7Gz+x2Qa8wp8WpUzx8/5w5u49XL4Mwxddz+bGXu1Pw8q9PhpGHJzGmnst0DXWhDEDUeHlB0KrrCPIJeA3TTmGQ="
+    dir: tmp/dpl_test
+    prod: true
+
+after_deploy:
+  - .travis/providers/netlify/test || TRAVIS_TEST_RESULT=$?

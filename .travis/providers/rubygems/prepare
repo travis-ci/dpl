@@ -1,0 +1,69 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+def run(cmd)
+  puts "$ #{cmd}"
+  system cmd
+  abort "#{cmd} failed" unless $?.exitstatus == 0
+end
+
+def file(path, content)
+  puts "Writing file #{path}"
+  mkdir_p(File.dirname(path))
+  File.write(path, content)
+end
+
+def cd(dir)
+  mkdir_p(dir) unless dir == '..'
+  chdir(dir)
+end
+
+cd 'tmp/dpl_test_rubygems'
+
+file 'bin/dpl_test', <<~str
+  #!/usr/bin/env ruby
+  $: << File.expand_path('../../lib', __FILE__)
+
+  require 'dpl/test'
+  Dpl::Test.test
+str
+
+chmod '+x', 'bin/dpl_test'
+
+file 'lib/dpl/test.rb', <<~str
+  module Dpl
+    module Test
+      extend self
+      def test
+        puts ENV['ID']
+      end
+    end
+  end
+str
+
+file 'dpl_test.gemspec', <<~str
+  Gem::Specification.new do |s|
+    s.name        = 'dpl_test'
+    s.version     = '0.0.1'
+    s.licenses    = ['MIT']
+    s.summary     = "This is dpl_test"
+    s.description = "This is dpl_test."
+    s.authors     = ["Travis CI Dpl"]
+    s.email       = 'contact@travis-ci.com'
+    s.homepage    = 'https://github.org/travis-ci/dpl'
+    s.executables = ['dpl_test']
+    s.files       = ["lib/dpl/test.rb"]
+  end
+str
+
+file 'config.ru', <<~str
+  require 'geminabox'
+  Gem::ConfigFile # force autoload?
+  run Geminabox::Server
+str
+
+run 'gem install geminabox'
+run 'rackup'

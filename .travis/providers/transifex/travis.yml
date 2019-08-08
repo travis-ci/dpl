@@ -1,0 +1,25 @@
+language: python
+python: 2.7
+
+env:
+  # TRANSIFEX_PASSWORD=[password]
+  secure: "UfTXhgrmPYL4rGhpS7Y3FWoD4kNbrMqqd5szf5Dl0gDAPIT6c3N+Y1V13swLQUID1maGdM0Lp2HLX9g+9v9nHLSJAI49QPzJtt+vWnav1qV2sZ1CZZuLWWfD8UcYqaYoDMpy7JYOd5ufTLCQFDAKkaLTgTBIaXtrDWN1KT1RCjA="
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/transifex/prepare
+  - cd tmp/dpl_test
+  - python --version
+
+deploy:
+  - provider: transifex
+    username:
+      dpl_test
+    password:
+      secure: "YcD1Dh+mdRLMbCZ8dWoP61nM0wjHp5mALspIqACKltZ4Rx/+2DEWfmbX+8haNtNi5/dsfxrsh1dSygpLBVMd6EJYcXgrw0fya8QCAeobM559WUZXgHkx641xr16yTpoGRDpkO5yM3DUVGWqAjTrUFEHVeQ/Gnlx98D7aS/azBQQ="
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/transifex/test || TRAVIS_TEST_RESULT=$?

@@ -1,0 +1,23 @@
+language: shell
+
+script:
+  - true
+
+before_deploy:
+  - .travis/providers/aws-s3/prepare
+
+deploy:
+  - provider: s3
+
+    # dpl_test
+    access_key_id:
+      secure: "b8BMnGujyCJHcOpG1lS5w/b7MeL9dFo87LIodMv0/dn6fWIIfPbWVzK8A0ZEGGiYskJ89vZtfMwB2X5NzWlob3UJvDhEOGTaCUPoQDHlRtwVXL0HG5k6a2i6DJ7P24OdHe7t64Lxota3lGt4pESa7Js08GEjrjaQc7oyGcS5hX4="
+    secret_access_key:
+      secure: "dEg7g2CzQRGw/Ao0w9TW2lFQJUFnL9ou2DMCZqnlauJircy8VWNbY2oqbe4yqkyFkr9VmXEF7zCtiSlZm/RwYHbAH3unuw2a7/3M6fw3jcSIrMA3I0TAlLPt0HGF4Ohu8jPQLy2wq26WE/71vIoEIuVUxJAmx5I6z4+B4L0jBIQ="
+
+    bucket: travis-dpl-test
+    local_dir: ./tmp/dpl_test
+
+# why does deploy.run not work here?
+after_deploy:
+  - .travis/providers/aws-s3/test || TRAVIS_TEST_RESULT=$?
