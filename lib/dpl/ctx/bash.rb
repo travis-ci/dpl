@@ -434,11 +434,6 @@ module Dpl
         ENV['TRAVIS_COMMIT'] || `git rev-parse HEAD`.chomp
       end
 
-      # Returns the current git branch; empty if we are detached
-      def git_branch
-        `git branch | grep \\* | grep -v HEAD | cut -d ' ' -f2`.chomp
-      end
-
       # Returns the local machine's hostname
       def machine_name
         `hostname`.strip
