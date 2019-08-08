@@ -10,6 +10,8 @@ module Dpl
           tbd
         str
 
+        gem 'octokit', '~> 4.14.0'
+
         gem 'public_suffix', '~> 3.0.3'
 
         opt '--repo SLUG', 'Repo slug', default: :repo_slug
