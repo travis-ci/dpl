@@ -15,7 +15,8 @@ end
 
 def help(name)
   ctx = Cl::Ctx.new('dpl')
-  Cl::Help.new(ctx, [name.to_s]).help
+  str = Cl::Help.new(ctx, [name.to_s]).help
+  str.gsub(/ *$/, '')
 end
 
 erb = ERB.new(File.read('lib/dpl/assets/dpl/README.erb.md'), nil, '-')
