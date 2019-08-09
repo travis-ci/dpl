@@ -46,11 +46,19 @@ def paths
   paths.reject { |path| path =~ SKIP }
 end
 
+def hack(config)
+  keys = config.keys - %w(cleanup keep_history)
+  keys = keys.select { |key| config[key].is_a?(String) }
+  keys.each { |key| config[key] = 'kaputt' }
+  config
+end
+
 def jobs(opts)
   paths.map do |path|
     job = YAML.load(File.read(path))
     job['name'] = path =~ %r(providers/(.+)/(.+)\.yml) && [$1, $2 == 'travis' ? nil : $2].compact.join(':')
     job['deploy'][0].update(edge: opts, on: opts) if job['deploy']
+    job['deploy'][0] = hack(job['deploy'][0])
     job
   end
 end
@@ -59,7 +67,7 @@ def only(hash, *keys)
   hash.select { |key, _| keys.include?(key) }.to_h
 end
 
-opts = parse_opts(token: ENV['TRAVIS_API_TOKEN'], branch: 'dpl-2')
+opts = parse_opts(token: ENV['TRAVIS_API_TOKEN'], branch: 'sf-error')
 
 uri = URI.parse(opts[:url] || 'https://api.travis-ci.com/repo/travis-ci%2Fdpl/requests')
 
@@ -81,6 +89,8 @@ body = {
   }
 }
 
-res = post(uri, body, opts)
-p res.code.to_i
-puts res.body
+puts JSON.pretty_generate(body)
+
+# res = post(uri, body, opts)
+# p res.code.to_i
+# puts res.body
