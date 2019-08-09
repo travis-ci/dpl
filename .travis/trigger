@@ -20,6 +20,8 @@ def parse_opts(opts)
     o.on('-u', '--url URL') { |obj| opts[:url] = obj }
     o.on('-t', '--token TOKEN') { |obj| opts[:token] = obj }
     o.on('-b', '--branch BRANCH') { |obj| opts[:branch] = obj }
+    o.on('--pretend') { opts[:pretend] = true }
+    o.on('--error') { opts[:error] = true }
     o.parse!
   end
   opts
@@ -46,11 +48,19 @@ def paths
   paths.reject { |path| path =~ SKIP }
 end
 
+def error(config)
+  keys = config.keys - %w(provider cleanup keep_history)
+  keys = keys.select { |key| config[key].is_a?(String) || config[key].is_a?(Hash) && config[key]['secure'] }
+  keys.each { |key| config[key] = 'kaputt' }
+  config
+end
+
 def jobs(opts)
   paths.map do |path|
     job = YAML.load(File.read(path))
     job['name'] = path =~ %r(providers/(.+)/(.+)\.yml) && [$1, $2 == 'travis' ? nil : $2].compact.join(':')
-    job['deploy'][0].update(edge: opts, on: opts) if job['deploy']
+    job['deploy'][0] = error(job['deploy'][0]) if opts[:error]
+    job['deploy'][0].update(edge: only(opts, :branch), on: only(opts, :branch))
     job
   end
 end
@@ -59,7 +69,7 @@ def only(hash, *keys)
   hash.select { |key, _| keys.include?(key) }.to_h
 end
 
-opts = parse_opts(token: ENV['TRAVIS_API_TOKEN'], branch: 'dpl-2')
+opts = parse_opts(token: ENV['TRAVIS_API_TOKEN'], branch: 'sf-error')
 
 uri = URI.parse(opts[:url] || 'https://api.travis-ci.com/repo/travis-ci%2Fdpl/requests')
 
@@ -75,12 +85,16 @@ body = {
         }
       },
       matrix: {
-        include: jobs(only(opts, :branch))
+        include: jobs(opts)
       }
     }
   }
 }
 
-res = post(uri, body, opts)
-p res.code.to_i
-puts res.body
+if opts[:pretend]
+  puts JSON.pretty_generate(body)
+else
+  res = post(uri, body, opts)
+  p res.code.to_i
+  puts res.body
+end

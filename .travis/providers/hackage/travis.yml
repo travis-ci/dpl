@@ -13,11 +13,6 @@ before_deploy:
 
 deploy:
   - provider: hackage
-    edge:
-      branch: dpl-2
-    on:
-      branch: dpl-2
-
     username: dpl_test
     password:
       secure: "bVOUfRs/zAd5PU0ompXNEhI/MPOaYYtL6VFLWGo2UfmpnW4qS55vdOQina/63GHV2J4IGef/IfvIhyvMt5pozs8QSv7b4L9LZuUcaw+TkzAERuT9AFy5yxqZhVaC4+3BhRSzkvYVKleOxea3D4QO+Jis7V6BaqzAb3fPIzdBZYc="
