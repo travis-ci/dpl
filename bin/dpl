@@ -9,5 +9,7 @@ require 'dpl'
 begin
   Dpl::Cli.new.run(ARGV)
 rescue Dpl::Error => e
-  abort "\e[31m#{e.message}\e[0m"
+  msg = "\e[31m#{e.message}\e[0m"
+  msg = [msg, *e.backtrace].join("\n") if e.backtrace?
+  abort msg
 end

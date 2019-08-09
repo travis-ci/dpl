@@ -147,8 +147,9 @@ module Dpl
 
     opt '--run CMD',      'Command to execute after the deployment finished successfully', type: :array
     opt '--cleanup',      'Skip cleaning up build artifacts before the deployment', negate: %w(skip)
-    opt '--stage NAME',   type: :array, internal: true, default: STAGES
-    opt '--fold',         internal: true
+    opt '--stage NAME',   'Execute the given stage(s) only', type: :array, internal: true, default: STAGES
+    opt '--backtrace',    'Print the backtrace for exceptions', internal: true
+    opt '--fold',         'Wrap log output in folds', internal: true
 
     msgs before_install:  'Installing deployment dependencies',
          before_setup:    'Setting the build environment up for the deployment',
@@ -188,6 +189,10 @@ module Dpl
       stages = stage.select { |stage| run_stage?(stage) }
       stages.each { |stage| run_stage(stage) }
       run_cmds
+    rescue Error
+      raise
+    rescue => e
+      raise Error.new("#{e.message} (#{e.class})", backtrace: backtrace? ? caller : nil)
     ensure
       run_stage(:finish, fold: false) if finish?
     end
