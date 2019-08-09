@@ -191,7 +191,7 @@ module Dpl
       run_cmds
     rescue Error
       raise
-    rescue => e
+    rescue Exception => e
       raise Error.new("#{e.message} (#{e.class})", backtrace: backtrace? ? caller : nil)
     ensure
       run_stage(:finish, fold: false) if finish?

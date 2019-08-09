@@ -60,7 +60,6 @@ module Dpl
     def err
       keys = [opts[:assert], str]
       err = lookup(:err, *keys)
-      err || error(:err, *keys) if keys.any? { |key| key.is_a?(Symbol) }
       err ? interpolate(err, opts).strip : 'Failed'
     end
 

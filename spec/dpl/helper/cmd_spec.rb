@@ -72,7 +72,7 @@ describe Dpl::Cmd do
 
     describe 'given assert: :err, mapping missing' do
       let(:opts) { { assert: :err } }
-      it { expect { subject.err }.to raise_error 'Could not find err: :err' }
+      it { expect(subject.err).to eq 'Failed' }
     end
 
     describe 'given cmd: :cmd, mapping present' do
