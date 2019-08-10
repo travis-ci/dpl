@@ -27,8 +27,6 @@ describe Dpl::Providers::Codedeploy do
     }
   end
 
-  after { Aws.config.clear }
-
   matcher :create_deployment do |params = {}|
     match do |*|
       next false unless request = requests[:create_deployment][0]
@@ -44,63 +42,63 @@ describe Dpl::Providers::Codedeploy do
   let(:github_revision) { { revisionType: 'GitHub', gitHubLocation: { repository: 'dpl', commitId: 'sha' } } }
   let(:s3_revision) { { revisionType: 'S3', s3Location: { bucket: 'bucket', bundleType: 'zip', version: 'ObjectVersionId', eTag: 'ETag' } } }
 
-  context do
-    before { subject.run }
+  before { |c| subject.run unless c.metadata[:run].is_a?(FalseClass) }
+  after { Aws.config.clear }
 
-    describe 'by default', record: true do
-      it { should have_run '[info] Using Access Key: ac******************' }
-      it { should create_deployment applicationName: 'app' }
-      it { should create_deployment description: 'Deploy build 1 via Travis CI' }
-      it { should create_deployment revision: github_revision }
-      it { should have_run '[info] Deployment triggered: deployment_id' }
-      it { should have_run_in_order }
-    end
-
-    describe 'given --deployment_group group' do
-      it { should create_deployment deploymentGroupName: 'group' }
-    end
-
-    describe 'given --revision_type github' do
-      it { should create_deployment revision: github_revision }
-    end
-
-    describe 'given --revision_type GitHub' do
-      it { should create_deployment revision: github_revision }
-    end
-
-    describe 'given --commit_id other' do
-      before { github_revision[:gitHubLocation][:commitId] = 'other' }
-      it { should create_deployment revision: github_revision }
-    end
-
-    describe 'given --repository other' do
-      before { github_revision[:gitHubLocation][:repository] = 'other' }
-      it { should create_deployment revision: github_revision }
-    end
-
-    describe 'given --revision_type s3 --bucket bucket --key bundle.zip' do
-      before { s3_revision[:s3Location][:key] = 'bundle.zip' }
-      it { should create_deployment revision: s3_revision }
-    end
-
-    describe 'given --revision_type s3 --bucket other --key bundle.zip' do
-      before { s3_revision[:s3Location].update(key: 'bundle.zip', bucket: 'other') }
-      it { should create_deployment revision: s3_revision }
-    end
-
-    describe 'given --revision_type s3 --bucket bucket --key other --bundle_type other' do
-      before { s3_revision[:s3Location].update(key: 'other', bundleType: 'other') }
-      it { should create_deployment revision: s3_revision }
-    end
-
-    describe 'given --wait_until_deployed' do
-      it { should create_deployment revision: github_revision }
-      it { should have_run '[print] Waiting for the deployment to finish ' }
-      it { should get_deployment }
-    end
+  describe 'by default', record: true do
+    it { should have_run '[info] Using Access Key: ac******************' }
+    it { should create_deployment applicationName: 'app' }
+    it { should create_deployment description: 'Deploy build 1 via Travis CI' }
+    it { should create_deployment revision: github_revision }
+    it { should create_deployment fileExistsBehavior: 'DISALLOW' }
+    it { should have_run '[info] Deployment triggered: deployment_id' }
+    it { should have_run_in_order }
   end
 
-  describe 'with ~/.aws/credentials' do
+  describe 'given --deployment_group group' do
+    it { should create_deployment deploymentGroupName: 'group' }
+  end
+
+  describe 'given --revision_type github' do
+    it { should create_deployment revision: github_revision }
+  end
+
+  describe 'given --revision_type GitHub' do
+    it { should create_deployment revision: github_revision }
+  end
+
+  describe 'given --commit_id other' do
+    before { github_revision[:gitHubLocation][:commitId] = 'other' }
+    it { should create_deployment revision: github_revision }
+  end
+
+  describe 'given --repository other' do
+    before { github_revision[:gitHubLocation][:repository] = 'other' }
+    it { should create_deployment revision: github_revision }
+  end
+
+  describe 'given --revision_type s3 --bucket bucket --key bundle.zip' do
+    before { s3_revision[:s3Location][:key] = 'bundle.zip' }
+    it { should create_deployment revision: s3_revision }
+  end
+
+  describe 'given --revision_type s3 --bucket other --key bundle.zip' do
+    before { s3_revision[:s3Location].update(key: 'bundle.zip', bucket: 'other') }
+    it { should create_deployment revision: s3_revision }
+  end
+
+  describe 'given --revision_type s3 --bucket bucket --key other --bundle_type other' do
+    before { s3_revision[:s3Location].update(key: 'other', bundleType: 'other') }
+    it { should create_deployment revision: s3_revision }
+  end
+
+  describe 'given --wait_until_deployed' do
+    it { should create_deployment revision: github_revision }
+    it { should have_run '[print] Waiting for the deployment to finish ' }
+    it { should get_deployment }
+  end
+
+  describe 'with ~/.aws/credentials', run: false do
     let(:args) { |e| %w(--application app) }
 
     file '~/.aws/credentials', <<-str.sub(/^\s*/, '')
@@ -113,7 +111,7 @@ describe Dpl::Providers::Codedeploy do
     it { should have_run '[info] Using Access Key: ac******************' }
   end
 
-  describe 'with ~/.aws/config' do
+  describe 'with ~/.aws/config', run: false do
     let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
 
     file '~/.aws/config', <<-str.sub(/^\s*/, '')
