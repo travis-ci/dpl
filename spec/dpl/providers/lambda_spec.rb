@@ -86,6 +86,10 @@ describe Dpl::Providers::Lambda do
       it { should have_called :create_function, Runtime: 'python2.7' }
     end
 
+    describe 'given --runtime java8' do
+      it { should have_called :create_function, Handler: 'index::handler' }
+    end
+
     describe 'given --subnet_ids one --subnet_ids two' do
       it { should have_called :create_function, VpcConfig: { SubnetIds: ['one', 'two'] } }
     end
