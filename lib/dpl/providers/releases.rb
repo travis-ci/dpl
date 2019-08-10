@@ -47,6 +47,16 @@ module Dpl
 
       URL = 'https://api.github.com/repos/%s/releases/%s'
 
+      OCTOKIT_OPTS = %i(
+        repo
+        name
+        body
+        prerelease
+        release_number
+        tag_name
+        target_commitish
+      )
+
       TIMEOUTS = {
         timeout: 180,
         open_timeout: 180
@@ -68,11 +78,9 @@ module Dpl
 
       def deploy
         upload_files
-        # we shouldn't just pass all opts to octokit, but only the ones it
-        # actually knows, even if it silently ignores unknown opts ...
         opts = with_tag(self.opts.dup)
         opts = with_target_commitish(opts)
-        api.update_release(url, opts.merge(draft: draft?))
+        api.update_release(url, filter(opts).merge(draft: draft?))
       end
 
       def upload_files
@@ -124,7 +132,7 @@ module Dpl
       end
 
       def create_release
-        api.create_release(slug, local_tag, opts.merge(draft: true))
+        api.create_release(slug, local_tag, filter(opts).merge(draft: true))
       end
 
       def local_tag
@@ -172,6 +180,10 @@ module Dpl
         files = file_glob? ? Dir.glob("{#{file.join(',')}}").uniq : file
         files = files.select { |file| exists?(file) }
         files.select { |file| file?(file) }
+      end
+
+      def filter(opts)
+        opts.select { |key, _| OCTOKIT_OPTS.include?(key) }
       end
 
       def exists?(file)
