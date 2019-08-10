@@ -25,6 +25,7 @@ module Dpl
       opt '--repository NAME', 'Repository name in case of GitHub'
       opt '--bucket NAME', 'S3 bucket in case of S3'
       opt '--region REGION', 'AWS availability zone', default: 'us-east-1'
+      opt '--file_exists_behavior STR', 'How to handle files that already exist in a deployment target location', enum: %w(disallow overwrite retain), default: 'disallow'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
       opt '--bundle_type TYPE'
       opt '--endpoint ENDPOINT'
@@ -69,7 +70,8 @@ module Dpl
           revision: revision,
           application_name: application,
           deployment_group_name: deployment_group,
-          description: description
+          description: description,
+          file_exists_behavior: file_exists_behavior.upcase
         )
         deployment.deployment_id
       end
