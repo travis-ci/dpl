@@ -69,7 +69,7 @@ def only(hash, *keys)
   hash.select { |key, _| keys.include?(key) }.to_h
 end
 
-opts = parse_opts(token: ENV['TRAVIS_API_TOKEN'], branch: 'sf-error')
+opts = parse_opts(token: ENV['TRAVIS_API_TOKEN'], branch: 'master')
 
 uri = URI.parse(opts[:url] || 'https://api.travis-ci.com/repo/travis-ci%2Fdpl/requests')
 

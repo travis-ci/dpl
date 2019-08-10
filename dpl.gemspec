@@ -17,6 +17,6 @@ Gem::Specification.new do |s|
   s.executables = ['dpl']
   s.files       = Dir['{lib/**/*,[A-Z]*}']
 
-  s.add_runtime_dependency 'cl', '~> 0.1.21'
+  s.add_runtime_dependency 'cl', '~> 1.0.0'
   s.add_development_dependency 'rake', '~> 12.3'
 end
