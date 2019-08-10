@@ -16,7 +16,7 @@ module Dpl
       opt '--token TOKEN',   'Firebase CI access token (generate with firebase login:ci)', required: true, secret: true
       opt '--project NAME',  'Firebase project to deploy to (defaults to the one specified in your firebase.json)'
       opt '--message MSG',   'Message describing this deployment.'
-      opt '--only SERVICES', 'Firebase services to deploy'
+      opt '--only SERVICES', 'Firebase services to deploy', note: 'can be a comma-separated list'
 
       cmds deploy: 'firebase deploy --non-interactive %{deploy_opts}'
       errs deploy: 'Firebase deployment failed'
