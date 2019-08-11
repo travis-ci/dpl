@@ -1,6 +1,5 @@
 describe Dpl::Providers::Lambda do
   let(:args) { |e| required + args_from_description(e) }
-  let(:required) { %w(--access_key_id id --secret_access_key key --function_name func --role role --handler_name handler) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
   let(:exists) { false }
 
@@ -48,6 +47,7 @@ describe Dpl::Providers::Lambda do
   # opt '--dot_match',                  'Include hidden .* files to the zipped archive'
 
   describe 'function does not exist' do
+    let(:required) { %w(--access_key_id id --secret_access_key key --function_name func --role role --handler handler) }
     let(:exists) { false }
 
     describe 'by default', record: true do
@@ -57,16 +57,16 @@ describe Dpl::Providers::Lambda do
 
       it { should have_called :create_function, FunctionName: 'func' }
       it { should have_called :create_function, Runtime: 'nodejs8.10' }
-      it { should have_called :create_function, Role: 'role' }
-      it { should have_called :create_function, Handler: 'index.handler' }
       it { should have_called :create_function, Code: { ZipFile: instance_of(String) } }
       it { should have_called :create_function, Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
+      it { should have_called :create_function, Handler: 'index.handler' }
+      it { should have_called :create_function, Role: 'role' }
       it { should have_called :create_function, Timeout: 3 }
       it { should have_called :create_function, MemorySize: 128 }
       it { should have_called :create_function, TracingConfig: { Mode: 'PassThrough' } }
     end
 
-    describe 'given --module_name other' do
+    describe 'given --module_name other --handler handler' do
       it { should have_called :create_function, Handler: 'other.handler' }
     end
 
@@ -116,6 +116,7 @@ describe Dpl::Providers::Lambda do
   end
 
   describe 'function exists' do
+    let(:required) { %w(--access_key_id id --secret_access_key key --function_name func) }
     let(:exists) { true }
 
     describe 'by default' do
@@ -124,8 +125,6 @@ describe Dpl::Providers::Lambda do
       it { should have_run '[info] Updating code.' }
 
       it { should have_called :update_function_config, Runtime: 'nodejs8.10' }
-      it { should have_called :update_function_config, Role: 'role' }
-      it { should have_called :update_function_config, Handler: 'index.handler' }
       it { should have_called :update_function_config, Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
       it { should have_called :update_function_config, Timeout: 3 }
       it { should have_called :update_function_config, MemorySize: 128 }
@@ -133,7 +132,15 @@ describe Dpl::Providers::Lambda do
       it { should have_called :update_function_code, ZipFile: kind_of(String), Publish: false }
     end
 
-    describe 'given --module_name other' do
+    describe 'given --role role' do
+      it { should have_called :update_function_config, Role: 'role' }
+    end
+
+    describe 'given --handler_name handler' do
+      it { should have_called :update_function_config, Handler: 'index.handler' }
+    end
+
+    describe 'given --module_name other --handler_name handler' do
       it { should have_called :update_function_config, Handler: 'other.handler' }
     end
 
