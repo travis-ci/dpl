@@ -29,6 +29,8 @@ module Dpl
            sign_version:    'Signing version %s passphrase',
            publish_version: 'Publishing version %{version_name} of package %{package_name}',
            missing_path:    'Path: %{path} does not exist.',
+           list_download:   'Listing %{path} in downloads',
+           retrying:        '%{code} response from Bintray. It may take some time for a version to be published, retrying in %{pause} sec ... (%{count}/%{max})',
            unexpected_code: 'Unexpected HTTP response code %s while checking if the %s exists' ,
            request_failed:  '%s %s returned unexpected HTTP response code %s',
            request_success: 'Bintray response: %s %s. %s'
@@ -42,7 +44,8 @@ module Dpl
         version_attrs:   '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}/attributes',
         version_sign:    '/gpg/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
         version_publish: '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/publish',
-        version_file:    '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{target}'
+        version_file:    '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{target}',
+        file_metadata:   '/file_metadata/%{subject}/%{repo}/%{target}'
       }
 
       MAP = {
@@ -65,8 +68,8 @@ module Dpl
         create_package unless package_exists?
         create_version unless version_exists?
         upload_files
-        sign_version    if sign_version?
-        publish_version if publish_version?
+        sign_version if sign_version?
+        publish_version && update_files if publish_version?
       end
 
       def package_exists?
@@ -94,9 +97,9 @@ module Dpl
       end
 
       def upload_files
-        files.each do |file|
-          info :upload_file, source: file.source, target: file.target
-          put_file(file.source, path(:version_file, target: file.target), file.params)
+        files.select(&:download).each do |file|
+          info :list_download, path: file.target
+          put(path(:version_file, target: file.target), file.read, file.params)
         end
       end
 
@@ -111,19 +114,41 @@ module Dpl
         post(path(:version_publish))
       end
 
-      def files
-        return {} unless files = descriptor[:files]
-        keys  = %i(path includePattern excludePattern uploadPattern matrixParams)
-        files = files.map { |file| file if file[:path] = path_for(file[:includePattern]) }
-        files.compact.map { |file| find(*file.values_at(*keys)) }.flatten
+      def update_files
+        files.each do |file|
+          info :upload_file, source: file.source, target: file.target
+          update_file(file)
+        end
       end
 
-      def find(path, includes, excludes, uploads, params)
+      def update_file(file)
+        retrying(max: 10, pause: 5) do
+          put(path(:file_metadata, target: file.target), list_in_downloads: true)
+        end
+      end
+
+      def retrying(opts, &block)
+        1.upto(opts[:max]) do |count|
+          code = yield
+          break if code < 400
+          info :retrying, opts.merge(count: count, code: code)
+        end
+      end
+
+      def files
+        return {} unless files = descriptor[:files]
+        return @files if @files
+        keys = %i(path includePattern excludePattern uploadPattern matrixParams listInDownloads)
+        files = files.map { |file| file if file[:path] = path_for(file[:includePattern]) }
+        @files = files.compact.map { |file| find(*file.values_at(*keys)) }.flatten
+      end
+
+      def find(path, includes, excludes, uploads, params, download)
         paths = Find.find(path).select { |path| File.file?(path) }
         paths = paths.reject { |path| excluded?(path, excludes) }
         paths = paths.map { |path| [path, path.match(/#{includes}/)] }
         paths = paths.select(&:last)
-        paths.map { |path, match| Upload.new(path, fmt(uploads, match.captures), params) }
+        paths.map { |path, match| Upload.new(path, fmt(uploads, match.captures), params, download) }
       end
 
       def fmt(pattern, captures)
@@ -166,10 +191,10 @@ module Dpl
         request(req)
       end
 
-      def put_file(source, path, params)
+      def put(path, body, params = {})
         req = Net::HTTP::Put.new(append_params(path, params))
         req.basic_auth(user, key)
-        req.body = IO.read(source)
+        req.body = body
         request(req)
       end
 
@@ -260,7 +285,19 @@ module Dpl
         {}
       end
 
-      class Upload < Struct.new(:source, :target, :params)
+      def compact(hash)
+        hash.reject { |_, value| value.nil? }
+      end
+
+      def only(hash, *keys)
+        hash.select { |key, _| keys.include?(key) }
+      end
+
+      class Upload < Struct.new(:source, :target, :params, :download)
+        def read
+          IO.read(source)
+        end
+
         def eql?(other)
           source == other.source
         end
