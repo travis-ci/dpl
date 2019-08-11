@@ -27,6 +27,7 @@ describe Dpl::Providers::Pypi do
     it { should have_run 'rm -rf dist/*' }
     it { should have_written '~/.pypirc', pypirc }
     it { should have_run_in_order }
+    it { should_not have_run /upload_docs/ }
   end
 
   describe 'given --server other' do
@@ -36,10 +37,6 @@ describe Dpl::Providers::Pypi do
 
   describe 'given --distributions other' do
     it { should have_run 'python setup.py other' }
-  end
-
-  describe 'given --skip_existing' do
-    it { should have_run 'twine upload --skip-existing -r pypi dist/*' }
   end
 
   describe 'given --upload_docs' do
@@ -52,6 +49,10 @@ describe Dpl::Providers::Pypi do
 
   describe 'given --no_twine_check' do
     it { should_not have_run 'twine check dist/*' }
+  end
+
+  describe 'given --no_remove_build_dir' do
+    it { should_not have_run 'rm -rf dist/*' }
   end
 
   describe 'given --setuptools_version 1.0.0' do
