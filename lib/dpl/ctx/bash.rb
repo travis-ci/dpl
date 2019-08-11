@@ -14,7 +14,7 @@ module Dpl
       def initialize(stdout = $stdout, stderr = $stderr)
         @stdout, @stderr = stdout, stderr
         @folds = 0
-        super('dpl')
+        super('dpl', abort: false)
       end
 
       # Folds any log output from the given block
