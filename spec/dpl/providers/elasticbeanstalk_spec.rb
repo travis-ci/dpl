@@ -59,6 +59,21 @@ describe Dpl::Providers::Elasticbeanstalk do
     it { should_not update_environment }
   end
 
+  describe 'given --description description' do
+    before { subject.run }
+    it { should create_app_version 'Description=description' }
+  end
+
+  describe "given --description description\u0020a (non-printable chars)" do
+    before { subject.run }
+    it { should create_app_version 'Description=description' }
+  end
+
+  describe 'given --label label' do
+    before { subject.run }
+    it { should create_app_version 'VersionLabel=label' }
+  end
+
   describe 'given --zip_file other.zip' do
     before { subject.run }
     it { expect(File.exist?('other.zip')).to be true }
