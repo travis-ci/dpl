@@ -388,6 +388,11 @@ module Dpl
         end
       end
 
+      # Returns the current branch name
+      def git_branch
+        ENV['TRAVIS_BRANCH'] || git_rev_parse('HEAD')
+      end
+
       # Returns the message of the commit `git_sha`.
       def git_commit_msg
         `git log #{git_sha} -n 1 --pretty=%B`.chomp
