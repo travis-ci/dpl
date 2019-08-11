@@ -15,6 +15,7 @@ module Dpl
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
 
       env :aws
+      config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
 
       opt '--access_key_id ID',           'AWS access key id', required: true, secret: true
       opt '--secret_access_key KEY',      'AWS secret key', required: true, secret: true

@@ -43,12 +43,12 @@ describe Dpl::Providers::Lambda do
 
   file 'one'
 
-  before { subject.run }
-
   # opt '--dot_match',                  'Include hidden .* files to the zipped archive'
 
   describe 'function does not exist' do
     let(:exists) { false }
+
+    before { subject.run }
 
     describe 'by default', record: true do
       it { should have_run '[info] Using Access Key: i*******************' }
@@ -118,6 +118,8 @@ describe Dpl::Providers::Lambda do
   describe 'function exists' do
     let(:exists) { true }
 
+    before { subject.run }
+
     describe 'by default' do
       it { should have_run '[info] Using Access Key: i*******************' }
       it { should have_run '[info] Updating existing function func.' }
@@ -184,5 +186,35 @@ describe Dpl::Providers::Lambda do
     describe 'given --function_tags key=value' do
       it { should have_called :tag_resource, Tags: { key: 'value' } }
     end
+  end
+
+  describe 'with ~/.aws/credentials' do
+    let(:args) { |e| %w(--function_name func --role role --handler_name handler) }
+    let(:exists) { false }
+
+    file '~/.aws/credentials', <<~str
+      [default]
+      aws_access_key_id=access_key_id
+      aws_secret_access_key=secret_access_key
+    str
+
+    before { subject.run }
+    it { should have_run '[info] Using Access Key: ac******************' }
+  end
+
+  describe 'with ~/.aws/config' do
+    let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
+
+    file '~/.aws/config', <<~str
+      [default]
+      function_name=func
+      handler_name=handler
+      role=role
+    str
+
+    before { subject.run }
+    it { should have_called :create_function, FunctionName: 'func' }
+    it { should have_called :create_function, Role: 'role' }
+    it { should have_called :create_function, Handler: 'index.handler' }
   end
 end

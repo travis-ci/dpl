@@ -1,6 +1,6 @@
 describe Dpl::Providers::Elasticbeanstalk do
   let(:args) { |e| required + args_from_description(e) }
-  let(:required) { %w(--access_key_id id --secret_access_key key --env env --bucket_name bucket) }
+  let(:required) { %w(--access_key_id id --secret_access_key key --env env --bucket bucket) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
   let(:events) { [] }
 
@@ -57,6 +57,7 @@ describe Dpl::Providers::Elasticbeanstalk do
   describe 'by default' do
     before { subject.run }
     it { expect(File.exist?(subject.archive_name)).to be true }
+    it { should have_run '[info] Using Access Key: i*******************' }
     it { should create_app_version with: 'ApplicationName=dpl' }
     it { should create_app_version with: 'Description=commit%20msg' }
     it { should create_app_version with: 'S3Bucket=bucket' }
@@ -85,5 +86,31 @@ describe Dpl::Providers::Elasticbeanstalk do
   describe 'given --wait_until_deployed' do
     let(:events) { [event_date: Time.now, severity: 'ERROR', message: 'msg'] }
     it { expect { subject.run }.to raise_error /Deployment failed/ }
+  end
+
+  describe 'with ~/.aws/credentials' do
+    let(:args) { |e| %w(--env env --bucket_name bucket) }
+
+    file '~/.aws/credentials', <<~str
+      [default]
+      aws_access_key_id=access_key_id
+      aws_secret_access_key=secret_access_key
+    str
+
+    before { subject.run }
+    it { should have_run '[info] Using Access Key: ac******************' }
+  end
+
+  describe 'with ~/.aws/config' do
+    let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
+
+    file '~/.aws/config', <<~str
+      [default]
+      env=env
+      bucket=bucket
+    str
+
+    before { subject.run }
+    it { should create_app_version with: 'S3Bucket=bucket' }
   end
 end

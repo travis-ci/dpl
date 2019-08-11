@@ -43,15 +43,19 @@ describe Dpl::Providers::S3 do
     before { subject.run }
 
     describe 'by default', record: true do
-      it { should have_run '[info] Logging in with Access Key: i*******************' }
+      it { should have_run '[info] Using Access Key: i*******************' }
       it { should have_run '[info] Uploading 1 files with up to 5 threads.' }
       it { should have_run '[info] Uploading file one.txt to / with acl=private content_type=text/plain cache_control=no-cache storage_class=STANDARD' }
       it { should have_run_in_order }
-      it { should put_object 'one.txt', 'x-amz-acl': 'private', 'cache-control': 'no-cache', 'x-amz-storage-class': 'STANDARD' }
+      it { should put_object 'one.txt', host: 'bucket.s3.amazonaws.com', 'x-amz-acl': 'private', 'cache-control': 'no-cache', 'x-amz-storage-class': 'STANDARD' }
     end
 
     describe 'given --endpoint https://host.com' do
       it { should put_object 'one.txt', host: 'bucket.host.com' }
+    end
+
+    describe 'given --region us-west-1' do
+      it { should put_object 'one.txt', host: 'bucket.s3.us-west-1.amazonaws.com' }
     end
 
     describe 'given --upload_dir dir' do
@@ -113,10 +117,37 @@ describe Dpl::Providers::S3 do
   describe 'given --local_dir two' do
     dir 'two'
     file 'two/two.txt'
+
     before { subject.run }
     it { should_not have_run %r(Uploading file one.txt) }
     it { should_not put_object 'one.txt' }
     it { should have_run %r(Uploading file two.txt) }
     it { should put_object 'two.txt' }
+  end
+
+  describe 'with ~/.aws/credentials' do
+    let(:args) { |e| %w(--bucket bucket) }
+
+    file '~/.aws/credentials', <<~str
+      [default]
+      aws_access_key_id=access_key_id
+      aws_secret_access_key=secret_access_key
+    str
+
+    before { subject.run }
+    it { should have_run '[info] Using Access Key: ac******************' }
+  end
+
+  describe 'with ~/.aws/config' do
+    let(:args) { |e| %w(--access_key_id id --secret_access_key key) }
+
+    file '~/.aws/config', <<~str
+      [default]
+      region=us-west-1
+      bucket=other
+    str
+
+    before { subject.run }
+    it { should put_object 'one.txt', host: 'other.s3.us-west-1.amazonaws.com' }
   end
 end

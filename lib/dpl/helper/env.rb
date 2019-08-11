@@ -33,7 +33,7 @@ module Dpl
     end
 
     def opts
-      @opts = self.class.env.merge(super)
+      @opts ||= self.class.env.merge(super)
     end
   end
 end

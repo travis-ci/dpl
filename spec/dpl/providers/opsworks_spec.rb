@@ -37,50 +37,78 @@ describe Dpl::Providers::Opsworks do
 
   after { Aws.config.clear }
 
-  before { subject.run }
+  context do
+    before { subject.run }
 
-  describe 'by default', record: true do
-    let(:json) { JSON.dump(deploy: { dpl: { migrate: false, scm: { revision: 'sha' } } }) }
+    describe 'by default', record: true do
+      let(:json) { JSON.dump(deploy: { dpl: { migrate: false, scm: { revision: 'sha' } } }) }
 
-    it { should have_run '[info] Logging in with Access Key: i*******************' }
-    it { should have_run '[print] Creating deployment ... ' }
-    it { should have_run '[info] Done: id' }
-    it { should have_run_in_order }
+      it { should have_run '[info] Using Access Key: i*******************' }
+      it { should have_run '[print] Creating deployment ... ' }
+      it { should have_run '[info] Done: id' }
+      it { should have_run_in_order }
 
-    it do
-      should have_called :create_deployment, {
-        StackId: 'stack_id',
-        AppId: 'app',
-        Command: { Name: 'deploy' },
-        Comment: 'Deploy build 1 via Travis CI',
-        CustomJson: json
-      }
+      it do
+        should have_called :create_deployment, {
+          StackId: 'stack_id',
+          AppId: 'app',
+          Command: { Name: 'deploy' },
+          Comment: 'Deploy build 1 via Travis CI',
+          CustomJson: json
+        }
+      end
+    end
+
+    describe 'given --instance_ids one --instance_ids two' do
+      it { should have_called :create_deployment, InstanceIds: ['one', 'two'] }
+    end
+
+    describe 'given --layer_ids one --layer_ids two' do
+      it { should have_called :create_deployment, LayerIds: ['one', 'two'] }
+    end
+
+    describe 'given --migrate' do
+      let(:json) { JSON.dump(deploy: { dpl: { migrate: true, scm: { revision: 'sha' } } }) }
+      it { should have_called :create_deployment, CustomJson: json }
+    end
+
+    describe 'given --custom_json danger:will-robinson' do
+      it { should have_called :create_deployment, CustomJson: 'danger:will-robinson' }
+    end
+
+    describe 'given --wait_until_deployed' do
+      it { should have_run '[print] Deploying ' }
+      it { should have_called :describe_deployments, DeploymentIds: ['id'] }
+    end
+
+    describe 'given --wait_until_deployed --update_on_success' do
+      it { should have_called :update_app, AppId: 'app', AppSource: { Revision: 'sha' } }
     end
   end
 
-  describe 'given --instance_ids one --instance_ids two' do
-    it { should have_called :create_deployment, InstanceIds: ['one', 'two'] }
+  describe 'with ~/.aws/credentials' do
+    let(:args) { |e| %w(--app_id app) }
+    let(:exists) { false }
+
+    file '~/.aws/credentials', <<~str
+      [default]
+      aws_access_key_id=access_key_id
+      aws_secret_access_key=secret_access_key
+    str
+
+    before { subject.run }
+    it { should have_run '[info] Using Access Key: ac******************' }
   end
 
-  describe 'given --layer_ids one --layer_ids two' do
-    it { should have_called :create_deployment, LayerIds: ['one', 'two'] }
-  end
+  describe 'with ~/.aws/config' do
+    let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
 
-  describe 'given --migrate' do
-    let(:json) { JSON.dump(deploy: { dpl: { migrate: true, scm: { revision: 'sha' } } }) }
-    it { should have_called :create_deployment, CustomJson: json }
-  end
+    file '~/.aws/config', <<~str
+      [default]
+      app_id=app
+    str
 
-  describe 'given --custom_json danger:will-robinson' do
-    it { should have_called :create_deployment, CustomJson: 'danger:will-robinson' }
-  end
-
-  describe 'given --wait_until_deployed' do
-    it { should have_run '[print] Deploying ' }
-    it { should have_called :describe_deployments, DeploymentIds: ['id'] }
-  end
-
-  describe 'given --wait_until_deployed --update_on_success' do
-    it { should have_called :update_app, AppId: 'app', AppSource: { Revision: 'sha' } }
+    before { subject.run }
+    it { should have_called :create_deployment, AppId: 'app' }
   end
 end

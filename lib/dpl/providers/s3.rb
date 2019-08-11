@@ -18,6 +18,7 @@ module Dpl
       gem 'mime-types', '~> 3.2.2'
 
       env :aws
+      config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
 
       # how come there is no glob or file option?
       opt '--access_key_id ID', 'AWS access key id', required: true, secret: true
@@ -38,7 +39,7 @@ module Dpl
       opt '--default_text_charset CHARSET', 'Default character set to append to the content-type of text files'
       opt '--max_threads NUM', 'The number of threads to use for S3 file uploads', default: 5, max: 15, type: :integer
 
-      msgs login:                 'Logging in with Access Key: %{access_key_id}',
+      msgs login:                 'Using Access Key: %{access_key_id}',
            default_uri_schema:    'S3 endpoint does not specify a scheme; defaulting to https',
            access_denied:         'It looks like you tried to write to a bucket that is not yours or does not exist. Please create the bucket before trying to write to it.',
            checksum_error:        'AWS secret key does not match the access key id',
