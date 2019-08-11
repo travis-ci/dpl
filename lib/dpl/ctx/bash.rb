@@ -406,7 +406,7 @@ module Dpl
       # Returns the output of `git ls-files -z`, which separates log entries by
       # NULs, rather than newline characters.
       def git_ls_files
-        `git ls-files -z`.split("\x0")
+        `git ls-files --recurse-submodules -z`.split("\x0")
       end
 
       # Returns true if the given ref exists remotely
