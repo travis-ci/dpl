@@ -19,6 +19,7 @@ module Dpl
       opt '--repo SLUG', 'Repo slug', default: :repo_slug
       opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
       opt '--keep_history', 'Create incremental commit instead of doing push force', default: true
+      opt '--commit_message MSG', default: 'Deploy %{project_name} to %{url}:%{target_branch}'
       opt '--allow_empty_commit', 'Allow an empty commit to be created', requires: :keep_history
       opt '--committer_from_gh', 'Use the token\'s owner name and email for commit. Overrides the email and name options'
       opt '--verbose', 'Be verbose about the deploy process'
@@ -59,7 +60,7 @@ module Dpl
            deployment_file:     'touch "deployed at %{now} by %{committer_name}"',
            cname:               'echo "%{fqdn}" > CNAME',
            git_add:             'git add -A .',
-           git_commit:          'git commit%{git_commit_opts} -qm "Deploy %{project_name} to %{url}:%{target_branch}"',
+           git_commit:          'git commit%{git_commit_opts} -qm "%{commit_message}"',
            git_show:            'git show --stat-count=10 HEAD',
            git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
 
@@ -178,6 +179,10 @@ module Dpl
 
       def committer_email
         committer_from_gh? ? user.email || email : email
+      end
+
+      def commit_message
+        interpolate(super)
       end
 
       def project_name
