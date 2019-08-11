@@ -13,10 +13,11 @@ module Dpl
 
       opt '--email EMAIL', 'npm account email'
       opt '--api_token TOKEN', 'npm api token', alias: :api_key, required: true, secret: true, note: 'can be retrieved from your local ~/.npmrc file', see: 'https://docs.npmjs.com/creating-and-viewing-authentication-tokens'
-      opt '--access ACCESS', 'access level', enum: %w(public private)
+      opt '--access ACCESS', 'Access level', enum: %w(public private)
       opt '--registry URL', 'npm registry url'
       opt '--src SRC', 'directory or tarball to publish', default: '.'
       opt '--tag TAGS', 'distribution tags to add'
+      opt '--auth_method', 'Authentication method', enum: %w(auth)
 
       REGISTRY = 'registry.npmjs.org'
       NPMRC = '~/.npmrc'
@@ -65,7 +66,7 @@ module Dpl
         end
 
         def npmrc
-          if npm_version =~ /^1/
+          if npm_version =~ /^1/ || auth_method == 'auth'
             "_auth = #{api_token}\nemail = #{email}"
           else
             "//#{registry.sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_token}"
