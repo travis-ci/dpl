@@ -68,11 +68,12 @@ module Dpl
       include Interpolate
 
       MODIFIER = %i(obfuscate escape quote)
-      PATTERN  = /%\{(\w+)\}/
+      PATTERN  = /%\{(\$?[\w]+)\}/
+      ENV_VAR  = /^\$[A-Z_]+$/
       UPCASE   = /^[A-Z_]+$/
 
       def apply
-        str = interpolate(self.str)
+        str = interpolate(self.str.to_s)
         str = obfuscate(str) unless opts[:secure]
         str = str.gsub('  ', ' ') if str.lines.size == 1
         str
@@ -104,6 +105,8 @@ module Dpl
         if mod = modifier(key)
           key = key.to_s.sub("#{mod}d_", '')
           obj.send(mod, lookup(key))
+        elsif key.to_s =~ ENV_VAR
+          ENV[key.to_s.sub('$', '')]
         elsif key.to_s =~ UPCASE
           obj.class.const_get(key)
         elsif args.is_a?(Hash) && args.key?(key)
