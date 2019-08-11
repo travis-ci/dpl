@@ -7,11 +7,9 @@ module Dpl
         tbd
       str
 
-      # does not seem to be necessary?
-      # apt 'cabal-install'
-
       opt '--username USER', 'Hackage username', required: true
       opt '--password USER', 'Hackage password', required: true, secret: true
+      opt '--publish', 'Whether or not to publish the package'
 
       cmds check:  'cabal check',
            sdist:  'cabal sdist',
@@ -38,7 +36,7 @@ module Dpl
       private
 
         def upload_opts
-          opts_for(%i(username password))
+          opts_for(%i(publish username password))
         end
 
         def tar_files
