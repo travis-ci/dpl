@@ -12,7 +12,10 @@ module Dpl
       gem 'octokit', '~> 4.14.0'
       gem 'public_suffix', '~> 3.0.3'
 
-      opt '--github_token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true
+      required :github_token, :deploy_key
+
+      opt '--github_token TOKEN', 'GitHub oauth token with repo permission', secret: true
+      opt '--deploy_key KEY', 'A base64-encoded, private deploy key with write access to the repository', note: 'RSA keys are too long to fit into a Travis CI secure variable, but ECDSA-521 fits', see: 'https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys'
       opt '--repo SLUG', 'Repo slug', default: :repo_slug
       opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
       opt '--keep_history', 'Create incremental commit instead of doing push force', default: true
@@ -24,19 +27,15 @@ module Dpl
       opt '--project_name NAME', 'Used in the commit message only (defaults to fqdn or the current repo slug)'
       opt '--email EMAIL', 'Committer email', default: 'deploy@travis-ci.org'
       opt '--name NAME', 'Committer name', default: 'Deploy Bot'
-      # what is the purpose of this file in the first place? a file name with
-      # spaces seems highly irregular, but this has been there from the start
-      # https://github.com/travis-ci/dpl/commit/58f6c7dd4f0fd49df2e93a8495fd01c7784d4f58#diff-cc5438ae072229825b07abf38951a912R47
       opt '--deployment_file', 'Enable creation of a deployment-info file'
-      # not mentioned in the readme
       opt '--github_url URL', default: 'github.com'
-      # how about the octokit options?
 
       needs :git
 
       msgs login:               'Logged in as %s (%s)',
            invalid_token:       'The provided GitHub token is invalid (error: %s)',
            insufficient_scopes: 'Dpl does not have permission to access %{url} using the provided GitHub token. Please make sure the token have the repo or public_repo scope.',
+           setup_deploy_key:    'Setting up deploy key in %{path}',
            deploy:              'Deploying branch %{target_branch} to %{github_url}',
            keep_history:        'The deployment is configured to preserve the target branch if it exists on remote.',
            work_dir:            'Using temporary work directory %{work_dir}',
@@ -50,9 +49,10 @@ module Dpl
            git_commit:          'Preparing to deploy %{target_branch} branch to gh-pages',
            git_push:            'Pushing to %{url}'
 
-      cmds git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{url_with_token}" . > /dev/null 2>&1',
+      cmds git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{remote_url}" . > /dev/null 2>&1',
            git_init:            'git init .',
            git_checkout:        'git checkout --orphan "%{target_branch}"',
+           check_deploy_key:    'ssh -i %{key} -T %{git_url}',
            copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
            git_config_email:    'git config user.email "%{committer_email}"',
            git_config_name:     'git config user.name "%{committer_name}"',
@@ -61,19 +61,16 @@ module Dpl
            git_add:             'git add -A .',
            git_commit:          'git commit%{git_commit_opts} -qm "Deploy %{project_name} to %{url}:%{target_branch}"',
            git_show:            'git show --stat-count=10 HEAD',
-           git_push:            'git push%{git_push_opts} --quiet "%{url_with_token}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
+           git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
 
       errs copy_files:          'Failed to copy %{src_dir}.',
+           check_deploy_key:    'Failed to authenticate using the deploy key',
            git_init:            'Failed to create new git repo',
            git_checkout:        'Failed to create the orphan branch',
            git_push:            'Failed to push the build to %{url}:%{target_branch}'
 
       def login
-        user.login
-        info :login, user.login, user.name
-        error :insufficient_scopes unless sufficient_scopes?
-      rescue Octokit::Unauthorized => e
-        error :invalid_token, e.message
+        github_token? ? login_token : login_deploy_key
       end
 
       def setup
@@ -95,6 +92,20 @@ module Dpl
         git_commit
         git_push
         git_status if verbose?
+      end
+
+      private
+
+      def login_token
+        user.login
+        info :login, user.login, user.name
+        error :insufficient_scopes unless sufficient_scopes?
+      rescue Octokit::Unauthorized => e
+        error :invalid_token, e.message
+      end
+
+      def login_deploy_key
+        setup_deploy_key if deploy_key?
       end
 
       def git_clone?
@@ -142,8 +153,20 @@ module Dpl
         shell 'git status'
       end
 
+      def setup_deploy_key
+        path = "~/.dpl/deploy_key"
+        info :setup_deploy_key, path: path
+        write_file path, decoded_deploy_key, 0600
+        setup_git_ssh path
+        shell :check_deploy_key, key: path
+      end
+
+      def decoded_deploy_key
+        Base64.decode64(deploy_key)
+      end
+
       def git_branch_exists?
-        git_ls_remote?(url_with_token, target_branch)
+        git_ls_remote?(remote_url, target_branch)
       end
 
       def git_commit_opts
@@ -174,8 +197,16 @@ module Dpl
         api.scopes.include?('public_repo') || api.scopes.include?('repo')
       end
 
-      def url_with_token
+      def remote_url
+        github_token? ? https_url_with_token : git_url
+      end
+
+      def https_url_with_token
         "https://#{github_token}@#{url}"
+      end
+
+      def git_url
+        "git@#{url}.git"
       end
 
       def url

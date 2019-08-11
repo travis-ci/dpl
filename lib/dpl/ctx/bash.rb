@@ -490,6 +490,7 @@ module Dpl
       # Writes the given content to the given file path
       def write_file(path, content, chmod = nil)
         path = File.expand_path(path)
+        FileUtils.mkdir_p(File.dirname(path))
         File.open(path, 'w+') { |f| f.write(content) }
         FileUtils.chmod(chmod, path) if chmod
       end
