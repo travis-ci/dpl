@@ -5,8 +5,9 @@ describe Dpl::Providers::Pages do
   let!(:cwd)    { File.expand_path('.') }
   let(:tmp)     { File.expand_path('tmp') }
 
-  before { stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers: headers) }
+  env FOO: 'foo'
 
+  before { stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers: headers) }
   before { subject.run }
 
   describe 'by default', record: true do
@@ -87,6 +88,10 @@ describe Dpl::Providers::Pages do
 
   describe 'given --email other' do
     it { should have_run 'git config user.email "other"' }
+  end
+
+  describe 'given --commit_message "msg %{repo} %{$FOO}"' do
+    it { should have_run 'git commit -qm "msg travis-ci/dpl foo"' }
   end
 
   describe 'given --deploy_key a2V5Cg==', record: true do
