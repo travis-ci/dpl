@@ -29,4 +29,8 @@ describe Dpl::Providers::Firebase do
   describe 'missing firebase.json' do
     it { expect { subject.run }.to raise_error 'Missing firebase.json' }
   end
+
+  describe 'adds node_modules/.bin to $PATH' do
+    it { expect(ENV['PATH']).to include 'node_modules/.bin' }
+  end
 end
