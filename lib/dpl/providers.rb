@@ -1,5 +1,6 @@
 require 'dpl/providers/anynines'
 require 'dpl/providers/atlas'
+require 'dpl/providers/azure_storage'
 require 'dpl/providers/azure_web_apps'
 require 'dpl/providers/bintray'
 require 'dpl/providers/boxfuse'
