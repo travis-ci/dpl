@@ -48,6 +48,7 @@ module Dpl
     # Implementors are encouraged to use named variables when possible, but
     # are free to choose according to their needs.
     def interpolate(str, args = [], opts = {})
+      args = args.pop if args.first.is_a?(Hash)
       return str % args if args.is_a?(Array) && args.any?
       args = {} if args.is_a?(Array)
       Interpolator.new(str, self, args || {}, opts).apply
