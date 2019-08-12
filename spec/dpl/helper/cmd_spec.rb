@@ -59,27 +59,27 @@ describe Dpl::Cmd do
     end
   end
 
-  describe 'err' do
+  describe 'error' do
     describe 'by default' do
-      it { expect(subject.err).to eq 'Failed' }
+      it { expect(subject.error).to eq 'Failed' }
     end
 
     describe 'given assert: :err, mapping present' do
       let(:body) { ->(*) { errs err: 'err %{var}' } }
       let(:opts) { { assert: :err, var: :var } }
-      it { expect(subject.err).to eq 'err var' }
+      it { expect(subject.error).to eq 'err var' }
     end
 
     describe 'given assert: :err, mapping missing' do
       let(:opts) { { assert: :err } }
-      it { expect(subject.err).to eq 'Failed' }
+      it { expect(subject.error).to eq 'Failed' }
     end
 
     describe 'given cmd: :cmd, mapping present' do
       let(:body) { ->(*) { cmds cmd: 'cmd'; errs cmd: 'err %{var}' } }
       let(:opts) { { var: :var } }
       let(:cmd) { :cmd }
-      it { expect(subject.err).to eq 'err var' }
+      it { expect(subject.error).to eq 'err var' }
     end
   end
 

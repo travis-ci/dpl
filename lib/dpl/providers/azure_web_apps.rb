@@ -19,12 +19,12 @@ module Dpl
 
       needs :git
 
-      cmds push:     'git push --force --quiet %{url} HEAD:refs/heads/master',
-           checkout: 'git checkout HEAD',
+      cmds checkout: 'git checkout HEAD',
            add:      'git add . --all --force',
-           commit:   'git commit -m "Cleanup commit"'
+           commit:   'git commit -m "Cleanup commit"',
+           deploy:   'git push --force --quiet %{url} HEAD:refs/heads/master'
 
-      msgs commit:   'Skipping cleanup, committing changes to git',
+      msgs commit:   'Committing changes to git',
            deploy:   'Deploying to Azure Web App: %{site}'
 
       errs push:     'Failed pushing to Azure Web Apps'
@@ -36,8 +36,7 @@ module Dpl
       end
 
       def deploy
-        info :deploy
-        shell :push, silence: !verbose?
+        shell :deploy, silence: !verbose?
       end
 
       private
@@ -51,7 +50,6 @@ module Dpl
         end
 
         def commit
-          info :commit
           shell :checkout
           shell :add
           shell :commit

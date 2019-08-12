@@ -45,6 +45,8 @@ module Dpl
            missing_file:         '%s does not exist.',
            not_a_file:           '%s is not a file, skipping.'
 
+      cmds git_fetch_tags:       'git fetch --tags'
+
       URL = 'https://api.github.com/repos/%s/releases/%s'
 
       TIMEOUTS = {
@@ -55,7 +57,7 @@ module Dpl
       def validate
         info :deploy
         # might not have a git remote set up
-        shell 'git fetch --tags' if env_tag.nil?
+        shell :git_fetch_tags if env_tag.nil?
         # error if local_tag is nil?
         info :local_tag
       end

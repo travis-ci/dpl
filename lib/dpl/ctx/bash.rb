@@ -256,16 +256,17 @@ module Dpl
       # @return [Boolean] whether or not the command was successful (has exited with the exit code 0)
       def shell(cmd, opts = {})
         cmd = Cmd.new(nil, cmd, opts) if cmd.is_a?(String)
+        info cmd.msg if cmd.msg?
         info cmd.echo if cmd.echo?
 
         @last_out, @last_err, @last_status = retrying(cmd.retry ? 2 : 0) do
           send(cmd.capture? ? :open3 : :system, cmd.cmd, cmd.opts)
         end
 
-        info cmd.info % { out: last_out } if success? && cmd.info?
-        error cmd.err % { err: last_err } if failed? && cmd.assert?
+        info cmd.success % { out: last_out } if success? && cmd.success?
+        error cmd.error % { err: last_err } if failed? && cmd.assert?
 
-        @last_status
+        success? && cmd.capture? ? last_out.chomp : @last_status
       end
 
       def retrying(max, tries = 0, status = false)

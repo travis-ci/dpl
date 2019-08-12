@@ -47,7 +47,7 @@ module Dpl
            git_checkout:        'Checking out orphan branch %{target_branch}',
            copy_files:          'Copying %{src_dir} contents to %{work_dir}',
            git_config:          'Configuring git committer to be %{committer_name} <%{committer_email}>',
-           git_commit:          'Preparing to deploy %{target_branch} branch to gh-pages',
+           prepare:             'Preparing to deploy %{target_branch} branch to gh-pages',
            git_push:            'Pushing to %{url}'
 
       cmds git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{url_with_token}" . > /dev/null 2>&1',
@@ -102,19 +102,15 @@ module Dpl
       end
 
       def git_clone
-        info :git_clone
         shell :git_clone, echo: false
       end
 
       def git_init
-        info :git_init
         shell :git_init
-        info :git_checkout
         shell :git_checkout
       end
 
       def copy_files
-        info :copy_files
         shell :copy_files
       end
 
@@ -125,7 +121,7 @@ module Dpl
       end
 
       def git_commit
-        info :git_commit
+        info :prepare
         shell :deployment_file if deployment_file?
         shell :cname if fqdn?
         shell :git_add

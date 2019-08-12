@@ -1,6 +1,6 @@
 module Dpl
   # Represents a shell command
-  class Cmd < Struct.new(:provider, :str, :opts)
+  class Cmd < Struct.new(:provider, :key, :opts)
     # Returns the shell command string
     #
     # If a Symbol was passed as a command then the command will be looked
@@ -15,7 +15,7 @@ module Dpl
     # If the option `python` was passed then the virtualenv with the given
     # Python version will be activated before executing the command.
     def cmd(secure = true)
-      cmd = lookup(:cmd, str) || error(:cmd, str)
+      cmd = lookup(:cmd, key) || missing(:cmd, key)
       cmd = interpolate(cmd, opts, secure: secure).strip
       cmd = silence(cmd) if silence?
       cmd = python(cmd) if python?
@@ -41,10 +41,14 @@ module Dpl
     # obfuscated. See `Dpl::Interpolate` for details on interpolating
     # variables.
     def msg
-      msg = lookup(:msg, opts[:msg])
-      msg || error(:msg, opts[:msg], str)
+      msg = lookup(:msg, opts[:msg], key.is_a?(Symbol) ? key : nil)
+      msg || missing(:msg, opts[:msg], key)
       msg = interpolate(msg, opts, secure: false).strip
       msg
+    end
+
+    def msg?
+      !!lookup(:msg, opts[:msg], key.is_a?(Symbol) ? key : nil)
     end
 
     # Returns the log message for a failed command
@@ -57,8 +61,8 @@ module Dpl
     # option `assert` was given as a Symbol then it will be looked up from the
     # provider class' `errs` declaration. If the command was given as a Symbol,
     # and it can be found in `errs` then this String will be used.
-    def err
-      keys = [opts[:assert], str]
+    def error
+      keys = [opts[:assert], key]
       err = lookup(:err, *keys)
       err ? interpolate(err, opts).strip : 'Failed'
     end
@@ -87,10 +91,10 @@ module Dpl
       !!opts[:capture]
     end
 
-    # Whether or not to output a log message after the command has succeeded
+    # Whether or not to output a log message before the command is run
     #
     # Returns `true` if the option `info` was given. Returns `false` if the
-    # option `assert` was given as `false` or not given.
+    # option `info` was given as `false` or not given.
     def info?
       !!opts[:info]
     end
@@ -98,6 +102,19 @@ module Dpl
     # Returns the log message to output after the command has succeeded
     def info
       opts[:info]
+    end
+
+    # Whether or not to output a log message after the command has succeeded
+    #
+    # Returns `true` if the option `success` was given. Returns `false` if the
+    # option `success` was given as `false` or not given.
+    def success?
+      !!opts[:success]
+    end
+
+    # Returns the log message to output after the command has succeeded
+    def success
+      opts[:success]
     end
 
     # Whether or not to activate a Python virtualenv before executing the
@@ -129,7 +146,7 @@ module Dpl
         str || keys.detect { |key| key.is_a?(String) }
       end
 
-      def error(type, *keys)
+      def missing(type, *keys)
         raise("Could not find #{type}: #{keys.compact.map(&:inspect).join(', ')}")
       end
 

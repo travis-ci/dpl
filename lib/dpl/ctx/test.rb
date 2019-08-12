@@ -7,11 +7,12 @@ module Dpl
     class Test < Cl::Ctx
       include Squiggle
 
-      attr_reader :cmds, :stderr, :last_out, :last_err
+      attr_reader :cmds, :stdout, :stderr, :last_out, :last_err
 
       def initialize
         @cmds = []
         @stderr = StringIO.new
+        @stdout = {}
         super('dpl')
       end
 
@@ -56,8 +57,11 @@ module Dpl
       end
 
       def shell(cmd, opts = {})
+        info cmd.msg if cmd.msg?
         info cmd.echo if cmd.echo?
         cmds << cmd.cmd
+        return true unless cmd.capture?
+        stdout[cmd.key] || 'captured_stdout'
       end
 
       def success?

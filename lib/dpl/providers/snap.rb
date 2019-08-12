@@ -31,8 +31,7 @@ module Dpl
       end
 
       def login
-        info :login
-        shell :login, assert: 'Failed to authenticate: %{err}', info: '%{out}', capture: true
+        shell :login, assert: 'Failed to authenticate: %{err}', success: '%{out}', capture: true
       end
 
       def validate
@@ -41,7 +40,6 @@ module Dpl
       end
 
       def deploy
-        info :deploy
         shell :deploy
       end
 

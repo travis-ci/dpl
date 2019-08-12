@@ -22,14 +22,13 @@ module Dpl
            push:     'git push --force %{target} HEAD:master'
 
       msgs commit:   'Committing build files for deployment',
-           deploy:   'Deploying to Datica: %{target}'
+           push:     'Deploying to Datica: %{target}'
 
       def setup
         commit unless cleanup?
       end
 
       def deploy
-        info :deploy
         shell :push
       end
 

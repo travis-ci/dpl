@@ -236,9 +236,9 @@ describe Dpl::Ctx::Bash do
       it { should call_system 'source $HOME/virtualenv/python2.7/bin/activate && echo one' }
     end
 
-    describe 'info' do
+    describe 'success' do
       let(:status) { true }
-      let!(:result) { subject.shell('echo one', info: 'success') }
+      let!(:result) { subject.shell('echo one', success: 'success') }
       it { expect(result).to be true }
       it { should call_system 'echo one' }
       it { should have_stdout 'success' }
@@ -253,15 +253,14 @@ describe Dpl::Ctx::Bash do
     describe 'capture' do
       let(:captures) { ['stdout', '', true] }
       let!(:result) { subject.shell('echo one', capture: true) }
-      it { expect(result).to be true }
+      it { expect(result).to eq 'stdout' }
       it { should call_capture3 'echo one' }
-      it { expect(subject.shell('echo one', capture: true)).to be true }
     end
 
     describe 'capture (info)' do
       let(:captures) { ['stdout', '', true] }
-      let!(:result) { subject.shell('echo one', capture: true, info: 'stdout: %{out}') }
-      it { expect(result).to be true }
+      let!(:result) { subject.shell('echo one', capture: true, success: 'stdout: %{out}') }
+      it { expect(result).to eq 'stdout' }
       it { should call_capture3 'echo one' }
       it { should have_stdout 'stdout: stdout' }
     end

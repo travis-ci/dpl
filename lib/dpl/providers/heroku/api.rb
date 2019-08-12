@@ -36,12 +36,10 @@ module Dpl
         private
 
           def pack
-            info :pack
             shell :pack
           end
 
           def upload
-            info :upload
             shell :upload
           end
 
