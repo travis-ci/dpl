@@ -172,7 +172,7 @@ module Dpl
       :git_rev_parse, :git_sha, :git_tag, :machine_name, :node_version,
       :npm_version, :sleep, :ssh_keygen, :success?, :mv, :tmp_dir, :which,
       :logger, :rendezvous, :file_size, :write_file, :write_netrc, :last_out,
-      :last_err, :tty?
+      :last_err, :test?, :tty?
 
     attr_reader :repo_name, :key_name
 
@@ -192,7 +192,8 @@ module Dpl
     rescue Error
       raise
     rescue Exception => e
-      raise Error.new("#{e.message} (#{e.class})", backtrace: backtrace? ? caller : nil)
+      raise Error.new("#{e.message} (#{e.class})", backtrace: backtrace? ? caller : nil) unless test?
+      raise
     ensure
       run_stage(:finish, fold: false) if finish?
     end
