@@ -261,14 +261,6 @@ module Dpl
         {}
       end
 
-      def compact(hash)
-        hash.reject { |_, value| value.nil? }
-      end
-
-      def only(hash, *keys)
-        hash.select { |key, _| keys.include?(key) }
-      end
-
       class Upload < Struct.new(:source, :target, :params)
         def eql?(other)
           source == other.source

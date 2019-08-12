@@ -183,10 +183,6 @@ module Dpl
           ::Packagecloud::Connection.new('https', 'packagecloud.io', '443', timeouts)
         end
 
-        def only(hash, *keys)
-          hash.select { |key, _| keys.include?(key) }
-        end
-
         def to_pairs(hash)
           hash.map { |pair| pair.join('=') }.join(' ')
         end

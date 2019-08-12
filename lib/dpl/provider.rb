@@ -570,6 +570,11 @@ module Dpl
       hash.reject { |_, value| value.nil? }
     end
 
+    # Returns a new hash with the given keys selected from the given hash.
+    def only(hash, *keys)
+      hash.select { |key, _| keys.include?(key) }
+    end
+
     # Deep symbolizes the given hash's keys
     def symbolize(obj)
       case obj
