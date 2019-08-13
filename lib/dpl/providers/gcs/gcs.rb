@@ -12,7 +12,7 @@ module Dpl
           tbd
         str
         
-        gem 'google-cloud-storage', '~> 1.20.0'
+        gem 'google-cloud-storage'
 
         opt '--project_id ID', 'Project ID to which the bucket belongs', type: :string, required: true
         opt '--credentials CREDENTIALS_JSON_PATH', 'Path to the JSON file containing credentials', type: :string, required: true
