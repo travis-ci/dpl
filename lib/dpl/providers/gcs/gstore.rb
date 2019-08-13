@@ -6,7 +6,7 @@ module Dpl
       class Gstore < Gcs
         status :alpha
 
-        full_name 'Google Cloud Store'
+        full_name 'Google Cloud Store (with gstore)'
 
         description sq(<<-str)
           tbd

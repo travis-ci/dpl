@@ -11,6 +11,10 @@ module Dpl
         Provider[:"gcs:#{strategy}"].new(ctx, args)
       end
       
+      opt '--strategy NAME', 'Upload backend', default: 'gstore', enum: %w(gstore gcs), internal: true
+      opt '--bucket NAME', 'Bucket to upload files to', type: :string
+      opt '--dot_match', 'Upload dot files', default: false, type: :boolean
+      opt '--log_level LEVEL', internal: true
       
     end
   end
