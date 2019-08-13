@@ -1,4 +1,4 @@
-describe Dpl::Providers::Gcs do
+describe Dpl::Providers::Gcs::Gstore do
   let(:args) { |e| %w(--access_key_id id --secret_access_key 12345 --bucket bucket) + args_from_description(e) }
 
   file 'one'
