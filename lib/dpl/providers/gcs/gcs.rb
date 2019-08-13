@@ -3,7 +3,7 @@ require 'google/cloud/storage'
 module Dpl
   module Providers
     class Gcs
-      class Gstore < Gcs
+      class Gcs < Gcs
         status :alpha
 
         full_name 'Google Cloud Store'
