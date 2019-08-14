@@ -27,7 +27,13 @@ module Dpl
       opt '--only_create_app_version', 'Only create the app version, do not actually deploy it'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
 
+      msgs login: 'Using Access Key: %{access_key_id}'
+
       attr_reader :started, :object, :version
+
+      def login
+        info :login
+      end
 
       def setup
         Aws.config.update(credentials: credentials, region: region)
