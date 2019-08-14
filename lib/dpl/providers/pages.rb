@@ -206,7 +206,7 @@ module Dpl
       end
 
       def git_url
-        "git@#{url}.git"
+        "git@#{github_url}:#{slug}.git"
       end
 
       def url
@@ -234,7 +234,7 @@ module Dpl
       end
 
       def api_endpoint
-        github_url == 'github.com' ? "https://api.github.com/" : "https://#{github_url}/api/v3/"
+        github_url == 'github.com' ? 'https://api.github.com/' : "https://#{github_url}/api/v3/"
       end
 
       def now
