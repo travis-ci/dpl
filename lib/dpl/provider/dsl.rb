@@ -303,6 +303,11 @@ module Dpl
         @msgs ||= self == Provider ? {} : superclass.msgs.dup
       end
 
+      def strs(strs = nil)
+        return self.strs.update(strs) if strs
+        @strs ||= self == Provider ? {} : superclass.strs.dup
+      end
+
       # Declare artifacts, such as executables during the `install` stage that
       # need to be kept during `cleanup`.
       #

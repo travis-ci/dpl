@@ -40,7 +40,7 @@ def post(uri, body, opts)
   http.request(req)
 end
 
-SKIP = /(cloud66|datica|snap)/
+SKIP = /(azure_web_apps|cloud66|datica|snap)/
 
 def paths
   glob = ARGV.any? ? ARGV.join(',') : '*'

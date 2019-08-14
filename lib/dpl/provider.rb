@@ -513,7 +513,7 @@ module Dpl
     #
     # Note that the the method `interpolate` needs to be used in order to
     # interpolate variables used in a message (if any).
-    %i(cmd err msg).each do |name|
+    %i(cmd err msg str).each do |name|
       define_method(name) do |*keys|
         key = keys.detect { |key| key.is_a?(Symbol) }
         self.class.send(:"#{name}s")[key] if key
@@ -588,6 +588,10 @@ module Dpl
       end
     end
 
+    def file?(path)
+      File.file?(expand(path))
+    end
+
     def mkdir_p(path)
       super(expand(path))
     end
@@ -602,6 +606,10 @@ module Dpl
 
     def open(path, *args, &block)
       File.open(expand(path), *args, &block)
+    end
+
+    def read(path)
+      File.read(expand(path))
     end
 
     def expand(path)

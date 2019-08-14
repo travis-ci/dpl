@@ -365,10 +365,10 @@ module Dpl
         ENV['TRAVIS_BUILD_DIR'] || '.'
       end
 
-      # Returns the current build directory
+      # Returns the current build number
       #
-      # Uses the environment variable `TRAVIS_BUILD_NUMBER` if present, and
-      # raises an exception if missing.
+      # Returns the value of the environment variable `TRAVIS_BUILD_NUMBER` if
+      # present.
       def build_number
         ENV['TRAVIS_BUILD_NUMBER'] || raise('TRAVIS_BUILD_NUMBER not set')
       end
