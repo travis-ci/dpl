@@ -192,7 +192,7 @@ describe Dpl::Providers::Lambda do
     let(:args) { |e| %w(--function_name func --role role --handler_name handler) }
     let(:exists) { false }
 
-    file '~/.aws/credentials', <<~str
+    file '~/.aws/credentials', <<-str.sub(/^\s*/, '')
       [default]
       aws_access_key_id=access_key_id
       aws_secret_access_key=secret_access_key
@@ -205,7 +205,7 @@ describe Dpl::Providers::Lambda do
   describe 'with ~/.aws/config' do
     let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
 
-    file '~/.aws/config', <<~str
+    file '~/.aws/config', <<-str.sub(/^\s*/, '')
       [default]
       function_name=func
       handler_name=handler
