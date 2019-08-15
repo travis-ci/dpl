@@ -12,6 +12,7 @@ def poll(url)
   URI.parse(url).read
 rescue => e
   puts e.message
+  {}
 end
 
 10.times do
