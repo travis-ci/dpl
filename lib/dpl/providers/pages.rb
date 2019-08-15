@@ -141,7 +141,6 @@ module Dpl
       end
 
       def git_push
-        info :git_push
         shell :git_push, echo: false
       end
 
