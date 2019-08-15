@@ -84,10 +84,8 @@ module Dpl
       end
 
       def obfuscate(str)
-        obj.opts.inject(str) do |str, (key, value)|
-          secrets(value).inject(str) do |str, secret|
-            str.gsub(value, super(value))
-          end
+        secrets(str).inject(str) do |str, secret|
+          str.gsub(secret, super(secret))
         end
       end
 
