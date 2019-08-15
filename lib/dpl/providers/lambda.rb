@@ -20,10 +20,10 @@ module Dpl
       opt '--secret_access_key KEY',      'AWS secret key', required: true, secret: true
       opt '--region REGION',              'AWS region the Lambda function is running in', default: 'us-east-1'
       opt '--function_name FUNC',         'Name of the Lambda being created or updated', required: true
-      opt '--role ROLE',                  'ARN of the IAM role to assign to the Lambda function', required: true
-      opt '--handler_name NAME',          'Function the Lambda calls to begin executio.', required: true
+      opt '--role ROLE',                  'ARN of the IAM role to assign to the Lambda function', note: 'required for creating a new function'
+      opt '--handler_name NAME',          'Function the Lambda calls to begin execution.', note: 'required for creating a new function'
+      opt '--module_name NAME',           'Name of the module that exports the handler', default: 'index', requires: :handler_name
       opt '--dot_match',                  'Include hidden .* files to the zipped archive'
-      opt '--module_name NAME',           'Name of the module that exports the handler', default: 'index'
       opt '--zip PATH',                   'Path to a packaged Lambda, a directory to package, or a single file to package', default: '.'
       opt '--description DESCR',          'Description of the Lambda being created or updated'
       opt '--timeout SECS',               'Function execution time (in seconds) at which Lambda should terminate the function', default: 3
@@ -126,7 +126,7 @@ module Dpl
         end
 
         def handler
-          "#{module_name}.#{handler_name}"
+          "#{module_name}.#{handler_name}" if handler_name?
         end
 
         def function_zip
