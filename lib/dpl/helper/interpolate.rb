@@ -85,15 +85,17 @@ module Dpl
 
       def obfuscate(str)
         obj.opts.inject(str) do |str, (key, value)|
-          secret?(value) ? str.gsub(value, super(value)) : str
+          secrets(value).inject(str) do |str, secret|
+            str.gsub(value, super(value))
+          end
         end
       end
 
-      def secret?(value)
-        return unless value.is_a?(String) && value.tainted?
+      def secrets(str)
+        return [] unless str.is_a?(String) && str.tainted?
         opts = obj.class.opts.select(&:secret?)
         secrets = opts.map { |opt| obj.opts[opt.name] }.compact
-        secrets.any? { |secret| value.include?(secret) }
+        secrets.select { |secret| str.include?(secret) }
       end
 
       def lookup(key)
