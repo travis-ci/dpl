@@ -18,6 +18,5 @@ Gem::Specification.new do |s|
   s.files         = Dir['{lib/**/*,[A-Z]*}']
 
   s.add_runtime_dependency 'cl', '~> 1.0'
-  s.add_runtime_dependency 'did_you_mean', '~> 1.3'
   s.add_development_dependency 'rake', '~> 12.3'
 end

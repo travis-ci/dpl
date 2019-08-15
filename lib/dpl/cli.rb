@@ -43,6 +43,7 @@ module Dpl
     end
 
     def suggestions(name)
+      return [] unless defined?(DidYouMean)
       DidYouMean::SpellChecker.new(dictionary: providers).correct(name)
     end
 
