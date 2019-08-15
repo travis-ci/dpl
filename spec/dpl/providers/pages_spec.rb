@@ -88,4 +88,15 @@ describe Dpl::Providers::Pages do
   describe 'given --email other' do
     it { should have_run 'git config user.email "other"' }
   end
+
+  describe 'given --deploy_key a2V5Cg==', record: true do
+    let(:args) { |e| args_from_description(e) }
+    it { should have_run '[info] Setting up deploy key in ~/.dpl/deploy_key' }
+    it { should have_run '[info] Setting up git-ssh' }
+    it { should have_run '[info] $ ssh -i ~/.dpl/deploy_key -T git@github.com:travis-ci/dpl.git' }
+    it { should have_run 'ssh -i ~/.dpl/deploy_key -T git@github.com:travis-ci/dpl.git' }
+    it { should have_run '[info] Pushing to github.com/travis-ci/dpl.git' }
+    it { should have_run 'git push --quiet "git@github.com:travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
+    it { should have_run_in_order }
+  end
 end
