@@ -1,4 +1,4 @@
-# Dpl [![Build Status](https://travis-ci.com/travis-ci/dpl.svg?branch=master)](https://travis-ci.com/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github&cache=2019-08-09_17:00)](https://coveralls.io/github/travis-ci/dpl?branch=master) [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/travis-ci/dpl) [![Gem Version](https://badge.fury.io/rb/dpl.png)](http://badge.fury.io/rb/dpl)
+# Dpl [![Build Status](https://travis-ci.com/travis-ci/dpl.svg?branch=master)](https://travis-ci.com/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github&cache=2019-08-09_17:00)](https://coveralls.io/github/travis-ci/dpl?branch=master) [![Gem Version](https://img.shields.io/gem/v/dpl)](http://rubygems.org/gems/dpl) [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/travis-ci/dpl)
 
 Dpl is command line tool for deploying code, html, packages, or build artifacts
 to various service providers.
@@ -148,7 +148,6 @@ Description:
 
   Support for deployments to Anynines is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --username USER         anynines username (type: string, required: true)
@@ -186,7 +185,6 @@ Description:
   tbd
 
   Support for deployments to Atlas is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -232,7 +230,6 @@ Description:
   tbd
 
   Support for deployments to AWS Code Deploy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -280,7 +277,6 @@ Description:
 
   Support for deployments to AWS Elastic Beanstalk is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --access_key_id ID                  AWS Access Key ID (type: string, required: true)
@@ -290,13 +286,13 @@ Options:
   --app NAME                          Elastic Beanstalk application name (type: string, default: repo name)
   --env NAME                          Elastic Beanstalk environment name which will be updated (type: string,
                                       required: true)
-  --bucket_name NAME                  Bucket name to upload app to (type: string, required: true)
+  --bucket NAME                       Bucket name to upload app to (type: string, required: true, alias: bucket_name)
   --bucket_path PATH                  Location within Bucket to upload app to (type: string)
+  --description DESC                  Description for the application version (type: string)
+  --label LABEL                       Label for the application version (type: string)
   --zip_file PATH                     The zip file that you want to deploy (type: string)
   --[no-]only_create_app_version      Only create the app version, do not actually deploy it
   --[no-]wait_until_deployed          Wait until the deployment has finished
-  --label LABEL                       type: string
-  --description DESC                  type: string
 
 Common Options:
 
@@ -307,8 +303,8 @@ Common Options:
 
 Examples:
 
-  dpl elasticbeanstalk --access_key_id id --secret_access_key key --env name --bucket_name name
-  dpl elasticbeanstalk --access_key_id id --secret_access_key key --env name --bucket_name name --region region
+  dpl elasticbeanstalk --access_key_id id --secret_access_key key --env name --bucket name
+  dpl elasticbeanstalk --access_key_id id --secret_access_key key --env name --bucket name --region region
 ```
 
 ### AWS Lambda
@@ -326,18 +322,19 @@ Description:
 
   Support for deployments to AWS Lambda is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --access_key_id ID                AWS access key id (type: string, required: true)
   --secret_access_key KEY           AWS secret key (type: string, required: true)
   --region REGION                   AWS region the Lambda function is running in (type: string, default: us-east-1)
   --function_name FUNC              Name of the Lambda being created or updated (type: string, required: true)
-  --role ROLE                       ARN of the IAM role to assign to the Lambda function (type: string, required:
-                                    true)
-  --handler_name NAME               Function the Lambda calls to begin executio. (type: string, required: true)
+  --role ROLE                       ARN of the IAM role to assign to the Lambda function (type: string, note:
+                                    required for creating a new function)
+  --handler_name NAME               Function the Lambda calls to begin execution. (type: string, note: required for
+                                    creating a new function)
+  --module_name NAME                Name of the module that exports the handler (type: string, requires:
+                                    handler_name, default: index)
   --[no-]dot_match                  Include hidden .* files to the zipped archive
-  --module_name NAME                Name of the module that exports the handler (type: string, default: index)
   --zip PATH                        Path to a packaged Lambda, a directory to package, or a single file to package
                                     (type: string, default: .)
   --description DESCR               Description of the Lambda being created or updated (type: string)
@@ -374,7 +371,8 @@ Common Options:
 
 Examples:
 
-  dpl lambda --access_key_id id --secret_access_key key --function_name func --role role --handler_name name
+  dpl lambda --access_key_id id --secret_access_key key --function_name func
+  dpl lambda --access_key_id id --secret_access_key key --function_name func --region region --role role
 ```
 
 ### AWS OpsWorks
@@ -391,7 +389,6 @@ Description:
   tbd
 
   Support for deployments to AWS OpsWorks is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -435,7 +432,6 @@ Description:
   tbd
 
   Support for deployments to AWS S3 is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -494,7 +490,6 @@ Description:
 
   Support for deployments to Azure Web Apps is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --site SITE          Web App name (e.g. myapp in myapp.azurewebsites.net) (type: string, required:
@@ -533,7 +528,6 @@ Description:
 
   Support for deployments to Bintray is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --user USER              Bintray user (type: string, required: true)
@@ -568,7 +562,6 @@ Description:
   tbd
 
   Support for deployments to Bluemix Cloud Foundry is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -612,7 +605,6 @@ Description:
 
   Support for deployments to Boxfuse is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --user USER             type: string, required: true
@@ -652,7 +644,6 @@ Description:
 
   Support for deployments to Cargo is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --token TOKEN       Cargo registry API token (type: string, required: true)
@@ -684,7 +675,6 @@ Description:
   tbd
 
   Support for deployments to Chef Supermarket is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -721,7 +711,6 @@ Description:
   tbd
 
   Support for deployments to Cloud Files is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -762,7 +751,6 @@ Description:
 
   Support for deployments to Cloud Foundry is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --username USER                 Cloud Foundry username (type: string, required: true)
@@ -802,7 +790,6 @@ Description:
 
   Support for deployments to Cloud66 is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --redeployment_hook URL      The redeployment hook URL (type: string, required: true)
@@ -834,7 +821,6 @@ Description:
   tbd
 
   Support for deployments to Datica is in development. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -868,7 +854,6 @@ Description:
   tbd
 
   Support for deployments to Engineyard is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -911,7 +896,6 @@ Description:
 
   Support for deployments to Firebase is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --token TOKEN        Firebase CI access token (generate with firebase login:ci) (type: string,
@@ -919,7 +903,7 @@ Options:
   --project NAME       Firebase project to deploy to (defaults to the one specified in your
                        firebase.json) (type: string)
   --message MSG        Message describing this deployment. (type: string)
-  --only SERVICES      Firebase services to deploy (type: string)
+  --only SERVICES      Firebase services to deploy (type: string, note: can be a comma-separated list)
 
 Common Options:
 
@@ -949,10 +933,15 @@ Description:
 
   Support for deployments to GitHub Pages is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
-  --github_token TOKEN           GitHub oauth token with repo permission (type: string, required: true)
+  Either github_token, or deploy_key are required.
+
+  --github_token TOKEN           GitHub oauth token with repo permission (type: string)
+  --deploy_key KEY               A base64-encoded, private deploy key with write access to the repository (type:
+                                 string, note: RSA keys are too long to fit into a Travis CI secure variable, but
+                                 ECDSA-521 fits, see:
+                                 https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
   --repo SLUG                    Repo slug (type: string, default: repo slug)
   --target_branch BRANCH         Branch to push force to (type: string, default: gh-pages)
   --[no-]keep_history            Create incremental commit instead of doing push force (default: true)
@@ -979,6 +968,7 @@ Common Options:
 Examples:
 
   dpl pages --github_token token
+  dpl pages --deploy_key key
   dpl pages --github_token token --repo slug --target_branch branch --keep_history --allow_empty_commit
 ```
 
@@ -996,7 +986,6 @@ Description:
   tbd
 
   Support for deployments to GitHub Releases is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1048,7 +1037,6 @@ Description:
 
   Support for deployments to Google App Engine is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --project ID                      Project ID used to identify the project on Google Cloud (type: string, required:
@@ -1094,7 +1082,6 @@ Description:
 
   Support for deployments to Google Cloud Store is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --access_key_id ID           GCS Interoperable Access Key ID (type: string, required: true)
@@ -1137,7 +1124,6 @@ Description:
 
   Support for deployments to Hackage is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --username USER      Hackage username (type: string, required: true)
@@ -1170,7 +1156,6 @@ Description:
   tbd
 
   Support for deployments to Hephy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1209,7 +1194,6 @@ Description:
 
   Support for deployments to Heroku API is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --api_key KEY       Heroku API key (type: string, required: true)
@@ -1242,7 +1226,6 @@ Description:
   tbd
 
   Support for deployments to Heroku Git is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1283,7 +1266,6 @@ Description:
 
   Support for deployments to Launchpad is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --slug SLUG                      Launchpad project slug (type: string, format: /^~[^\/]+\/[^\/]+\/[^\/]+$/, e.g.:
@@ -1317,7 +1299,6 @@ Description:
   tbd
 
   Support for deployments to Netlify is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1356,7 +1337,6 @@ Description:
 
   Support for deployments to npm is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --email EMAIL          npm account email (type: string)
@@ -1365,7 +1345,8 @@ Options:
                          https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
   --access ACCESS        access level (type: string, known values: public, private)
   --registry URL         npm registry url (type: string)
-  --tag TAGS             npm distribution tags to add (type: string)
+  --src SRC              directory or tarball to publish (type: string, default: .)
+  --tag TAGS             distribution tags to add (type: string)
 
 Common Options:
 
@@ -1377,7 +1358,7 @@ Common Options:
 Examples:
 
   dpl npm --api_token token
-  dpl npm --api_token token --email email --access public --registry url --tag tags
+  dpl npm --api_token token --email email --access public --registry url --src src
 ```
 
 ### OpenShift
@@ -1394,7 +1375,6 @@ Description:
   tbd
 
   Support for deployments to OpenShift is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1430,7 +1410,6 @@ Description:
   tbd
 
   Support for deployments to Packagecloud is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1475,7 +1454,6 @@ Description:
 
   Support for deployments to Puppet Forge is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   --username NAME      Puppet Forge user name (type: string, required: true, alias: user)
@@ -1510,7 +1488,6 @@ Description:
   tbd
 
   Support for deployments to PyPI is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1558,7 +1535,6 @@ Description:
 
   Support for deployments to Rubygems is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   Either api_key, or user and password are required.
@@ -1600,7 +1576,6 @@ Description:
   tbd
 
   Support for deployments to Scalingo is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1655,7 +1630,6 @@ Description:
 
   Support for deployments to Script is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
-
 Options:
 
   -s --script SCRIPT      The script to execute (type: string, required: true)
@@ -1687,7 +1661,6 @@ Description:
   tbd
 
   Support for deployments to Snap is in development. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1722,7 +1695,6 @@ Description:
   tbd
 
   Support for deployments to Surge is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1761,7 +1733,6 @@ Description:
   tbd
 
   Support for deployments to Testfairy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
@@ -1814,7 +1785,6 @@ Description:
   tbd
 
   Support for deployments to Transifex is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 
 Options:
 
