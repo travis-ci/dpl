@@ -348,7 +348,7 @@ describe Dpl::Ctx::Bash do
   end
 
   describe 'git_ls_files' do
-    cmds 'git ls-files -z': "one\x0two"
+    cmds 'git ls-files --recurse-submodules -z': "one\x0two"
     it { expect(subject.git_ls_files).to eq ['one', 'two'] }
   end
 
