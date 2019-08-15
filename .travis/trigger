@@ -46,7 +46,7 @@ def paths
   glob = ARGV.any? ? ARGV.join(',') : '*'
   paths = Dir[".travis/providers/{#{glob}}/*.yml"].sort
   paths = paths.reject { |path| path =~ SKIP }
-  abort "No configs found for #{glob}" unless path
+  abort "No configs found for #{glob}" if paths.empty?
   paths
 end
 
