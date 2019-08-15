@@ -36,7 +36,7 @@ module Dpl
 
       msgs deploy:               'Deploying to repo: %{slug}',
            local_tag:            'Current tag is: %{local_tag}',
-           login:                'Logged in as %s',
+           login:                'Authenticated as %s',
            insufficient_scopes:  'Dpl does not have permission to upload assets. Make sure your token has the repo or public_repo scope.',
            overwrite_existing:   'File %s already exists, overwriting.',
            skip_existing:        'File %s already exists, skipping.',
@@ -74,8 +74,8 @@ module Dpl
 
       def login
         user.login
+        info :login, user.login
         error :insufficient_scopes unless sufficient_scopes?
-        info :login, user.name
       end
 
       def deploy

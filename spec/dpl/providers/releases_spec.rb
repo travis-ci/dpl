@@ -43,7 +43,7 @@ describe Dpl::Providers::Releases do
   end
 
   describe 'by default', record: true do
-    it { should have_run '[info] Logged in as name' }
+    it { should have_run '[info] Authenticated as login' }
     it { should have_run '[info] Deploying to repo: travis-ci/dpl' }
     it { should have_run 'git fetch --tags' }
     it { should have_run '[info] Current tag is: tag' }

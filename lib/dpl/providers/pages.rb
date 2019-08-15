@@ -32,7 +32,7 @@ module Dpl
 
       needs :git
 
-      msgs login:               'Logged in as %s (%s)',
+      msgs login:               'Authenticated as %s',
            invalid_token:       'The provided GitHub token is invalid (error: %s)',
            insufficient_scopes: 'Dpl does not have permission to access %{url} using the provided GitHub token. Please make sure the token have the repo or public_repo scope.',
            setup_deploy_key:    'Setting up deploy key in %{path}',
@@ -98,7 +98,7 @@ module Dpl
 
       def login_token
         user.login
-        info :login, user.login, user.name
+        info :login, user.login
         error :insufficient_scopes unless sufficient_scopes?
       rescue Octokit::Unauthorized => e
         error :invalid_token, e.message
