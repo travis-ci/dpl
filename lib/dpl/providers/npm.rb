@@ -15,7 +15,8 @@ module Dpl
       opt '--api_token TOKEN', 'npm api token', alias: :api_key, required: true, secret: true, note: 'can be retrieved from your local ~/.npmrc file', see: 'https://docs.npmjs.com/creating-and-viewing-authentication-tokens'
       opt '--access ACCESS', 'access level', enum: %w(public private)
       opt '--registry URL', 'npm registry url'
-      opt '--tag TAGS', 'npm distribution tags to add'
+      opt '--src SRC', 'directory or tarball to publish', default: '.'
+      opt '--tag TAGS', 'distribution tags to add'
 
       REGISTRY = 'registry.npmjs.org'
       NPMRC = '~/.npmrc'
@@ -24,7 +25,7 @@ module Dpl
            login:    'Authenticated with API token %{api_token}'
 
       cmds registry: 'npm config set registry "%{registry}"',
-           deploy:   'npm publish %{publish_opts}'
+           deploy:   'npm publish %{src} %{publish_opts}'
 
       errs registry: 'Failed to set registry config',
            deploy:    'Failed pushing to npm'
