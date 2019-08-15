@@ -45,7 +45,9 @@ SKIP = /(azure_web_apps|cloud66|datica|snap)/
 def paths
   glob = ARGV.any? ? ARGV.join(',') : '*'
   paths = Dir[".travis/providers/{#{glob}}/*.yml"].sort
-  paths.reject { |path| path =~ SKIP }
+  paths = paths.reject { |path| path =~ SKIP }
+  abort "No configs found for #{glob}" unless path
+  paths
 end
 
 def error(config)
