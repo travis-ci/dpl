@@ -218,7 +218,7 @@ module Dpl
       end
 
       def src_dir
-        @src_dir ||= File.absolute_path(local_dir)
+        @src_dir ||= expand(local_dir)
       end
 
       def work_dir

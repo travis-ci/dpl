@@ -61,7 +61,7 @@ module Dpl
         end
 
         def npmrc_path
-          File.expand_path(NPMRC)
+          expand(NPMRC)
         end
 
         def npmrc

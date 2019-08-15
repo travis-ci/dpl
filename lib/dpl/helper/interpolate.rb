@@ -48,9 +48,7 @@ module Dpl
     # Implementors are encouraged to use named variables when possible, but
     # are free to choose according to their needs.
     def interpolate(str, args = [], opts = {})
-      args = args.pop if args.first.is_a?(Hash)
-      return str % args if args.is_a?(Array) && args.any?
-      args = {} if args.is_a?(Array)
+      args = args.shift if args.is_a?(Array) && args.first.is_a?(Hash)
       Interpolator.new(str, self, args || {}, opts).apply
     end
 
@@ -74,16 +72,28 @@ module Dpl
       UPCASE   = /^[A-Z_]+$/
 
       def apply
-        str = self.str.gsub(PATTERN) { lookup($1.to_sym) }
+        str = interpolate(self.str)
         str = obfuscate(str) unless opts[:secure]
         str = str.gsub('  ', ' ') if str.lines.size == 1
         str
       end
 
+      def interpolate(str)
+        str = str % args if args.is_a?(Array) && args.any?
+        str.gsub(PATTERN) { lookup($1.to_sym) }
+      end
+
       def obfuscate(str)
         obj.opts.inject(str) do |str, (key, value)|
-          value.tainted? ? str.gsub(value, super(value)) : str
+          secret?(value) ? str.gsub(value, super(value)) : str
         end
+      end
+
+      def secret?(value)
+        return unless value.is_a?(String) && value.tainted?
+        opts = obj.class.opts.select(&:secret?)
+        secrets = opts.map { |opt| obj.opts[opt.name] }.compact
+        secrets.any? { |secret| value.include?(secret) }
       end
 
       def lookup(key)
@@ -92,8 +102,10 @@ module Dpl
           obj.send(mod, lookup(key))
         elsif key.to_s =~ UPCASE
           obj.class.const_get(key)
+        elsif args.is_a?(Hash) && args.key?(key)
+          args[key]
         else
-          args.key?(key) ? args[key] : obj.send(key).to_s
+          obj.send(key).to_s
         end
       end
 

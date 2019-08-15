@@ -1,5 +1,5 @@
 describe Dpl::Providers::Opsworks do
-  let(:args) { |e| %w(--access_key_id id --secret_access_key key --app_id app) + args_from_description(e) }
+  let(:args) { |e| %w(--access_key_id access_key_id --secret_access_key secret_access_key --app_id app) + args_from_description(e) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
 
   matcher :have_called do |key, params = {}|
@@ -43,7 +43,7 @@ describe Dpl::Providers::Opsworks do
     describe 'by default', record: true do
       let(:json) { JSON.dump(deploy: { dpl: { migrate: false, scm: { revision: 'sha' } } }) }
 
-      it { should have_run '[info] Using Access Key: i*******************' }
+      it { should have_run '[info] Using Access Key: ac******************' }
       it { should have_run '[print] Creating deployment ... ' }
       it { should have_run '[info] Done: id' }
       it { should have_run_in_order }

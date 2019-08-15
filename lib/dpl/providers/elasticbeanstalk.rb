@@ -51,7 +51,7 @@ module Dpl
       end
 
       def zip_file
-        zip_file? ? File.expand_path(super) : archive_name
+        zip_file? ? expand(super) : archive_name
       end
 
       def archive_name

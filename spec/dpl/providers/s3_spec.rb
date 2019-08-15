@@ -1,5 +1,5 @@
 describe Dpl::Providers::S3 do
-  let(:args) { |e| %w(--access_key_id id --secret_access_key key --bucket bucket) + args_from_description(e) }
+  let(:args) { |e| %w(--access_key_id access_key_id --secret_access_key secret_access_key --bucket bucket) + args_from_description(e) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
 
   file 'one.txt'
@@ -43,7 +43,7 @@ describe Dpl::Providers::S3 do
     before { subject.run }
 
     describe 'by default', record: true do
-      it { should have_run '[info] Using Access Key: i*******************' }
+      it { should have_run '[info] Using Access Key: ac******************' }
       it { should have_run '[info] Uploading 1 files with up to 5 threads.' }
       it { should have_run '[info] Uploading file one.txt to / with acl=private content_type=text/plain cache_control=no-cache storage_class=STANDARD' }
       it { should have_run_in_order }

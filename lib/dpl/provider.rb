@@ -225,11 +225,16 @@ module Dpl
 
     # Initialize the deployment process.
     #
-    # Displays warning messages about experimental providers, and deprecated
-    # options used.
+    # This will:
+    #
+    # * Displays warning messages about the provider's maturity status, and deprecated
+    #   options used.
+    # * Setup a ~/.dpl working directory
+    # * Move files out of the way that have been declared as such
     def before_init
       warn status.msg if status && status.announce?
       deprecations.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
+      setup_dpl_dir
       move_files(ctx)
     end
 
@@ -251,7 +256,6 @@ module Dpl
     # * Either set or unset the environment variable `GIT_HTTP_USER_AGENT` depending if the feature `git_http_user_agent` has been declared as required.
     def before_setup
       info :before_setup
-      setup_dpl_dir
       setup_ssh_key if needs?(:ssh_key)
       setup_git_config if needs?(:git)
       setup_git_http_user_agent
@@ -326,6 +330,7 @@ module Dpl
       chmod 0700, '~/.dpl'
     end
 
+    # Remove the internal working directory `~/.dpl`.
     def remove_dpl_dir
       rm_rf '~/.dpl'
     end
@@ -620,8 +625,8 @@ module Dpl
       File.read(expand(path))
     end
 
-    def expand(path)
-      File.expand_path(path)
+    def expand(*args)
+      File.expand_path(*args)
     end
   end
 end

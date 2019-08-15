@@ -1,5 +1,5 @@
 describe Dpl::Providers::Codedeploy do
-  let(:args) { |e| %w(--access_key_id id --secret_access_key key --application app) + args_from_description(e) }
+  let(:args) { |e| %w(--access_key_id access_key_id --secret_access_key secret_access_key --application app) + args_from_description(e) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
 
   env TRAVIS_BUILD_NUMBER: 1
@@ -9,7 +9,7 @@ describe Dpl::Providers::Codedeploy do
       stub_responses: {
         get_object: ->(ctx) {
           requests[:buckets] << ctx.http_request
-          { deployment_id: 'id' }
+          { deployment_id: 'deployment_id' }
         }
       }
     }
@@ -17,7 +17,7 @@ describe Dpl::Providers::Codedeploy do
       stub_responses: {
         create_deployment: ->(ctx) {
           requests[:create_deployment] << ctx.http_request
-          { deployment_id: 'id' }
+          { deployment_id: 'deployment_id' }
         },
         get_deployment: ->(ctx) {
           requests[:get_deployment] << ctx.http_request
@@ -48,11 +48,11 @@ describe Dpl::Providers::Codedeploy do
     before { subject.run }
 
     describe 'by default', record: true do
-      it { should have_run '[info] Using Access Key: i*******************' }
+      it { should have_run '[info] Using Access Key: ac******************' }
       it { should create_deployment applicationName: 'app' }
       it { should create_deployment description: 'Deploy build 1 via Travis CI' }
       it { should create_deployment revision: github_revision }
-      it { should have_run '[info] Deployment triggered: id' }
+      it { should have_run '[info] Deployment triggered: deployment_id' }
       it { should have_run_in_order }
     end
 

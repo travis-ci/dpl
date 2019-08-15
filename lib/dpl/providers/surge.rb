@@ -48,7 +48,7 @@ module Dpl
       end
 
       def project
-        File.expand_path(super, build_dir)
+        expand(super, build_dir)
       end
     end
   end
