@@ -291,10 +291,12 @@ module Dpl
     #   feature `ssh_key` has been declared as required.
     # * Revert the cleanup process, i.e. restore files moved out of the way
     #   during `cleanup`.
+    # * Remove the temporary directory `~/.dpl`
     def before_finish
       remove_key if needs?(:ssh_key) && respond_to?(:remove_key)
       uncleanup if cleanup?
       unmove_files(ctx)
+      remove_dpl_dir
     end
 
     # Resets the current working directory to the commited state.
@@ -321,6 +323,11 @@ module Dpl
     def setup_dpl_dir
       rm_rf '~/.dpl'
       mkdir_p '~/.dpl'
+      chmod 0700, '~/.dpl'
+    end
+
+    def remove_dpl_dir
+      rm_rf '~/.dpl'
     end
 
     # Creates an SSH key, and sets up git-ssh if needed.
