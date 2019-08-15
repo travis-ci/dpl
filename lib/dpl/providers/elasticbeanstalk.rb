@@ -13,13 +13,14 @@ module Dpl
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
 
       env :aws, :elastic_beanstalk
+      config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
 
       opt '--access_key_id ID', 'AWS Access Key ID', required: true, secret: true
       opt '--secret_access_key KEY', 'AWS Secret Key', required: true, secret: true
       opt '--region REGION', 'AWS Region the Elastic Beanstalk app is running in', default: 'us-east-1'
       opt '--app NAME', 'Elastic Beanstalk application name', default: :repo_name
       opt '--env NAME', 'Elastic Beanstalk environment name which will be updated', required: true
-      opt '--bucket_name NAME', 'Bucket name to upload app to', required: true
+      opt '--bucket NAME', 'Bucket name to upload app to', required: true, alias: :bucket_name
       opt '--bucket_path PATH', 'Location within Bucket to upload app to'
       opt '--description DESC', 'Description for the application version'
       opt '--label LABEL', 'Label for the application version'
@@ -36,11 +37,8 @@ module Dpl
       end
 
       def setup
+        info :login
         Aws.config.update(credentials: credentials, region: region)
-      end
-
-      def credentials
-        Aws::Credentials.new(access_key_id, secret_access_key)
       end
 
       def deploy
@@ -98,7 +96,7 @@ module Dpl
           version_label: label,
           description: description[0, 200],
           source_bundle: {
-            s3_bucket: bucket_name,
+            s3_bucket: bucket.name,
             s3_key: object.key
           },
           auto_create_application: false
@@ -142,12 +140,16 @@ module Dpl
         eb.describe_environments(args)[:environments].first
       end
 
+      def credentials
+        Aws::Credentials.new(access_key_id, secret_access_key)
+      end
+
       def s3
         @s3 ||= Aws::S3::Resource.new
       end
 
       def bucket
-        @bucket ||= s3.bucket(bucket_name)
+        @bucket ||= s3.bucket(super)
       end
 
       def eb

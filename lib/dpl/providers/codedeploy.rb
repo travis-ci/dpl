@@ -14,6 +14,7 @@ module Dpl
       gem 'aws-sdk', '~> 2.0'
 
       env :aws
+      config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
 
       opt '--access_key_id ID', 'AWS access key', required: true, secret: true
       opt '--secret_access_key KEY', 'AWS secret access key', required: true, secret: true

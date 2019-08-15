@@ -4,6 +4,7 @@ require 'forwardable'
 require 'shellwords'
 require 'dpl/helper/assets'
 require 'dpl/helper/cmd'
+require 'dpl/helper/config_file'
 require 'dpl/helper/env'
 require 'dpl/helper/interpolate'
 require 'dpl/helper/squiggle'
@@ -80,7 +81,7 @@ module Dpl
 
   class Provider < Cl::Cmd
     extend Dsl, Forwardable
-    include Assets, Env, FileUtils, Interpolate, Squiggle
+    include Assets, Env, ConfigFile, FileUtils, Interpolate, Squiggle
 
     class << self
       def examples
