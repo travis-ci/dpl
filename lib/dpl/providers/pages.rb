@@ -24,13 +24,8 @@ module Dpl
       opt '--project_name NAME', 'Used in the commit message only (defaults to fqdn or the current repo slug)'
       opt '--email EMAIL', 'Committer email', default: 'deploy@travis-ci.org'
       opt '--name NAME', 'Committer name', default: 'Deploy Bot'
-      # what is the purpose of this file in the first place? a file name with
-      # spaces seems highly irregular, but this has been there from the start
-      # https://github.com/travis-ci/dpl/commit/58f6c7dd4f0fd49df2e93a8495fd01c7784d4f58#diff-cc5438ae072229825b07abf38951a912R47
       opt '--deployment_file', 'Enable creation of a deployment-info file'
-      # not mentioned in the readme
       opt '--github_url URL', default: 'github.com'
-      # how about the octokit options?
 
       needs :git
 
