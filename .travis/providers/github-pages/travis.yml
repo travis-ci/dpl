@@ -5,17 +5,16 @@ script:
 
 before_deploy:
   - .travis/providers/github-pages/prepare
-  - cd tmp/dpl_test_github_pages
+  - cd tmp/dpl_test
 
 deploy:
   - provider: pages
-    repo: travis-ci/dpl_test
     github_token:
       # personal access token with repo scope on travis-dpl-test
       secure: "fRVQWM14TO7/nHNyXB3fHZPKCqZxNPxN3wKmVsxVqTj99SSPsonr1AvQXziFtLEc44+pmlg0J5diFhhwzWU2W4/UxDaFyrdhkmZWRkRlJTjkgO0kDOJPJFza4stXAsavn4bLpz6YuCD0ZprPTBJu2wDA7e1IvXGRu0nb/PIaRko="
+    repo: travis-ci/dpl_test
     committer_from_gh: true
-    deployment_file: true
-    keep_history: false
+    keep_history: true
     verbose: true
 
 after_deploy:

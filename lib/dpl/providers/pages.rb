@@ -27,8 +27,6 @@ module Dpl
       opt '--deployment_file', 'Enable creation of a deployment-info file'
       opt '--github_url URL', default: 'github.com'
 
-      needs :git
-
       msgs login:               'Logged in as %s (%s)',
            invalid_token:       'The provided GitHub token is invalid (error: %s)',
            insufficient_scopes: 'Dpl does not have permission to access %{url} using the provided GitHub token. Please make sure the token have the repo or public_repo scope.',

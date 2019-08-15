@@ -394,7 +394,7 @@ module Dpl
 
       # Whether or not the git working directory is dirty
       def git_dirty?
-        !system('git diff --quiet')
+        !Kernel.system('git diff --quiet')
       end
 
       # Returns the output of `git log`, using the given args.
@@ -412,7 +412,7 @@ module Dpl
 
       # Returns true if the given ref exists remotely
       def git_ls_remote?(url, ref)
-        system("git ls-remote --exit-code #{url} #{ref} > /dev/null 2>&1")
+        Kernel.system("git ls-remote --exit-code #{url} #{ref} > /dev/null 2>&1")
       end
 
       # Returns known Git remote URLs
