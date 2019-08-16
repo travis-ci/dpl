@@ -60,8 +60,8 @@ module Dpl
         info cmd.msg if cmd.msg?
         info cmd.echo if cmd.echo?
         cmds << cmd.cmd
-        return true unless cmd.capture?
-        stdout[cmd.key] || 'captured_stdout'
+        return stdout[cmd.key] if stdout.key?(cmd.key)
+        cmd.capture? ? 'captured_stdout' : true
       end
 
       def success?
@@ -103,6 +103,10 @@ module Dpl
 
       def build_number
         1
+      end
+
+      def git_branch
+        'git branch'
       end
 
       def git_commit_msg
