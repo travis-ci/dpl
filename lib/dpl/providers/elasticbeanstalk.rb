@@ -11,6 +11,7 @@ module Dpl
 
       gem 'aws-sdk', '~> 2.0'
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
+      gem 'pathspec', require: 'pathspec'
 
       env :aws, :elastic_beanstalk
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
@@ -80,7 +81,7 @@ module Dpl
 
       def create_zip
         ::Zip::File.open(zip_file, ::Zip::File::CREATE) do |zip|
-          git_ls_files.each { |path| zip.add(path.sub(cwd, ''), path) }
+          files.each { |path| zip.add(path.sub(cwd, ''), path) }
         end
       end
 
@@ -128,6 +129,17 @@ module Dpl
         environment[:status] == 'Ready'
       rescue Aws::Errors::ServiceError => e
         info "Caught #{e}: #{e.message}. Retrying ..."
+      end
+
+      def files
+        files = Dir.glob('**/*', File::FNM_DOTMATCH)
+        files = filter(files, '.ebignore') if file?('.ebignore')
+        files
+      end
+
+      def filter(files, spec)
+        spec = PathSpec.from_filename(spec)
+        files.reject { |file| spec.match(file) }
       end
 
       def events
