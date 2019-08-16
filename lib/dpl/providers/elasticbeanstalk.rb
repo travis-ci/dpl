@@ -28,6 +28,7 @@ module Dpl
       opt '--zip_file PATH', 'The zip file that you want to deploy'
       opt '--only_create_app_version', 'Only create the app version, do not actually deploy it'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
+      opt '--debug', internal: true
 
       msgs login: 'Using Access Key: %{access_key_id}'
 
@@ -81,7 +82,10 @@ module Dpl
 
       def create_zip
         ::Zip::File.open(zip_file, ::Zip::File::CREATE) do |zip|
-          files.each { |path| zip.add(path.sub(cwd, ''), path) }
+          files.each do |path|
+            debug :zip_add, path
+            zip.add(path.sub(cwd, ''), path)
+          end
         end
       end
 
@@ -166,6 +170,10 @@ module Dpl
 
       def eb
         @eb ||= Aws::ElasticBeanstalk::Client.new(retry_limit: 10)
+      end
+
+      def debug(*args)
+        info *args if debug?
       end
     end
   end
