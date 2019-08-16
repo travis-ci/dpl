@@ -38,8 +38,11 @@ File.write '.ebextensions/gem_install_bundler.config', <<~str
         gem install bundler -v 2.0.1
 str
 
-# system 'bundle install --path vendor/bundle'
+File.write '.ebignore', <<~str
+  *
+  !Gemfile
+  !config.ru
+  !.ebextensions/gem_install_bundler.config
+str
 
-system 'git init'
-system 'git add .'
-system 'git commit -am "dpl test"'
+File.write 'secret.txt', 'secret'

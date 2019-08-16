@@ -19,6 +19,14 @@ describe Dpl::Providers::Elasticbeanstalk do
     end
   end
 
+  matcher :have_zipped do |path, files|
+    match do
+      expect(File.exist?(path)).to be true
+      zipped = Zip::File.open(path) { |zip| zip.glob('*').map(&:name) }
+      expect(zipped - ['./']).to eq files
+    end
+  end
+
   before do
     Aws.config[:s3] = {
       stub_responses: {
@@ -56,7 +64,7 @@ describe Dpl::Providers::Elasticbeanstalk do
 
   describe 'by default' do
     before { subject.run }
-    it { expect(File.exist?(subject.archive_name)).to be true }
+    it { should have_zipped "travis-sha-#{now.to_i}.zip", %w(one two) }
     it { should have_run '[info] Using Access Key: i*******************' }
     it { should create_app_version with: 'ApplicationName=dpl' }
     it { should create_app_version with: 'Description=commit%20msg' }
@@ -86,6 +94,12 @@ describe Dpl::Providers::Elasticbeanstalk do
   describe 'given --wait_until_deployed' do
     let(:events) { [event_date: Time.now, severity: 'ERROR', message: 'msg'] }
     it { expect { subject.run }.to raise_error /Deployment failed/ }
+  end
+
+  describe 'with an .ebignore file' do
+    file '.ebignore', "*\n!one"
+    before { subject.run }
+    it { should have_zipped "travis-sha-#{now.to_i}.zip", %w(one) }
   end
 
   describe 'with ~/.aws/credentials' do

@@ -5,6 +5,7 @@ require 'support/file'
 require 'support/fixtures'
 require 'support/gemfile'
 require 'support/matchers'
+require 'support/now'
 require 'support/require'
 
 def stringify(obj)

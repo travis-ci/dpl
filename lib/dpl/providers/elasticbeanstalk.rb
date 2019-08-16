@@ -11,6 +11,7 @@ module Dpl
 
       gem 'aws-sdk', '~> 2.0'
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
+      gem 'pathspec', '~> 0.2.1', require: 'pathspec'
 
       env :aws, :elastic_beanstalk
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
@@ -27,8 +28,10 @@ module Dpl
       opt '--zip_file PATH', 'The zip file that you want to deploy'
       opt '--only_create_app_version', 'Only create the app version, do not actually deploy it'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
+      opt '--debug', internal: true
 
-      msgs login: 'Using Access Key: %{access_key_id}'
+      msgs login:   'Using Access Key: %{access_key_id}',
+           zip_add: 'Adding %s'
 
       attr_reader :started, :object, :version
 
@@ -80,7 +83,10 @@ module Dpl
 
       def create_zip
         ::Zip::File.open(zip_file, ::Zip::File::CREATE) do |zip|
-          git_ls_files.each { |path| zip.add(path.sub(cwd, ''), path) }
+          files.each do |path|
+            debug :zip_add, path
+            zip.add(path.sub(cwd, ''), path)
+          end
         end
       end
 
@@ -130,6 +136,17 @@ module Dpl
         info "Caught #{e}: #{e.message}. Retrying ..."
       end
 
+      def files
+        files = Dir.glob('**/*', File::FNM_DOTMATCH)
+        files = filter(files, '.ebignore') if file?('.ebignore')
+        files
+      end
+
+      def filter(files, spec)
+        spec = PathSpec.from_filename(spec)
+        files.reject { |file| spec.match(file) }
+      end
+
       def events
         args = { environment_name: env, start_time: started.utc.iso8601 }
         eb.describe_events(args)[:events].reverse
@@ -154,6 +171,10 @@ module Dpl
 
       def eb
         @eb ||= Aws::ElasticBeanstalk::Client.new(retry_limit: 10)
+      end
+
+      def debug(*args)
+        info *args if debug?
       end
     end
   end

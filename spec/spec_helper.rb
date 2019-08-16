@@ -13,6 +13,7 @@ RSpec.configure do |c|
   c.include Support::Fixtures
   c.include Support::Matchers
   c.include Support::Matchers::RecordCmds, record: true
+  c.include Support::Now
   c.include Support::Require
 
   c.before { rm_rf '/tmp/dpl' }
