@@ -82,7 +82,10 @@ module Dpl
         end
 
         def headers
-          { Authorization:  "Bearer #{user['token']}", 'Content-Type': 'application/x-www-form-urlencoded' }
+          {
+            'Authorization' => "Bearer #{user['token']}",
+            'Content-Type'  => 'application/x-www-form-urlencoded'
+          }
         end
 
         def http
