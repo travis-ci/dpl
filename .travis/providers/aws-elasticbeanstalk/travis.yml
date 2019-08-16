@@ -20,6 +20,7 @@ deploy:
     app: dpl-test
     env: DplTest-env
     bucket_name: travis-dpl-test-elasticbeanstalk
+    debug: true
 
 after_deploy:
   - cd ../..

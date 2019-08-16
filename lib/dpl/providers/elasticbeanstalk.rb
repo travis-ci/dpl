@@ -30,7 +30,8 @@ module Dpl
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
       opt '--debug', internal: true
 
-      msgs login: 'Using Access Key: %{access_key_id}'
+      msgs login:   'Using Access Key: %{access_key_id}',
+           zip_add: 'Adding %s'
 
       attr_reader :started, :object, :version
 
