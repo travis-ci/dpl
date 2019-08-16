@@ -11,7 +11,7 @@ module Dpl
 
       gem 'aws-sdk', '~> 2.0'
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
-      gem 'pathspec', require: 'pathspec'
+      gem 'pathspec', '~> 0.2.1', require: 'pathspec'
 
       env :aws, :elastic_beanstalk
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
