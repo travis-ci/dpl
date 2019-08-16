@@ -46,7 +46,3 @@ File.write '.ebignore', <<~str
 str
 
 File.write 'secret.txt', 'secret'
-
-# system 'git init'
-# system 'git add .'
-# system 'git commit -am "dpl test"'
