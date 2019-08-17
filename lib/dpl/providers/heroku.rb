@@ -10,7 +10,7 @@ module Dpl
       end
 
       gem 'faraday', '~> 0.9.2'
-      gem 'json', '~> 2.2.0'
+      gem 'json'
       gem 'netrc', '~> 0.11.0'
       gem 'rendezvous', '~> 0.1.3'
 
