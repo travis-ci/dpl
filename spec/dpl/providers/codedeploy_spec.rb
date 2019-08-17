@@ -1,43 +1,31 @@
 describe Dpl::Providers::Codedeploy do
-  let(:args) { |e| %w(--access_key_id access_key_id --secret_access_key secret_access_key --application app) + args_from_description(e) }
-  let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
+  include Support::Matchers::Aws
+
+  let(:args)   { |e| %w(--access_key_id access_key_id --secret_access_key secret_access_key --application app) + args_from_description(e) }
+  let(:client) { Aws::CodeDeploy::Client.new(stub_responses: responses[:eb]) }
+  let(:s3)     { Aws::S3::Client.new(stub_responses: true) }
+
+  let(:responses) do
+    {
+      eb: {
+        create_deployment: {
+          deployment_id: 'deployment_id'
+        },
+        get_deployment: {
+          deployment_info: { status: 'Succeeded' }
+        }
+      }
+    }
+  end
+
+  let(:github_revision) { { revisionType: 'GitHub', gitHubLocation: { repository: 'dpl', commitId: 'sha' } } }
+  let(:s3_revision) { { revisionType: 'S3', s3Location: { bucket: 'bucket', bundleType: 'zip', version: 'ObjectVersionId', eTag: 'ETag' } } }
 
   env TRAVIS_BUILD_NUMBER: 1
 
-  before do
-    Aws.config[:s3] = {
-      stub_responses: {
-        get_object: ->(ctx) {
-          requests[:buckets] << ctx.http_request
-          { deployment_id: 'deployment_id' }
-        }
-      }
-    }
-    Aws.config[:codedeploy] = {
-      stub_responses: {
-        create_deployment: ->(ctx) {
-          requests[:create_deployment] << ctx.http_request
-          { deployment_id: 'deployment_id' }
-        },
-        get_deployment: ->(ctx) {
-          requests[:get_deployment] << ctx.http_request
-          { deployment_info: { status: 'Succeeded' } }
-        }
-      }
-    }
-  end
-
-  matcher :create_deployment do |params = {}|
-    match do |*|
-      next false unless request = requests[:create_deployment][0]
-      body = symbolize(JSON.parse(request.body.read))
-      params.all? { |key, value| body[key] == value }
-    end
-  end
-
-  matcher :get_deployment do |*|
-    match { |*| requests[:get_deployment].any? }
-  end
+  before { allow(Aws::CodeDeploy::Client).to receive(:new).and_return(client) }
+  before { allow(Aws::S3::Client).to receive(:new).and_return(s3) }
+  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
 
   let(:github_revision) { { revisionType: 'GitHub', gitHubLocation: { repository: 'dpl', commitId: 'sha' } } }
   let(:s3_revision) { { revisionType: 'S3', s3Location: { bucket: 'bucket', bundleType: 'zip', version: 'ObjectVersionId', eTag: 'ETag' } } }

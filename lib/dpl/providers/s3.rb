@@ -14,7 +14,7 @@ module Dpl
         tbd
       str
 
-      gem 'aws-sdk', '~> 2.0', require: ['aws-sdk', 'dpl/support/aws_sdk_patch']
+      gem 'aws-sdk-s3', '~> 1.0'
       gem 'mime-types', '~> 3.2.2'
 
       env :aws
@@ -57,7 +57,7 @@ module Dpl
       def setup
         @cwd = Dir.pwd
         Dir.chdir(local_dir)
-        Aws.eager_autoload!(services: ['S3'])
+        # Aws.eager_autoload!(services: ['S3'])
       end
 
       def login

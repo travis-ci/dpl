@@ -1,44 +1,22 @@
 describe Dpl::Providers::Lambda do
-  let(:args) { |e| required + args_from_description(e) }
-  let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
-  let(:exists) { false }
+  include Support::Matchers::Aws
 
-  matcher :have_called do |key, params = {}|
-    match do |*|
-      @body = symbolize(JSON.parse(requests[key][0].body.read)) if requests[key].any?
-      @body ? expect(@body).to(include params) : false
-    end
+  let(:args)   { |e| required + args_from_description(e) }
+  let(:client) { Aws::Lambda::Client.new(stub_responses: responses) }
 
-    failure_message do
-      "Expected it to have called #{key.inspect}\n\n  #{params.inspect}\n\nbut it was not. Instead it was called with:\n\n  #{@body}"
-    end
-  end
-
-  before do
-    Aws.config[:lambda] = {
-      stub_responses: {
-        get_function: ->(ctx) {
-          requests[:get_function] << ctx.http_request
-          exists ? {} : raise(Aws::Lambda::Errors::ResourceNotFoundException.new(ctx, 'error'))
-        },
-        create_function: ->(ctx) {
-          requests[:create_function] << ctx.http_request
-        },
-        update_function_configuration: ->(ctx) {
-          requests[:update_function_config] << ctx.http_request
-          { function_arn: 'arn' }
-        },
-        update_function_code: ->(ctx) {
-          requests[:update_function_code] << ctx.http_request
-        },
-        tag_resource: ->(ctx) {
-          requests[:tag_resource] << ctx.http_request
-        }
-      }
+  let(:responses) do
+    {
+      get_function: ->(c) {
+        exists ? {} : raise(Aws::Lambda::Errors::ResourceNotFoundException.new(c, 'error'))
+      },
+      create_function: {},
+      update_function_configuration: { function_arn: 'arn' },
+      update_function_code: {},
+      tag_resource: {}
     }
   end
 
-  after { Aws.config.clear }
+  before { allow(Aws::Lambda::Client).to receive(:new).and_return(client) }
 
   file 'one'
 
@@ -55,67 +33,67 @@ describe Dpl::Providers::Lambda do
       it { should have_run '[info] Creating function func.' }
       it { should have_run_in_order }
 
-      it { should have_called :create_function, FunctionName: 'func' }
-      it { should have_called :create_function, Runtime: 'nodejs8.10' }
-      it { should have_called :create_function, Code: { ZipFile: instance_of(String) } }
-      it { should have_called :create_function, Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
-      it { should have_called :create_function, Handler: 'index.handler' }
-      it { should have_called :create_function, Role: 'role' }
-      it { should have_called :create_function, Timeout: 3 }
-      it { should have_called :create_function, MemorySize: 128 }
-      it { should have_called :create_function, TracingConfig: { Mode: 'PassThrough' } }
+      it { should create_function FunctionName: 'func' }
+      it { should create_function Runtime: 'nodejs8.10' }
+      it { should create_function Code: { ZipFile: instance_of(String) } }
+      it { should create_function Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
+      it { should create_function Handler: 'index.handler' }
+      it { should create_function Role: 'role' }
+      it { should create_function Timeout: 3 }
+      it { should create_function MemorySize: 128 }
+      it { should create_function TracingConfig: { Mode: 'PassThrough' } }
     end
 
     describe 'given --module_name other --handler handler' do
-      it { should have_called :create_function, Handler: 'other.handler' }
+      it { should create_function Handler: 'other.handler' }
     end
 
     describe 'given --description other' do
-      it { should have_called :create_function, Description: 'other' }
+      it { should create_function Description: 'other' }
     end
 
     describe 'given --timeout 1' do
-      it { should have_called :create_function, Timeout: 1 }
+      it { should create_function Timeout: 1 }
     end
 
     describe 'given --memory_size 64' do
-      it { should have_called :create_function, MemorySize: 64 }
+      it { should create_function MemorySize: 64 }
     end
 
     describe 'given --runtime python2.7' do
-      it { should have_called :create_function, Runtime: 'python2.7' }
+      it { should create_function Runtime: 'python2.7' }
     end
 
     describe 'given --runtime java8' do
-      it { should have_called :create_function, Handler: 'index::handler' }
+      it { should create_function Handler: 'index::handler' }
     end
 
     describe 'given --subnet_ids one --subnet_ids two' do
-      it { should have_called :create_function, VpcConfig: { SubnetIds: ['one', 'two'] } }
+      it { should create_function VpcConfig: { SubnetIds: ['one', 'two'] } }
     end
 
     describe 'given --security_group_ids one --security_group_ids two' do
-      it { should have_called :create_function, VpcConfig: { SecurityGroupIds: ['one', 'two'] } }
+      it { should create_function VpcConfig: { SecurityGroupIds: ['one', 'two'] } }
     end
 
     describe 'given --dead_letter_arn arn' do
-      it { should have_called :create_function, DeadLetterConfig: { TargetArn: 'arn' } }
+      it { should create_function DeadLetterConfig: { TargetArn: 'arn' } }
     end
 
     describe 'given --tracing_mode Active' do
-      it { should have_called :create_function, TracingConfig: { Mode: 'Active' } }
+      it { should create_function TracingConfig: { Mode: 'Active' } }
     end
 
     describe 'given --environment_variables ONE=one --environment_variables TWO=two' do
-      it { should have_called :create_function, Environment: { Variables: { ONE: 'one', TWO: 'two' } } }
+      it { should create_function Environment: { Variables: { ONE: 'one', TWO: 'two' } } }
     end
 
     describe 'given --kms_key_arn arn' do
-      it { should have_called :create_function, KMSKeyArn: 'arn' }
+      it { should create_function KMSKeyArn: 'arn' }
     end
 
     describe 'given --function_tags key=value' do
-      it { should have_called :create_function, Tags: { key: 'value' } }
+      it { should create_function Tags: { key: 'value' } }
     end
   end
 
@@ -130,76 +108,76 @@ describe Dpl::Providers::Lambda do
       it { should have_run '[info] Updating existing function func.' }
       it { should have_run '[info] Updating code.' }
 
-      it { should have_called :update_function_config, Runtime: 'nodejs8.10' }
-      it { should have_called :update_function_config, Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
-      it { should have_called :update_function_config, Timeout: 3 }
-      it { should have_called :update_function_config, MemorySize: 128 }
-      it { should have_called :update_function_config, TracingConfig: { Mode: 'PassThrough' } }
-      it { should have_called :update_function_code, ZipFile: kind_of(String), Publish: false }
+      it { should update_function_config Runtime: 'nodejs8.10' }
+      it { should update_function_config Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
+      it { should update_function_config Timeout: 3 }
+      it { should update_function_config MemorySize: 128 }
+      it { should update_function_config TracingConfig: { Mode: 'PassThrough' } }
+      it { should update_function_code ZipFile: instance_of(String), Publish: false }
     end
 
     describe 'given --role role' do
-      it { should have_called :update_function_config, Role: 'role' }
+      it { should update_function_config Role: 'role' }
     end
 
     describe 'given --handler_name handler' do
-      it { should have_called :update_function_config, Handler: 'index.handler' }
+      it { should update_function_config Handler: 'index.handler' }
     end
 
     describe 'given --module_name other --handler_name handler' do
-      it { should have_called :update_function_config, Handler: 'other.handler' }
+      it { should update_function_config Handler: 'other.handler' }
     end
 
     describe 'given --description other' do
-      it { should have_called :update_function_config, Description: 'other' }
+      it { should update_function_config Description: 'other' }
     end
 
     describe 'given --timeout 1' do
-      it { should have_called :update_function_config, Timeout: 1 }
+      it { should update_function_config Timeout: 1 }
     end
 
     describe 'given --memory_size 64' do
-      it { should have_called :update_function_config, MemorySize: 64 }
+      it { should update_function_config MemorySize: 64 }
     end
 
     describe 'given --runtime python2.7' do
-      it { should have_called :update_function_config, Runtime: 'python2.7' }
+      it { should update_function_config Runtime: 'python2.7' }
     end
 
     describe 'given --subnet_ids one --subnet_ids two' do
-      it { should have_called :update_function_config, VpcConfig: { SubnetIds: ['one', 'two'] } }
+      it { should update_function_config VpcConfig: { SubnetIds: ['one', 'two'] } }
     end
 
     describe 'given --security_group_ids one --security_group_ids two' do
-      it { should have_called :update_function_config, VpcConfig: { SecurityGroupIds: ['one', 'two'] } }
+      it { should update_function_config VpcConfig: { SecurityGroupIds: ['one', 'two'] } }
     end
 
     describe 'given --dead_letter_arn arn' do
-      it { should have_called :update_function_config, DeadLetterConfig: { TargetArn: 'arn' } }
+      it { should update_function_config DeadLetterConfig: { TargetArn: 'arn' } }
     end
 
     describe 'given --tracing_mode Active' do
-      it { should have_called :update_function_config, TracingConfig: { Mode: 'Active' } }
+      it { should update_function_config TracingConfig: { Mode: 'Active' } }
     end
 
     describe 'given --environment_variables ONE=one --environment_variables TWO=two' do
-      it { should have_called :update_function_config, Environment: { Variables: { ONE: 'one', TWO: 'two' } } }
+      it { should update_function_config Environment: { Variables: { ONE: 'one', TWO: 'two' } } }
     end
 
     describe 'given --kms_key_arn arn' do
-      it { should have_called :update_function_config, KMSKeyArn: 'arn' }
+      it { should update_function_config KMSKeyArn: 'arn' }
     end
 
     describe 'given --publish' do
-      it { should have_called :update_function_code, Publish: true }
+      it { should update_function_code Publish: true }
     end
 
     describe 'given --function_tags key=value' do
-      it { should have_called :tag_resource, Tags: { key: 'value' } }
+      it { should tag_resource Tags: { key: 'value' } }
     end
 
     describe 'given --layers one --layers two' do
-      it { should have_called :update_function_config, Layers: %w(one two) }
+      it { should update_function_config Layers: %w(one two) }
     end
   end
 
@@ -219,6 +197,7 @@ describe Dpl::Providers::Lambda do
 
   describe 'with ~/.aws/config' do
     let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
+    let(:exists) { false }
 
     file '~/.aws/config', <<-str.sub(/^\s*/, '')
       [default]
@@ -228,8 +207,8 @@ describe Dpl::Providers::Lambda do
     str
 
     before { subject.run }
-    it { should have_called :create_function, FunctionName: 'func' }
-    it { should have_called :create_function, Role: 'role' }
-    it { should have_called :create_function, Handler: 'index.handler' }
+    it { should create_function FunctionName: 'func' }
+    it { should create_function Role: 'role' }
+    it { should create_function Handler: 'index.handler' }
   end
 end

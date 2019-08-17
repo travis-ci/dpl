@@ -9,7 +9,8 @@ module Dpl
         tbd
       str
 
-      gem 'aws-sdk', '~> 2.0'
+      gem 'aws-sdk-elasticbeanstalk', '~> 1.0'
+      gem 'aws-sdk-s3', '~> 1.0'
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
       gem 'pathspec', '~> 0.2.1', require: 'pathspec'
 
@@ -126,8 +127,8 @@ module Dpl
       def check_deployment(msgs)
         sleep 5
         events.each do |event|
-          msg = "#{event[:event_date]} [#{event[:severity]}] #{event[:message]}"
-          error "Deployment failed: #{msg}" if event[:severity] == 'ERROR'
+          msg = "#{event.event_date} [#{event.severity}] #{event.message}"
+          error "Deployment failed: #{msg}" if event.severity == 'ERROR'
           info msg unless msgs.include?(msg)
           msgs << msg
         end

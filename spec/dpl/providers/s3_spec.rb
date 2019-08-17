@@ -1,59 +1,31 @@
 describe Dpl::Providers::S3 do
-  let(:args) { |e| %w(--access_key_id access_key_id --secret_access_key secret_access_key --bucket bucket) + args_from_description(e) }
-  let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
+  include Support::Matchers::Aws
+
+  let(:args)   { |e| %w(--access_key_id access_key_id --secret_access_key secret_access_key --bucket bucket) + args_from_description(e) }
+  let(:client) { Aws::S3::Client.new(stub_responses: {}) }
 
   file 'one.txt'
   file '.hidden.txt'
 
-  before do
-    Aws.config[:s3] = {
-      stub_responses: {
-        put_object: ->(ctx) {
-          requests[:put_object] << ctx.http_request
-        },
-        put_bucket_website: ->(ctx) {
-          requests[:put_bucket_website] << ctx.http_request
-        }
-      }
-    }
-  end
-
-  matcher :put_object do |file, opts = {}|
-    match do |*|
-      next false unless request = requests[:put_object].detect { |f| f.body.path == file }
-      path = opts.delete(:path)
-      return false if path && path != request.endpoint.path
-      host = opts.delete(:host)
-      return false if host && host != request.endpoint.host
-      headers = symbolize(request.headers.to_h)
-      expect(headers).to(include(opts)) if headers.any?
-      true
-    end
-  end
-
-  matcher :put_bucket_website_suffix do |suffix|
-    match do |*|
-      next false unless request = requests[:put_bucket_website][0]
-      request.body.read.include?("<Suffix>#{suffix}</Suffix>")
-    end
-  end
-
-  before { |c| subject.run unless c.metadata[:run].is_a?(FalseClass) }
+  before { allow(Aws::S3::Client).to receive(:new).and_return(client) }
+  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
 
   describe 'by default', record: true do
     it { should have_run '[info] Using Access Key: ac******************' }
     it { should have_run '[info] Uploading 1 files with up to 5 threads ...' }
     it { should have_run '[print] .' }
     it { should have_run_in_order }
-    it { should put_object 'one.txt', host: 'bucket.s3.amazonaws.com', 'x-amz-acl': 'private', 'cache-control': 'no-cache', 'x-amz-storage-class': 'STANDARD' }
+    # for whatever reason host would either include `us-stubbed-1` or not
+    # depending if this spec is run as part of the full suite or alone.
+    it { should put_object 'one.txt', host: /bucket\.s3\.(us-stubbed-1\.)?amazonaws.com/, 'x-amz-acl': 'private', 'cache-control': 'no-cache', 'x-amz-storage-class': 'STANDARD' }
   end
 
   describe 'given --endpoint https://host.com' do
-    it { should put_object 'one.txt', host: 'bucket.host.com' }
+    it { should create_client endpoint: URI.parse('https://host.com') }
   end
 
   describe 'given --region us-west-1' do
-    it { should put_object 'one.txt', host: 'bucket.s3.us-west-1.amazonaws.com' }
+    it { should create_client region: 'us-west-1' }
   end
 
   describe 'given --upload_dir dir' do
@@ -61,50 +33,47 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'given --dot_match' do
+    it { should have_run %r(.hidden.txt) }
     it { should put_object '.hidden.txt' }
   end
 
   describe 'given --storage_class STANDARD_IA' do
+    it { should have_run %r(one.txt.* storage_class=STANDARD_IA) }
     it { should put_object 'one.txt', 'x-amz-storage-class': 'STANDARD_IA' }
   end
 
   describe 'given --acl public_read' do
+    it { should have_run %r(one.txt.* acl=public-read) }
     it { should put_object 'one.txt', 'x-amz-acl': 'public-read' }
   end
 
   describe 'given --cache_control public' do
+    it { should have_run %r(one.txt.* cache_control=public) }
     it { should put_object 'one.txt', 'cache-control': 'public' }
   end
 
   describe 'given --cache_control max-age=60' do
+    it { should have_run %r(one.txt.* cache_control=max-age=60) }
     it { should put_object 'one.txt', 'cache-control': 'max-age=60' }
   end
 
-  describe 'given --cache_control "public: *.js" --cache_control "no-cache: *.txt"' do
-    it { should put_object 'one.txt', 'cache-control': 'no-cache' }
-  end
-
-  describe 'given --cache_control "public: *.js" --cache_control "private"' do
-    it { should put_object 'one.txt', 'cache-control': 'private' }
-  end
-
   describe 'given --expires "2020-01-01 00:00:00 UTC"' do
-    it { should put_object 'one.txt', 'expires': 'Wed, 01 Jan 2020 00:00:00 GMT' }
-  end
-
-  describe 'given --expires "2020-01-01 00:00:00 UTC: *.txt, *.js"' do
+    it { should have_run %r(one.txt.* expires=2020-01-01 00:00:00 UTC) }
     it { should put_object 'one.txt', 'expires': 'Wed, 01 Jan 2020 00:00:00 GMT' }
   end
 
   describe 'given --default_text_charset utf-8' do
+    it { should have_run %r(one.txt.* content_type=text/plain; charset=utf-8) }
     it { should put_object 'one.txt', 'content-type': 'text/plain; charset=utf-8' }
   end
 
   describe 'given --server_side_encryption' do
+    it { should have_run %r(one.txt.* server_side_encryption=AES256) }
     it { should put_object 'one.txt', 'x-amz-server-side-encryption': 'AES256' }
   end
 
   describe 'given --detect_encoding' do
+    it { should have_run %r(one.txt.* content_encoding=text) }
     it { should put_object 'one.txt', 'content-encoding': 'text' }
   end
 
@@ -150,12 +119,13 @@ describe Dpl::Providers::S3 do
 
     file '~/.aws/config', <<-str.sub(/^\s*/, '')
       [default]
-      region=us-west-1
+      region=us-other-1
       bucket=other
     str
 
     before { subject.run }
-    it { should put_object 'one.txt', host: 'other.s3.us-west-1.amazonaws.com' }
+    it { should create_client region: 'us-other-1' }
+    it { should put_object 'one.txt', host: /other\.s3\.(us-stubbed-1\.)?amazonaws.com/ }
   end
 
   describe 'Mapping', run: false do
