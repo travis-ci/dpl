@@ -9,7 +9,7 @@ module Dpl
         tbd
       str
 
-      gem 'json', '~> 2.2.0'
+      gem 'json'
 
       opt '--email EMAIL', 'npm account email'
       opt '--api_token TOKEN', 'npm api token', alias: :api_key, required: true, secret: true, note: 'can be retrieved from your local ~/.npmrc file', see: 'https://docs.npmjs.com/creating-and-viewing-authentication-tokens'

@@ -11,7 +11,7 @@ module Dpl
         tbd
       str
 
-      gem 'json', '~> 2.2.0'
+      gem 'json'
 
       opt '--user USER', 'Bintray user', required: true
       opt '--key KEY', 'Bintray API key', required: true, secret: true
