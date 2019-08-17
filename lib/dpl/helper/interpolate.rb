@@ -80,7 +80,7 @@ module Dpl
 
       def interpolate(str)
         str = str % args if args.is_a?(Array) && args.any?
-        str.gsub(PATTERN) { lookup($1.to_sym) }
+        str.to_s.gsub(PATTERN) { lookup($1.to_sym) }
       end
 
       def obfuscate(str)

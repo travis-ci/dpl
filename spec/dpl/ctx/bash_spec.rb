@@ -251,14 +251,14 @@ describe Dpl::Ctx::Bash do
     end
 
     describe 'capture' do
-      let(:captures) { ['stdout', '', true] }
+      let(:captures) { ['stdout', '', double(success?: true)] }
       let!(:result) { subject.shell('echo one', capture: true) }
       it { expect(result).to eq 'stdout' }
       it { should call_capture3 'echo one' }
     end
 
     describe 'capture (info)' do
-      let(:captures) { ['stdout', '', true] }
+      let(:captures) { ['stdout', '', double(success?: true)] }
       let!(:result) { subject.shell('echo one', capture: true, success: 'stdout: %{out}') }
       it { expect(result).to eq 'stdout' }
       it { should call_capture3 'echo one' }
@@ -266,7 +266,7 @@ describe Dpl::Ctx::Bash do
     end
 
     describe 'capture (assert)' do
-      let(:captures) { ['', 'stderr', false] }
+      let(:captures) { ['', 'stderr', double(success?: false)] }
       let(:result) { subject.shell('echo one', capture: true, assert: 'stderr: %{err}') }
       it { expect { result }.to raise_error Dpl::Error, 'stderr: stderr' }
     end

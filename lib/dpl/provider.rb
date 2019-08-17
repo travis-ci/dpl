@@ -193,7 +193,7 @@ module Dpl
     rescue Error
       raise
     rescue Exception => e
-      raise Error.new("#{e.message} (#{e.class})", backtrace: backtrace? ? caller : nil) unless test?
+      raise Error.new("#{e.message} (#{e.class})", backtrace: backtrace? ? e.backtrace : nil) unless test?
       raise
     ensure
       run_stage(:finish, fold: false) if finish?

@@ -290,7 +290,8 @@ module Dpl
       # @option chdir [String] directory temporarily to change to before running the command
       def open3(cmd, opts)
         opts = [opts[:chdir] ? only(opts, :chdir) : nil].compact
-        Open3.capture3(cmd, *opts)
+        out, err, status = Open3.capture3(cmd, *opts)
+        [out, err, status.success?]
       end
 
       # Runs a shell command, streaming any stdout or stderr output, and
