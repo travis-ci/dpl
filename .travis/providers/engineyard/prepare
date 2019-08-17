@@ -28,10 +28,6 @@ end
 
 servers.each do |server|
   run "EY_TOKEN=$ENGINEYARD_TOKEN ./ey servers start #{server['provisioned_id']}"
-  # uri = URI.parse("https://api.engineyard.com/servers/#{server['provisioned_id']}/start")
-  # http = Net::HTTP.new(uri.host)
-  # http.set_debug_output($stdout)
-  # http.put(uri.path, '', headers)
 end
 
 
