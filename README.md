@@ -2160,7 +2160,7 @@ Dpl does not follow any strict code styleguide.
 Please take a look around other providers, and try to follow a similar code
 style to what you find.
 
-Try to use the [DSL](/lib/dpl/helpers/dsl.rb) as much
+Try to use the [DSL](/lib/dpl/provider/dsl.rb) as much
 as possible.  It keeps the code declarative and readable, so that people not
 familiar with Ruby or programming in general can still follow it, and make
 sense of it.
