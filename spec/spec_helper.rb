@@ -11,6 +11,7 @@ RSpec.configure do |c|
   c.include Support::Env
   c.include Support::File
   c.include Support::Fixtures
+  c.include Support::Helpers
   c.include Support::Matchers
   c.include Support::Matchers::RecordCmds, record: true
   c.include Support::Now
