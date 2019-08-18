@@ -1,7 +1,6 @@
 module Dpl
   module Providers
     class ChefSupermarket < Provider
-      # unregister
       register :'chef-supermarket'
       register :chef_supermarket
 
@@ -14,39 +13,40 @@ module Dpl
       str
 
       gem 'chef', '~> 12.0', require: %w(
-        chef/cookbook_loader
-        chef/cookbook_uploader
+        chef/cookbook/cookbook_version_loader
         chef/cookbook_site_streaming_uploader
-        chef/knife/cookbook_metadata
+        chef/cookbook_uploader
       )
       gem 'mime-types', '~> 3.2.2'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
       gem 'rack'
 
-      opt '--user_id ID',            'Chef Supermarket user name', required: true
-      opt '--client_key KEY',        'Client API key file name', required: true
-      opt '--cookbook_name NAME',    'Cookbook name', default: :repo_name
-      opt '--cookbook_category CAT', 'Cookbook category in Supermarket', required: true, see: 'https://docs.getchef.com/knife_cookbook_site.html#id12'
+      opt '--user_id ID',         'Chef Supermarket user name', required: true
+      opt '--client_key KEY',     'Client API key file name', required: true
+      opt '--category CAT',       'Cookbook category in Supermarket', required: true, see: 'https://docs.getchef.com/knife_cookbook_site.html#id12', alias: :cookbook_category
+      opt '--dir DIR',            'Directory containing the cookbook', default: '.'
 
       URL = "https://supermarket.chef.io/api/v1/cookbooks"
 
-      msgs validate:       'Validating cookbook %{name}',
+      msgs validate:       'Validating cookbook',
            upload:         'Uploading cookbook %{name} to %{url}',
-           missing_key:    '%{client_key} does not exist',
+           missing_file:   'Missing file: %s',
            unknown_error:  'Unknown error while sharing cookbook: %s',
            version_exists: 'The same version of this cookbook already exists on the Opscode Cookbook Site.'
 
       def setup
         Chef::Config[:client_key] = client_key
+        Dir.chdir(dir)
       end
 
-      def login
-        error :missing_key unless File.exist?(client_key)
+      def validate
+        info :validate
+        validate_file client_key
+        validate_file 'metadata.rb'
+        uploader.validate_cookbooks
       end
 
       def deploy
-        info :validate
-        uploader.validate_cookbooks
         info :upload
         upload
       end
@@ -63,32 +63,36 @@ module Dpl
         end
 
         def params
-          { cookbook: json(category: cookbook_category), tarball:  tarball }
+          { cookbook: json(category: category), tarball: tarball }
         end
 
         def tarball
-          shell "tar -czf #{name}.tgz #{name}", chdir: dir
-          File.open("#{dir}/#{name}.tgz")
+          shell "tar -czf #{name}.tgz #{build_dir}"
+          File.open("#{build_dir}/#{name}.tgz")
         end
 
         def name
-          cookbook_name || app
+          @name ||= Chef::Cookbook::Metadata.new.from_file('metadata.rb')
         end
 
         def cookbook
-          @cookbook ||= Dir.chdir('..') { loader[name] }
+          @cookbook ||= loader.cookbook_version
+        end
+
+        def loader
+          Chef::Cookbook::CookbookVersionLoader.new('.')
         end
 
         def uploader
           Chef::CookbookUploader.new(cookbook)
         end
 
-        def loader
-          Chef::CookbookLoader.new('.')
+        def build_dir
+          @build_dir ||= Chef::CookbookSiteStreamingUploader.create_build_dir(cookbook)
         end
 
-        def dir
-          @dir ||= Chef::CookbookSiteStreamingUploader.create_build_dir(cookbook)
+        def validate_file(path)
+          error :missing_file, path unless file?(path)
         end
 
         def url
