@@ -37,6 +37,7 @@ module Dpl
       opt '--index_document_suffix SUFFIX', 'Index document suffix of a S3 website'
       opt '--default_text_charset CHARSET', 'Default character set to append to the content-type of text files'
       opt '--max_threads NUM', 'The number of threads to use for S3 file uploads', default: 5, max: 15, type: :integer
+      opt '--verbose', 'Be verbose about uploading files'
       # how come there is no glob or file option?
 
       msgs login:                 'Using Access Key: %{access_key_id}',
@@ -44,8 +45,8 @@ module Dpl
            access_denied:         'It looks like you tried to write to a bucket that is not yours or does not exist. Please create the bucket before trying to write to it.',
            checksum_error:        'AWS secret key does not match the access key id',
            invalid_access_key_id: 'Invalid S3 access key id',
-           upload:                'Uploading %s files with up to %s threads.',
-           upload_file:           'Uploading file %s to %s with %s',
+           upload:                'Uploading %s files with up to %s threads ...',
+           upload_file:           'Uploading %s to %s with %s',
            upload_failed:         'Failed to upload %s',
            index_document_suffix: 'Setting index document suffix to %s'
 
@@ -78,14 +79,23 @@ module Dpl
           info :upload, files.length, max_threads
           threads = max_threads.times.map { |i| Thread.new(&method(:upload_files)) }
           threads.each(&:join)
+          info "\n" unless verbose?
         end
 
         def upload_files
           while file = files.pop
             data = content_data(file)
-            info :upload_file, file, upload_dir || '/', to_pairs(data)
+            progress(file, data)
             object = s3.bucket(bucket).object(upload_path(file))
             object.upload_file(file, data) || warn(:upload_failed, file)
+          end
+        end
+
+        def progress(file, data)
+          if verbose?
+            info :upload_file, file, upload_dir || '/', to_pairs(data)
+          else
+            print '.'
           end
         end
 
