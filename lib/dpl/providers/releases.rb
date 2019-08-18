@@ -24,11 +24,12 @@ module Dpl
       opt '--overwrite', 'Overwrite files with the same name'
       opt '--prerelease', 'Identify the release as a prerelease'
       opt '--release_number NUM', 'Release number (overide automatic release detection)'
+      opt '--release_notes STR', 'Content for the release notes', alias: :body
+      opt '--release_notes_file PATH', 'Path to a file containing the release notes', note: 'will be ignored if --release_notes is given'
       opt '--draft', 'Identify the release as a draft'
       opt '--tag_name TAG', 'Git tag from which to create the release'
       opt '--target_commitish STR', 'Commitish value that determines where the Git tag is created from'
       opt '--name NAME', 'Name for the release'
-      opt '--body BODY', 'Content for the release notes'
       # should this have --github_url, like Pages does?
 
       needs :git
@@ -41,7 +42,7 @@ module Dpl
            skip_existing:        'File %s already exists, skipping.',
            set_tag_name:         'Setting tag_name to %s',
            set_target_commitish: 'Setting target_commitish to %s',
-           missing_file:         '%s does not exist.',
+           missing_file:         'File %s does not exist.',
            not_a_file:           '%s is not a file, skipping.'
 
       cmds git_fetch_tags:       'git fetch --tags'
@@ -77,9 +78,7 @@ module Dpl
 
       def deploy
         upload_files
-        opts = with_tag(self.opts.dup)
-        opts = with_target_commitish(opts)
-        api.update_release(url, filter(opts).merge(draft: draft?))
+        api.update_release(url, octokit_opts)
       end
 
       def upload_files
@@ -96,6 +95,13 @@ module Dpl
       def delete(asset, file)
         info :overwrite_existing, file
         api.delete_release_asset(asset.url)
+      end
+
+      def octokit_opts
+        opts = with_tag(self.opts.dup)
+        opts = with_target_commitish(opts)
+        opts = opts.select { |key, _| OCTOKIT_OPTS.include?(key) }
+        compact(opts.merge(body: release_notes, draft: draft?))
       end
 
       def with_tag(opts)
@@ -159,6 +165,14 @@ module Dpl
         api.release_assets(url).detect { |asset| asset.name == path }
       end
 
+      def release_notes
+        super || release_notes_file || nil
+      end
+
+      def release_notes_file
+        release_notes_file? && exists?(super) && read(super)
+      end
+
       def user
         @user ||= api.user
       end
@@ -181,13 +195,9 @@ module Dpl
         files.select { |file| file?(file) }
       end
 
-      def filter(opts)
-        opts.select { |key, _| OCTOKIT_OPTS.include?(key) }
-      end
-
       def exists?(file)
         return true if File.exists?(file)
-        warn :missing_file, file
+        error :missing_file, file
         false
       end
 
