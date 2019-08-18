@@ -15,8 +15,8 @@ describe Dpl::Providers::Gae do
     it { should have_run 'gcloud -q auth activate-service-account --key-file ./keys' }
   end
 
-  describe 'given --config ./config' do
-    it { should have_run 'gcloud -q app deploy ./config --project="id" --verbosity="warning"' }
+  describe 'given --config ./one --config ./two' do
+    it { should have_run 'gcloud -q app deploy ./one ./two --project="id" --verbosity="warning"' }
   end
 
   describe 'given --verbosity info' do
