@@ -20,7 +20,7 @@ module Support
 
     def args_from_description(e)
       str = e.example_group.description
-      return [] unless str.include?('given')
+      return [] unless str.include?('given -')
       strs = str.sub(/.*given /, '').strip.split(/\s(?=(?:[^"]|"[^"]*")*$)/)
       strs.map { |str| str.gsub('"', '') }
     end
