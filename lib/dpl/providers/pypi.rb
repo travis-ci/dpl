@@ -20,6 +20,7 @@ module Dpl
       opt '--docs_dir DIR', 'Path to the directory to upload documentation from', default: 'build/docs'
       opt '--skip_existing', 'Do not overwrite an existing file with the same name on the server.'
       opt '--upload_docs', 'Upload documentation', default: false, type: :boolean, note: 'most PyPI servers, including upload.pypi.org, do not support uploading documentation'
+      opt '--twine_check', 'Whether to run twine check', default: true
       opt '--setuptools_version VER', format: VERSION
       opt '--twine_version VER', format: VERSION
       opt '--wheel_version VER', format: VERSION
@@ -28,12 +29,14 @@ module Dpl
            upload_docs:  'Uploading documentation (skip using "skip_upload_docs: true")'
 
       cmds setup_py:     'python setup.py %{distributions}',
+           twine_check:  'twine check',
            twine_upload: 'twine upload %{skip_existing_option} -r pypi dist/*',
            rm_dist:      'rm -rf dist/*',
            upload_docs:  'python setup.py upload_docs %{docs_dir_option} -r %{server}'
 
       errs install:      'Failed to install pip, setuptools, twine or wheel.',
            setup_py:     'setup.py failed',
+           twine_check:  'Twine check failed',
            twine_upload: 'Twine upload failed.',
            upload_docs:  'Uploading docs failed.'
 
@@ -47,11 +50,18 @@ module Dpl
         info :login
       end
 
-      def deploy
+      def setup
         shell :setup_py
+      end
+
+      def validate
+        shell :twine_check
+      end
+
+      def deploy
         shell :twine_upload
-        shell :rm_dist
         upload_docs if upload_docs?
+        shell :rm_dist
       end
 
       private
