@@ -16,7 +16,6 @@ module Dpl
 
       opt '--strategy NAME', 'Heroku deployment strategy', default: 'api', enum: %w(api git), internal: true
       opt '--app APP', 'Heroku app name', default: :repo_name
-      # mentioned in the code
       opt '--log_level LEVEL', internal: true
 
       msgs login:     'Authenticating ... ',

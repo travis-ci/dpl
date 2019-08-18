@@ -26,11 +26,9 @@ module Dpl
       opt '--bucket NAME', 'S3 bucket in case of S3'
       opt '--region REGION', 'AWS availability zone', default: 'us-east-1'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
-      # mentioned in both the code and the docs
       opt '--bundle_type TYPE'
       opt '--endpoint ENDPOINT'
       opt '--key KEY'
-      # mentioned only in the code
       opt '--description DESCR'
 
       msgs login:                 'Using Access Key: %{access_key_id}',

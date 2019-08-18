@@ -10,17 +10,11 @@ module Dpl
           tbd
         str
 
-        # according to the docs it should be --username, but the code uses --user
-        # https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/heroku/generic.rb#L20
         required :api_key, [:username, :password]
 
-        # readme says username/password are allowed, but the code does not seem to
-        # use them for writing the netrc https://github.com/travis-ci/dpl/blob/master/lib/dpl/provider/heroku/git.rb
-        # so the api key is required in any case?
         opt '--api_key KEY',   'Heroku API key', secret: true
         opt '--username USER', 'Heroku username', alias: :user
         opt '--password PASS', 'Heroku password', secret: true
-        # mentioned in the code
         opt '--git URL'
 
         needs :git, :git_http_user_agent

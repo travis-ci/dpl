@@ -20,7 +20,6 @@ module Dpl
       env :aws
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
 
-      # how come there is no glob or file option?
       opt '--access_key_id ID', 'AWS access key id', required: true, secret: true
       opt '--secret_access_key KEY', 'AWS secret key', required: true, secret: true
       opt '--bucket BUCKET', 'S3 bucket', required: true
@@ -38,6 +37,7 @@ module Dpl
       opt '--index_document_suffix SUFFIX', 'Index document suffix of a S3 website'
       opt '--default_text_charset CHARSET', 'Default character set to append to the content-type of text files'
       opt '--max_threads NUM', 'The number of threads to use for S3 file uploads', default: 5, max: 15, type: :integer
+      # how come there is no glob or file option?
 
       msgs login:                 'Using Access Key: %{access_key_id}',
            default_uri_schema:    'S3 endpoint does not specify a scheme; defaulting to https',

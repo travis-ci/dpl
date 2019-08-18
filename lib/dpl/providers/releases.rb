@@ -24,7 +24,6 @@ module Dpl
       opt '--overwrite', 'Overwrite files with the same name'
       opt '--prerelease', 'Identify the release as a prerelease'
       opt '--release_number NUM', 'Release number (overide automatic release detection)'
-      # from octokit
       opt '--draft', 'Identify the release as a draft'
       opt '--tag_name TAG', 'Git tag from which to create the release'
       opt '--target_commitish STR', 'Commitish value that determines where the Git tag is created from'
@@ -66,9 +65,7 @@ module Dpl
 
       def validate
         info :deploy
-        # might not have a git remote set up
         shell :git_fetch_tags if env_tag.nil?
-        # error if local_tag is nil?
         info :local_tag
       end
 

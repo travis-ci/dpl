@@ -17,7 +17,6 @@ module Dpl
       opt '--key KEY', 'Bintray API key', required: true, secret: true
       opt '--file FILE', 'Path to a descriptor file for the Bintray upload', required: true
       opt '--passphrase PHRASE', 'Passphrase as configured on Bintray (if GPG signing is used)'
-      # mentioned in code
       opt '--url URL', default: 'https://api.bintray.com', internal: true
 
       msgs missing_file:    'Missing descriptor file: %{file}',

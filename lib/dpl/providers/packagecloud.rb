@@ -19,7 +19,6 @@ module Dpl
       opt '--local_dir DIR', 'The sub-directory of the built assets for deployment.', default: '.'
       opt '--dist DIST', 'Required for debian, rpm, and node.js packages (use "node" for node.js packages). The complete list of supported strings can be found on the packagecloud.io docs.'
       opt '--force', 'Whether package has to be (re)uploaded / deleted before upload'
-      # only mentioned in the code
       opt '--connect_timeout SEC', type: :integer, default: 60
       opt '--read_timeout SEC', type: :integer, default: 60
       opt '--write_timeout SEC', type: :integer, default: 180

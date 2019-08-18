@@ -20,7 +20,6 @@ module Dpl
       opt '--docs_dir DIR', 'Path to the directory to upload documentation from', default: 'build/docs'
       opt '--skip_upload_docs', 'Skip uploading documentation. Note that upload.pypi.org does not support uploading documentation.', default: true, type: :boolean, see: 'https://github.com/travis-ci/dpl/issues/660'
       opt '--skip_existing', 'Do not overwrite an existing file with the same name on the server.'
-      # not mentioned in the readme
       opt '--setuptools_version VER', format: VERSION
       opt '--twine_version VER', format: VERSION
       opt '--wheel_version VER', format: VERSION

@@ -7,9 +7,6 @@ module Dpl
         tbd
       str
 
-      # does not seem to be necessary?
-      # apt 'cabal-install'
-
       opt '--username USER', 'Hackage username', required: true
       opt '--password USER', 'Hackage password', required: true, secret: true
 
