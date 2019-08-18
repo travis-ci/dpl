@@ -80,7 +80,7 @@ module Dpl
 
       def interpolate(str)
         str = str % args if args.is_a?(Array) && args.any?
-        str.to_s.gsub(PATTERN) { lookup($1.to_sym) }
+        str.to_s.gsub(PATTERN) { normalize(lookup($1.to_sym)) }
       end
 
       def obfuscate(str)
@@ -96,6 +96,10 @@ module Dpl
         secrets.select { |secret| str.include?(secret) }
       end
 
+      def normalize(obj)
+        obj.is_a?(Array) ? obj.join(' ') : obj.to_s
+      end
+
       def lookup(key)
         if mod = modifier(key)
           key = key.to_s.sub("#{mod}d_", '')
@@ -105,7 +109,7 @@ module Dpl
         elsif args.is_a?(Hash) && args.key?(key)
           args[key]
         else
-          obj.send(key).to_s
+          obj.send(key)
         end
       end
 
