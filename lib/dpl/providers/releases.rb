@@ -38,6 +38,7 @@ module Dpl
            local_tag:            'Current tag is: %{local_tag}',
            login:                'Authenticated as %s',
            insufficient_scopes:  'Dpl does not have permission to upload assets. Make sure your token has the repo or public_repo scope.',
+           insufficient_perm:    'Release resource not found. Make sure your token belongs to an account which has push permission to this repo.',
            overwrite_existing:   'File %s already exists, overwriting.',
            skip_existing:        'File %s already exists, skipping.',
            set_tag_name:         'Setting tag_name to %s',
@@ -135,6 +136,8 @@ module Dpl
 
       def create_release
         api.create_release(slug, local_tag, filter(opts).merge(draft: true))
+      rescue Octokit::NotFound => nf
+        error :insufficient_perm
       end
 
       def local_tag
