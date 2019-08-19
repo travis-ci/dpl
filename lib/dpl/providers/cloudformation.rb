@@ -235,12 +235,12 @@ module Dpl
 
             # source: https://github.com/rvedotrc/cfn-events/blob/master/lib/cfn-events/runner.rb
             def events_since(event)
-              events = stack_events
-              return [event, []] if events.first.event_id == event.event_id
+              stack_events = describe_stack_events
+              return [event, []] if events.stack_events.first.event_id == event.event_id
 
               events = []
-              events.each_page do |page|
-                if oldest_new = page.stack_events.index { |e| e.event_id == event.event_id }
+              stack_events.each_page do |page|
+                if (oldest_new = page.stack_events.index { |e| e.event_id == event.event_id })
                   events.concat(page.stack_events[0..oldest_new - 1])
                   return [events.first, events.reverse]
                 end
@@ -251,8 +251,8 @@ module Dpl
               [events.first, events.reverse]
             end
 
-            def stack_events
-              client.describe_stack_events(stack_name: stack_name).stack_events
+            def describe_stack_events
+              client.describe_stack_events(stack_name: stack_name)
             end
 
             def mutex
