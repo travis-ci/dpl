@@ -133,6 +133,7 @@ module Dpl
           code = yield
           break if code < 400
           info :retrying, opts.merge(count: count, code: code)
+          sleep opts[:pause]
         end
       end
 
