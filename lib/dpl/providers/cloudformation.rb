@@ -143,14 +143,14 @@ module Dpl
         end
 
         def common_params
-          @common_params ||= compact(
+          params = {
             stack_name: stack_name,
             role_arn: role_arn,
             capabilities: capabilities,
-            parameters: parameters,
-            # template: template
-            # template: 'https://s3.amazonaws.com/templates/myTemplate.template?versionId=123ab1cdeKdOW5IH4GAcYbEngcpTJTDW'
-          )
+            parameters: parameters
+          }
+
+          @common_params ||= compact(params.merge(template))
         end
 
         def parameters
@@ -175,8 +175,8 @@ module Dpl
 
         def template
           str = super
-          return str if url?(str)
-          return read(str) if file?(str)
+          return { template_url: str } if url?(str)
+          return { template_body: read(str) } if file?(str)
           error(:missing_template)
         end
 
