@@ -193,6 +193,10 @@ describe Dpl::Providers::Lambda do
     describe 'given --function_tags key=value' do
       it { should have_called :tag_resource, Tags: { key: 'value' } }
     end
+
+    describe 'given --layers one --layers two' do
+      it { should have_called :update_function_config, Layers: %w(one two) }
+    end
   end
 
   describe 'with ~/.aws/credentials' do
