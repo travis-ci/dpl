@@ -32,7 +32,7 @@ module Dpl
            missing_path:    'Path: %{path} does not exist.',
            list_download:   'Listing %{path} in downloads',
            retrying:        '%{code} response from Bintray. It may take some time for a version to be published, retrying in %{pause} sec ... (%{count}/%{max})',
-           giveup_retries:  '%{code} response from Bintray. Giving up, something went wrong.',
+           giveup_retries:  'Too many retries failed, giving up, something went wrong.',
            unexpected_code: 'Unexpected HTTP response code %s while checking if the %s exists' ,
            request_failed:  '%s %s returned unexpected HTTP response code %s',
            request_success: 'Bintray response: %s %s. %s'
@@ -136,7 +136,7 @@ module Dpl
           info :retrying, opts.merge(count: count, code: code)
           sleep opts[:pause]
         end
-        error :giveup_retries, code
+        error :giveup_retries
       end
 
       def files
