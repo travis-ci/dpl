@@ -124,7 +124,7 @@ module Dpl
 
       def update_file(file)
         retrying(max: 10, pause: 5) do
-          put(path(:file_metadata, target: file.target), list_in_downloads: true)
+	put(path(:file_metadata, target: file.target), {list_in_downloads: file.download}.to_json)
         end
       end
 
