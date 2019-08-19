@@ -98,8 +98,8 @@ module Dpl
       end
 
       def upload_files
-        files.select(&:download).each do |file|
-          info :list_download, path: file.target
+        files.each do |file|
+          info :upload_file, source: file.source, target: file.target
           put(path(:version_file, target: file.target), file.read, file.params)
         end
       end
@@ -116,8 +116,8 @@ module Dpl
       end
 
       def update_files
-        files.each do |file|
-          info :upload_file, source: file.source, target: file.target
+        files.select(&:download).each do |file|
+          info :list_download, path: file.target
           update_file(file)
         end
       end
