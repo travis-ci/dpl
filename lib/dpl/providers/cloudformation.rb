@@ -13,8 +13,8 @@ module Dpl
 
       env :aws
 
-      opt '--access_key_id ID', 'AWS Access Key ID', required: true, secret: true
-      opt '--secret_access_key KEY', 'AWS Secret Key', required: true, secret: true
+      opt '--access_key_id ID', 'AWS Access Key ID', required: false, secret: true
+      opt '--secret_access_key KEY', 'AWS Secret Key', required: false, secret: true
       opt '--region REGION', 'AWS Region to deploy to', default: 'us-east-1'
       opt '--template STR', 'CloudFormation template file', required: true, note: 'can be either a local path or an S3 URL'
       opt '--stack_name NAME', 'CloudFormation Stack Name.', required: true
@@ -39,9 +39,8 @@ module Dpl
            create_change_set: 'Creating change set ...',
            stack_up_to_date:  'Stack already up to date.',
            delete_change_set: 'No changes in stack. Removing changeset.',
-           done:              'Done.'
-
-      errs missing_template:  'File does not exist: %{template}',
+           done:              'Done.',
+           missing_template:  'File does not exist: %{template}',
            invalid_creds:     'Invalid credentials'
 
       strs change_set_name:   'travis-ci-build-%{build_number}-%{now}',
@@ -122,7 +121,7 @@ module Dpl
           stream = EventStream.new(client, stack_name, method(:info))
           wait_for(condition, stack_name: stack_name) unless test? # hmm.
         ensure
-          stream.stop
+          stream.stop unless stream.nil?
         end
 
         def wait_for(cond, params)
@@ -149,8 +148,8 @@ module Dpl
             capabilities: capabilities,
             parameters: parameters
           }
-
-          @common_params ||= compact(params.merge(template))
+          params.merge!(template_param)
+          @common_params ||= compact(params)
         end
 
         def parameters
@@ -173,8 +172,8 @@ module Dpl
           super.map { |str| str.split(',') }.flatten if capabilities?
         end
 
-        def template
-          str = super
+        def template_param
+          str = template
           return { template_url: str } if url?(str)
           return { template_body: read(str) } if file?(str)
           error(:missing_template)
@@ -185,7 +184,8 @@ module Dpl
         end
 
         def client_options
-          params = { region: region, credentials: credentials }
+          params = { region: region }
+          params = params.merge(credentials: credentials) if credentials.set?
           params = params.merge(credentials: assume_role(params)) if sts_assume_role?
           params
         end
@@ -214,7 +214,7 @@ module Dpl
 
           def initialize(*)
             super
-            @event = stack_events.first
+            @event = describe_stack_events.stack_events.first
             @thread = Thread.new(&method(:process))
           end
 
@@ -228,18 +228,21 @@ module Dpl
             def process
               until mutex.synchronize { @stop }
                 @event, events = events_since(@event)
-                events.each { |e| handler.call(format_event(event)) }
+                events.each { |e| handler.call(format_event(e)) }
                 sleep 5 unless ENV['ENV'] == 'test'
               end
             end
 
             # source: https://github.com/rvedotrc/cfn-events/blob/master/lib/cfn-events/runner.rb
             def events_since(event)
-              stack_events = describe_stack_events
-              return [event, []] if events.stack_events.first.event_id == event.event_id
+              described_stack = describe_stack_events
+              stack_events = described_stack.stack_events
+              return [event, []] if stack_events.first.event_id == event.event_id
 
               events = []
-              stack_events.each_page do |page|
+              described_stack.each_page do |page|
+
+
                 if (oldest_new = page.stack_events.index { |e| e.event_id == event.event_id })
                   events.concat(page.stack_events[0..oldest_new - 1])
                   return [events.first, events.reverse]
@@ -247,7 +250,7 @@ module Dpl
                 events.concat(page.stack_events)
               end
 
-              # warn %(Last-seen stack event is no longer returned by AWS. Please raise this as a provider's bug.)
+              warn %(Last-seen stack event is no longer returned by AWS. Please raise this as a provider's bug.)
               [events.first, events.reverse]
             end
 
@@ -259,8 +262,8 @@ module Dpl
               @mutex ||= Mutex.new
             end
 
-            EVENT_KEYS = %i(timestamp resource_type, resource_status, logical_resource_id,
-              physical_resource_id, resource_status_reason)
+            EVENT_KEYS = %i(timestamp resource_type resource_status logical_resource_id
+              physical_resource_id resource_status_reason)
 
             def format_event(event)
               parts = EVENT_KEYS.map { |key| event.send(key) }
