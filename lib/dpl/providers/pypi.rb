@@ -29,7 +29,7 @@ module Dpl
            upload_docs:  'Uploading documentation (skip using "skip_upload_docs: true")'
 
       cmds setup_py:     'python setup.py %{distributions}',
-           twine_check:  'twine check',
+           twine_check:  'twine check dist/*',
            twine_upload: 'twine upload %{skip_existing_option} -r pypi dist/*',
            rm_dist:      'rm -rf dist/*',
            upload_docs:  'python setup.py upload_docs %{docs_dir_option} -r %{server}'
