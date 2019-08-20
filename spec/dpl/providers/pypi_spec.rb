@@ -37,16 +37,16 @@ describe Dpl::Providers::Pypi do
     it { should have_run 'python setup.py other' }
   end
 
-  describe 'given --no-skip_upload_docs' do
+  describe 'given --skip_existing' do
+    it { should have_run 'twine upload --skip-existing -r pypi dist/*' }
+  end
+
+  describe 'given --upload_docs' do
     it { should have_run 'python setup.py upload_docs --upload-dir build/docs -r https://upload.pypi.org/legacy/' }
   end
 
-  describe 'given --no-skip_upload_docs --docs_dir ./docs' do
+  describe 'given --upload_docs --docs_dir ./docs' do
     it { should have_run 'python setup.py upload_docs --upload-dir ./docs -r https://upload.pypi.org/legacy/' }
-  end
-
-  describe 'given --skip_existing' do
-    it { should have_run 'twine upload --skip-existing -r pypi dist/*' }
   end
 
   describe 'given --setuptools_version 1.0.0' do

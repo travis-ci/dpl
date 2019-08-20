@@ -18,8 +18,8 @@ module Dpl
       opt '--server SERVER', 'Release to a different index', default: 'https://upload.pypi.org/legacy/'
       opt '--distributions DISTS', 'Space-separated list of distributions to be uploaded to PyPI', default: 'sdist'
       opt '--docs_dir DIR', 'Path to the directory to upload documentation from', default: 'build/docs'
-      opt '--skip_upload_docs', 'Skip uploading documentation. Note that upload.pypi.org does not support uploading documentation.', default: true, type: :boolean, see: 'https://github.com/travis-ci/dpl/issues/660'
       opt '--skip_existing', 'Do not overwrite an existing file with the same name on the server.'
+      opt '--upload_docs', 'Upload documentation', default: false, type: :boolean, note: 'most PyPI servers, including upload.pypi.org, do not support uploading documentation'
       opt '--setuptools_version VER', format: VERSION
       opt '--twine_version VER', format: VERSION
       opt '--wheel_version VER', format: VERSION
@@ -51,7 +51,7 @@ module Dpl
         shell :setup_py
         shell :twine_upload
         shell :rm_dist
-        upload_docs unless skip_upload_docs?
+        upload_docs if upload_docs?
       end
 
       private
