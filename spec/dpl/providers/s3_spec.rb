@@ -81,7 +81,6 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'given --cache_control "public: *.js" --cache_control "no-cache: *.txt"' do
-    it { should have_run %r(one.txt.* cache_control=no-cache) }
     it { should put_object 'one.txt', 'cache-control': 'no-cache' }
   end
 
@@ -90,7 +89,6 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'given --expires "2020-01-01 00:00:00 UTC: *.txt, *.js"' do
-    it { should have_run %r(one.txt.* expires=2020-01-01 00:00:00 UTC) }
     it { should put_object 'one.txt', 'expires': 'Wed, 01 Jan 2020 00:00:00 GMT' }
   end
 
