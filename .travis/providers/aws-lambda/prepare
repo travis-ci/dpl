@@ -14,3 +14,5 @@ File.write 'index.js', <<~str
   };
 str
 
+puts 'zip index.zip index.js'
+system 'zip index.zip index.js'
