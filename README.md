@@ -1,5 +1,9 @@
 # Dpl [![Build Status](https://travis-ci.com/travis-ci/dpl.svg?branch=master)](https://travis-ci.com/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github&cache=2019-08-09_17:00)](https://coveralls.io/github/travis-ci/dpl?branch=master) [![Gem Version](https://img.shields.io/gem/v/dpl)](http://rubygems.org/gems/dpl) [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/travis-ci/dpl)
 
+This version of the README documents dpl v2, the next major version of dpl.
+The REAMDE for dpl v1, the version that is currently used in production on
+Travis CI can be found [here](https://github.com/travis-ci/dpl/blob/v1/README.md).
+
 Dpl is command line tool for deploying code, html, packages, or build artifacts
 to various service providers.
 
@@ -324,50 +328,50 @@ Description:
 
 Options:
 
-  --access_key_id ID                AWS access key id (type: string, required: true)
-  --secret_access_key KEY           AWS secret key (type: string, required: true)
-  --region REGION                   AWS region the Lambda function is running in (type: string, default: us-east-1)
-  --function_name FUNC              Name of the Lambda being created or updated (type: string, required: true)
-  --role ROLE                       ARN of the IAM role to assign to the Lambda function (type: string, note:
-                                    required for creating a new function)
-  --handler_name NAME               Function the Lambda calls to begin execution. (type: string, note: required for
-                                    creating a new function)
-  --module_name NAME                Name of the module that exports the handler (type: string, requires:
-                                    handler_name, default: index)
-  --[no-]dot_match                  Include hidden .* files to the zipped archive
-  --zip PATH                        Path to a packaged Lambda, a directory to package, or a single file to package
-                                    (type: string, default: .)
-  --description DESCR               Description of the Lambda being created or updated (type: string)
-  --timeout SECS                    Function execution time (in seconds) at which Lambda should terminate the
-                                    function (type: string, default: 3)
-  --memory_size MB                  Amount of memory in MB to allocate to this Lambda (type: string, default: 128)
-  --runtime NAME                    Lambda runtime to use (type: string, default: nodejs8.10, known values: java8,
-                                    nodejs8.10, nodejs10.x, python2.7, python3.6, python3.7, dotnetcore2.1, go1.x,
-                                    ruby2.5)
-  --[no-]publish                    Create a new version of the code instead of replacing the existing one.
-  --subnet_ids IDS                  List of subnet IDs to be added to the function (type: array (string, can be
-                                    given multiple times), note: Needs the ec2:DescribeSubnets and ec2:DescribeVpcs
-                                    permission for the user of the access/secret key to work)
-  --security_group_ids IDS          List of security group IDs to be added to the function (type: array (string, can
-                                    be given multiple times), note: Needs the ec2:DescribeSecurityGroups and
-                                    ec2:DescribeVpcs permission for the user of the access/secret key to work)
-  --dead_letter_arn ARN             ARN to an SNS or SQS resource used for the dead letter queue. (type: string)
-  --tracing_mode MODE               Tracing mode (type: string, default: PassThrough, known values: Active,
-                                    PassThrough, note: Needs xray:PutTraceSegments xray:PutTelemetryRecords on the
-                                    role)
-  --environment_variables VARS      List of Environment Variables to add to the function (type: array (string, can
-                                    be given multiple times), format: /[\w\-]+=.+/, note: Can be encrypted for added
-                                    security)
-  --kms_key_arn ARN                 KMS key ARN to use to encrypt environment_variables. (type: string)
-  --function_tags TAGS              List of tags to add to the function (type: array (string, can be given multiple
-                                    times), format: /[\w\-]+=.+/, note: Can be encrypted for added security)
+  --access_key_id ID            AWS access key id (type: string, required: true)
+  --secret_access_key KEY       AWS secret key (type: string, required: true)
+  --region REGION               AWS region the Lambda function is running in (type: string, default: us-east-1)
+  --function_name FUNC          Name of the Lambda being created or updated (type: string, required: true)
+  --role ROLE                   ARN of the IAM role to assign to the Lambda function (type: string, note:
+                                required for creating a new function)
+  --handler_name NAME           Function the Lambda calls to begin execution. (type: string, note: required for
+                                creating a new function)
+  --module_name NAME            Name of the module that exports the handler (type: string, requires:
+                                handler_name, default: index)
+  --description DESCR           Description of the Lambda being created or updated (type: string)
+  --timeout SECS                Function execution time (in seconds) at which Lambda should terminate the
+                                function (type: string, default: 3)
+  --memory_size MB              Amount of memory in MB to allocate to this Lambda (type: string, default: 128)
+  --subnet_ids IDS              List of subnet IDs to be added to the function (type: array (string, can be
+                                given multiple times), note: Needs the ec2:DescribeSubnets and ec2:DescribeVpcs
+                                permission for the user of the access/secret key to work)
+  --security_group_ids IDS      List of security group IDs to be added to the function (type: array (string, can
+                                be given multiple times), note: Needs the ec2:DescribeSecurityGroups and
+                                ec2:DescribeVpcs permission for the user of the access/secret key to work)
+  --environment VARS            List of Environment Variables to add to the function (type: array (string, can
+                                be given multiple times), alias: environment_variables, format: /[\w\-]+=.+/,
+                                note: Can be encrypted for added security)
+  --runtime NAME                Lambda runtime to use (type: string, default: nodejs8.10, known values: java8,
+                                nodejs8.10, nodejs10.x, python2.7, python3.6, python3.7, dotnetcore2.1, go1.x,
+                                ruby2.5)
+  --dead_letter_arn ARN         ARN to an SNS or SQS resource used for the dead letter queue. (type: string)
+  --kms_key_arn ARN             KMS key ARN to use to encrypt environment_variables. (type: string)
+  --tracing_mode MODE           Tracing mode (type: string, default: PassThrough, known values: Active,
+                                PassThrough, note: Needs xray:PutTraceSegments xray:PutTelemetryRecords on the
+                                role)
+  --function_tags TAGS          List of tags to add to the function (type: array (string, can be given multiple
+                                times), format: /[\w\-]+=.+/, note: Can be encrypted for added security)
+  --[no-]publish                Create a new version of the code instead of replacing the existing one.
+  --zip PATH                    Path to a packaged Lambda, a directory to package, or a single file to package
+                                (type: string, default: .)
+  --[no-]dot_match              Include hidden .* files to the zipped archive
 
 Common Options:
 
-  --run CMD                         Command to execute after the deployment finished successfully (type: array
-                                    (string, can be given multiple times))
-  --[no-]cleanup                    Skip cleaning up build artifacts before the deployment
-  --help                            Get help on this command
+  --run CMD                     Command to execute after the deployment finished successfully (type: array
+                                (string, can be given multiple times))
+  --[no-]cleanup                Skip cleaning up build artifacts before the deployment
+  --help                        Get help on this command
 
 Examples:
 
