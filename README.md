@@ -477,6 +477,11 @@ Examples:
 
   dpl s3 --access_key_id id --secret_access_key key --bucket bucket
   dpl s3 --access_key_id id --secret_access_key key --bucket bucket --region region --endpoint url
+  
+  File-based cache control settings:
+  
+  dpl s3 --access_key_id id --secret_access_key key --bucket bucket --cache_control "max-age=99999999, no-cache: foo.html, bar.txt, max-age=9999: *.txt"
+  
 ```
 
 ### Azure Web Apps
