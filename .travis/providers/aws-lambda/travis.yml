@@ -24,7 +24,7 @@ deploy:
     function_name: dpl-test
     role: arn:aws:iam::341288657826:role/lambda_basic_execution
     handler_name: handler
-    zip: index.js
+    zip: index.zip
 
 after_deploy:
   - cd ../..
