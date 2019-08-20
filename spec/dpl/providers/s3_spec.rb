@@ -86,7 +86,17 @@ describe Dpl::Providers::S3 do
     it { should put_object 'one.txt', 'cache-control': 'max-age=60' }
   end
 
+  describe 'given --cache_control "public: *.js" --cache_control "no-cache: *.txt"' do
+    it { should have_run %r(one.txt.* cache_control=no-cache) }
+    it { should put_object 'one.txt', 'cache-control': 'no-cache' }
+  end
+
   describe 'given --expires "2020-01-01 00:00:00 UTC"' do
+    it { should have_run %r(one.txt.* expires=2020-01-01 00:00:00 UTC) }
+    it { should put_object 'one.txt', 'expires': 'Wed, 01 Jan 2020 00:00:00 GMT' }
+  end
+
+  describe 'given --expires "2020-01-01 00:00:00 UTC: *.txt, *.js"' do
     it { should have_run %r(one.txt.* expires=2020-01-01 00:00:00 UTC) }
     it { should put_object 'one.txt', 'expires': 'Wed, 01 Jan 2020 00:00:00 GMT' }
   end
@@ -146,5 +156,45 @@ describe Dpl::Providers::S3 do
 
     before { subject.run }
     it { should put_object 'one.txt', host: 'other.s3.us-west-1.amazonaws.com' }
+  end
+
+  describe 'Mapping', run: false do
+    let(:provider) { described_class.new(ctx, args) }
+    let(:path) { 'one.css' }
+    let(:opt) { |c| c.description.sub(/^given /, '') }
+
+    subject { Dpl::Providers::S3::Mapping.new(opt, path).value }
+
+    it 'given no-cache' do
+      should eq 'no-cache'
+    end
+
+    it 'given max-age=0' do
+      should eq 'max-age=0'
+    end
+
+    it 'given max-age=0: one.css' do
+      should eq 'max-age=0'
+    end
+
+    it 'given max-age=0: *.css' do
+      should eq 'max-age=0'
+    end
+
+    it 'given max-age=0: *.css, *.js' do
+      should eq 'max-age=0'
+    end
+
+    it 'given max-age=0: *.txt' do
+      should be nil
+    end
+
+    it 'given 2020-01-01 00:00:00 UTC: *.css, *.js' do
+      should eq '2020-01-01 00:00:00 UTC'
+    end
+
+    it 'given "2020-01-01 00:00:00 UTC": *.css, *.js' do
+      should eq '2020-01-01 00:00:00 UTC'
+    end
   end
 end

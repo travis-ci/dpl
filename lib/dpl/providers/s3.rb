@@ -30,8 +30,8 @@ module Dpl
       opt '--server_side_encryption', 'Use S3 Server Side Encryption (SSE-AES256)'
       opt '--local_dir DIR', 'Local directory to upload from', default: '.', example: '~/travis/build (absolute path) or ./build (relative path)'
       opt '--detect_encoding', 'HTTP header Content-Encoding for files compressed with gzip and compress utilities'
-      opt '--cache_control STR', 'HTTP header Cache-Control to suggest that the browser cache the file', default: 'no-cache', enum: ['no-cache', 'no-store', /max-age=\d+/, /s-maxage=\d+/, 'no-transform', 'public', 'private']
-      opt '--expires DATE', 'Date and time that the cached object expires', format: /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .+$/
+      opt '--cache_control STR', 'HTTP header Cache-Control to suggest that the browser cache the file', type: :array, default: 'no-cache', enum: [/^no-cache.*/, /^no-store.*/, /^max-age=\d+.*/, /^s-maxage=\d+.*/, /^no-transform/, /^public/, /^private/], note: 'accepts mapping values to globs', eg: 'public: *.css,*.js'
+      opt '--expires DATE', 'Date and time that the cached object expires', type: :array, format: /^"?\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .+"?.*$/, note: 'accepts mapping values to globs', eg: '2020-01-01 00:00:00 UTC: *.css,*.js'
       opt '--acl ACL', 'Access control for the uploaded objects', default: 'private', enum: %w(private public_read public_read_write authenticated_read bucket_owner_read bucket_owner_full_control)
       opt '--dot_match', 'Upload hidden files starting with a dot'
       opt '--index_document_suffix SUFFIX', 'Index document suffix of a S3 website'
@@ -102,8 +102,8 @@ module Dpl
             acl: acl,
             content_type: content_type(file),
             content_encoding: detect_encoding? ? encoding(file) : nil,
-            cache_control: cache_control,
-            expires: expires,
+            cache_control: match_opt(cache_control, file),
+            expires: match_opt(expires, file),
             storage_class: storage_class,
             server_side_encryption: server_side_encryption
           )
@@ -119,16 +119,6 @@ module Dpl
 
         def acl
           super.gsub(/_/, '-') if acl?
-        end
-
-        def cache_control
-          # get_option_value_by_filename(super, file) if cache_control?
-          super
-        end
-
-        def expires
-          # get_option_value_by_filename(super, file) if expires?
-          super
         end
 
         def server_side_encryption
@@ -181,33 +171,39 @@ module Dpl
           hash.map { |pair| pair.join('=') }.join(' ')
         end
 
-        # i don't think this has ever worked. travis-build does not seem to turn
-        # the given hashes into anything useful here https://github.com/travis-ci/travis-build/blob/master/lib/travis/build/addons/deploy/script.rb#L187
-        #
-        # more importantly, the tests test against Ruby hashes, but the logic here
-        # never parses a given string into a hash.
-        #
-        # (also, why does travis-build use data.branch there?)
+        def match_opt(strs, file)
+          maps = Array(strs).map { |str| Mapping.new(str, file) }
+          maps.map(&:value).compact.first
+        end
 
-        # def get_option_value_by_filename(opts, filename)
-        #   return opts if !opts.kind_of?(Array)
-        #   preferred_value = nil
-        #   hashes = opts.select { |value| value.kind_of?(Hash) }
-        #   hashes.each do |hash|
-        #     hash.each do |value, patterns|
-        #       unless patterns.kind_of?(Array)
-        #         patterns = [patterns]
-        #       end
-        #       patterns.each do |pattern|
-        #         if File.fnmatch?(pattern, filename)
-        #           preferred_value = value
-        #         end
-        #       end
-        #     end
-        #   end
-        #   preferred_value = opts.select {|value| value.kind_of?(String) }.last if preferred_value.nil?
-        #   return preferred_value
-        # end
+        class Mapping < Struct.new(:str, :file)
+          MATCH = File::FNM_DOTMATCH | File::FNM_EXTGLOB
+
+          def value
+            str, glob = parse
+            unquote(str) if match?(glob)
+          end
+
+          private
+
+            def unquote(str)
+              str =~ /^"(.*)"$/ && $1 || str
+            end
+
+            def match?(glob)
+              glob.nil? || File.fnmatch?(normalize(glob), file, MATCH)
+            end
+
+            def normalize(glob)
+              return glob if glob.include?('{')
+              "{#{glob.split(',').map(&:strip).join(',')}}"
+            end
+
+            def parse
+              parts = str.split(': ')
+              parts.size > 1 ? [parts[0..-2].join(': '), parts.last] : parts
+            end
+        end
     end
   end
 end
