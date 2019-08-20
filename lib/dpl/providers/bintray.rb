@@ -124,7 +124,9 @@ module Dpl
 
       def update_file(file)
         retrying(max: 10, pause: 5) do
-          put(path(:file_metadata, target: file.target), {list_in_downloads: file.download}.to_json, {}, 'application/json')
+          body = { list_in_downloads: file.download }.to_json
+          headers = { 'Content-Type': 'application/json' }
+          put(path(:file_metadata, target: file.target), body, {}, headers)
         end
       end
 
@@ -194,9 +196,9 @@ module Dpl
         request(req)
       end
 
-      def put(path, body, params = {}, contentType = '')
+      def put(path, body, params = {}, headers = {})
         req = Net::HTTP::Put.new(append_params(path, params))
-        req.add_field('Content-Type', contentType) if contentType != ''
+        headers.each { |key, value| req.add_field(key.to_s, value) }
         req.basic_auth(user, key)
         req.body = body
         request(req)

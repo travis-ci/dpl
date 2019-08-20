@@ -79,7 +79,7 @@ describe Dpl::Providers::Bintray do
     end
 
     describe 'updates file metadata (list in downloads)' do
-      it { should have_requested(:put, paths[:file_metadata]) }
+      it { should have_requested(:put, paths[:file_metadata]).with(body: '{"list_in_downloads":true}', headers: { 'Content-Type': 'application/json' }) }
     end
   end
 
