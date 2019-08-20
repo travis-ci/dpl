@@ -89,6 +89,10 @@ describe Dpl::Providers::Cloudformation do
       it { should create_stack with: 'Action=CreateStack&OnFailure=ROLLBACK&Parameters=&RoleARN=arn&StackName=stack' }
     end
 
+    describe 'given --capabilities CAPABILITY_IAM --capabilities CAPABILITY_NAMED_IAM' do
+      it { should create_stack with: 'Action=CreateStack&Capabilities.member.1=CAPABILITY_IAM&Capabilities.member.2=CAPABILITY_NAMED_IAM&OnFailure=ROLLBACK&Parameters=&StackName=stack' }
+    end
+
     describe 'given --capabilities CAPABILITY_IAM,CAPABILITY_NAMED_IAM' do
       it { should create_stack with: 'Action=CreateStack&Capabilities.member.1=CAPABILITY_IAM&Capabilities.member.2=CAPABILITY_NAMED_IAM&OnFailure=ROLLBACK&Parameters=&StackName=stack' }
     end

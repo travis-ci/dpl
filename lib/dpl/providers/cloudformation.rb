@@ -23,9 +23,7 @@ module Dpl
       opt '--promote', 'Deploy changes', default: true, note: 'otherwise a change set is created'
       opt '--role_arn ARN', 'AWS Role ARN'
       opt '--sts_assume_role ARN', 'AWS Role ARN for cross account deployments (assumed by travis using given AWS credentials).'
-      # TODO change Cl to support array enums:
-      # enum: %w(CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND)
-      opt '--capabilities STR', 'CloudFormation allowed capabilities', type: :array, see: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateStack.html'
+      opt '--capabilities STR', 'CloudFormation allowed capabilities', type: :array, enum: %w(CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND), sep: ',', see: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateStack.html'
       opt '--wait', 'Wait for CloutFormation to finish the stack creation and update', default: true
       opt '--wait_timeout SEC', 'How many seconds to wait for stack creation and update.', type: :integer, default: 3600
       opt '--create_timeout SEC', 'How many seconds to wait before the stack status becomes CREATE_FAILED', type: :integer, default: 3600, note: 'valid only when creating a stack'
@@ -166,11 +164,6 @@ module Dpl
 
         def stack_name
           @stack_name ||= "#{stack_name_prefix}#{super}"
-        end
-
-        def capabilities
-          # TODO add :separator to Cl for type: :array
-          super.map { |str| str.split(',') }.flatten if capabilities?
         end
 
         def template_param
