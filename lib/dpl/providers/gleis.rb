@@ -8,7 +8,7 @@ module Dpl
       str
 
       gem 'thor', require: true
-      gem 'gleis'
+      gem 'gleis', '~> 0.6.0'
 
       opt '--app APP',       'Gleis application to upload to', default: :repo_name
       opt '--username NAME', 'Gleis username', required: true
