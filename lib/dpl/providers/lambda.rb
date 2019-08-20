@@ -34,6 +34,7 @@ module Dpl
       opt '--dead_letter_arn ARN',    'ARN to an SNS or SQS resource used for the dead letter queue.'
       opt '--kms_key_arn ARN',        'KMS key ARN to use to encrypt environment_variables.'
       opt '--tracing_mode MODE',      'Tracing mode', default: 'PassThrough', enum: %w(Active PassThrough), note: 'Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role'
+      opt '--layers LAYERS',          'Function layer arns', type: :array
       opt '--function_tags TAGS',     'List of tags to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security'
       opt '--publish',                'Create a new version of the code instead of replacing the existing one.'
       opt '--zip PATH',               'Path to a packaged Lambda, a directory to package, or a single file to package', default: '.'
@@ -107,7 +108,8 @@ module Dpl
             runtime: runtime,
             dead_letter_config: dead_letter_arn,
             kms_key_arn: kms_key_arn,
-            tracing_config: tracing_mode
+            tracing_config: tracing_config,
+            layers: layers
           )
         end
 
@@ -146,8 +148,8 @@ module Dpl
           { target_arn: super } if dead_letter_arn?
         end
 
-        def tracing_mode
-          { mode: super } if tracing_mode?
+        def tracing_config
+          { mode: tracing_mode } if tracing_mode?
         end
 
         def function_tags
