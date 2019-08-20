@@ -2,9 +2,8 @@ describe Dpl::Providers::Cloudformation do
   let(:args) { |e| required + args_from_description(e) }
   let(:required) { %w(--access_key_id id --secret_access_key key --stack_name stack --template https://template.url) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
+  let(:stacks) { [] }
   let(:events) { [] }
-
-  file 'template.json', '{}'
 
   %i(create_stack update_stack create_change_set).each do |key|
     matcher key do |opts = {}|
@@ -59,22 +58,23 @@ describe Dpl::Providers::Cloudformation do
     }
   end
 
+  before { |c| subject.run unless c.metadata[:run].is_a?(FalseClass) }
   after { Aws.config.clear }
 
   env ONE: '1'
 
   file 'one'
   file 'two'
+  file 'template.json', '{}'
 
   describe 'stack does not exist' do
     let(:stacks) { [] }
-    before { subject.run }
 
     describe 'by default' do
       it { should have_run '[info] Using Access Key: i*******************' }
       it { should have_run '[info] Setting the build environment up for the deployment' }
       it { should have_run '[info] Creating stack ...' }
-      it { should create_stack with: 'Action=CreateStack&OnFailure=ROLLBACK&Parameters=&StackName=stack&TimeoutInMinutes=60' }
+      it { should create_stack with: 'Action=CreateStack&OnFailure=ROLLBACK&Parameters=&StackName=stack&TemplateURL=https%3A%2F%2Ftemplate.url&TimeoutInMinutes=60' }
     end
 
     describe 'given --no-promote' do
@@ -82,19 +82,19 @@ describe Dpl::Providers::Cloudformation do
     end
 
     describe 'given --stack_name_prefix prefix-' do
-      it { should create_stack with: 'Action=CreateStack&OnFailure=ROLLBACK&Parameters=&StackName=prefix-stack&TimeoutInMinutes=60' }
+      it { should create_stack with: 'Action=CreateStack&OnFailure=ROLLBACK&Parameters=&StackName=prefix-stack' }
     end
 
     describe 'given --role_arn arn' do
-      it { should create_stack with: 'Action=CreateStack&OnFailure=ROLLBACK&Parameters=&RoleARN=arn&StackName=stack&TimeoutInMinutes=60' }
+      it { should create_stack with: 'Action=CreateStack&OnFailure=ROLLBACK&Parameters=&RoleARN=arn&StackName=stack' }
     end
 
     describe 'given --capabilities CAPABILITY_IAM,CAPABILITY_NAMED_IAM' do
-      it { should create_stack with: 'Action=CreateStack&Capabilities.member.1=CAPABILITY_IAM&Capabilities.member.2=CAPABILITY_NAMED_IAM&OnFailure=ROLLBACK&Parameters=&StackName=stack&TimeoutInMinutes=60' }
+      it { should create_stack with: 'Action=CreateStack&Capabilities.member.1=CAPABILITY_IAM&Capabilities.member.2=CAPABILITY_NAMED_IAM&OnFailure=ROLLBACK&Parameters=&StackName=stack' }
     end
 
     describe 'given --parameters ONE,two=2' do
-      it { should create_stack with: 'Action=CreateStack&OnFailure=ROLLBACK&Parameters.member.1.ParameterKey=ONE&Parameters.member.1.ParameterValue=1&Parameters.member.2.ParameterKey=two&Parameters.member.2.ParameterValue=2&StackName=stack&TimeoutInMinutes=60' }
+      it { should create_stack with: 'Action=CreateStack&OnFailure=ROLLBACK&Parameters.member.1.ParameterKey=ONE&Parameters.member.1.ParameterValue=1&Parameters.member.2.ParameterKey=two&Parameters.member.2.ParameterValue=2&StackName=stack' }
     end
   end
 
@@ -113,8 +113,6 @@ describe Dpl::Providers::Cloudformation do
         ]
       ]
     end
-
-    before { subject.run }
 
     describe 'by default' do
       it { should have_run '[info] Using Access Key: i*******************' }
@@ -142,5 +140,26 @@ describe Dpl::Providers::Cloudformation do
     describe 'given --output_file ./events.log' do
       it { expect(File.read('events.log')).to eq 'key=value' }
     end
+  end
+
+  describe 'with credentials in env vars', run: false do
+    env AWS_ACCESS_KEY_ID: 'id',
+        AWS_SECRET_ACCESS_KEY: 'key'
+
+    before { subject.run }
+    it { should have_run '[info] Using Access Key: i*******************' }
+  end
+
+  describe 'with ~/.aws/credentials', run: false do
+    let(:args) { %w(--stack_name stack --template https://template.url) }
+
+    file '~/.aws/credentials', <<-str.sub(/^\s*/, '')
+      [default]
+      aws_access_key_id=id
+      aws_secret_access_key=key
+    str
+
+    before { subject.run }
+    it { should have_run '[info] Using Access Key: i*******************' }
   end
 end

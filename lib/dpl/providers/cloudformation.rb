@@ -12,9 +12,10 @@ module Dpl
       gem 'aws-sdk', '~> 2.0'
 
       env :aws
+      config '~/.aws/credentials', prefix: 'aws'
 
-      opt '--access_key_id ID', 'AWS Access Key ID', required: false, secret: true
-      opt '--secret_access_key KEY', 'AWS Secret Key', required: false, secret: true
+      opt '--access_key_id ID', 'AWS Access Key ID', required: true, secret: true
+      opt '--secret_access_key KEY', 'AWS Secret Key', required: true, secret: true
       opt '--region REGION', 'AWS Region to deploy to', default: 'us-east-1'
       opt '--template STR', 'CloudFormation template file', required: true, note: 'can be either a local path or an S3 URL'
       opt '--stack_name NAME', 'CloudFormation Stack Name.', required: true
