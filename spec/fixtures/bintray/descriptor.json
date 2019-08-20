@@ -30,8 +30,16 @@
     "gpgSign": true
   },
   "files": [
-    { "includePattern": "build/bin(.*)*/(.*\\.gem)", "excludePattern": ".*/do-not-deploy/.*", "uploadPattern": "gems/$2" },
-    { "includePattern": "build/doc/(.*)", "uploadPattern": "doc/$1" }
+    {
+      "includePattern": "build/bin(.*)*/(.*\\.gem)",
+      "excludePattern": ".*/do-not-deploy/.*",
+      "uploadPattern": "gems/$2",
+      "listInDownloads": true
+    },
+    {
+      "includePattern": "build/doc/(.*)",
+      "uploadPattern": "doc/$1"
+    }
   ],
   "publish": true
 }

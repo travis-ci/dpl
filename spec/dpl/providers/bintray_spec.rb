@@ -7,15 +7,16 @@ describe Dpl::Providers::Bintray do
 
     let(:paths) do
       {
-        package:         %r(packages/user/repo/name$),
-        packages:        %r(packages/user/repo$),
-        package_attrs:   %r(packages/user/repo/name/attributes$),
-        version:         %r(packages/user/repo/name/versions/0.5$),
-        versions:        %r(packages/user/repo/name/versions$),
-        version_attrs:   %r(packages/user/repo/name/versions/0.5/attributes$),
-        version_file:    %r(content/user/repo/name/0.5/gems/foo.gem$),
-        version_sign:    %r(gpg/user/repo/name/versions/0.5$),
-        version_publish: %r(content/user/repo/name/0.5/publish$)
+        package:         %r(/packages/user/repo/name$),
+        packages:        %r(/packages/user/repo$),
+        package_attrs:   %r(/packages/user/repo/name/attributes$),
+        version:         %r(/packages/user/repo/name/versions/0.5$),
+        versions:        %r(/packages/user/repo/name/versions$),
+        version_attrs:   %r(/packages/user/repo/name/versions/0.5/attributes$),
+        version_file:    %r(/content/user/repo/name/0.5/gems/foo.gem$),
+        version_sign:    %r(/gpg/user/repo/name/versions/0.5$),
+        version_publish: %r(/content/user/repo/name/0.5/publish$),
+        file_metadata:   %r(/file_metadata/user/repo/gems/foo.gem)
       }
     end
 
@@ -28,6 +29,7 @@ describe Dpl::Providers::Bintray do
     before { stub_request(:put,  paths[:version_file]) }
     before { stub_request(:post, paths[:version_sign]) }
     before { stub_request(:post, paths[:version_publish]) }
+    before { stub_request(:put,  paths[:file_metadata]) }
 
     before { subject.run }
 
@@ -74,6 +76,10 @@ describe Dpl::Providers::Bintray do
 
     describe 'publishes the version' do
       it { should have_requested(:post, paths[:version_publish]) }
+    end
+
+    describe 'updates file metadata (list in downloads)' do
+      it { should have_requested(:put, paths[:file_metadata]).with(body: '{"list_in_downloads":true}', headers: { 'Content-Type': 'application/json' }) }
     end
   end
 
