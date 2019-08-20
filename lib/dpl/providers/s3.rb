@@ -49,6 +49,8 @@ module Dpl
            upload_failed:         'Failed to upload %s',
            index_document_suffix: 'Setting index document suffix to %s'
 
+      DEFAULT_CONTENT_TYPE = 'application/octet-stream'
+
       def setup
         @cwd = Dir.pwd
         Dir.chdir(local_dir)
@@ -126,7 +128,7 @@ module Dpl
         end
 
         def content_type(file)
-          return unless type = MIME::Types.type_for(file).first
+          return DEFAULT_CONTENT_TYPE unless type = MIME::Types.type_for(file).first
           type = "#{type}; charset=#{default_text_charset}" if encoding(file) == 'text' && default_text_charset?
           type.to_s
         end

@@ -132,6 +132,12 @@ describe Dpl::Providers::S3 do
     it { should put_object 'two.txt' }
   end
 
+  describe 'with no mime-type being found', run: false do
+    before { allow(MIME::Types).to receive(:type_for).and_return [] }
+    before { subject.run }
+    it { should_not put_object 'one.txt', 'content-type': 'text/plain; charset=utf-8' }
+  end
+
   describe 'with ~/.aws/credentials', run: false do
     let(:args) { |e| %w(--bucket bucket) }
 
