@@ -19,14 +19,6 @@ describe Dpl::Providers::Elasticbeanstalk do
     end
   end
 
-  matcher :have_zipped do |path, files|
-    match do
-      expect(File.exist?(path)).to be true
-      zipped = Zip::File.open(path) { |zip| zip.glob('*').map(&:name) }
-      expect(zipped - ['./']).to eq files
-    end
-  end
-
   before do
     Aws.config[:s3] = {
       stub_responses: {
