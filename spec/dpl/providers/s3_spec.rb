@@ -122,6 +122,10 @@ describe Dpl::Providers::S3 do
     it { should put_object 'two.txt' }
   end
 
+  describe 'given --no-overwrite' do
+    it { should have_run '[warn] Skipping one.txt, already exists' }
+  end
+
   describe 'with no mime-type being found', run: false do
     before { allow(MIME::Types).to receive(:type_for).and_return [] }
     before { subject.run }
