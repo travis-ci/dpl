@@ -21,6 +21,7 @@ module Dpl
       opt '--skip_existing', 'Do not overwrite an existing file with the same name on the server.'
       opt '--upload_docs', 'Upload documentation', default: false, type: :boolean, note: 'most PyPI servers, including upload.pypi.org, do not support uploading documentation'
       opt '--twine_check', 'Whether to run twine check', default: true
+      opt '--remove_build_dir', 'Remove the build dir after the upload', default: true
       opt '--setuptools_version VER', format: VERSION
       opt '--twine_version VER', format: VERSION
       opt '--wheel_version VER', format: VERSION
@@ -61,7 +62,7 @@ module Dpl
       def deploy
         shell :twine_upload
         upload_docs if upload_docs?
-        shell :rm_dist
+        shell :rm_dist if remove_build_dir?
       end
 
       private
