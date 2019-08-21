@@ -7,99 +7,100 @@ module Dpl
         tbd
       str
 
-      gem 'engineyard-cloud-client', '~> 2.1.0'
+      gem 'ey-core', '~> 3.5'
 
       required :api_key, [:email, :password]
 
-      opt '--api_key KEY',     'Engine Yard API key', secret: true
-      opt '--email EMAIL',     'Engine Yard account email'
-      opt '--password PASS',   'Engine Yard password', secret: true
-      opt '--app APP',         'Engine Yard application name', default: :repo_name
-      opt '--environment ENV', 'Engine Yard application environment'
-      opt '--migrate CMD',     'Engine Yard migration commands'
-      opt '--account NAME',    'Engine Yard account name'
+      opt '--api_key KEY',   'Engine Yard API key', secret: true
+      opt '--email EMAIL',   'Engine Yard account email'
+      opt '--password PASS', 'Engine Yard password', secret: true
+      opt '--app APP',       'Engine Yard application name', default: :repo_name
+      opt '--env ENV',       'Engine Yard application environment', alias: :environment
+      opt '--migrate CMD',   'Engine Yard migration commands'
+      opt '--account NAME',  'Engine Yard account name'
 
-      msgs deploy:          'Deploying ...',
-           authenticated:   'Authenticated as %s',
-           invalid_migrate: 'Invalid migration command, try --migrate="rake db:migrate"',
-           multiple_envs:   'Multiple matches possible, please be more specific: %s',
-           env_entry:       'environment=%s account=%s',
-           deploy_done:     'Done: https://cloud.engineyard.com/apps/%s/environments/%s/deployments/%s/pretty',
-           deploy_failed:   'Deployment failed (see logs on Engine Yard)'
+      msgs deploy:           'Deploying ...',
+           login:            'Authenticating via email and password ...',
+           write_rc:         'Authenticating via api token ...',
+           authenticated:    'Authenticated as %{name}',
+           invalid_migrate:  'Invalid migration command, try --migrate="rake db:migrate"',
+           envs:             'Checking environment ...',
+           no_env:           'No matching environment found',
+           too_many_envs:    'Multiple environments match, please be more specific: %s',
+           env_entry:        'environment=%s account=%s'
 
-      attr_reader :env, :token
+      cmds login:  "ey-core login << str\n%{email}\n%{password}\nstr",
+           whoami: 'ey-core whoami',
+           envs:   'ey-core environments',
+           deploy: 'ey-core deploy %{deploy_opts}'
 
       def login
-        authenticate
-        info :authenticated, api.current_user.email
+        api_key? ? write_rc : authenticate
+        info :authenticated, name: whoami
       end
 
       def validate
-        @env ||= resolve(envs)
         error :invalid_migrate if invalid_migrate?
+        env
       end
 
       def deploy
-        print :deploy
-        poll_for_result(deployment).successful || error(:deploy_failed)
+        shell :deploy
       end
 
       private
+
+        def authenticate
+          shell :login, echo: false, capture: true
+        end
+
+        def whoami
+          shell(:whoami, echo: false, capture: true) =~ /email\s*:\s*"(.+)"/ && $1
+        end
+
+        def write_rc
+          info :write_rc
+          write_file '~/.ey-core', "https://api.engineyard.com/: #{api_key}"
+        end
 
         def invalid_migrate?
           migrate.is_a?(TrueClass) || migrate == 'true'
         end
 
-        def authenticate
-          @token ||= api_key || EY::CloudClient.new.authenticate!(email, password)
-        rescue EY::CloudClient::Error => e
-          error e.message
+        def deploy_opts
+          opts = [%(--ref="#{git_sha}" --environment="#{env}")]
+          opts << opts_for(%i(app account))
+          opts << migrate_opt
+          opts.join(' ')
         end
 
-        def api
-          @api ||= EY::CloudClient.new(token: token)
-        rescue EY::CloudClient::Error => e
-          error e.message
+        def migrate_opt
+          migrate? ? opts_for(%i(migrate)) : '--no-migrate'
         end
 
-        def deployment
-          opts = { ref: git_sha }
-          opts = opts.merge(migrate: true, migration_command: migrate) if migrate?
-          EY::CloudClient::Deployment.deploy(api, env, opts)
-        rescue EY::CloudClient::Error => e
-          error e.message
+        def env
+          @env ||= super || detect_env(envs)
+        end
+
+        def detect_env(envs)
+          case envs.size
+          when 1 then envs.first[:name]
+          when 0 then error :no_env
+          else too_many_envs(envs)
+          end
         end
 
         def envs
-          api.resolve_app_environments(
-            app_name: app,
-            account_name: account,
-            environment_name: environment,
-            remotes: git_remote_urls
-          )
+          lines = shell(:envs, echo: false, capture: true).split("\n")[2..-1] || []
+          envs = lines.map { |line| line.split('|')[1..-1].map(&:strip) }
+          envs = envs.map { |pair| %i(name account).zip(pair).to_h }
+          envs.select { |env| env[:name] == opts[:env] } if env?
+          envs
         end
 
-        def resolve(envs)
-          envs.one_match { return envs.matches.first }
-          envs.no_matches { error envs.errors.join("\n").inspect }
-          envs.many_matches { |envs| multiple_env_matches(envs) }
-        end
-
-        def multiple_env_matches(envs)
-          envs = envs.map { |env| msg(:env_entry) % [env.environment.name, env.environment.account.name] }
-          error msg(:multiple_envs) % envs.join(', ')
-        end
-
-        def poll_for_result(deployment)
-          deployment = refresh(deployment) until deployment.finished?
-          info :deploy_done, deployment.app.id, deployment.environment.id, deployment.id
-          deployment
-        end
-
-        def refresh(deployment)
-          sleep 5
-          print '.'
-          EY::CloudClient::Deployment.get(api, deployment.app_environment, deployment.id)
+        def too_many_envs(envs)
+          envs = envs.map { |env| msg(:env_entry) % env.values_at(:name, :account) }
+          error msg(:too_many_envs) % envs.join(', ')
         end
     end
   end
