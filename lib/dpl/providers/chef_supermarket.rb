@@ -17,15 +17,16 @@ module Dpl
         chef/cookbook_site_streaming_uploader
         chef/cookbook_uploader
       )
+      gem 'json'
       gem 'mime-types', '~> 3.2.2'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
       gem 'rack'
 
       opt '--user_id ID',         'Chef Supermarket user name', required: true
       opt '--client_key KEY',     'Client API key file name', required: true
+      opt '--name NAME',          'Cookbook name', note: 'defaults to the name given in metadata.json or metadata.rb', alias: :cookbook_name
       opt '--category CAT',       'Cookbook category in Supermarket', required: true, see: 'https://docs.getchef.com/knife_cookbook_site.html#id12', alias: :cookbook_category
       opt '--dir DIR',            'Directory containing the cookbook', default: '.'
-      opt '--cookbook_name NAME', 'Cookbook name', deprecated: 'now retrieved from your metadata.rb'
 
       URL = "https://supermarket.chef.io/api/v1/cookbooks"
 
@@ -37,23 +38,18 @@ module Dpl
 
       def setup
         Chef::Config[:client_key] = client_key
-        Dir.chdir(dir)
+        chdir dir
       end
 
       def validate
         info :validate
         validate_file client_key
-        validate_file 'metadata.rb'
         uploader.validate_cookbooks
       end
 
       def deploy
         info :upload
         upload
-      end
-
-      def finish
-        rm_rf build_dir
       end
 
       private
@@ -68,12 +64,21 @@ module Dpl
         end
 
         def tarball
-          shell "tar -czf #{name}.tgz #{build_dir}"
-          File.open("#{build_dir}/#{name}.tgz")
+          shell "tar -czf /tmp/#{name}.tgz -C #{build_dir} ."
+          shell "tar -tvf /tmp/#{name}.tgz"
+          open "/tmp/#{name}.tgz"
         end
 
         def name
-          @name ||= Chef::Cookbook::Metadata.new.from_file('metadata.rb')
+          @name ||= name_from_json || name_from_rb || error(:missing_file, 'metadata.json or metadata.rb')
+        end
+
+        def name_from_json
+          JSON.load(read('metadata.json'))['name'] if file?('metadata.json')
+        end
+
+        def name_from_rb
+          Chef::Cookbook::Metadata.new.from_file('metadata.rb') if file?('metadata.rb')
         end
 
         def cookbook
@@ -81,7 +86,7 @@ module Dpl
         end
 
         def loader
-          Chef::Cookbook::CookbookVersionLoader.new('.')
+          Chef::Cookbook::CookbookVersionLoader.new('.').tap(&:load!)
         end
 
         def uploader
