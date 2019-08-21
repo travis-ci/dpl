@@ -22,5 +22,9 @@ describe Dpl::Providers::Cloudfoundry do
   describe 'given --manifest other.yml' do
     it { should have_run './cf push -f other.yml' }
   end
+
+  describe 'given --v3' do
+    it { should have_run './cf v3-push' }
+  end
 end
 
