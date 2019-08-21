@@ -17,25 +17,27 @@ describe Dpl::Providers::Releases do
   before { stub_request(:patch, %r(/releases/1$)) }
   before { stub_request(:post, %r(/releases/1/assets\?)) }
   before { stub_request(:delete, %r(/releases/1/assets/1$)) }
-  before { subject.run }
+  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
 
   let(:repo)     { 'travis-ci/dpl' }
   let(:tag_name) { 'tag' }
   let(:name_)    { nil }
-  let(:body)     { nil }
   let(:draft)    { false }
   let(:prerelease) { nil }
   let(:release_number) { nil }
+  let(:release_notes) { nil }
   let(:target_commitish) { 'sha' }
 
   matcher :release_json do
     match do |body|
+      # p symbolize(JSON.parse(body))
       expect(symbolize(JSON.parse(body))).to include(compact(
         repo: repo,
         name: name_,
         tag_name: tag_name,
         target_commitish: target_commitish,
         release_number: release_number,
+        body: release_notes,
         prerelease: prerelease,
         draft: draft,
       ))
@@ -114,8 +116,25 @@ describe Dpl::Providers::Releases do
     it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
   end
 
+  describe 'given --release_notes release_notes' do
+    let(:release_notes) { 'release_notes' }
+    it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
+  end
+
+  describe 'given --release_notes_file ./release_notes', run: false do
+    let(:release_notes) { 'release_notes' }
+    file './release_notes', 'release_notes'
+    before { subject.run }
+    it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
+  end
+
+  describe 'missing release notes file, given --release_notes_file ./release_notes', run: false do
+    let(:release_notes) { 'release_notes' }
+    it { expect { subject.run }.to raise_error('File ./release_notes does not exist.') }
+  end
+
   describe 'given --body body' do
-    let(:body) { 'body' }
+    let(:release_notes) { 'body' }
     it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
   end
 
