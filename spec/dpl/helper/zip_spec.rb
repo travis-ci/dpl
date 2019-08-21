@@ -19,7 +19,7 @@ describe Dpl::Zip do
   describe 'given a zip file' do
     let(:path) { 'one.zip' }
     file 'one.zip'
-    before { subject.zip }
-    it { expect(File.exists?('test.zip')).to be true }
+    it { expect(subject.zip).to be_a(File) }
+    it { expect(subject.zip.path).to eq 'one.zip' }
   end
 end
