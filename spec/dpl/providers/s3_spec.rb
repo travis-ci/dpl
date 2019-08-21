@@ -84,6 +84,10 @@ describe Dpl::Providers::S3 do
     it { should put_object 'one.txt', 'cache-control': 'no-cache' }
   end
 
+  describe 'given --cache_control "public: *.js" --cache_control "private"' do
+    it { should put_object 'one.txt', 'cache-control': 'private' }
+  end
+
   describe 'given --expires "2020-01-01 00:00:00 UTC"' do
     it { should put_object 'one.txt', 'expires': 'Wed, 01 Jan 2020 00:00:00 GMT' }
   end
