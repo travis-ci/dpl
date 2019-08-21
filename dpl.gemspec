@@ -14,9 +14,9 @@ Gem::Specification.new do |s|
   s.require_path  = 'lib'
   s.required_ruby_version = '>= 2.2'
 
-  s.executables = ['dpl']
-  s.files       = Dir['{lib/**/*,[A-Z]*}']
+  s.executables   = ['dpl']
+  s.files         = Dir['{lib/**/*,[A-Z]*}']
 
-  s.add_runtime_dependency 'cl', '~> 1.0.0'
+  s.add_runtime_dependency 'cl', '~> 1.0'
   s.add_development_dependency 'rake', '~> 12.3'
 end
