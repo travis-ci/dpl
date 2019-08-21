@@ -26,6 +26,10 @@ File.write 'metadata.json', <<~str
   }
 str
 
+File.write 'metadata.rb', <<~str
+  name 'dpl_test'
+str
+
 File.write 'recipes/default.rb', <<~str
   log "#{ENV['ID']}"
 str
