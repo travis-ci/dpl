@@ -5,7 +5,7 @@ require 'ffi-icu'
 require 'erb'
 require 'dpl'
 
-SKIP = %i(help heroku)
+SKIP = %i(help heroku pages)
 
 def providers
   consts = Dpl::Provider.registry.values
