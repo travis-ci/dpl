@@ -129,11 +129,7 @@ module Dpl
         end
 
         def handler
-          [module_name, java? ? '::' : '.', handler_name].join if handler_name?
-        end
-
-        def java?
-          runtime =~ /java/
+          Handler.new(runtime, module_name, handler_name).to_s if handler_name?
         end
 
         def function_zip
@@ -178,6 +174,28 @@ module Dpl
 
         def tmp_filename
           @tmp_filename ||= "#{tmp_dir}/#{repo_name}.zip"
+        end
+
+        class Handler < Struct.new(:runtime, :module_name, :handler_name)
+          SEP = {
+            default: '.',
+            java:    '::',
+            dotnet:  '::',
+            go:      ''
+          }
+
+          def to_s
+            [go? ? nil : module_name, sep, handler_name].compact.join
+          end
+
+          def sep
+            key = SEP.keys.detect { |key| runtime.start_with?(key.to_s) }
+            SEP[key || :default]
+          end
+
+          def go?
+            runtime.start_with?('go')
+          end
         end
     end
   end
