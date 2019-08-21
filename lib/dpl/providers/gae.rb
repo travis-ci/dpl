@@ -15,7 +15,7 @@ module Dpl
 
       opt '--project ID', 'Project ID used to identify the project on Google Cloud', required: true
       opt '--keyfile FILE', 'Path to the JSON file containing your Service Account credentials in JSON Web Token format. To be obtained via the Google Developers Console. Should be handled with care as it contains authorization keys.', default: 'service-account.json'
-      opt '--config FILE', 'Path to your service configuration file', default: 'app.yaml'
+      opt '--config FILE', 'Path to your service configuration file', type: :array, default: 'app.yaml'
       opt '--version VER', 'The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you'
       opt '--verbosity LEVEL', 'Adjust the log verbosity', default: 'warning'
       opt '--promote', 'Do not promote the deployed version', default: true
