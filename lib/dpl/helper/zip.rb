@@ -2,15 +2,16 @@ require 'tempfile'
 
 module Dpl
   class Zip < Struct.new(:src, :dest, :opts)
+    ZIP_EXT = %w(.zip .jar)
+
     def initialize(*)
       require 'zip'
       super
     end
 
     def zip
-      if zip?
-        copy
-        File.open(dest)
+      if zip_file?
+        File.open(src)
       elsif dir?
         zip_dir
       else
@@ -35,7 +36,7 @@ module Dpl
       File.new(dest)
     end
 
-    def zip?
+    def zip_file?
       exts.include?(File.extname(src))
     end
 
@@ -58,7 +59,7 @@ module Dpl
     end
 
     def exts
-      opts[:exts] ||= %w(.zip .jar)
+      opts[:exts] ||= ZIP_EXT
     end
 
     def opts
