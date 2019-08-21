@@ -34,6 +34,8 @@ module Dpl
       msgs login:   'Using Access Key: %{access_key_id}',
            zip_add: 'Adding %s'
 
+      msgs clean_description: 'Removed non-printable characters from the version description'
+
       attr_reader :started, :object, :version
 
       def login
@@ -101,7 +103,7 @@ module Dpl
         @version = eb.create_application_version(
           application_name: app,
           version_label: label,
-          description: description[0, 200],
+          description: clean(description[0, 200]),
           source_bundle: {
             s3_bucket: bucket.name,
             s3_key: object.key
@@ -172,6 +174,17 @@ module Dpl
 
       def eb
         @eb ||= Aws::ElasticBeanstalk::Client.new(retry_limit: 10)
+      end
+
+      # We do not actually know what characters are valid on AWS EB's side,
+      # see: https://github.com/aws/aws-sdk-ruby/issues/1502
+      #
+      # Reference: https://www.w3.org/TR/xml/#charsets
+      NON_PRINTABLE_CHARS = "\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF"
+
+      def clean(str)
+        str.gsub!(/[^#{NON_PRINTABLE_CHARS}]/, '') && info(:clean_description)
+        str
       end
 
       def debug(*args)
