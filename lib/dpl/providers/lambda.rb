@@ -129,7 +129,11 @@ module Dpl
         end
 
         def handler
-          "#{module_name}.#{handler_name}" if handler_name?
+          [module_name, java? ? '::' : '.', handler_name].join if handler_name?
+        end
+
+        def java?
+          runtime =~ /java/
         end
 
         def function_zip
