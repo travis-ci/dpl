@@ -1,4 +1,4 @@
-RSpec::Matchers.define :have_zipped do |path, *files|
+RSpec::Matchers.define :have_zipped do |path, files|
   match do
     expect(File.exist?(path)).to be true
     zipped = Zip::File.open(path) { |zip| zip.glob('*').map(&:name) }
