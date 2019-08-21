@@ -176,6 +176,9 @@ module Dpl
         @eb ||= Aws::ElasticBeanstalk::Client.new(retry_limit: 10)
       end
 
+      # We do not actually know what characters are valid on AWS EB's side,
+      # see: https://github.com/aws/aws-sdk-ruby/issues/1502
+      #
       # Reference: https://www.w3.org/TR/xml/#charsets
       NON_PRINTABLE_CHARS = "\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD\u10000-\u10FFFF"
 
