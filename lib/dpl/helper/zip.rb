@@ -10,6 +10,7 @@ module Dpl
     def zip
       if zip?
         copy
+        File.open(dest)
       elsif dir?
         zip_dir
       else
