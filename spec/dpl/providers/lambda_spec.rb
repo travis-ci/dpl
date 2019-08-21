@@ -68,6 +68,14 @@ describe Dpl::Providers::Lambda do
       it { should create_function Handler: 'index::handler' }
     end
 
+    describe 'given --runtime dotnetcore2.1' do
+      it { should create_function Handler: 'index::handler' }
+    end
+
+    describe 'given --runtime go1.x' do
+      it { should create_function Handler: 'handler' }
+    end
+
     describe 'given --subnet_ids one --subnet_ids two' do
       it { should create_function VpcConfig: { SubnetIds: ['one', 'two'] } }
     end
