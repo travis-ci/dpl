@@ -11,6 +11,8 @@ module Dpl
 
       npm 'firebase-tools@^6.3', 'firebase'
 
+      path 'node_modules/.bin'
+
       env :firebase
 
       opt '--token TOKEN',   'Firebase CI access token (generate with firebase login:ci)', required: true, secret: true
