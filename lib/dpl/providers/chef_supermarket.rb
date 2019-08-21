@@ -53,7 +53,7 @@ module Dpl
       end
 
       def finish
-        FileUtils.rm_rf dir
+        rm_rf build_dir
       end
 
       private
