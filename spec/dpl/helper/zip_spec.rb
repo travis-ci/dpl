@@ -7,13 +7,13 @@ describe Dpl::Zip do
   describe 'given a file' do
     let(:path) { 'one' }
     before { subject.zip }
-    it { should have_zipped 'test.zip', 'one' }
+    it { should have_zipped 'test.zip', %w(one) }
   end
 
   describe 'given a directory' do
     let(:path) { '.' }
     before { subject.zip }
-    it { should have_zipped 'test.zip', 'one', 'two' }
+    it { should have_zipped 'test.zip', %w(one two) }
   end
 
   describe 'given a zip file' do
