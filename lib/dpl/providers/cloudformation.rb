@@ -188,9 +188,14 @@ module Dpl
         end
 
         def assume_role(params)
-          Aws::STS::Client.new(params).assume_role(
+          assumed_role = Aws::STS::Client.new(params).assume_role(
             role_arn: sts_assume_role,
             role_session_name: "travis-build-#{build_number}"
+          )
+          Aws::Credentials.new(
+            assumed_role.credentials.access_key_id,
+            assumed_role.credentials.secret_access_key,
+            assumed_role.credentials.session_token
           )
         end
 
