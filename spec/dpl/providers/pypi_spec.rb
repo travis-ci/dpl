@@ -22,7 +22,7 @@ describe Dpl::Providers::Pypi do
     it { should have_run %r(pip install .* setuptools twine wheel) }
     it { should have_run '[info] Authenticated as user' }
     it { should have_run 'python setup.py sdist' }
-    it { should have_run 'twine check' }
+    it { should have_run 'twine check dist/*' }
     it { should have_run 'twine upload -r pypi dist/*' }
     it { should have_run 'rm -rf dist/*' }
     it { should have_written '~/.pypirc', pypirc }
@@ -51,7 +51,7 @@ describe Dpl::Providers::Pypi do
   end
 
   describe 'given --no_twine_check' do
-    it { should have_run 'twine check' }
+    it { should_not have_run 'twine check dist/*' }
   end
 
   describe 'given --setuptools_version 1.0.0' do

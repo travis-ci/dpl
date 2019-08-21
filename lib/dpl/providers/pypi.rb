@@ -55,7 +55,7 @@ module Dpl
       end
 
       def validate
-        shell :twine_check
+        shell :twine_check if twine_check?
       end
 
       def deploy
