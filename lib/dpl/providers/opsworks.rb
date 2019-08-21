@@ -9,7 +9,7 @@ module Dpl
         tbd
       str
 
-      gem 'aws-sdk', '~> 2.0'
+      gem 'aws-sdk-opsworks', '~> 1.0'
 
       env :aws
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'

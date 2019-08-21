@@ -11,7 +11,7 @@ module Dpl
         tbd
       str
 
-      gem 'aws-sdk', '~> 2.0'
+      gem 'aws-sdk-lambda', '~> 1.0'
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
 
       env :aws
