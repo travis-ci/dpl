@@ -138,7 +138,7 @@ module Dpl
       end
 
       def create_release
-        api.create_release(slug, local_tag, filter(opts).merge(draft: true))
+        api.create_release(slug, local_tag, octokit_opts.merge(draft: true))
       rescue Octokit::NotFound => nf
         error :insufficient_perm
       end
