@@ -178,8 +178,7 @@ module Dpl
         end
 
         def client_options
-          params = { region: region }
-          params = params.merge(credentials: credentials) if credentials.set?
+          params = { region: region, credentials: credentials }
           params = params.merge(credentials: assume_role(params)) if sts_assume_role?
           params
         end
