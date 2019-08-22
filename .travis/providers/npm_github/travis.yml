@@ -1,0 +1,18 @@
+language: node_js
+
+script:
+  - true
+
+before_deploy:
+  - .travis/providers/npm_github/prepare
+
+deploy:
+  - provider: npm
+    registry: https://npm.pkg.github.com
+    api_key:
+      secure: "fRVQWM14TO7/nHNyXB3fHZPKCqZxNPxN3wKmVsxVqTj99SSPsonr1AvQXziFtLEc44+pmlg0J5diFhhwzWU2W4/UxDaFyrdhkmZWRkRlJTjkgO0kDOJPJFza4stXAsavn4bLpz6YuCD0ZprPTBJu2wDA7e1IvXGRu0nb/PIaRko="
+    access: public
+    src: tmp/dpl_test
+
+# after_deploy:
+#   - .travis/providers/npm_github/test || TRAVIS_TEST_RESULT=$?
