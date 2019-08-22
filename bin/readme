@@ -21,8 +21,8 @@ end
 
 def contributors
   names = `git log --pretty=format:'%an'`.split("\n")
-  names = names.uniq.sort
-  names.each_slice(10).to_a.map { |names| names.join(', ') }.join("\n")
+  names = names.map(&:unicode_normalize)
+  names = names.uniq.sort.join(', ')
 end
 
 erb = ERB.new(File.read('lib/dpl/assets/dpl/README.erb.md'), nil, '-')
