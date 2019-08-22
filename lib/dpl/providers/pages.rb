@@ -60,7 +60,7 @@ module Dpl
            deployment_file:     'touch "deployed at %{now} by %{committer_name}"',
            cname:               'echo "%{fqdn}" > CNAME',
            git_add:             'git add -A .',
-           git_commit:          'git commit%{git_commit_opts} -qm "%{commit_message}"',
+           git_commit:          'git commit %{git_commit_opts} -qm "%{commit_message}"',
            git_show:            'git show --stat-count=10 HEAD',
            git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
 
@@ -174,11 +174,13 @@ module Dpl
       end
 
       def committer_name
-        committer_from_gh? ? user.name || name : name
+        str = github_token? ? user.name : git_author_name if committer_from_gh?
+        str || name
       end
 
       def committer_email
-        committer_from_gh? ? user.email || email : email
+        str = github_token? ? user.email : git_author_email if committer_from_gh?
+        str || email
       end
 
       def commit_message

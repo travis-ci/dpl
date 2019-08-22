@@ -68,6 +68,12 @@ describe Dpl::Providers::Pages do
     it { should have_run 'git config user.email "email"' }
   end
 
+  describe 'given --committer_from_gh (no github_token)' do
+    let(:args) { |e| %w(--deploy_key key) + args_from_description(e) }
+    it { should have_run 'git config user.name "author name"' }
+    it { should have_run 'git config user.email "author email"' }
+  end
+
   describe 'given --local_dir ./dir --verbose' do
     it { should have_run "rsync -rl --exclude .git --delete \"#{cwd}/dir/\" ." }
     it { should have_run "[info] The source dir for deployment is #{cwd}/dir" }

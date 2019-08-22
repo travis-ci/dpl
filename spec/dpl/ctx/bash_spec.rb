@@ -341,6 +341,18 @@ describe Dpl::Ctx::Bash do
     it { expect(subject.git_commit_msg).to eq 'commit msg' }
   end
 
+  describe 'git_author_name' do
+    before { allow(subject).to receive(:git_sha).and_return('1234') }
+    cmds 'git log 1234 -n 1 --pretty=%an': "author name\n"
+    it { expect(subject.git_author_name).to eq 'author name' }
+  end
+
+  describe 'git_author_email' do
+    before { allow(subject).to receive(:git_sha).and_return('1234') }
+    cmds 'git log 1234 -n 1 --pretty=%ae': "author email\n"
+    it { expect(subject.git_author_email).to eq 'author email' }
+  end
+
   describe 'git_log' do
     cmds 'git log -n 1 --oneline': "1234 commit msg\n"
     it { expect(subject.git_log('-n 1 --oneline')).to eq '1234 commit msg' }
