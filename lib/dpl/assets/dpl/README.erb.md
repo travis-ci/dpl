@@ -24,8 +24,8 @@ please do not hesitate to get in touch, and we'll help you [add it](#contributin
 * [Contributing to Dpl](#contributing-to-dpl)
 * [Old Issues](#old-issues)
 * [Code of Conduct](#code-of-conduct)
-* [Credits](#credits)
 * [License](#license)
+* [Credits](#credits)
 
 ## Requirements
 
@@ -120,11 +120,14 @@ relevant are closed. You can read more about this [here](https://blog.travis-ci.
 Please see [our code of conduct](CODE_OF_CONDUCT.md) for how to interact with
 this project and its community.
 
-## Credits
-
-A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors).
-This tool would not exist without your help.
-
 ## License
 
 Dpl is licensed under the [MIT License](https://github.com/travis-ci/dpl/blob/master/LICENSE).
+
+## Credits
+
+This tool would not exist without your help.
+
+A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors):
+
+<%= contributors %>

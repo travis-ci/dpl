@@ -24,8 +24,8 @@ please do not hesitate to get in touch, and we'll help you [add it](#contributin
 * [Contributing to Dpl](#contributing-to-dpl)
 * [Old Issues](#old-issues)
 * [Code of Conduct](#code-of-conduct)
-* [Credits](#credits)
 * [License](#license)
+* [Credits](#credits)
 
 ## Requirements
 
@@ -247,6 +247,8 @@ Options:
   --repository NAME               Repository name in case of GitHub (type: string)
   --bucket NAME                   S3 bucket in case of S3 (type: string)
   --region REGION                 AWS availability zone (type: string, default: us-east-1)
+  --file_exists_behavior STR      How to handle files that already exist in a deployment target location (type:
+                                  string, default: disallow, known values: disallow, overwrite, retain)
   --[no-]wait_until_deployed      Wait until the deployment has finished
   --bundle_type TYPE              type: string
   --endpoint ENDPOINT             type: string
@@ -359,6 +361,7 @@ Options:
   --tracing_mode MODE           Tracing mode (type: string, default: PassThrough, known values: Active,
                                 PassThrough, note: Needs xray:PutTraceSegments xray:PutTelemetryRecords on the
                                 role)
+  --layers LAYERS               Function layer arns (type: array (string, can be given multiple times))
   --function_tags TAGS          List of tags to add to the function (type: array (string, can be given multiple
                                 times), format: /[\w\-]+=.+/, note: Can be encrypted for added security)
   --[no-]publish                Create a new version of the code instead of replacing the existing one.
@@ -453,10 +456,12 @@ Options:
   --[no-]detect_encoding              HTTP header Content-Encoding for files compressed with gzip and compress
                                       utilities
   --cache_control STR                 HTTP header Cache-Control to suggest that the browser cache the file (type:
-                                      string, default: no-cache, known values: no-cache, no-store, /max-age=\d+/,
-                                      /s-maxage=\d+/, no-transform, public, private)
-  --expires DATE                      Date and time that the cached object expires (type: string, format:
-                                      /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .+$/)
+                                      array (string, can be given multiple times), default: no-cache, known values:
+                                      /^no-cache.*/, /^no-store.*/, /^max-age=\d+.*/, /^s-maxage=\d+.*/,
+                                      /^no-transform/, /^public/, /^private/, note: accepts mapping values to globs)
+  --expires DATE                      Date and time that the cached object expires (type: array (string, can be given
+                                      multiple times), format: /^"?\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .+"?.*$/, note:
+                                      accepts mapping values to globs)
   --acl ACL                           Access control for the uploaded objects (type: string, default: private, known
                                       values: private, public_read, public_read_write, authenticated_read,
                                       bucket_owner_read, bucket_owner_full_control)
@@ -465,6 +470,8 @@ Options:
   --default_text_charset CHARSET      Default character set to append to the content-type of text files (type: string)
   --max_threads NUM                   The number of threads to use for S3 file uploads (type: integer, default: 5,
                                       max: 15)
+  --[no-]overwrite                    Whether or not to overwrite existing files (default: true)
+  --[no-]verbose                      Be verbose about uploading files
 
 Common Options:
 
@@ -682,23 +689,25 @@ Description:
 
 Options:
 
-  --user_id ID                 Chef Supermarket user name (type: string, required: true)
-  --client_key KEY             Client API key file name (type: string, required: true)
-  --cookbook_name NAME         Cookbook name (type: string, default: repo name)
-  --cookbook_category CAT      Cookbook category in Supermarket (type: string, required: true, see:
-                               https://docs.getchef.com/knife_cookbook_site.html#id12)
+  --user_id ID          Chef Supermarket user name (type: string, required: true)
+  --client_key KEY      Client API key file name (type: string, required: true)
+  --name NAME           Cookbook name (type: string, alias: cookbook_name, note: defaults to the name
+                        given in metadata.json or metadata.rb)
+  --category CAT        Cookbook category in Supermarket (type: string, required: true, alias:
+                        cookbook_category, see: https://docs.getchef.com/knife_cookbook_site.html#id12)
+  --dir DIR             Directory containing the cookbook (type: string, default: .)
 
 Common Options:
 
-  --run CMD                    Command to execute after the deployment finished successfully (type: array
-                               (string, can be given multiple times))
-  --[no-]cleanup               Skip cleaning up build artifacts before the deployment
-  --help                       Get help on this command
+  --run CMD             Command to execute after the deployment finished successfully (type: array
+                        (string, can be given multiple times))
+  --[no-]cleanup        Skip cleaning up build artifacts before the deployment
+  --help                Get help on this command
 
 Examples:
 
-  dpl chef_supermarket --user_id id --client_key key --cookbook_category cat
-  dpl chef_supermarket --user_id id --client_key key --cookbook_category cat --cookbook_name name --run cmd
+  dpl chef_supermarket --user_id id --client_key key --category cat
+  dpl chef_supermarket --user_id id --client_key key --category cat --name name --dir dir
 ```
 
 ### Cloud Files
@@ -766,6 +775,7 @@ Options:
   --buildpack PACK                Custom buildpack name or Git URL (type: string)
   --manifest FILE                 Path to the manifest (type: string)
   --[no-]skip_ssl_validation      Skip SSL validation
+  --[no-]v3                       Use the v3 API version to push the application
 
 Common Options:
 
@@ -863,26 +873,26 @@ Options:
 
   Either api_key, or email and password are required.
 
-  --api_key KEY          Engine Yard API key (type: string)
-  --email EMAIL          Engine Yard account email (type: string)
-  --password PASS        Engine Yard password (type: string)
-  --app APP              Engine Yard application name (type: string, default: repo name)
-  --environment ENV      Engine Yard application environment (type: string)
-  --migrate CMD          Engine Yard migration commands (type: string)
-  --account NAME         Engine Yard account name (type: string)
+  --api_key KEY        Engine Yard API key (type: string)
+  --email EMAIL        Engine Yard account email (type: string)
+  --password PASS      Engine Yard password (type: string)
+  --app APP            Engine Yard application name (type: string, default: repo name)
+  --env ENV            Engine Yard application environment (type: string, alias: environment)
+  --migrate CMD        Engine Yard migration commands (type: string)
+  --account NAME       Engine Yard account name (type: string)
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
-                         (string, can be given multiple times))
-  --[no-]cleanup         Skip cleaning up build artifacts before the deployment
-  --help                 Get help on this command
+  --run CMD            Command to execute after the deployment finished successfully (type: array
+                       (string, can be given multiple times))
+  --[no-]cleanup       Skip cleaning up build artifacts before the deployment
+  --help               Get help on this command
 
 Examples:
 
   dpl engineyard --api_key key
   dpl engineyard --email email --password pass
-  dpl engineyard --api_key key --app app --environment env --migrate cmd --account name
+  dpl engineyard --api_key key --app app --env env --migrate cmd --account name
 ```
 
 ### Firebase
@@ -908,6 +918,8 @@ Options:
                        firebase.json) (type: string)
   --message MSG        Message describing this deployment. (type: string)
   --only SERVICES      Firebase services to deploy (type: string, note: can be a comma-separated list)
+  --[no-]force         Whether or not to delete Cloud Functions missing from the current working
+                       directory
 
 Common Options:
 
@@ -919,7 +931,7 @@ Common Options:
 Examples:
 
   dpl firebase --token token
-  dpl firebase --token token --project name --message msg --only services --run cmd
+  dpl firebase --token token --project name --message msg --only services --force
 ```
 
 ### GitHub Pages
@@ -949,6 +961,7 @@ Options:
   --repo SLUG                    Repo slug (type: string, default: repo slug)
   --target_branch BRANCH         Branch to push force to (type: string, default: gh-pages)
   --[no-]keep_history            Create incremental commit instead of doing push force (default: true)
+  --commit_message MSG           type: string, default: Deploy %{project_name} to %{url}:%{target_branch}
   --[no-]allow_empty_commit      Allow an empty commit to be created (requires: keep_history)
   --[no-]committer_from_gh       Use the token's owner name and email for commit. Overrides the email and name
                                  options
@@ -973,7 +986,7 @@ Examples:
 
   dpl pages --github_token token
   dpl pages --deploy_key key
-  dpl pages --github_token token --repo slug --target_branch branch --keep_history --allow_empty_commit
+  dpl pages --github_token token --repo slug --target_branch branch --keep_history --commit_message msg
 ```
 
 ### GitHub Releases
@@ -995,28 +1008,30 @@ Options:
 
   Either api_key, or user and password are required.
 
-  --api_key TOKEN             GitHub oauth token (needs public_repo or repo permission) (type: string)
-  --username LOGIN            GitHub login name (type: string, alias: user)
-  --password PASS             GitHub password (type: string)
-  --repo SLUG                 GitHub repo slug (type: string, default: repo slug)
-  --file FILE                 File to release to GitHub (type: array (string, can be given multiple times),
-                              required: true)
-  --[no-]file_glob            Interpret files as globs
-  --[no-]overwrite            Overwrite files with the same name
-  --[no-]prerelease           Identify the release as a prerelease
-  --release_number NUM        Release number (overide automatic release detection) (type: string)
-  --[no-]draft                Identify the release as a draft
-  --tag_name TAG              Git tag from which to create the release (type: string)
-  --target_commitish STR      Commitish value that determines where the Git tag is created from (type: string)
-  --name NAME                 Name for the release (type: string)
-  --body BODY                 Content for the release notes (type: string)
+  --api_key TOKEN                GitHub oauth token (needs public_repo or repo permission) (type: string)
+  --username LOGIN               GitHub login name (type: string, alias: user)
+  --password PASS                GitHub password (type: string)
+  --repo SLUG                    GitHub repo slug (type: string, default: repo slug)
+  --file FILE                    File to release to GitHub (type: array (string, can be given multiple times),
+                                 required: true)
+  --[no-]file_glob               Interpret files as globs
+  --[no-]overwrite               Overwrite files with the same name
+  --[no-]prerelease              Identify the release as a prerelease
+  --release_number NUM           Release number (overide automatic release detection) (type: string)
+  --release_notes STR            Content for the release notes (type: string, alias: body)
+  --release_notes_file PATH      Path to a file containing the release notes (type: string, note: will be ignored
+                                 if --release_notes is given)
+  --[no-]draft                   Identify the release as a draft
+  --tag_name TAG                 Git tag from which to create the release (type: string)
+  --target_commitish STR         Commitish value that determines where the Git tag is created from (type: string)
+  --name NAME                    Name for the release (type: string)
 
 Common Options:
 
-  --run CMD                   Command to execute after the deployment finished successfully (type: array
-                              (string, can be given multiple times))
-  --[no-]cleanup              Skip cleaning up build artifacts before the deployment
-  --help                      Get help on this command
+  --run CMD                      Command to execute after the deployment finished successfully (type: array
+                                 (string, can be given multiple times))
+  --[no-]cleanup                 Skip cleaning up build artifacts before the deployment
+  --help                         Get help on this command
 
 Examples:
 
@@ -1049,7 +1064,8 @@ Options:
                                     Token format. To be obtained via the Google Developers Console. Should be
                                     handled with care as it contains authorization keys. (type: string, default:
                                     service-account.json)
-  --config FILE                     Path to your service configuration file (type: string, default: app.yaml)
+  --config FILE                     Path to your service configuration file (type: array (string, can be given
+                                    multiple times), default: app.yaml)
   --version VER                     The version of the app that will be created or replaced by this deployment. If
                                     you do not specify a version, one will be generated for you (type: string)
   --verbosity LEVEL                 Adjust the log verbosity (type: string, default: warning)
@@ -1132,6 +1148,7 @@ Options:
 
   --username USER      Hackage username (type: string, required: true)
   --password USER      Hackage password (type: string, required: true)
+  --[no-]publish       Whether or not to publish the package
 
 Common Options:
 
@@ -1143,7 +1160,7 @@ Common Options:
 Examples:
 
   dpl hackage --username user --password user
-  dpl hackage --username user --password user --run cmd --cleanup
+  dpl hackage --username user --password user --publish --run cmd --cleanup
 ```
 
 ### Hephy
@@ -1343,21 +1360,22 @@ Description:
 
 Options:
 
-  --email EMAIL          npm account email (type: string)
-  --api_token TOKEN      npm api token (type: string, required: true, alias: api_key, note: can be
-                         retrieved from your local ~/.npmrc file, see:
-                         https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
-  --access ACCESS        access level (type: string, known values: public, private)
-  --registry URL         npm registry url (type: string)
-  --src SRC              directory or tarball to publish (type: string, default: .)
-  --tag TAGS             distribution tags to add (type: string)
+  --email EMAIL           npm account email (type: string)
+  --api_token TOKEN       npm api token (type: string, required: true, alias: api_key, note: can be
+                          retrieved from your local ~/.npmrc file, see:
+                          https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
+  --access ACCESS         Access level (type: string, known values: public, private)
+  --registry URL          npm registry url (type: string)
+  --src SRC               directory or tarball to publish (type: string, default: .)
+  --tag TAGS              distribution tags to add (type: string)
+  --[no-]auth_method      Authentication method (known values: auth)
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
-                         (string, can be given multiple times))
-  --[no-]cleanup         Skip cleaning up build artifacts before the deployment
-  --help                 Get help on this command
+  --run CMD               Command to execute after the deployment finished successfully (type: array
+                          (string, can be given multiple times))
+  --[no-]cleanup          Skip cleaning up build artifacts before the deployment
+  --help                  Get help on this command
 
 Examples:
 
@@ -1503,10 +1521,11 @@ Options:
                                 default: sdist)
   --docs_dir DIR                Path to the directory to upload documentation from (type: string, default:
                                 build/docs)
-  --[no-]skip_upload_docs       Skip uploading documentation. Note that upload.pypi.org does not support
-                                uploading documentation. (default: true, see:
-                                https://github.com/travis-ci/dpl/issues/660)
   --[no-]skip_existing          Do not overwrite an existing file with the same name on the server.
+  --[no-]upload_docs            Upload documentation (default: false, note: most PyPI servers, including
+                                upload.pypi.org, do not support uploading documentation)
+  --[no-]twine_check            Whether to run twine check (default: true)
+  --[no-]remove_build_dir       Remove the build dir after the upload (default: true)
   --setuptools_version VER      type: string, format: /\A\d+(?:\.\d+)*\z/
   --twine_version VER           type: string, format: /\A\d+(?:\.\d+)*\z/
   --wheel_version VER           type: string, format: /\A\d+(?:\.\d+)*\z/
@@ -2219,11 +2238,34 @@ relevant are closed. You can read more about this [here](https://blog.travis-ci.
 Please see [our code of conduct](CODE_OF_CONDUCT.md) for how to interact with
 this project and its community.
 
-## Credits
-
-A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors).
-This tool would not exist without your help.
-
 ## License
 
 Dpl is licensed under the [MIT License](https://github.com/travis-ci/dpl/blob/master/LICENSE).
+
+## Credits
+
+This tool would not exist without your help.
+
+A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors):
+
+5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Abdón Rodríguez Davila, Adam King, Adam Mcgrath
+Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik
+Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, Axel Fontaine
+Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White
+Carla, Chad Engler, Chathan Driehuys, Christian Elsen, Christian Rackerseder, Clay Reimann, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell
+Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, Devin J. Pohly, Dominic Jodoin, Dwayne Forde, Eric Peterson, Erik Dalén, Esteban Santiesteban
+Fabio Napoleoni, Felix Rieseberg, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo
+Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy
+James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, Joe Damato, Joep van Delft, Johannes Würbach
+Johannes Würbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, Josh Kalderimis, Jouni Kaplas
+Julia S.Simon, Julio Capote, Karim Fateem, Ke Zhu, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Lorenz Leutgeb
+Lorne Currie, Louis Lagrange, Louis St-Amour, Loïc Mahieu, Luke Yeager, Maciej Skierkowski, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, Marwan Rabbâa
+María de Antón, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, Meir Gottlieb
+Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay
+Ole Michaelis, Omer Katz, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Rail Aliiev
+Randall A. Gordon, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, Ryn Daniels, SAULEAU Sven, Samir Talwar, Samuel Wright, Sandor Zeestraten, Scot Spinner
+Sebastien Estienne, Sergei Chertkov, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, Steven Berlanga, Sven Fuchs
+Sviatoslav Sydorenko, Tim Ysewyn, Travis CI, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine
+Wim Looman, Xavier Krantz, Zane Williamson, adinata, awesomescot, capotej, carlad, cleem, emdantrim, eyalbe4
+fgogolli, johanneswuerbach, jorgecasar, joshua-anderson, jung_b@localhost, konrad-c, mariadeanton, marscher, mayeut, ryanj
+shunyi, step76, testfairy, yeonhoyoon, Étienne Michon
