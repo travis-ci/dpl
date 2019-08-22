@@ -13,11 +13,11 @@ describe Dpl::Providers::Pages do
   describe 'by default', record: true do
     it { should have_run '[info] Authenticated as login' }
     it { should have_run '[info] Deploying branch gh-pages to github.com' }
+    it { should have_run 'git config user.name "Deploy Bot (from Travis CI)"' }
+    it { should have_run 'git config user.email "deploy@travis-ci.org"' }
     it { should have_run '[info] Cloning the branch gh-pages from the remote repo' }
     it { should have_run 'git clone --quiet --branch="gh-pages" --depth=1 "https://token@github.com/travis-ci/dpl.git" . > /dev/null 2>&1' }
     it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" .) }
-    it { should have_run 'git config user.name "Deploy Bot (from Travis CI)"' }
-    it { should have_run 'git config user.email "deploy@travis-ci.org"' }
     it { should have_run 'git add -A .' }
     it { should have_run 'git commit -qm "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages"' }
     it { should have_run 'git show --stat-count=10 HEAD' }

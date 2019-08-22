@@ -83,13 +83,13 @@ module Dpl
         info :deploy
         info :keep_history if keep_history?
         debug :work_dir
+        git_config
         Dir.chdir(work_dir)
       end
 
       def deploy
         git_clone? ? git_clone : git_init
         copy_files
-        git_config
         git_commit
         git_push
         git_status if verbose?
