@@ -384,8 +384,9 @@ they chose in their [aws-sdk](https://github.com/aws/aws-sdk-ruby) is
 The [README](/README.md) is generated from a
 [template](/lib/dpl/assets/dpl/README.erb.md).
 
-In order to update the README please edit the template, and run the command:
+In order to update the README please edit the template, and run:
 
 ```
+gem install ffi-icu
 bin/readme > README.md
 ```

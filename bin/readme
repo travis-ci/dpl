@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 $: << File.expand_path('../../lib', __FILE__)
 
+require 'ffi-icu'
 require 'erb'
 require 'dpl'
 
@@ -20,9 +21,13 @@ def help(name)
 end
 
 def contributors
+  collator = ICU::Collation::Collator.new('en')
   names = `git log --pretty=format:'%an'`.split("\n")
   names = names.map(&:unicode_normalize)
-  names = names.uniq.sort.join(', ')
+  names = names.sort { |lft, rgt| collator.compare(lft, rgt) }
+  names = names.uniq
+  names = names - ['Travis CI']
+  names.join(', ')
 end
 
 erb = ERB.new(File.read('lib/dpl/assets/dpl/README.erb.md'), nil, '-')
