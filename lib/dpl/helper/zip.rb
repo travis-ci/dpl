@@ -11,7 +11,7 @@ module Dpl
 
     def zip
       if zip_file?
-        src
+        File.new(src)
       elsif dir?
         zip_dir
       else
