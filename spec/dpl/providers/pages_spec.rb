@@ -5,19 +5,21 @@ describe Dpl::Providers::Pages do
   let!(:cwd)    { File.expand_path('.') }
   let(:tmp)     { File.expand_path('tmp') }
 
-  env FOO: 'foo'
+  env FOO: 'foo',
+      TRAVIS: true
 
   before { stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers: headers) }
   before { subject.run }
 
   describe 'by default', record: true do
     it { should have_run '[info] Authenticated as login' }
+    it { should have_run '[info] Configuring git committer to be author name (via Travis CI) <author email>' }
     it { should have_run '[info] Deploying branch gh-pages to github.com' }
-    it { should have_run 'git config --global user.name "Deploy Bot (from Travis CI)"' }
-    it { should have_run 'git config --global user.email "deploy@travis-ci.org"' }
     it { should have_run '[info] Cloning the branch gh-pages from the remote repo' }
     it { should have_run 'git clone --quiet --branch="gh-pages" --depth=1 "https://token@github.com/travis-ci/dpl.git" . > /dev/null 2>&1' }
     it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" .) }
+    it { should have_run 'git config user.name "author name (via Travis CI)"' }
+    it { should have_run 'git config user.email "author email"' }
     it { should have_run 'git add -A .' }
     it { should have_run 'git commit -qm "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages"' }
     it { should have_run 'git show --stat-count=10 HEAD' }
@@ -32,7 +34,7 @@ describe Dpl::Providers::Pages do
     it { should have_run '[info] Using temporary work directory tmp' }
     it { should have_run "[info] Cloning the branch gh-pages from the remote repo" }
     it { should have_run "[info] Copying #{cwd} contents to tmp" }
-    it { should have_run '[info] Configuring git committer to be Deploy Bot (from Travis CI) <deploy@travis-ci.org>' }
+    it { should have_run '[info] Configuring git committer to be author name (via Travis CI) <author email>' }
     it { should have_run '[info] Preparing to deploy gh-pages branch to gh-pages' }
     it { should have_run '[info] Pushing to github.com/travis-ci/dpl.git' }
   end
@@ -64,14 +66,8 @@ describe Dpl::Providers::Pages do
   end
 
   describe 'given --committer_from_gh' do
-    it { should have_run 'git config user.name "name"' }
+    it { should have_run 'git config user.name "name (via Travis CI)"' }
     it { should have_run 'git config user.email "email"' }
-  end
-
-  describe 'given --committer_from_gh (no github_token)' do
-    let(:args) { |e| %w(--deploy_key key) + args_from_description(e) }
-    it { should have_run 'git config user.name "author name"' }
-    it { should have_run 'git config user.email "author email"' }
   end
 
   describe 'given --local_dir ./dir --verbose' do
@@ -89,7 +85,7 @@ describe Dpl::Providers::Pages do
   end
 
   describe 'given --name other' do
-    it { should have_run 'git config user.name "other (from Travis CI)"' }
+    it { should have_run 'git config user.name "other"' }
   end
 
   describe 'given --email other' do
