@@ -4,7 +4,7 @@ script:
   - true
 
 before_deploy:
-  - .travis/providers/npm_github/prepare
+  - .travis/providers/npm-github/prepare
 
 deploy:
   - provider: npm
@@ -15,4 +15,4 @@ deploy:
     src: tmp/dpl_test
 
 # after_deploy:
-#   - .travis/providers/npm_github/test || TRAVIS_TEST_RESULT=$?
+#   - .travis/providers/npm-github/test || TRAVIS_TEST_RESULT=$?

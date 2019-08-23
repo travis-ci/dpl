@@ -4,7 +4,7 @@ script:
   - true
 
 before_deploy:
-  - .travis/providers/npm_myget/prepare
+  - .travis/providers/npm-myget/prepare
   - cd tmp/dpl_test
 
 deploy:
@@ -17,4 +17,4 @@ deploy:
 
 after_deploy:
   - cd ../..
-  - .travis/providers/npm_myget/test || TRAVIS_TEST_RESULT=$?
+  - .travis/providers/npm-myget/test || TRAVIS_TEST_RESULT=$?
