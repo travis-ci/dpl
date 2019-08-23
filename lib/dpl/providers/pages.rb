@@ -9,8 +9,6 @@ module Dpl
       end
 
       opt '--strategy NAME', 'GitHub Pages deployment strategy', default: 'git', enum: %w(api git), internal: true
-      opt '--github_token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true
-      opt '--repo SLUG', 'GitHub repo slug', default: :repo_slug
     end
   end
 end

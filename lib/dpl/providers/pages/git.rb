@@ -15,9 +15,9 @@ module Dpl
 
         required :github_token, :deploy_key
 
+        opt '--repo SLUG', 'Repo slug', default: :repo_slug
         opt '--github_token TOKEN', 'GitHub oauth token with repo permission', secret: true
         opt '--deploy_key KEY', 'A base64-encoded, private deploy key with write access to the repository', note: 'RSA keys are too long to fit into a Travis CI secure variable, but ECDSA-521 fits', see: 'https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys'
-        opt '--repo SLUG', 'Repo slug', default: :repo_slug
         opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
         opt '--keep_history', 'Create incremental commit instead of doing push force', default: true
         opt '--commit_message MSG', default: 'Deploy %{project_name} to %{url}:%{target_branch}'

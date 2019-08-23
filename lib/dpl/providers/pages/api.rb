@@ -31,6 +31,9 @@ module Dpl
           `gh-pages` would be updated accordingly during the build.
         str
 
+        opt '--repo SLUG', 'GitHub repo slug', default: :repo_slug
+        opt '--github_token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true
+
         msgs pages_not_found:             'GitHub Pages not found for %{slug}. ' \
                'Given token has insufficient scope (\'repo\' or \'public_repo\'), ' \
                'or GitHub Pages is not enabled for this repo (see https://github.com/%{slug}/settings)',
