@@ -31,7 +31,7 @@ module Dpl
            create:   'convox apps create %{app} --generation %{generation} --rack %{rack} --wait',
            update:   'convox update',
            set_env:  'convox env set %{env} --rack %{rack} --app %{app} --replace',
-           build:    'convox build --rack %{rack} --app %{app} --wait --id --description %{escaped_description}',
+           build:    'convox build --rack %{rack} --app %{app} --id --description %{escaped_description}',
            deploy:   'convox deploy --rack %{rack} --app %{app} --wait --id --description %{escaped_description}'
 
       msgs create:   'Application %{app} does not exist on rack %{rack}. Creating it ...',
@@ -59,7 +59,7 @@ module Dpl
       end
 
       def deploy
-        shell :set_env unless env.empty?
+        shell :set_env, echo: false unless env.empty?
         shell promote ? :deploy : :build, echo: false
       end
 
