@@ -24,6 +24,10 @@ describe Dpl::Providers::S3 do
     it { should create_client endpoint: URI.parse('https://host.com') }
   end
 
+  describe 'given --no-host_prefix https://host.com' do
+    it { should create_client disable_host_prefix_injection: true }
+  end
+
   describe 'given --region us-west-1' do
     it { should create_client region: 'us-west-1' }
   end
