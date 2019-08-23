@@ -86,9 +86,9 @@ module Dpl
 
         def upload_files
           while file = files.pop
-            data = content_data(file)
-            progress(file, data)
-            upload_file(file)
+            opts = upload_opts(file)
+            progress(file, opts)
+            upload_file(file, opts)
           end
         end
 
@@ -100,12 +100,11 @@ module Dpl
           end
         end
 
-        def upload_file(file)
-          data = content_data(file)
+        def upload_file(file, opts)
           object = s3.bucket(bucket).object(upload_path(file))
           return warn :upload_skipped, file: file if !overwrite && object.exists?
-          info :upload_file, file, upload_dir || '/', to_pairs(data)
-          object.upload_file(file, data) || warn(:upload_failed, file)
+          info :upload_file, file, upload_dir || '/', to_pairs(opts)
+          object.upload_file(file, opts) || warn(:upload_failed, file)
         end
 
         def index_document_suffix
@@ -118,7 +117,7 @@ module Dpl
           [upload_dir, file].compact.join('/')
         end
 
-        def content_data(file)
+        def upload_opts(file)
           compact(
             acl: acl,
             content_type: content_type(file),
