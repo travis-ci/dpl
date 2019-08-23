@@ -23,10 +23,10 @@ module Dpl
       opt '--allow_empty_commit', 'Allow an empty commit to be created', requires: :keep_history
       opt '--verbose', 'Be verbose about the deploy process'
       opt '--local_dir DIR', 'Directory to push to GitHub Pages', default: '.'
-      opt '--fqdn FQDN', 'Writes your website\'s domain name to the CNAME file'
+      opt '--fqdn FQDN', 'Write the given domain name to the CNAME file'
       opt '--project_name NAME', 'Used in the commit message only (defaults to fqdn or the current repo slug)'
-      opt '--email EMAIL', 'Committer email'
-      opt '--name NAME', 'Committer name'
+      opt '--name NAME', 'Committer name', note: 'defaults to the current git commit author name'
+      opt '--email EMAIL', 'Committer email', note: 'defaults to the current git commit author email'
       opt '--committer_from_gh', 'Use the token\'s owner name and email for the commit', requires: :github_token
       opt '--deployment_file', 'Enable creation of a deployment-info file'
       opt '--github_url URL', default: 'github.com'
@@ -174,24 +174,20 @@ module Dpl
       end
 
       def name
-        return @name if @name
         str = super if name?
         str ||= user.name if committer_from_gh?
         str ||= git_author_name
         str = "#{str} (via Travis CI)" if ENV['TRAVIS'] && !name?
-        @name = str
-      end
-
-      def via_travis(str)
         str
       end
+      memoize :name
 
       def email
-        return @email if @email
         str = super if email?
         str ||= user.email if committer_from_gh?
-        @email = str || git_author_email
+        str || git_author_email
       end
+      memoize :email
 
       def commit_message
         interpolate(super)

@@ -7,6 +7,7 @@ require 'dpl/helper/cmd'
 require 'dpl/helper/config_file'
 require 'dpl/helper/env'
 require 'dpl/helper/interpolate'
+require 'dpl/helper/memoize'
 require 'dpl/helper/squiggle'
 require 'dpl/provider/dsl'
 require 'dpl/provider/examples'
@@ -81,7 +82,7 @@ module Dpl
 
   class Provider < Cl::Cmd
     extend Dsl, Forwardable
-    include Assets, Env, ConfigFile, FileUtils, Interpolate, Squiggle
+    include Assets, Env, ConfigFile, FileUtils, Interpolate, Memoize, Squiggle
 
     class << self
       def examples
