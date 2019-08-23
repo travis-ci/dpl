@@ -107,12 +107,14 @@ module Dpl
           obj.send(mod, lookup(key))
         elsif key.to_s =~ ENV_VAR
           ENV[key.to_s.sub('$', '')]
-        elsif key.to_s =~ UPCASE
+        elsif key.to_s =~ UPCASE && obj.class.const_defined?(key)
           obj.class.const_get(key)
         elsif args.is_a?(Hash) && args.key?(key)
           args[key]
-        else
+        elsif obj.respond_to?(key, true)
           obj.send(key)
+        else
+          raise KeyError, key
         end
       end
 
