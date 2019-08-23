@@ -7,6 +7,7 @@ require 'dpl/helper/cmd'
 require 'dpl/helper/config_file'
 require 'dpl/helper/env'
 require 'dpl/helper/interpolate'
+require 'dpl/helper/memoize'
 require 'dpl/helper/squiggle'
 require 'dpl/provider/dsl'
 require 'dpl/provider/examples'
@@ -81,7 +82,7 @@ module Dpl
 
   class Provider < Cl::Cmd
     extend Dsl, Forwardable
-    include Assets, Env, ConfigFile, FileUtils, Interpolate, Squiggle
+    include Assets, Env, ConfigFile, FileUtils, Interpolate, Memoize, Squiggle
 
     class << self
       def examples
@@ -168,12 +169,13 @@ module Dpl
       :validate_runtimes, :user_agent
 
     def_delegators :ctx, :apt_get, :gem_require, :npm_install, :pip_install,
-      :build_dir, :build_number, :repo_slug, :encoding, :git_branch,
-      :git_commit_msg, :git_dirty?, :git_log, :git_ls_files, :git_ls_remote?,
-      :git_remote_urls, :git_rev_parse, :git_sha, :git_tag, :machine_name,
-      :node_version, :npm_version, :sleep, :ssh_keygen, :success?, :mv,
-      :tmp_dir, :which, :logger, :rendezvous, :file_size, :write_file,
-      :write_netrc, :last_out, :last_err, :test?, :tty?
+      :build_dir, :build_number, :repo_slug, :encoding, :git_author_email,
+      :git_author_name, :git_branch, :git_commit_msg, :git_dirty?, :git_log,
+      :git_ls_files, :git_ls_remote?, :git_remote_urls, :git_rev_parse,
+      :git_sha, :git_tag, :machine_name, :node_version, :npm_version, :sleep,
+      :ssh_keygen, :success?, :mv, :tmp_dir, :which, :logger, :rendezvous,
+      :file_size, :write_file, :write_netrc, :last_out, :last_err, :test?,
+      :tty?
 
     attr_reader :repo_name, :key_name
 

@@ -21,13 +21,13 @@ module Dpl
       opt '--keep_history', 'Create incremental commit instead of doing push force', default: true
       opt '--commit_message MSG', default: 'Deploy %{project_name} to %{url}:%{target_branch}'
       opt '--allow_empty_commit', 'Allow an empty commit to be created', requires: :keep_history
-      opt '--committer_from_gh', 'Use the token\'s owner name and email for commit. Overrides the email and name options'
       opt '--verbose', 'Be verbose about the deploy process'
       opt '--local_dir DIR', 'Directory to push to GitHub Pages', default: '.'
-      opt '--fqdn FQDN', 'Writes your website\'s domain name to the CNAME file'
+      opt '--fqdn FQDN', 'Write the given domain name to the CNAME file'
       opt '--project_name NAME', 'Used in the commit message only (defaults to fqdn or the current repo slug)'
-      opt '--email EMAIL', 'Committer email', default: 'deploy@travis-ci.org'
-      opt '--name NAME', 'Committer name', default: 'Deploy Bot'
+      opt '--name NAME', 'Committer name', note: 'defaults to the current git commit author name'
+      opt '--email EMAIL', 'Committer email', note: 'defaults to the current git commit author email'
+      opt '--committer_from_gh', 'Use the token\'s owner name and email for the commit', requires: :github_token
       opt '--deployment_file', 'Enable creation of a deployment-info file'
       opt '--github_url URL', default: 'github.com'
 
@@ -46,7 +46,7 @@ module Dpl
            git_init:            'Initializing local git repo',
            git_checkout:        'Checking out orphan branch %{target_branch}',
            copy_files:          'Copying %{src_dir} contents to %{work_dir}',
-           git_config:          'Configuring git committer to be %{committer_name} <%{committer_email}>',
+           git_config:          'Configuring git committer to be %{name} <%{email}>',
            prepare:             'Preparing to deploy %{target_branch} branch to gh-pages',
            git_push:            'Pushing to %{url}'
 
@@ -55,12 +55,12 @@ module Dpl
            git_checkout:        'git checkout --orphan "%{target_branch}"',
            check_deploy_key:    'ssh -i %{key} -T %{git_url}',
            copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
-           git_config_email:    'git config user.email "%{committer_email}"',
-           git_config_name:     'git config user.name "%{committer_name}"',
-           deployment_file:     'touch "deployed at %{now} by %{committer_name}"',
+           git_config_email:    'git config user.email "%{email}"',
+           git_config_name:     'git config user.name "%{name}"',
+           deployment_file:     'touch "deployed at %{now} by %{name}"',
            cname:               'echo "%{fqdn}" > CNAME',
            git_add:             'git add -A .',
-           git_commit:          'git commit%{git_commit_opts} -qm "%{commit_message}"',
+           git_commit:          'git commit %{git_commit_opts} -qm "%{commit_message}"',
            git_show:            'git show --stat-count=10 HEAD',
            git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
 
@@ -77,6 +77,7 @@ module Dpl
       def setup
         info :setup_dir, src_dir
         info :committer_from_gh if committer_from_gh?
+        info :git_config
       end
 
       def prepare
@@ -127,7 +128,6 @@ module Dpl
       end
 
       def git_config
-        info :git_config
         shell :git_config_name, echo: false
         shell :git_config_email, echo: false
       end
@@ -173,13 +173,21 @@ module Dpl
         ' --force' unless keep_history?
       end
 
-      def committer_name
-        committer_from_gh? ? user.name || name : name
+      def name
+        str = super if name?
+        str ||= user.name if committer_from_gh?
+        str ||= git_author_name
+        str = "#{str} (via Travis CI)" if ENV['TRAVIS'] && !name?
+        str
       end
+      memoize :name
 
-      def committer_email
-        committer_from_gh? ? user.email || email : email
+      def email
+        str = super if email?
+        str ||= user.email if committer_from_gh?
+        str || git_author_email
       end
+      memoize :email
 
       def commit_message
         interpolate(super)
@@ -187,10 +195,6 @@ module Dpl
 
       def project_name
         super || fqdn || repo_slug
-      end
-
-      def name
-        "#{super} (from Travis CI)"
       end
 
       def sufficient_scopes?

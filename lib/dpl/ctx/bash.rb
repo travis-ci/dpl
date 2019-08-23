@@ -398,6 +398,16 @@ module Dpl
         `git log #{git_sha} -n 1 --pretty=%B`.chomp
       end
 
+      # Returns the committer name of the commit `git_sha`.
+      def git_author_name
+        `git log #{git_sha} -n 1 --pretty=%an`.chomp
+      end
+
+      # Returns the comitter email of the commit `git_sha`.
+      def git_author_email
+        `git log #{git_sha} -n 1 --pretty=%ae`.chomp
+      end
+
       # Whether or not the git working directory is dirty
       def git_dirty?
         !Kernel.system('git diff --quiet')

@@ -109,6 +109,14 @@ module Dpl
         'commit msg'
       end
 
+      def git_author_name
+        'author name'
+      end
+
+      def git_author_email
+        'author email'
+      end
+
       def git_dirty?
         true
       end
