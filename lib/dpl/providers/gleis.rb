@@ -7,7 +7,6 @@ module Dpl
         tbd
       str
 
-      gem 'thor', '~> 0.20.3', require: 'thor'
       gem 'gleis', '~> 0.6.0'
 
       opt '--app APP',       'Gleis application to upload to', default: :repo_name
