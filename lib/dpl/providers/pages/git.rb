@@ -17,7 +17,7 @@ module Dpl
 
         opt '--repo SLUG', 'Repo slug', default: :repo_slug
         opt '--github_token TOKEN', 'GitHub oauth token with repo permission', secret: true
-        opt '--deploy_key KEY', 'A base64-encoded, private deploy key with write access to the repository', note: 'RSA keys are too long to fit into a Travis CI secure variable, but ECDSA-521 fits', see: 'https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys'
+        opt '--deploy_key PATH', 'Path to a file containing a private deploy key with write access to the repository', see: 'https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys'
         opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
         opt '--keep_history', 'Create incremental commit instead of doing push force', default: true
         opt '--commit_message MSG', default: 'Deploy %{project_name} to %{url}:%{target_branch}'
@@ -37,7 +37,8 @@ module Dpl
         msgs login:               'Authenticated as %s',
              invalid_token:       'The provided GitHub token is invalid (error: %s)',
              insufficient_scopes: 'Dpl does not have permission to access %{url} using the provided GitHub token. Please make sure the token have the repo or public_repo scope.',
-             setup_deploy_key:    'Setting up deploy key in %{path}',
+             setup_deploy_key:    'Moving deploy key %{deploy_key} to %{path}',
+             check_deploy_key:    'Checking deploy key',
              deploy:              'Deploying branch %{target_branch} to %{github_url}',
              keep_history:        'The deployment is configured to preserve the target branch if it exists on remote.',
              work_dir:            'Using temporary work directory %{work_dir}',
@@ -54,7 +55,7 @@ module Dpl
         cmds git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{remote_url}" . > /dev/null 2>&1',
              git_init:            'git init .',
              git_checkout:        'git checkout --orphan "%{target_branch}"',
-             check_deploy_key:    'ssh -i %{key} -T %{git_url}',
+             check_deploy_key:    'ssh -i %{key} -T git@github.com 2>&1 | grep successful > /dev/null',
              copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
              git_config_email:    'git config user.email "%{email}"',
              git_config_name:     'git config user.name "%{name}"',
@@ -151,9 +152,10 @@ module Dpl
         end
 
         def setup_deploy_key
-          path = "~/.dpl/deploy_key"
+          path = '~/.dpl/deploy_key'
           info :setup_deploy_key, path: path
-          write_file path, decoded_deploy_key, 0600
+          mv deploy_key, path
+          chmod 0600, path
           setup_git_ssh path
           shell :check_deploy_key, key: path
         end

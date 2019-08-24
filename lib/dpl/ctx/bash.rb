@@ -9,6 +9,8 @@ require 'dpl/support/version'
 module Dpl
   module Ctx
     class Bash < Cl::Ctx
+      include FileUtils
+
       attr_accessor :folds, :stdout, :stderr, :last_out, :last_err
 
       def initialize(stdout = $stdout, stderr = $stderr)

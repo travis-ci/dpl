@@ -173,7 +173,7 @@ module Dpl
       :git_author_name, :git_branch, :git_commit_msg, :git_dirty?, :git_log,
       :git_ls_files, :git_ls_remote?, :git_remote_urls, :git_rev_parse,
       :git_sha, :git_tag, :machine_name, :node_version, :npm_version, :sleep,
-      :ssh_keygen, :success?, :mv, :tmp_dir, :which, :logger, :rendezvous,
+      :ssh_keygen, :success?, :tmp_dir, :which, :logger, :rendezvous,
       :file_size, :write_file, :write_netrc, :last_out, :last_err, :test?,
       :tty?
 
@@ -608,11 +608,15 @@ module Dpl
     end
 
     def mkdir_p(path)
-      super(expand(path))
+      FileUtils.mkdir_p(expand(path))
     end
 
     def chmod(perm, path)
       super(perm, expand(path))
+    end
+
+    def mv(src, dest)
+      super(expand(src), expand(dest))
     end
 
     def rm_rf(path)
