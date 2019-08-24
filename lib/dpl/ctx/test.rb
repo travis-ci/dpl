@@ -207,6 +207,14 @@ module Dpl
         cmds << [:mv, src, dest].join(' ')
       end
 
+      def rm_rf(path)
+        cmds << [:rm_rf, path].join(' ')
+      end
+
+      def chmod(perm, path)
+        cmds << [:chmod, perm, path].join(' ')
+      end
+
       def write_file(path, content, chmod = nil)
         path = File.expand_path(path)
         path = path.sub("#{File.expand_path('~')}", './home')
