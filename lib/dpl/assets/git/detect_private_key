@@ -1,0 +1,8 @@
+#!/bin/sh
+
+for file in $(git ls-files --cached); do
+  if cat $file | head -n 1 | grep 'BEGIN' | grep 'PRIVATE KEY' > /dev/null; then
+    echo "Commit rejected: private key detected in $file."
+    exit 1
+  fi
+done
