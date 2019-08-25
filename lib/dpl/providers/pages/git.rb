@@ -62,6 +62,7 @@ module Dpl
              deployment_file:     'touch "deployed at %{now} by %{name}"',
              cname:               'echo "%{fqdn}" > CNAME',
              git_add:             'git add -A .',
+             git_commit_hook:     'cp %{path} .git/hooks/pre-commit',
              git_commit:          'git commit %{git_commit_opts} -qm "%{commit_message}"',
              git_show:            'git show --stat-count=10 HEAD',
              git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
@@ -73,7 +74,7 @@ module Dpl
              git_push:            'Failed to push the build to %{url}:%{target_branch}'
 
         def login
-          github_token? ? login_token : login_deploy_key
+          github_token? ? login_token : setup_deploy_key
         end
 
         def setup
@@ -108,8 +109,13 @@ module Dpl
           error :invalid_token, e.message
         end
 
-        def login_deploy_key
-          setup_deploy_key if deploy_key?
+        def setup_deploy_key
+          path = '~/.dpl/deploy_key'
+          info :setup_deploy_key, path: path
+          mv deploy_key, path
+          chmod 0600, path
+          setup_git_ssh path
+          shell :check_deploy_key, key: path
         end
 
         def git_clone?
@@ -136,6 +142,7 @@ module Dpl
 
         def git_commit
           info :prepare
+          shell :git_commit_hook, path: asset(:git, :detect_private_key).path, echo: false if deploy_key?
           shell :deployment_file if deployment_file?
           shell :cname if fqdn?
           shell :git_add
@@ -149,19 +156,6 @@ module Dpl
 
         def git_status
           shell 'git status'
-        end
-
-        def setup_deploy_key
-          path = '~/.dpl/deploy_key'
-          info :setup_deploy_key, path: path
-          mv deploy_key, path
-          chmod 0600, path
-          setup_git_ssh path
-          shell :check_deploy_key, key: path
-        end
-
-        def decoded_deploy_key
-          Base64.decode64(deploy_key)
         end
 
         def git_branch_exists?
