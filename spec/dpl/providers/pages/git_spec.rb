@@ -2,11 +2,14 @@ describe Dpl::Providers::Pages::Git do
   let(:args)    { |e| %w(--github_token token) + args_from_description(e) }
   let(:user)    { JSON.dump(login: 'login', name: 'name', email: 'email') }
   let(:headers) { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
+  let(:home)    { File.expand_path('~') }
   let!(:cwd)    { File.expand_path('.') }
   let(:tmp)     { File.expand_path('tmp') }
 
   env FOO: 'foo',
       TRAVIS: true
+
+  file 'key'
 
   before { stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers: headers) }
   before { subject.run }
@@ -96,13 +99,13 @@ describe Dpl::Providers::Pages::Git do
     it { should have_run 'git commit -qm "msg travis-ci/dpl foo"' }
   end
 
-  describe 'given --deploy_key a2V5Cg==', record: true do
+  describe 'given --deploy_key ./key', record: true do
     let(:args) { |e| args_from_description(e) }
-    it { should have_run '[info] Setting up deploy key in ~/.dpl/deploy_key' }
+    it { should have_run '[info] Moving deploy key ./key to ~/.dpl/deploy_key' }
     it { should have_run '[info] Setting up git-ssh' }
-    it { should have_run '[info] $ ssh -i ~/.dpl/deploy_key -T git@github.com:travis-ci/dpl.git' }
-    it { should have_run 'ssh -i ~/.dpl/deploy_key -T git@github.com:travis-ci/dpl.git' }
-    it { should have_run '[info] Pushing to github.com/travis-ci/dpl.git' }
+    it { should have_run '[info] $ ssh -i ~/.dpl/deploy_key -T git@github.com 2>&1 | grep successful > /dev/null' }
+    it { should have_run 'ssh -i ~/.dpl/deploy_key -T git@github.com 2>&1 | grep successful > /dev/null' }
+    it { should have_run %r(cp .*lib/dpl/assets/git/detect_private_key .git/hooks/pre-commit) }
     it { should have_run 'git push --quiet "git@github.com:travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
     it { should have_run_in_order }
   end
