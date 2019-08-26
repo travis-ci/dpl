@@ -6,7 +6,7 @@ require 'json'
 $stdout.sync = true
 
 expected = ENV['ID']
-url = 'https://packagecloud.io/api/v1/repos/dpl-test/dpl-test/package/gem/dpl_test/0.0.1.dev.pre.2a3ff7cb3207214e072c4fc61f32ff8d.json'
+url = "https://packagecloud.io/api/v1/repos/dpl-test/dpl-test/package/gem/dpl_test/0.0.1.dev.pre.#{ENV['ID']}.json"
 
 def poll(url)
   URI.parse(url).read(http_basic_authentication: [ENV['PACKAGECLOUD_TOKEN'], ''])
