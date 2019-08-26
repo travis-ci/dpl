@@ -40,12 +40,24 @@ def post(uri, body, opts)
   http.request(req)
 end
 
-SKIP = /(azure_web_apps|cloud66|datica|npm-github|snap)/
+SKIP = [
+  'azure_web_apps', # trial account expired
+  'cloud66',        # unfinished
+  'datica',         # no account
+  'engineyard',     # trial account expired
+  'npm-github',     # no trial account yet
+  'openshift',      # trial account expired
+  'snap'            # unfinished
+]
+
+def skip?(path)
+  SKIP.any? { |name| path.include?(name) }
+end
 
 def paths
   glob = ARGV.any? ? ARGV.join(',') : '*'
   paths = Dir[".travis/providers/{#{glob}}/*.yml"].sort
-  paths = paths.reject { |path| path =~ SKIP }
+  paths = paths.reject { |path| skip?(path) }
   abort "No configs found for #{glob}" if paths.empty?
   paths
 end
