@@ -24,6 +24,10 @@ describe Dpl::Providers::S3 do
     it { should create_client endpoint: URI.parse('https://host.com') }
   end
 
+  describe 'given --force_path_style' do
+    it { should create_client force_path_style: true }
+  end
+
   describe 'given --region us-west-1' do
     it { should create_client region: 'us-west-1' }
   end
