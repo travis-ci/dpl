@@ -87,6 +87,11 @@ describe Dpl::Providers::Pages::Git do
     it { should have_run 'git commit -qm "Deploy project_name to github.com/travis-ci/dpl.git:gh-pages"' }
   end
 
+  describe 'given project_name with a double quote' do
+    let(:args) { |e| %w(--github_token token --project_name project"name) }
+    it { should have_run 'git commit -qm "Deploy project\"name to github.com/travis-ci/dpl.git:gh-pages"' }
+  end
+
   describe 'given --name other' do
     it { should have_run 'git config user.name "other"' }
   end
