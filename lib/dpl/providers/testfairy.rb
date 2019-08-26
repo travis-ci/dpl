@@ -13,7 +13,7 @@ module Dpl
         tbd
       str
 
-      gem 'json', '~> 2.2.0'
+      gem 'json'
       gem 'multipart-post', '~> 2.0.0', require: 'net/http/post/multipart'
 
       opt '--api_key KEY', 'TestFairy API key', required: true, secret: true
