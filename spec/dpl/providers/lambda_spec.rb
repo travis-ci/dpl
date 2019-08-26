@@ -23,7 +23,7 @@ describe Dpl::Providers::Lambda do
   # opt '--dot_match',                  'Include hidden .* files to the zipped archive'
 
   describe 'function does not exist' do
-    let(:required) { %w(--access_key_id id --secret_access_key key --function_name func --role role --handler handler) }
+    let(:required) { %w(--access_key_id id --secret_access_key key --function_name func --role role --handler_name handler) }
     let(:exists) { false }
 
     before { subject.run }
@@ -44,7 +44,7 @@ describe Dpl::Providers::Lambda do
       it { should create_function TracingConfig: { Mode: 'PassThrough' } }
     end
 
-    describe 'given --module_name other --handler handler' do
+    describe 'given --module_name other --handler_name handler' do
       it { should create_function Handler: 'other.handler' }
     end
 
