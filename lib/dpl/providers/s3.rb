@@ -38,6 +38,7 @@ module Dpl
       opt '--default_text_charset CHARSET', 'Default character set to append to the content-type of text files'
       opt '--max_threads NUM', 'The number of threads to use for S3 file uploads', default: 5, max: 15, type: :integer
       opt '--overwrite', 'Whether or not to overwrite existing files', default: true
+      opt '--force_path_style', 'Whether to force keeping the bucket name on the path'
       opt '--verbose', 'Be verbose about uploading files'
       # how come there is no glob or file option?
 
@@ -101,7 +102,7 @@ module Dpl
         end
 
         def upload_file(file, opts)
-          object = s3.bucket(bucket).object(upload_path(file))
+          object = bucket.object(upload_path(file))
           return warn :upload_skipped, file: file if !overwrite && object.exists?
           info :upload_file, file, upload_dir || '/', to_pairs(opts)
           object.upload_file(file, opts) || warn(:upload_failed, file)
@@ -110,7 +111,7 @@ module Dpl
         def index_document_suffix
           info :index_document_suffix, super
           body = { website_configuration: { index_document: { suffix: super } } }
-          s3.bucket(bucket).website.put(body)
+          bucket.website.put(body)
         end
 
         def upload_path(file)
@@ -179,8 +180,21 @@ module Dpl
           end
         end
 
-        def s3
-          @s3 ||= Aws::S3::Resource.new(compact(region: region, credentials: credentials, endpoint: endpoint))
+        def bucket
+          @bucket ||= Aws::S3::Resource.new(client: client).bucket(super)
+        end
+
+        def client
+          Aws::S3::Client.new(s3_opts)
+        end
+
+        def s3_opts
+          compact(
+            region: region,
+            credentials: credentials,
+            endpoint: endpoint,
+            force_path_style: force_path_style?
+          )
         end
 
         def credentials
