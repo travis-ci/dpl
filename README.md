@@ -133,7 +133,7 @@ Dpl supports the following providers:
   * [Script](#script)
   * [Snap](#snap)
   * [Surge](#surge)
-  * [Testfairy](#testfairy)
+  * [TestFairy](#testfairy)
   * [Transifex](#transifex)
 
 
@@ -1742,20 +1742,18 @@ Examples:
   dpl surge --login email --token token --domain name --project path --run cmd
 ```
 
-### Testfairy
+### TestFairy
 
 ```
 Usage: dpl testfairy [options]
 
 Summary:
 
-  Testfairy deployment provider
+  TestFairy deployment provider
 
 Description:
 
-  tbd
-
-  Support for deployments to Testfairy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
+  Support for deployments to TestFairy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1767,18 +1765,6 @@ Options:
                                       group1,group1)
   --[no-]notify                       Send an email with a changelog to your users
   --[no-]auto_update                  Automaticall upgrade all the previous installations of this app this version
-  --video_quality QUALITY             Video quality settings (one of: high, medium or low (type: string, default:
-                                      high)
-  --screenshot_interval INTERVAL      Interval at which screenshots are taken, in seconds (type: integer, known
-                                      values: 1, 2, 10)
-  --max_duration DURATION             Maximum session recording length (max: 24h) (type: string, default: 10m, e.g.:
-                                      20m or 1h)
-  --[no-]data_only_wifi               Send video and recorded metrics only when connected to a wifi network.
-  --[no-]record_on_background         Collect data while the app is on background.
-  --[no-]video                        Video recording settings (default: true)
-  --metrics METRICS                   Comma_separated list of metrics to record (type: string, see:
-                                      http://docs.testfairy.com/Upload_API.html)
-  --[no-]icon_watermark               Add a small watermark to the app icon
   --advanced_options OPTS             Comma_separated list of advanced options (type: string, e.g.: option1,option2)
 
 Common Options:
