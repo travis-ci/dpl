@@ -53,10 +53,11 @@
 * Accept `auth` as an `--auth_method` in order to force writing the token to `_auth` in `~/.npmrc`.
 
 ### pages
-* Accept a `--deploy_keys` as an alternative to the GitHub token.
+* Accept a `--deploy_key` as an alternative to the GitHub token (expects a path to a file).
 * Accept a commit message on `--commit_message`, allow interpolating variables (e.g. as `$TRAVIS_BUILD_NUMBER`).
 * Check if the target branch already exists and preserves git history by default. `--no-keep_history` can be passed in order to erase history on the target branch.
 * Include symbolic links.
+* Add an alternative strategy for deploying via GitHub's pages HTTP API
 
 ### pypi
 * Accept `--no-remove_build_dir` in order to skip removing the build dir (`./dist`).
@@ -68,5 +69,6 @@
 
 ### s3
 * Accept `--no-overwrite` in order to not overwrite existing files.
+* Accept `--force_path_style` in order to use the bucket name on the path, rather than the subcomain
 * Print out dots instead of filenames by default, and accept `--verbose` for printing out all filenames uploaded.
 * Use `application/octet-stream` as a default content type if a content type cannot be determined.
