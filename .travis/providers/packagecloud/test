@@ -6,7 +6,7 @@ require 'json'
 $stdout.sync = true
 
 expected = ENV['ID']
-url = 'https://packagecloud.io/api/v1/repos/dpl-test/dpl-test/package/gem/dpl_test/versions.json'
+url = 'https://packagecloud.io/api/v1/repos/dpl-test/dpl-test/package/gem/dpl_test/0.0.1.dev.pre.2a3ff7cb3207214e072c4fc61f32ff8d.json'
 
 def poll(url)
   URI.parse(url).read(http_basic_authentication: [ENV['PACKAGECLOUD_TOKEN'], ''])
@@ -17,10 +17,10 @@ end
 10.times do
   puts "Checking #{url}"
   data = JSON.load(poll(url))
-  actual = data.map { |version| version['version'].split('.').last }
+  actual = data['version'].split('.').last
   puts "expected: #{expected.inspect}"
   puts "actual: #{actual.inspect}"
-  exit 0 if actual.include?(expected)
+  exit 0 if actual == expected
   sleep 5
 end
 
