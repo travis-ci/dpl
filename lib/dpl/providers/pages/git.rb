@@ -57,13 +57,13 @@ module Dpl
              git_checkout:        'git checkout --orphan "%{target_branch}"',
              check_deploy_key:    'ssh -i %{key} -T git@github.com 2>&1 | grep successful > /dev/null',
              copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
-             git_config_email:    'git config user.email "%{email}"',
-             git_config_name:     'git config user.name "%{name}"',
+             git_config_email:    'git config user.email %{quoted_email}',
+             git_config_name:     'git config user.name %{quoted_name}',
              deployment_file:     'touch "deployed at %{now} by %{name}"',
              cname:               'echo "%{fqdn}" > CNAME',
              git_add:             'git add -A .',
              git_commit_hook:     'cp %{path} .git/hooks/pre-commit',
-             git_commit:          'git commit %{git_commit_opts} -qm "%{commit_message}"',
+             git_commit:          'git commit %{git_commit_opts} -qm %{quoted_commit_message}',
              git_show:            'git show --stat-count=10 HEAD',
              git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
 
