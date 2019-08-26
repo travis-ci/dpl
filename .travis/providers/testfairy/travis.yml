@@ -1,0 +1,18 @@
+language: shell
+
+script:
+  true
+
+env:
+  - TESTFAIRY_API_KEY=e022f3e208b02ac5fa8e4e46a00ce7787c22d4db
+
+before_deploy:
+  - .travis/providers/testfairy/prepare
+
+deploy:
+  - provider: testfairy
+    api-key: ${TESTFAIRY_API_KEY}
+    app-file: tmp/dpl_test/${ID}.apk
+
+after_deploy:
+  - .travis/providers/testfairy/test || TRAVIS_TEST_RESULT=$?

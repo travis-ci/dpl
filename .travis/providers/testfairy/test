@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'open-uri'
+require 'base64'
+
+$stdout.sync = true
+
+expected = ENV['ID']
+url = 'https://api.testfairy.com/api/1/projects/6820850/builds'
+
+def headers
+  enc = Base64.strict_encode64('travis-dpl-tests@testfairy.com' + ':' + ENV['TESTFAIRY_API_KEY'])
+
+  {
+    'Authorization' => "Basic #{enc}"
+  }
+end
+
+uri = URI.parse(url)
+data = JSON.parse(uri.read(headers))
+filename = File.basename(data["builds"][0]["appUrl"])
+filename.sub! ".apk", ""
+exit 0 if filename == expected
+
+abort 'failed'
+
