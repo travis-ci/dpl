@@ -4,7 +4,7 @@ script:
   true
 
 env:
-  - TESTFAIRY_API_KEY=e022f3e208b02ac5fa8e4e46a00ce7787c22d4db
+  - secure: "KbgeC+baSQKcldV2TPC6C295LB2ufaReuC5Wcx/r+pSwesXNG15phNltwZL9TjptxPxgllbC4LncopL8vBkh9tvrNLkBvXFeVu4meHRW6opFeHSjsaQOQr0zwcAJiUt5Pp4R+E5XbiIbFpZKUU6vY5oeyIEt45MhyxjciKYAUUI="
 
 before_deploy:
   - .travis/providers/testfairy/prepare

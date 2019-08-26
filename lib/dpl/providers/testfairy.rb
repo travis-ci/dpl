@@ -7,6 +7,8 @@ module Dpl
     class Testfairy < Provider
       status :alpha
 
+      full_name 'TestFairy'
+
       description sq(<<-str)
         tbd
       str
