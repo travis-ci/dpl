@@ -58,7 +58,7 @@ run kubectl -n deis wait --for=condition=available --timeout=600s deployment/dei
 
 id=$(docker ps | grep kind-1-control-plane | awk '{ print $1 }')
 ip=$(docker inspect $id | grep '"IPAddress"' | head -n 1 | sed 's/[^0-9\.]//g')
-controller="deis.$ip.xip.io"
+controller="deis.$ip.nip.io"
 
 until run deis register $controller --username=admin --password=admin --email=dpl-test@travis-ci.com; do
   run kubectl -n deis get pods

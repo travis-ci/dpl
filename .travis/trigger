@@ -44,12 +44,14 @@ SKIP = [
   'azure_web_apps', # trial account expired
   'cloud66',        # unfinished
   'datica',         # no account
+  'hephy',          # keeps failing
   'npm-github',     # no trial account yet
   'openshift',      # trial account expired
   'snap'            # unfinished
 ]
 
 def skip?(path)
+  return false if ARGV.any? { |name| path.include?(name) }
   SKIP.any? { |name| path.include?(name) }
 end
 

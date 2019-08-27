@@ -13,7 +13,7 @@ before_deploy:
 
 deploy:
   - provider: hephy
-    controller: deis.172.17.0.2.xip.io
+    controller: deis.172.17.0.2.nip.io
     username: dpl-user
     password: dpl-pass
     app: dpl-test
