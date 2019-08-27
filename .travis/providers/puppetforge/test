@@ -6,13 +6,13 @@ require 'json'
 $stdout.sync = true
 
 expected = "0.0.0-test.#{ENV['ID']}"
-url = 'https://forgeapi.puppet.com/v3/modules/dpltest-test'
+url = "https://forgeapi.puppet.com/v3/releases/dpltest-test-#{expected}"
 
 def poll(url)
   puts "Checking #{url}"
   uri = URI.parse(url)
   data = JSON.load(uri)
-  data['current_release']['version']
+  data['version']
 rescue => e
   puts e.message
   nil

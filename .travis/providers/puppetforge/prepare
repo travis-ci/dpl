@@ -11,7 +11,7 @@ chdir dir
 File.write 'metadata.json', <<~str
   {
     "name": "dpltest-test",
-    "version": "0.0.0-test.#{ENV['ID']}",
+    "version": "0.0.#{ENV['TRAVIS_BUILD_NUMBER']}-test.#{ENV['ID']}",
     "author": "Dpl Test",
     "summary": "Dpl Test Module",
     "license": "MIT",
