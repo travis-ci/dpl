@@ -152,6 +152,7 @@ module Dpl
     opt '--stage NAME',   'Execute the given stage(s) only', type: :array, internal: true, default: STAGES
     opt '--backtrace',    'Print the backtrace for exceptions', internal: true
     opt '--fold',         'Wrap log output in folds', internal: true
+    opt '--edge',         internal: true
 
     msgs before_install:  'Installing deployment dependencies',
          before_setup:    'Setting the build environment up for the deployment',
