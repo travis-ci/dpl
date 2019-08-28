@@ -131,6 +131,20 @@ module Support
         HaveRequested.new(opts.merge(client: client, operation: operation))
       end
 
+      # data pipelines
+
+      def create_pipeline(body = nil)
+        have_requested(:create_pipeline, compact(body: body))
+      end
+
+      def update_pipeline(body = nil)
+        have_requested(:put_pipeline_definition, compact(body: body))
+      end
+
+      def delete_pipeline(body = nil)
+        have_requested(:delete_pipeline, compact(body: body))
+      end
+
       # elasticbeanstalk
 
       def create_app_version(body = nil)
