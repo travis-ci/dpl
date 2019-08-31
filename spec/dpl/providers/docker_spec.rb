@@ -4,8 +4,8 @@ describe Dpl::Providers::Docker do
   before { subject.run }
 
   describe 'by default', record: true do
-    it { should have_run '[info] $ docker login --username user --password 1******************* hub.docker.com' }
-    it { should have_run 'docker login --username user --password 12345 hub.docker.com' }
+    it { should have_run '[info] $ docker login --username user --password 1*******************' }
+    it { should have_run 'docker login --username user --password 12345' }
     it { should have_run '[info] Building docker image image from .' }
     it { should have_run '[info] $ docker build . --no-cache -t image' }
     it { should have_run 'docker build . --no-cache -t image' }

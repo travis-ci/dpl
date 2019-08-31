@@ -11,13 +11,16 @@ module Dpl
 
       env :docker
 
-      opt '--registry HOST', 'Docker registry hostname', default: 'hub.docker.com'
-      opt '--username NAME', 'Docker registry username', required: true
-      opt '--password PASS', 'Docker registry password', required: true, secret: true
+      required [:username, :password], :test
+
+      opt '--registry HOST', 'Docker registry hostname'
+      opt '--username NAME', 'Docker registry username'
+      opt '--password PASS', 'Docker registry password', secret: true
       opt '--context STR',   'Path or URL to the Dockerfile context', default: '.'
       opt '--image NAME',    'Name of the image to build', required: true
       opt '--build_arg ARG', 'Args to build the image with', type: :array
       opt '--target TAG',    'Target image name to tag the image with, and push to', type: :array, required: true
+      opt '--test', internal: true
 
       cmds build:  'docker build %{context} --no-cache -t %{image} %{build_args}',
            tag:    'docker tag %{image} %{target}',
@@ -30,7 +33,7 @@ module Dpl
            push:   'Pushing image %{target}'
 
       def login
-        shell :login
+        shell :login unless test?
       end
 
       def deploy
@@ -40,7 +43,7 @@ module Dpl
       end
 
       def finish
-        shell :logout, echo: false
+        shell :logout, echo: false unless test?
       end
 
       private
@@ -62,6 +65,12 @@ module Dpl
         def push
           target.each do |target|
             shell :push, target: target
+          end
+        end
+
+        def target
+          @target ||= super.map do |target|
+            registry? ? [registry, target].join('/') : target
           end
         end
     end
