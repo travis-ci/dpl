@@ -1,5 +1,5 @@
 describe Dpl::Providers::Releases do
-  let(:args)     { |e| %w(--api_key key --file one --file two) + args_from_description(e) }
+  let(:args)     { |e| %w(--api_key key) + args_from_description(e) }
   let(:headers)  { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
   let(:user)     { JSON.dump(login: 'login', name: 'name', email: 'email') }
   let(:releases) { JSON.dump([tag_name: 'tag', url: '/releases/1']) }
@@ -30,7 +30,6 @@ describe Dpl::Providers::Releases do
 
   matcher :release_json do
     match do |body|
-      # p symbolize(JSON.parse(body))
       expect(symbolize(JSON.parse(body))).to include(compact(
         repo: repo,
         name: name_,
@@ -79,10 +78,16 @@ describe Dpl::Providers::Releases do
     it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
   end
 
-  describe 'given --file one* --file_glob' do
-    it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
+  describe 'given --file one*' do
     it { should have_requested(:post, %r(/releases/1/assets\?name=one$)) }
     it { should have_requested(:post, %r(/releases/1/assets\?name=one_two$)) }
+  end
+
+  describe 'given --file one* --no-file_glob', run: false do
+    file 'one*'
+    before { subject.run }
+    it { should have_requested(:post, %r(/releases/1/assets\?name=one\*$)) }
+    it { should_not have_requested(:post, %r(/releases/1/assets\?name=one$)) }
   end
 
   describe 'given --prerelease' do
