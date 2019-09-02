@@ -9,7 +9,7 @@ require 'dpl'
 
 def opts_for(provider)
   opts = provider.opts.select(&:required?)
-  opts = opts + [provider.opts[provider.required.map(&:first).first]].compact
+  opts += provider.required.map(&:first).flatten.map { |opt| provider.opts[opt] }
   opts.map { |opt| opt_for(opt) }.join(' ')
 end
 
@@ -29,5 +29,4 @@ providers = keys.map { |key| Dpl::Provider[key] }
 
 providers.each do |provider|
   run "bin/dpl #{provider.registry_key} --stage install #{opts_for(provider)}"
-  # run 'gem list'
 end
