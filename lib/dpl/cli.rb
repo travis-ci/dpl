@@ -11,9 +11,11 @@ module Dpl
       args = untaint(args)
       args = with_provider_opt(args)
       super
-    rescue UnknownCmd
-      unknown_provider(args.first)
-    rescue Error => e
+    rescue UnknownCmd => e
+      unknown_provider(e)
+    rescue UnknownOption => e
+      unknown_option(e)
+    rescue Cl::Error, Error => e
       error(e)
     end
 
@@ -32,23 +34,29 @@ module Dpl
 
     def error(e)
       msg = "\e[31m#{e.message}\e[0m"
-      msg = [msg, *e.backtrace].join("\n") if e.backtrace?
+      msg = [msg, *e.backtrace].join("\n") if backtrace?(e)
       abort msg
     end
 
-    def unknown_provider(name)
-      msg = "\e[31mUnknown provider: #{name}\e[0m"
-      msg << "\nDid you mean: #{suggestions(name).join(', ')}?" if suggestions(name).any?
+    def backtrace?(e)
+      e.respond_to?(:backtrace?) && e.backtrace?
+    end
+
+    def unknown_provider(e)
+      msg = "\e[31m#{e.message}\e[0m"
+      msg << "\nDid you mean: #{e.suggestions.join(', ')}?" if e.suggestions.any?
+      abort msg
+    end
+
+    def unknown_option(e)
+      msg = "\e[31m#{e.message}\e[0m"
+      msg << "\nDid you mean: #{e.suggestions.join(', ')}?" if e.suggestions.any?
       abort msg
     end
 
     def suggestions(name)
       return [] unless defined?(DidYouMean)
       DidYouMean::SpellChecker.new(dictionary: providers).correct(name)
-    end
-
-    def providers
-      Cl::Cmd.registry.keys.map(&:to_s)
     end
   end
 end
