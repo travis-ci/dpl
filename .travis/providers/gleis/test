@@ -13,8 +13,8 @@ rescue StandardError => e
   puts e.message
 end
 
-20.times do
-  actual = poll(url)
+20.times do |i|
+  actual = poll("#{url}?#{expected}_i#{i}")
   puts "expected: #{expected.inspect}"
   puts "actual: #{actual.inspect}"
   exit 0 if actual == expected
