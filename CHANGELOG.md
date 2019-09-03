@@ -1,6 +1,20 @@
 # Changelog
 
-## dpl v2.0.0-alpha.1 (eta 2019-08-28)
+## Unreleased
+
+* Rescue `UnknownOption` and suggest known options on Ruby >= 2.4
+* Add a Cloudformation provider
+* Add a Convox provider
+
+### Releases
+
+* Make --file glob files by default, and default to `*`
+
+## dpl v2.0.0-alpha.2 (2019-08-28)
+
+* Add `--edge` as an internal flag in case `edge: true` was given in `.travis.yml`
+
+## dpl v2.0.0-alpha.1 (2019-08-27)
 
 * Default to not cleaning the git working directory, but accept `--cleanup` in order to clean up the git working directory.
 * Support a maturity model using dev, alpha, beta, stable.
