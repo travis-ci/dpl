@@ -12,8 +12,8 @@ describe Dpl::Providers::Gleis do
     it { should have_run 'gleis app git -a app -q' }
     it { should have_run '[info] $ gleis app status -a app' }
     it { should have_run 'gleis app status -a app' }
-    it { should have_run '[info] $ git push -f true HEAD:refs/heads/master' }
-    it { should have_run 'git push -f true HEAD:refs/heads/master' }
+    it { should have_run '[info] $ git push -f captured_stdout HEAD:refs/heads/master' }
+    it { should have_run 'git push -f captured_stdout HEAD:refs/heads/master' }
     it { should have_run_in_order }
   end
 
@@ -23,6 +23,6 @@ describe Dpl::Providers::Gleis do
   end
 
   describe 'given --verbose' do
-    it { should have_run 'git push -v -f true HEAD:refs/heads/master' }
+    it { should have_run 'git push -v -f captured_stdout HEAD:refs/heads/master' }
   end
 end
