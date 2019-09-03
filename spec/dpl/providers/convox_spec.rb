@@ -60,7 +60,7 @@ describe Dpl::Providers::Convox do
   end
 
   describe 'given --no-promote' do
-    it { should have_run "convox build --rack rack --app app --wait --id --description #{Shellwords.escape(JSON.dump(desc))}" }
+    it { should have_run "convox build --rack rack --app app --id --description #{Shellwords.escape(JSON.dump(desc))}" }
   end
 
   describe 'given --host host' do
