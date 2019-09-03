@@ -19,8 +19,8 @@ module Dpl
       opt '--username LOGIN', 'GitHub login name', alias: :user
       opt '--password PASS', 'GitHub password', secret: true
       opt '--repo SLUG', 'GitHub repo slug', default: :repo_slug
-      opt '--file FILE', 'File to release to GitHub', required: true, type: :array
-      opt '--file_glob', 'Interpret files as globs'
+      opt '--file GLOB', 'File or glob to release to GitHub', default: '*', type: :array
+      opt '--file_glob', 'Interpret files as globs', default: true
       opt '--overwrite', 'Overwrite files with the same name'
       opt '--prerelease', 'Identify the release as a prerelease'
       opt '--release_number NUM', 'Release number (overide automatic release detection)'

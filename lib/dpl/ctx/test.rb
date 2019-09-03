@@ -86,7 +86,7 @@ module Dpl
 
       def deprecate_opt(key, msg)
         msg = "please use #{msg}" if msg.is_a?(Symbol)
-        warn("deprecated option #{key} (#{msg})")
+        warn "Deprecated option #{key} used (#{msg})."
       end
 
       def repo_name
