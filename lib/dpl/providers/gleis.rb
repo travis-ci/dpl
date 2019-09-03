@@ -21,7 +21,7 @@ module Dpl
            logout:     'gleis auth logout',
            validate:   'gleis app status -a %{app}',
            add_key:    'gleis auth key add %{file} %{key_name}',
-           remove_key: 'gleis auth key remove dpl_%{key_name}',
+           remove_key: 'gleis auth key remove %{key_name}',
            git_url:    'gleis app git -a %{app} -q',
            deploy:     'git push %{push_opts} -f %{git_url} HEAD:refs/heads/master'
 
@@ -39,7 +39,7 @@ module Dpl
       end
 
       def setup
-        @git_url = shell :git_url
+        @git_url = shell :git_url, capture: true
       end
 
       def validate
