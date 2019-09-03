@@ -96,6 +96,7 @@ Dpl supports the following providers:
 
   * [Anynines](#anynines)
   * [Atlas](#atlas)
+  * [AWS CloudFormation](#aws-cloudformation)
   * [AWS Code Deploy](#aws-code-deploy)
   * [AWS Elastic Beanstalk](#aws-elastic-beanstalk)
   * [AWS Lambda](#aws-lambda)
@@ -110,10 +111,12 @@ Dpl supports the following providers:
   * [Cloud Files](#cloud-files)
   * [Cloud Foundry](#cloud-foundry)
   * [Cloud66](#cloud66)
+  * [Convox](#convox)
   * [Datica](#datica)
   * [Engineyard](#engineyard)
   * [Firebase](#firebase)
   * [GitHub Pages](#github-pages)
+  * [GitHub Pages (API)](#github-pages-api-)
   * [GitHub Releases](#github-releases)
   * [Google App Engine](#google-app-engine)
   * [Google Cloud Store](#google-cloud-store)
@@ -166,7 +169,7 @@ Common Options:
 
   --run CMD               Command to execute after the deployment finished successfully (type: array
                           (string, can be given multiple times))
-  --[no-]cleanup          Skip cleaning up build artifacts before the deployment
+  --cleanup               Skip cleaning up build artifacts before the deployment
   --help                  Get help on this command
 
 Examples:
@@ -211,13 +214,69 @@ Common Options:
 
   --run CMD            Command to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --[no-]cleanup       Skip cleaning up build artifacts before the deployment
+  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
 
   dpl atlas --app app --token token
   dpl atlas --app app --token token --paths path --address addr --include glob
+```
+
+### AWS CloudFormation
+
+```
+Usage: dpl cloudformation [options]
+
+Summary:
+
+  AWS CloudFormation deployment provider
+
+Description:
+
+  tbd
+
+  Support for deployments to AWS CloudFormation is in development. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
+
+Options:
+
+  --access_key_id ID           AWS Access Key ID (type: string, required: true)
+  --secret_access_key KEY      AWS Secret Key (type: string, required: true)
+  --region REGION              AWS Region to deploy to (type: string, default: us-east-1)
+  --template STR               CloudFormation template file (type: string, required: true, note: can be either
+                               a local path or an S3 URL)
+  --stack_name NAME            CloudFormation Stack Name. (type: string, required: true)
+  --stack_name_prefix STR      CloudFormation Stack Name Prefix. (type: string)
+  --[no-]promote               Deploy changes (default: true, note: otherwise a change set is created)
+  --role_arn ARN               AWS Role ARN (type: string)
+  --sts_assume_role ARN        AWS Role ARN for cross account deployments (assumed by travis using given AWS
+                               credentials). (type: string)
+  --capabilities STR           CloudFormation allowed capabilities (type: array (string, can be given multiple
+                               times), known values: CAPABILITY_IAM, CAPABILITY_NAMED_IAM,
+                               CAPABILITY_AUTO_EXPAND, see:
+                               https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateStack.html)
+  --[no-]wait                  Wait for CloutFormation to finish the stack creation and update (default: true)
+  --wait_timeout SEC           How many seconds to wait for stack creation and update. (type: integer, default:
+                               3600)
+  --create_timeout SEC         How many seconds to wait before the stack status becomes CREATE_FAILED (type:
+                               integer, default: 3600, note: valid only when creating a stack)
+  --session_token STR          AWS Session Access Token if using STS assume role (type: string, note: Not
+                               recommended on CI/CD)
+  --parameters STR             key=value pairs or ENV var names (type: array (string, can be given multiple
+                               times))
+  --output_file PATH           Path to output file to store CloudFormation outputs to (type: string)
+
+Common Options:
+
+  --run CMD                    Command to execute after the deployment finished successfully (type: array
+                               (string, can be given multiple times))
+  --cleanup                    Skip cleaning up build artifacts before the deployment
+  --help                       Get help on this command
+
+Examples:
+
+  dpl cloudformation --access_key_id id --secret_access_key key --template str --stack_name name
+  dpl cloudformation --access_key_id id --secret_access_key key --template str --stack_name name --region region
 ```
 
 ### AWS Code Deploy
@@ -259,7 +318,7 @@ Common Options:
 
   --run CMD                       Command to execute after the deployment finished successfully (type: array
                                   (string, can be given multiple times))
-  --[no-]cleanup                  Skip cleaning up build artifacts before the deployment
+  --cleanup                       Skip cleaning up build artifacts before the deployment
   --help                          Get help on this command
 
 Examples:
@@ -304,7 +363,7 @@ Common Options:
 
   --run CMD                           Command to execute after the deployment finished successfully (type: array
                                       (string, can be given multiple times))
-  --[no-]cleanup                      Skip cleaning up build artifacts before the deployment
+  --cleanup                           Skip cleaning up build artifacts before the deployment
   --help                              Get help on this command
 
 Examples:
@@ -373,7 +432,7 @@ Common Options:
 
   --run CMD                     Command to execute after the deployment finished successfully (type: array
                                 (string, can be given multiple times))
-  --[no-]cleanup                Skip cleaning up build artifacts before the deployment
+  --cleanup                     Skip cleaning up build artifacts before the deployment
   --help                        Get help on this command
 
 Examples:
@@ -416,7 +475,7 @@ Common Options:
 
   --run CMD                       Command to execute after the deployment finished successfully (type: array
                                   (string, can be given multiple times))
-  --[no-]cleanup                  Skip cleaning up build artifacts before the deployment
+  --cleanup                       Skip cleaning up build artifacts before the deployment
   --help                          Get help on this command
 
 Examples:
@@ -471,13 +530,14 @@ Options:
   --max_threads NUM                   The number of threads to use for S3 file uploads (type: integer, default: 5,
                                       max: 15)
   --[no-]overwrite                    Whether or not to overwrite existing files (default: true)
+  --[no-]force_path_style             Whether to force keeping the bucket name on the path
   --[no-]verbose                      Be verbose about uploading files
 
 Common Options:
 
   --run CMD                           Command to execute after the deployment finished successfully (type: array
                                       (string, can be given multiple times))
-  --[no-]cleanup                      Skip cleaning up build artifacts before the deployment
+  --cleanup                           Skip cleaning up build artifacts before the deployment
   --help                              Get help on this command
 
 Examples:
@@ -515,7 +575,7 @@ Common Options:
 
   --run CMD            Command to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --[no-]cleanup       Skip cleaning up build artifacts before the deployment
+  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
@@ -550,7 +610,7 @@ Common Options:
 
   --run CMD                Command to execute after the deployment finished successfully (type: array
                            (string, can be given multiple times))
-  --[no-]cleanup           Skip cleaning up build artifacts before the deployment
+  --cleanup                Skip cleaning up build artifacts before the deployment
   --help                   Get help on this command
 
 Examples:
@@ -592,7 +652,7 @@ Common Options:
 
   --run CMD                       Command to execute after the deployment finished successfully (type: array
                                   (string, can be given multiple times))
-  --[no-]cleanup                  Skip cleaning up build artifacts before the deployment
+  --cleanup                       Skip cleaning up build artifacts before the deployment
   --help                          Get help on this command
 
 Examples:
@@ -631,7 +691,7 @@ Common Options:
 
   --run CMD               Command to execute after the deployment finished successfully (type: array
                           (string, can be given multiple times))
-  --[no-]cleanup          Skip cleaning up build artifacts before the deployment
+  --cleanup               Skip cleaning up build artifacts before the deployment
   --help                  Get help on this command
 
 Examples:
@@ -657,14 +717,14 @@ Description:
 
 Options:
 
-  --token TOKEN       Cargo registry API token (type: string, required: true)
+  --token TOKEN      Cargo registry API token (type: string, required: true)
 
 Common Options:
 
-  --run CMD           Command to execute after the deployment finished successfully (type: array
-                      (string, can be given multiple times))
-  --[no-]cleanup      Skip cleaning up build artifacts before the deployment
-  --help              Get help on this command
+  --run CMD          Command to execute after the deployment finished successfully (type: array
+                     (string, can be given multiple times))
+  --cleanup          Skip cleaning up build artifacts before the deployment
+  --help             Get help on this command
 
 Examples:
 
@@ -691,17 +751,18 @@ Options:
 
   --user_id ID          Chef Supermarket user name (type: string, required: true)
   --client_key KEY      Client API key file name (type: string, required: true)
-  --name NAME           Cookbook name (type: string, alias: cookbook_name, note: defaults to the name
-                        given in metadata.json or metadata.rb)
+  --name NAME           Cookbook name (type: string, alias: cookbook_name (deprecated, please use name),
+                        note: defaults to the name given in metadata.json or metadata.rb)
   --category CAT        Cookbook category in Supermarket (type: string, required: true, alias:
-                        cookbook_category, see: https://docs.getchef.com/knife_cookbook_site.html#id12)
+                        cookbook_category (deprecated, please use category), see:
+                        https://docs.getchef.com/knife_cookbook_site.html#id12)
   --dir DIR             Directory containing the cookbook (type: string, default: .)
 
 Common Options:
 
   --run CMD             Command to execute after the deployment finished successfully (type: array
                         (string, can be given multiple times))
-  --[no-]cleanup        Skip cleaning up build artifacts before the deployment
+  --cleanup             Skip cleaning up build artifacts before the deployment
   --help                Get help on this command
 
 Examples:
@@ -740,7 +801,7 @@ Common Options:
 
   --run CMD             Command to execute after the deployment finished successfully (type: array
                         (string, can be given multiple times))
-  --[no-]cleanup        Skip cleaning up build artifacts before the deployment
+  --cleanup             Skip cleaning up build artifacts before the deployment
   --help                Get help on this command
 
 Examples:
@@ -781,7 +842,7 @@ Common Options:
 
   --run CMD                       Command to execute after the deployment finished successfully (type: array
                                   (string, can be given multiple times))
-  --[no-]cleanup                  Skip cleaning up build artifacts before the deployment
+  --cleanup                       Skip cleaning up build artifacts before the deployment
   --help                          Get help on this command
 
 Examples:
@@ -812,13 +873,56 @@ Common Options:
 
   --run CMD                    Command to execute after the deployment finished successfully (type: array
                                (string, can be given multiple times))
-  --[no-]cleanup               Skip cleaning up build artifacts before the deployment
+  --cleanup                    Skip cleaning up build artifacts before the deployment
   --help                       Get help on this command
 
 Examples:
 
   dpl cloud66 --redeployment_hook url
   dpl cloud66 --redeployment_hook url --run cmd --cleanup
+```
+
+### Convox
+
+```
+Usage: dpl convox [options]
+
+Summary:
+
+  Convox deployment provider
+
+Description:
+
+  tbd
+
+  Support for deployments to Convox is in development. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
+
+Options:
+
+  --host HOST            type: string, default: console.convox.com
+  --app APP              type: string, required: true
+  --rack RACK            type: string, required: true
+  --password PASS        type: string, required: true
+  --install_url URL      type: string, default: https://convox.com/cli/linux/convox
+  --[no-]update_cli
+  --[no-]create
+  --[no-]promote         default: true
+  --env VARS             type: array (string, can be given multiple times)
+  --env_file FILE        type: string
+  --description STR      type: string
+  --generation NUM       type: integer, default: 2
+
+Common Options:
+
+  --run CMD              Command to execute after the deployment finished successfully (type: array
+                         (string, can be given multiple times))
+  --cleanup              Skip cleaning up build artifacts before the deployment
+  --help                 Get help on this command
+
+Examples:
+
+  dpl convox --app app --rack rack --password pass
+  dpl convox --app app --rack rack --password pass --host host --install_url url
 ```
 
 ### Datica
@@ -845,7 +949,7 @@ Common Options:
 
   --run CMD            Command to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --[no-]cleanup       Skip cleaning up build artifacts before the deployment
+  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
@@ -885,7 +989,7 @@ Common Options:
 
   --run CMD            Command to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --[no-]cleanup       Skip cleaning up build artifacts before the deployment
+  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
@@ -925,7 +1029,7 @@ Common Options:
 
   --run CMD            Command to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --[no-]cleanup       Skip cleaning up build artifacts before the deployment
+  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
@@ -937,7 +1041,7 @@ Examples:
 ### GitHub Pages
 
 ```
-Usage: dpl pages [options]
+Usage: dpl pages git [options]
 
 Summary:
 
@@ -953,25 +1057,25 @@ Options:
 
   Either github_token, or deploy_key are required.
 
-  --github_token TOKEN           GitHub oauth token with repo permission (type: string)
-  --deploy_key KEY               A base64-encoded, private deploy key with write access to the repository (type:
-                                 string, note: RSA keys are too long to fit into a Travis CI secure variable, but
-                                 ECDSA-521 fits, see:
-                                 https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
   --repo SLUG                    Repo slug (type: string, default: repo slug)
+  --github_token TOKEN           GitHub oauth token with repo permission (type: string)
+  --deploy_key PATH              Path to a file containing a private deploy key with write access to the
+                                 repository (type: string, see:
+                                 https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
   --target_branch BRANCH         Branch to push force to (type: string, default: gh-pages)
   --[no-]keep_history            Create incremental commit instead of doing push force (default: true)
   --commit_message MSG           type: string, default: Deploy %{project_name} to %{url}:%{target_branch}
   --[no-]allow_empty_commit      Allow an empty commit to be created (requires: keep_history)
-  --[no-]committer_from_gh       Use the token's owner name and email for commit. Overrides the email and name
-                                 options
   --[no-]verbose                 Be verbose about the deploy process
   --local_dir DIR                Directory to push to GitHub Pages (type: string, default: .)
-  --fqdn FQDN                    Writes your website's domain name to the CNAME file (type: string)
+  --fqdn FQDN                    Write the given domain name to the CNAME file (type: string)
   --project_name NAME            Used in the commit message only (defaults to fqdn or the current repo slug)
                                  (type: string)
-  --email EMAIL                  Committer email (type: string, default: deploy@travis-ci.org)
-  --name NAME                    Committer name (type: string, default: Deploy Bot)
+  --name NAME                    Committer name (type: string, note: defaults to the current git commit author
+                                 name)
+  --email EMAIL                  Committer email (type: string, note: defaults to the current git commit author
+                                 email)
+  --[no-]committer_from_gh       Use the token's owner name and email for the commit (requires: github_token)
   --[no-]deployment_file         Enable creation of a deployment-info file
   --github_url URL               type: string, default: github.com
 
@@ -979,14 +1083,54 @@ Common Options:
 
   --run CMD                      Command to execute after the deployment finished successfully (type: array
                                  (string, can be given multiple times))
-  --[no-]cleanup                 Skip cleaning up build artifacts before the deployment
+  --cleanup                      Skip cleaning up build artifacts before the deployment
   --help                         Get help on this command
 
 Examples:
 
-  dpl pages --github_token token
-  dpl pages --deploy_key key
-  dpl pages --github_token token --repo slug --target_branch branch --keep_history --commit_message msg
+  dpl pages git --github_token token
+  dpl pages git --deploy_key path
+  dpl pages git --github_token token --repo slug --target_branch branch --keep_history --commit_message msg
+```
+
+### GitHub Pages (API)
+
+```
+Usage: dpl pages api [options]
+
+Summary:
+
+  GitHub Pages (API) deployment provider
+
+Description:
+
+  This provider requests GitHub Pages build for the repository given by
+  the `--repo` flag, or the current one, if the flag is not given.
+  Note that `dpl` does not perform any check about the fitness of the request;
+  it is assumed that the target repository (and the branch that GitHub Pages is
+  configured to use) is ready for building.
+  For example, if your GitHub Pages is configured to use `gh-pages` but the
+  deployment is run on the `master` branch, you would have to ensure that the
+  `gh-pages` would be updated accordingly during the build.
+
+  Support for deployments to GitHub Pages (API) is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
+
+Options:
+
+  --repo SLUG               GitHub repo slug (type: string, default: repo slug)
+  --github_token TOKEN      GitHub oauth token with repo permission (type: string, required: true)
+
+Common Options:
+
+  --run CMD                 Command to execute after the deployment finished successfully (type: array
+                            (string, can be given multiple times))
+  --cleanup                 Skip cleaning up build artifacts before the deployment
+  --help                    Get help on this command
+
+Examples:
+
+  dpl pages api --github_token token
+  dpl pages api --github_token token --repo slug --run cmd --cleanup
 ```
 
 ### GitHub Releases
@@ -1012,9 +1156,9 @@ Options:
   --username LOGIN               GitHub login name (type: string, alias: user)
   --password PASS                GitHub password (type: string)
   --repo SLUG                    GitHub repo slug (type: string, default: repo slug)
-  --file FILE                    File to release to GitHub (type: array (string, can be given multiple times),
-                                 required: true)
-  --[no-]file_glob               Interpret files as globs
+  --file GLOB                    File or glob to release to GitHub (type: array (string, can be given multiple
+                                 times), default: *)
+  --[no-]file_glob               Interpret files as globs (default: true)
   --[no-]overwrite               Overwrite files with the same name
   --[no-]prerelease              Identify the release as a prerelease
   --release_number NUM           Release number (overide automatic release detection) (type: string)
@@ -1030,15 +1174,14 @@ Common Options:
 
   --run CMD                      Command to execute after the deployment finished successfully (type: array
                                  (string, can be given multiple times))
-  --[no-]cleanup                 Skip cleaning up build artifacts before the deployment
+  --cleanup                      Skip cleaning up build artifacts before the deployment
   --help                         Get help on this command
 
 Examples:
 
-  dpl releases --file file --api_key token
-  dpl releases --file file --password pass
-  dpl releases --file file
-  dpl releases --file file --api_key token --username login --repo slug --file_glob
+  dpl releases --api_key token
+  dpl releases --password pass
+  dpl releases --api_key token --username login --repo slug --file glob --file_glob
 ```
 
 ### Google App Engine
@@ -1078,7 +1221,7 @@ Common Options:
 
   --run CMD                         Command to execute after the deployment finished successfully (type: array
                                     (string, can be given multiple times))
-  --[no-]cleanup                    Skip cleaning up build artifacts before the deployment
+  --cleanup                         Skip cleaning up build artifacts before the deployment
   --help                            Get help on this command
 
 Examples:
@@ -1120,7 +1263,7 @@ Common Options:
 
   --run CMD                    Command to execute after the deployment finished successfully (type: array
                                (string, can be given multiple times))
-  --[no-]cleanup               Skip cleaning up build artifacts before the deployment
+  --cleanup                    Skip cleaning up build artifacts before the deployment
   --help                       Get help on this command
 
 Examples:
@@ -1154,7 +1297,7 @@ Common Options:
 
   --run CMD            Command to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --[no-]cleanup       Skip cleaning up build artifacts before the deployment
+  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
@@ -1191,7 +1334,7 @@ Common Options:
 
   --run CMD              Command to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --[no-]cleanup         Skip cleaning up build artifacts before the deployment
+  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
@@ -1217,15 +1360,15 @@ Description:
 
 Options:
 
-  --api_key KEY       Heroku API key (type: string, required: true)
+  --api_key KEY      Heroku API key (type: string, required: true)
 
 Common Options:
 
-  --run CMD           Command to execute after the deployment finished successfully (type: array
-                      (string, can be given multiple times))
-  --[no-]cleanup      Skip cleaning up build artifacts before the deployment
-  --app APP           Heroku app name (type: string, default: repo name)
-  --help              Get help on this command
+  --run CMD          Command to execute after the deployment finished successfully (type: array
+                     (string, can be given multiple times))
+  --cleanup          Skip cleaning up build artifacts before the deployment
+  --app APP          Heroku app name (type: string, default: repo name)
+  --help             Get help on this command
 
 Examples:
 
@@ -1261,7 +1404,7 @@ Common Options:
 
   --run CMD            Command to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --[no-]cleanup       Skip cleaning up build artifacts before the deployment
+  --cleanup            Skip cleaning up build artifacts before the deployment
   --app APP            Heroku app name (type: string, default: repo name)
   --help               Get help on this command
 
@@ -1298,7 +1441,7 @@ Common Options:
 
   --run CMD                        Command to execute after the deployment finished successfully (type: array
                                    (string, can be given multiple times))
-  --[no-]cleanup                   Skip cleaning up build artifacts before the deployment
+  --cleanup                        Skip cleaning up build artifacts before the deployment
   --help                           Get help on this command
 
 Examples:
@@ -1334,7 +1477,7 @@ Common Options:
 
   --run CMD              Command to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --[no-]cleanup         Skip cleaning up build artifacts before the deployment
+  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
@@ -1374,7 +1517,7 @@ Common Options:
 
   --run CMD               Command to execute after the deployment finished successfully (type: array
                           (string, can be given multiple times))
-  --[no-]cleanup          Skip cleaning up build artifacts before the deployment
+  --cleanup               Skip cleaning up build artifacts before the deployment
   --help                  Get help on this command
 
 Examples:
@@ -1409,7 +1552,7 @@ Common Options:
 
   --run CMD              Command to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --[no-]cleanup         Skip cleaning up build artifacts before the deployment
+  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
@@ -1452,7 +1595,7 @@ Common Options:
 
   --run CMD                  Command to execute after the deployment finished successfully (type: array
                              (string, can be given multiple times))
-  --[no-]cleanup             Skip cleaning up build artifacts before the deployment
+  --cleanup                  Skip cleaning up build artifacts before the deployment
   --help                     Get help on this command
 
 Examples:
@@ -1487,7 +1630,7 @@ Common Options:
 
   --run CMD            Command to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --[no-]cleanup       Skip cleaning up build artifacts before the deployment
+  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
@@ -1534,7 +1677,7 @@ Common Options:
 
   --run CMD                     Command to execute after the deployment finished successfully (type: array
                                 (string, can be given multiple times))
-  --[no-]cleanup                Skip cleaning up build artifacts before the deployment
+  --cleanup                     Skip cleaning up build artifacts before the deployment
   --help                        Get help on this command
 
 Examples:
@@ -1575,7 +1718,7 @@ Common Options:
 
   --run CMD                Command to execute after the deployment finished successfully (type: array
                            (string, can be given multiple times))
-  --[no-]cleanup           Skip cleaning up build artifacts before the deployment
+  --cleanup                Skip cleaning up build artifacts before the deployment
   --help                   Get help on this command
 
 Examples:
@@ -1619,7 +1762,7 @@ Common Options:
 
   --run CMD              Command to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --[no-]cleanup         Skip cleaning up build artifacts before the deployment
+  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
@@ -1661,7 +1804,7 @@ Common Options:
 
   --run CMD               Command to execute after the deployment finished successfully (type: array
                           (string, can be given multiple times))
-  --[no-]cleanup          Skip cleaning up build artifacts before the deployment
+  --cleanup               Skip cleaning up build artifacts before the deployment
   --help                  Get help on this command
 
 Examples:
@@ -1695,7 +1838,7 @@ Common Options:
 
   --run CMD           Command to execute after the deployment finished successfully (type: array
                       (string, can be given multiple times))
-  --[no-]cleanup      Skip cleaning up build artifacts before the deployment
+  --cleanup           Skip cleaning up build artifacts before the deployment
   --help              Get help on this command
 
 Examples:
@@ -1733,7 +1876,7 @@ Common Options:
 
   --run CMD           Command to execute after the deployment finished successfully (type: array
                       (string, can be given multiple times))
-  --[no-]cleanup      Skip cleaning up build artifacts before the deployment
+  --cleanup           Skip cleaning up build artifacts before the deployment
   --help              Get help on this command
 
 Examples:
@@ -1753,26 +1896,28 @@ Summary:
 
 Description:
 
+  tbd
+
   Support for deployments to TestFairy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
-  --api_key KEY                       TestFairy API key (type: string, required: true)
-  --app_file FILE                     Path to the app file that will be generated after the build (APK/IPA) (type:
-                                      string, required: true)
-  --symbols_file FILE                 Path to the symbols file (type: string)
-  --testers_groups GROUPS             Tester groups to be notified about this build (type: string, e.g.: e.g.
-                                      group1,group1)
-  --[no-]notify                       Send an email with a changelog to your users
-  --[no-]auto_update                  Automaticall upgrade all the previous installations of this app this version
-  --advanced_options OPTS             Comma_separated list of advanced options (type: string, e.g.: option1,option2)
+  --api_key KEY                TestFairy API key (type: string, required: true)
+  --app_file FILE              Path to the app file that will be generated after the build (APK/IPA) (type:
+                               string, required: true)
+  --symbols_file FILE          Path to the symbols file (type: string)
+  --testers_groups GROUPS      Tester groups to be notified about this build (type: string, e.g.: e.g.
+                               group1,group1)
+  --[no-]notify                Send an email with a changelog to your users
+  --[no-]auto_update           Automaticall upgrade all the previous installations of this app this version
+  --advanced_options OPTS      Comma_separated list of advanced options (type: string, e.g.: option1,option2)
 
 Common Options:
 
-  --run CMD                           Command to execute after the deployment finished successfully (type: array
-                                      (string, can be given multiple times))
-  --[no-]cleanup                      Skip cleaning up build artifacts before the deployment
-  --help                              Get help on this command
+  --run CMD                    Command to execute after the deployment finished successfully (type: array
+                               (string, can be given multiple times))
+  --cleanup                    Skip cleaning up build artifacts before the deployment
+  --help                       Get help on this command
 
 Examples:
 
@@ -1809,7 +1954,7 @@ Common Options:
 
   --run CMD              Command to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --[no-]cleanup         Skip cleaning up build artifacts before the deployment
+  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
@@ -2235,4 +2380,4 @@ This tool would not exist without your help.
 
 A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors):
 
-5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Ole Michaelis, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Rail Aliiev, Randall A. Gordon, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
+5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Ole Michaelis, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
