@@ -43,6 +43,7 @@ def post(uri, body, opts)
 end
 
 SKIP = [
+  'anynines',       # trial account expired?
   'azure_web_apps', # trial account expired
   'cloud66',        # unfinished
   'datica',         # no account
