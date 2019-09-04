@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+def run(cmd)
+  puts "$ #{cmd}"
+  system(cmd) || abort
+end
+
+FileUtils.mkdir 'tmp' unless File.directory?('tmp')
+run 'git clone https://github.com/travis-ci/dpl_test.git tmp/dpl_test'
+FileUtils.chdir 'tmp/dpl_test'
+
+File.write 'config.ru', <<~STR
+  require 'rack'
+  run ->(env) {  [200, { 'Content-type' => 'text/plain' }, ['#{ENV['ID']}']] }
+STR
+
+run 'git add .'
+run "git commit -m 'test dpl Gleis #{ENV['ID']}'"

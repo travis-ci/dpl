@@ -1,0 +1,19 @@
+language: ruby
+
+install: true
+script: true
+
+before_deploy:
+  - .travis/providers/gleis/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: gleis
+    username: dpl-test@travis-ci.org
+    password:
+      secure: "PCqbKJQSrHguQecKbbO/RH30XpDoayedaHhjfBX3agot8liyLI4w0/EhUrkn9h8U0ZkNZaXEEROGzIQqnrU44YdTvKOcYUZrAanv6zw1GqBDp8o33s5FVn4otWOPmsQSOXa7WZLhsDroM4+OxZFFKerJXOrkyRkkRJht7kk6xTA="
+    app: dpl-test
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/gleis/test || TRAVIS_TEST_RESULT=$?
