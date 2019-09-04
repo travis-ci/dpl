@@ -75,6 +75,7 @@ end
 
 def deploy(conf, opts)
   conf[:edge] ||= only(opts, :branch, :source).merge(conf[:edge] || {})
+  conf[:on] ||= opts[:branch] if opts[:branch]
   conf = error(conf) if opts[:error]
   conf
 end
