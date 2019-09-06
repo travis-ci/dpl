@@ -18,7 +18,7 @@ describe Dpl::Providers::Heroku::Git do
   before { stub_request(:post, 'https://api.heroku.com/apps/dpl/dynos').and_return(body: dyno) }
   before { stub_request(:delete, 'https://api.heroku.com/apps/dpl/dynos') }
   before { allow(Rendezvous).to receive(:start) }
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'using --api_key' do
     let(:creds) { %w(--api_key key) }

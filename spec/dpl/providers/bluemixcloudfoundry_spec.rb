@@ -4,7 +4,7 @@ describe Dpl::Providers::Bluemixcloudfoundry do
   file 'manifest.yml'
   file 'other.yml'
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run %r(wget .*cli.run.pivotal.io.* -qO cf.tgz && tar -zxvf cf.tgz) }

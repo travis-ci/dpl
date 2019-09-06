@@ -4,7 +4,7 @@ describe Dpl::Providers::Hackage do
   file 'dist/one.tar.gz'
   file 'dist/two.tar.gz'
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run 'cabal check' }

@@ -1,5 +1,5 @@
 describe Dpl::Providers::Cargo do
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'given --token 1234' do
     it { should have_run '[info] $ cargo publish --token 1*******************' }

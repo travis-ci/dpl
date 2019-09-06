@@ -1,6 +1,6 @@
 describe Dpl::Providers::Boxfuse do
   let(:args) { |e| %w(--user user --secret 1234) + args_from_description(e) }
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default' do
     it { should have_run %r(curl -L https://files.boxfuse.com/.*.tar.gz | tar xz) }

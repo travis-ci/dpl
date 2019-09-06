@@ -16,7 +16,7 @@ describe Dpl::Providers::Pypi do
     rc
   end
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run %r(pip install .* setuptools twine wheel) }

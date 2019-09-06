@@ -8,7 +8,7 @@ describe Dpl::Providers::Npm do
     rc
   end
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run '[info] npm version: 1' }

@@ -31,7 +31,7 @@ describe Dpl::Providers::Bintray do
     before { stub_request(:post, paths[:version_publish]) }
     before { stub_request(:put,  paths[:file_metadata]) }
 
-    before { subject.run }
+  before { |c| subject.run if run?(c) }
 
     let(:version_status) { 200 }
     let(:package_status) { 200 }

@@ -9,7 +9,7 @@ describe Dpl::Providers::Rubygems do
 
   before { stub_request(:get, %r(/gems/.+json)).and_return(body: JSON.dump(name: name)) }
   before { stub_request(:post, %r(/gems)).and_return(body: "Successfully registered gem: #{name}") }
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'given --api_key 1234', record: true do
     it { should have_run '[info] Authenticating with api key 1*******************' }

@@ -25,7 +25,7 @@ describe Dpl::Providers::Engineyard do
     )
   end
 
-  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
+  before { |c| subject.run if run?(c) }
 
   describe 'given --api_key key' do
     it { should have_run '[info] Authenticating via api token ...' }

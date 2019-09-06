@@ -8,8 +8,7 @@ describe Dpl::Providers::Puppetforge do
 
   before { allow(Blacksmith::Forge).to receive(:new).and_return(forge) }
   before { allow(Puppet::Face).to receive(:[]).and_return(face) }
-
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default' do
     it { should have_run '[info] Uploading to Puppet Forge user/module' }

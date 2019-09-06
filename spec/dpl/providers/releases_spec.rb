@@ -17,7 +17,7 @@ describe Dpl::Providers::Releases do
   before { stub_request(:patch, %r(/releases/1$)) }
   before { stub_request(:post, %r(/releases/1/assets\?)) }
   before { stub_request(:delete, %r(/releases/1/assets/1$)) }
-  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
+  before { |c| subject.run if run?(c) }
 
   let(:repo)     { 'travis-ci/dpl' }
   let(:tag_name) { 'tag' }

@@ -6,7 +6,8 @@ describe Dpl::Providers::Gcs do
   file '.hidden'
 
   before { stub_request(:put, /.*/) }
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
+
 
   describe 'by default', record: true do
     it { should have_run 'mv /etc/boto.cfg /tmp/boto.cfg' }

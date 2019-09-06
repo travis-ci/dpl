@@ -4,7 +4,7 @@ describe Dpl::Providers::Testfairy do
   file 'file'
 
   before { stub_request(:post, 'https://upload.testfairy.com/api/upload').and_return(body: JSON.dump(status: 'success')) }
-  before { subject.run }
+  before { |c| subject.run unless c.metadata[:example_group][:run].is_a?(FalseClass) }
 
   describe 'by default' do
     it { should have_run /Uploading to TestFairy:/ }

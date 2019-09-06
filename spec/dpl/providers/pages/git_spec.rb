@@ -12,7 +12,7 @@ describe Dpl::Providers::Pages::Git do
   file 'key'
 
   before { stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers: headers) }
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run '[info] Authenticated as login' }

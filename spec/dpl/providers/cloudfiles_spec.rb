@@ -11,7 +11,7 @@ describe Dpl::Providers::Cloudfiles do
     dirs.create(key: 'name')
   end
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default' do
     it { expect(dirs.get('name').files.get('one').key).to eq 'one' }

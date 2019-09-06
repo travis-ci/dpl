@@ -8,7 +8,7 @@ describe Dpl::Providers::S3 do
   file '.hidden.txt'
 
   before { allow(Aws::S3::Client).to receive(:new).and_return(client) }
-  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run '[info] Using Access Key: ac******************' }

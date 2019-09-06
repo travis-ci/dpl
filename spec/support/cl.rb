@@ -39,5 +39,9 @@ module Support
     def run
       runner.run
     end
+
+    def run?(c)
+      not c.metadata[:example_group][:run].is_a?(FalseClass)
+    end
   end
 end

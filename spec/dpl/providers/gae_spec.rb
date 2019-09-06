@@ -1,7 +1,7 @@
 describe Dpl::Providers::Gae do
   let(:args) { |e| %w(--project id) + args_from_description(e) }
 
-  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run 'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | gzip -d | tar -x -C ~' }

@@ -1,7 +1,8 @@
 describe Dpl::Providers::Gleis do
   let(:args) { |e| %w(--app app --username user --password pass) + args_from_description(e) }
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
+
 
   describe 'by default', record: true do
     it { should have_run '[info] $ gleis auth login user p******************* --skip-keygen' }

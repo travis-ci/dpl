@@ -1,7 +1,7 @@
 describe Dpl::Providers::Netlify do
   let(:args) { |e| %w(--auth token --site id) + args_from_description(e) }
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default' do
     it { should have_run '[npm:install] netlify-cli (netlify)' }

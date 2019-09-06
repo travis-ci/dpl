@@ -1,7 +1,7 @@
 describe Dpl::Providers::Anynines do
   let(:args) { |e| %w(--username name --password pass --organization org --space space) + args_from_description(e) }
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     # it { should have_run %r(wget .*cli.run.pivotal.io.* -qO cf.tgz && tar -zxvf cf.tgz) }

@@ -25,7 +25,7 @@ describe Dpl::Providers::Codedeploy do
 
   before { allow(Aws::CodeDeploy::Client).to receive(:new).and_return(client) }
   before { allow(Aws::S3::Client).to receive(:new).and_return(s3) }
-  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
+  before { |c| subject.run if run?(c) }
 
   let(:github_revision) { { revisionType: 'GitHub', gitHubLocation: { repository: 'dpl', commitId: 'sha' } } }
   let(:s3_revision) { { revisionType: 'S3', s3Location: { bucket: 'bucket', bundleType: 'zip', version: 'ObjectVersionId', eTag: 'ETag' } } }

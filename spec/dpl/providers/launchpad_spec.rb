@@ -16,7 +16,7 @@ describe Dpl::Providers::Launchpad do
   end
 
   before { stub_request(:post, /.*/) }
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default' do
     it { should have_requested(:post, url).with(body: body, headers: { Authorization: auth }) }

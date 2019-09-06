@@ -1,44 +1,43 @@
 describe Dpl::Providers::Snap do
   let(:args) { |e| args_from_description(e) + %w(--token token) }
 
-  context do
-    file 'snap'
-    before { subject.run }
+  file 'snap'
 
-    describe 'given --snap ./snap', record: true do
-      it { should have_run '[apt:get] snapd (snap)' }
-      it { should have_run 'sudo snap install snapcraft --classic' }
-      it { should have_run 'snapcraft login --with token' }
-      it { should have_run 'snapcraft push ./snap --release=edge' }
-      it { should have_run_in_order }
-    end
+  before { |c| subject.run if run?(c) }
 
-    describe 'given --snap ./sn*' do
-      it { should have_run 'snapcraft push ./snap --release=edge' }
-    end
-
-    describe 'given --snap ./snap --channel channel' do
-      it { should have_run 'snapcraft push ./snap --release=channel' }
-    end
+  describe 'given --snap ./snap', record: true do
+    it { should have_run '[apt:get] snapd (snap)' }
+    it { should have_run 'sudo snap install snapcraft --classic' }
+    it { should have_run 'snapcraft login --with token' }
+    it { should have_run 'snapcraft push ./snap --release=edge' }
+    it { should have_run_in_order }
   end
 
-  describe 'given --snap ./snap' do
+  describe 'given --snap ./sn*' do
+    it { should have_run 'snapcraft push ./snap --release=edge' }
+  end
+
+  describe 'given --snap ./snap --channel channel' do
+    it { should have_run 'snapcraft push ./snap --release=channel' }
+  end
+
+  describe 'given --snap ./snap', run: false do
     let(:args) { |e| args_from_description(e) }
 
     env SNAP_TOKEN: 'token'
-    file 'snap'
 
     before { subject.run }
     it { should have_run 'snapcraft login --with token' }
   end
 
-  describe 'given --snap ./snap' do
+  describe 'given --snap ./snap', run: false do
+    before { rm 'snap' }
     it { expect { subject.run }.to raise_error 'No snap found matching ./snap' }
   end
 
-  describe 'given --snap ./sn*' do
+  describe 'given --snap ./sn*', run: false do
     file 'snap-1'
     file 'snap-2'
-    it { expect { subject.run }.to raise_error 'Multiple snaps found matching ./sn*: ./snap-1, ./snap-2' }
+    it { expect { subject.run }.to raise_error 'Multiple snaps found matching ./sn*: ./snap, ./snap-1, ./snap-2' }
   end
 end

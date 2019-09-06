@@ -10,7 +10,7 @@ describe Dpl::Providers::Heroku::Api do
   before { stub_request(:get, 'https://api.heroku.com/apps/dpl') }
   before { stub_request(:post, 'https://api.heroku.com/apps/dpl/builds').and_return(body: build) }
   before { stub_request(:get, 'https://api.heroku.com/apps/dpl/builds/1').and_return(body: build) }
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   # remaining options are tested in heroku/git_spec.rb
 

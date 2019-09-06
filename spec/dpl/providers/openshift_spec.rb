@@ -1,7 +1,7 @@
 describe Dpl::Providers::Openshift do
   let(:args) { |e| %w(--server server --token token --project project) + args_from_description(e) }
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run 'curl https://mirror.openshift.com/pub/openshift-v4/clients/oc/4.1/linux/oc.tar.gz | tar xz' }
