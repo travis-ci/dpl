@@ -1,3 +1,5 @@
+require 'dpl/helper/squiggle'
+require 'dpl/helper/wrap'
 require 'dpl/provider/status'
 
 module Dpl
@@ -25,7 +27,7 @@ module Dpl
 
       # Summary of the provider's functionality.
       def description(str = nil)
-        str << status.msg if str && status && status.announce?
+        str = str.strip if str
         super
       end
 

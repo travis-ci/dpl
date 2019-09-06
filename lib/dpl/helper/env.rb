@@ -25,6 +25,25 @@ module Dpl
         env.map { |key, value| [dealias(key), value] }.to_h
       end
 
+      def description(cmd)
+        strs = self.strs.map { |str| "#{str}_" }
+        strs += self.strs if opts[:allow_skip_underscore]
+        strs = strs.size > 1 ? "[#{strs.sort.join('|')}]" : strs.join
+        "Options can be given via env vars if prefixed with `#{strs}`. #{example(cmd)}"
+      end
+
+      def example(cmd)
+        return unless opt = cmd.opts.detect { |opt| opt.secret? }
+        env = self.strs.map { |str| "`#{str}_#{opt.name.upcase}=<#{opt.name}>`" }
+        env += self.strs.map { |str| "`#{str}#{opt.name.upcase}=<#{opt.name}>`" } if opts[:allow_skip_underscore]
+        "E.g. the option `--#{opt.name}` can be given as #{sentence(env)}."
+      end
+
+      def sentence(strs)
+        return strs.join if strs.size == 1
+        [strs[0..-2].join(', '), strs[-1]].join(' or ')
+      end
+
       private
 
         def dealias(key)
