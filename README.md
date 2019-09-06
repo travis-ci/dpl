@@ -95,7 +95,6 @@ the following maturity levels, according to the given criteria:
 Dpl supports the following providers:
 
   * [Anynines](#anynines)
-  * [Atlas](#atlas)
   * [AWS CloudFormation](#aws-cloudformation)
   * [AWS Code Deploy](#aws-code-deploy)
   * [AWS Elastic Beanstalk](#aws-elastic-beanstalk)
@@ -118,6 +117,7 @@ Dpl supports the following providers:
   * [GitHub Pages](#github-pages)
   * [GitHub Pages (API)](#github-pages-api-)
   * [GitHub Releases](#github-releases)
+  * [Gleis](#gleis)
   * [Google App Engine](#google-app-engine)
   * [Google Cloud Store](#google-cloud-store)
   * [Hackage](#hackage)
@@ -176,51 +176,6 @@ Examples:
 
   dpl anynines --username user --password pass --organization org --space space
   dpl anynines --username user --password pass --organization org --space space --app_name app
-```
-
-### Atlas
-
-```
-Usage: dpl atlas [options]
-
-Summary:
-
-  Atlas deployment provider
-
-Description:
-
-  tbd
-
-  Support for deployments to Atlas is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
-Options:
-
-  --app APP            The Atlas application to upload to (type: string, required: true)
-  --token TOKEN        The Atlas API token (type: string, required: true)
-  --paths PATH         Files or directories to upload (type: array (string, can be given multiple
-                       times), default: ["."])
-  --address ADDR       The address of the Atlas server (type: string)
-  --include GLOB       Glob pattern of files or directories to include (type: array (string, can be
-                       given multiple times))
-  --exclude GLOB       Glob pattern of files or directories to exclude (type: array (string, can be
-                       given multiple times))
-  --metadata DATA      Arbitrary key=value (string) metadata to be sent with the upload (type: array
-                       (string, can be given multiple times))
-  --[no-]vcs           Get lists of files to exclude and include from a VCS (Git, Mercurial or SVN)
-  --args ARGS          Args to pass to the atlas-upload CLI (type: string)
-  --[no-]debug         Turn on debug output
-
-Common Options:
-
-  --run CMD            Command to execute after the deployment finished successfully (type: array
-                       (string, can be given multiple times))
-  --cleanup            Skip cleaning up build artifacts before the deployment
-  --help               Get help on this command
-
-Examples:
-
-  dpl atlas --app app --token token
-  dpl atlas --app app --token token --paths path --address addr --include glob
 ```
 
 ### AWS CloudFormation
@@ -1182,6 +1137,43 @@ Examples:
   dpl releases --api_key token
   dpl releases --password pass
   dpl releases --api_key token --username login --repo slug --file glob --file_glob
+```
+
+### Gleis
+
+```
+Usage: dpl gleis [options]
+
+Summary:
+
+  Gleis deployment provider
+
+Description:
+
+  tbd
+
+  Support for deployments to Gleis is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
+
+Options:
+
+  --app APP            Gleis application to upload to (type: string, default: repo name)
+  --username NAME      Gleis username (type: string, required: true)
+  --password PASS      Gleis password (type: string, required: true)
+  --key_name NAME      Name of the SSH deploy key pushed to Gleis (type: string, default:
+                       dpl_deploy_key)
+  --[no-]verbose
+
+Common Options:
+
+  --run CMD            Command to execute after the deployment finished successfully (type: array
+                       (string, can be given multiple times))
+  --cleanup            Skip cleaning up build artifacts before the deployment
+  --help               Get help on this command
+
+Examples:
+
+  dpl gleis --username name --password pass
+  dpl gleis --username name --password pass --app app --key_name name --verbose
 ```
 
 ### Google App Engine
@@ -2380,4 +2372,4 @@ This tool would not exist without your help.
 
 A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors):
 
-5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Ole Michaelis, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
+5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, Marc, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Ole Michaelis, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
