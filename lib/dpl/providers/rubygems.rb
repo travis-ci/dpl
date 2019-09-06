@@ -9,6 +9,8 @@ module Dpl
 
       gem 'gems', '~> 1.1.1'
 
+      env :rubygems
+
       required :api_key, [:user, :password]
 
       opt '--api_key KEY', 'Rubygems api key', secret: true

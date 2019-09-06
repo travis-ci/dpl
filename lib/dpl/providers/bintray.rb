@@ -13,6 +13,8 @@ module Dpl
 
       gem 'json'
 
+      env :bintray
+
       opt '--user USER', 'Bintray user', required: true
       opt '--key KEY', 'Bintray API key', required: true, secret: true
       opt '--file FILE', 'Path to a descriptor file for the Bintray upload', required: true

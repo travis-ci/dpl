@@ -11,6 +11,8 @@ module Dpl
 
       required :api_key, [:email, :password]
 
+      env :engineyard, :ey
+
       opt '--api_key KEY',   'Engine Yard API key', secret: true
       opt '--email EMAIL',   'Engine Yard account email'
       opt '--password PASS', 'Engine Yard password', secret: true

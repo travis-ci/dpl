@@ -13,6 +13,8 @@ module Dpl
       gem 'mime-types', '~> 3.2.2'
       gem 'public_suffix', '~> 3.0.3'
 
+      env :github, :releases
+
       required :api_key, [:user, :password]
 
       opt '--api_key TOKEN', 'GitHub oauth token (needs public_repo or repo permission)', secret: true

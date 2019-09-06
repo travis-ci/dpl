@@ -9,6 +9,8 @@ module Dpl
         tbd
       str
 
+      env :cloudfoundry
+
       opt '--username USER',       'Cloud Foundry username', required: true
       opt '--password PASS',       'Cloud Foundry password', required: true, secret: true
       opt '--organization ORG',    'Cloud Foundry target organization', required: true

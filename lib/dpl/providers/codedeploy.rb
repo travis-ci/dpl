@@ -14,7 +14,7 @@ module Dpl
       gem 'aws-sdk-codedeploy', '~> 1.0'
       gem 'aws-sdk-s3', '~> 1.0'
 
-      env :aws
+      env :aws, :codedeploy
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
 
       opt '--access_key_id ID', 'AWS access key', required: true, secret: true

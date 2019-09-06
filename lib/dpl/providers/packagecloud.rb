@@ -13,6 +13,8 @@ module Dpl
 
       gem 'packagecloud-ruby', '~> 1.0.8', require: 'packagecloud'
 
+      env :packagecloud
+
       opt '--username USER', 'The packagecloud.io username.', required: true
       opt '--token TOKEN', 'The packagecloud.io api token.', required: true, secret: true
       opt '--repository REPO', 'The repository to push to.', required: true

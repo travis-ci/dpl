@@ -14,7 +14,7 @@ module Dpl
       gem 'aws-sdk-lambda', '~> 1.0'
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
 
-      env :aws
+      env :aws, :lambda
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
 
       opt '--access_key_id ID',       'AWS access key id', required: true, secret: true

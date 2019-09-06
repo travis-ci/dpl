@@ -13,6 +13,8 @@ module Dpl
 
       VERSION = /\A\d+(?:\.\d+)*\z/
 
+      env :pypi
+
       opt '--username NAME', 'PyPI Username', required: true, alias: :user
       opt '--password PASS', 'PyPI Password', required: true, secret: true
       opt '--server SERVER', 'Release to a different index', default: 'https://upload.pypi.org/legacy/'

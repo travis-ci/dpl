@@ -7,6 +7,8 @@ module Dpl
         tbd
       str
 
+      env :launchpad
+
       opt '--slug SLUG', 'Launchpad project slug', format: /^~[^\/]+\/[^\/]+\/[^\/]+$/, example: '~user-name/project-name/branch-name'
       opt '--oauth_token TOKEN', 'Launchpad OAuth token', secret: true
       opt '--oauth_token_secret SECRET', 'Launchpad OAuth token secret', secret: true

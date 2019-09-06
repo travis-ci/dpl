@@ -16,6 +16,8 @@ module Dpl
       gem 'json'
       gem 'multipart-post', '~> 2.0.0', require: 'net/http/post/multipart'
 
+      env :testfairy
+
       opt '--api_key KEY', 'TestFairy API key', required: true, secret: true
       opt '--app_file FILE', 'Path to the app file that will be generated after the build (APK/IPA)', required: true
       opt '--symbols_file FILE', 'Path to the symbols file'

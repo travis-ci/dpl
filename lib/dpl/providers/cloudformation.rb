@@ -11,7 +11,7 @@ module Dpl
 
       gem 'aws-sdk-cloudformation', '~> 1.0'
 
-      env :aws
+      env :aws, :cloudformation
       config '~/.aws/credentials', prefix: 'aws'
 
       opt '--access_key_id ID', 'AWS Access Key ID', required: true, secret: true

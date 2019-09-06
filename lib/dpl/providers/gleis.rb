@@ -9,6 +9,8 @@ module Dpl
 
       gem 'gleis', '~> 0.6.0'
 
+      env :gleis
+
       opt '--app APP',       'Gleis application to upload to', default: :repo_name
       opt '--username NAME', 'Gleis username', required: true
       opt '--password PASS', 'Gleis password', required: true, secret: true

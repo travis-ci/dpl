@@ -7,6 +7,8 @@ module Dpl
         tbd
       str
 
+      env :hephy
+
       opt '--controller NAME', 'Hephy controller', required: true, example: 'hephy.hephyapps.com'
       opt '--username USER',   'Hephy username', required: true
       opt '--password PASS',   'Hephy password', required: true, secret: true

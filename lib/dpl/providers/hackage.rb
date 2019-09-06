@@ -7,6 +7,8 @@ module Dpl
         tbd
       str
 
+      env :hackage
+
       opt '--username USER', 'Hackage username', required: true
       opt '--password USER', 'Hackage password', required: true, secret: true
       opt '--publish', 'Whether or not to publish the package'

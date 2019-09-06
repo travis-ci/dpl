@@ -7,6 +7,8 @@ module Dpl
         tbd
       str
 
+      env :anynines
+
       opt '--username USER',    'anynines username', required: true
       opt '--password PASS',    'anynines password', required: true, secret: true
       opt '--organization ORG', 'anynines target organization', required: true

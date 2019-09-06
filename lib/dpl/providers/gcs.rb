@@ -15,6 +15,8 @@ module Dpl
 
       python '>= 2.7.9'
 
+      env :gcs
+
       opt '--access_key_id ID', 'GCS Interoperable Access Key ID', required: true, secret: true
       opt '--secret_access_key KEY', 'GCS Interoperable Access Secret', required: true, secret: true
       opt '--bucket BUCKET', 'GCS Bucket', required: true

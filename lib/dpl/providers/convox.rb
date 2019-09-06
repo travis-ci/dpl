@@ -9,7 +9,7 @@ module Dpl
 
       gem 'json'
 
-      env 'convox'
+      env :convox
 
       # needs descriptions
       opt '--host HOST', default: 'console.convox.com'

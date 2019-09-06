@@ -7,6 +7,8 @@ module Dpl
         tbd
       str
 
+      env :cloud66
+
       opt '--redeployment_hook URL', 'The redeployment hook URL', required: true, secret: true
 
       msgs failed: 'Redeployment failed (%s)'

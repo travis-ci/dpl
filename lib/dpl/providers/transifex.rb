@@ -11,6 +11,8 @@ module Dpl
 
       required :api_token, [:username, :password]
 
+      env :transifex
+
       opt '--api_token TOKEN', 'Transifex API token', secret: true
       opt '--username NAME',   'Transifex username'
       opt '--password PASS',   'Transifex password', secret: true

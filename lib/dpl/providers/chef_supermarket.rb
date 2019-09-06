@@ -22,6 +22,8 @@ module Dpl
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
       gem 'rack'
 
+      env :chef
+
       opt '--user_id ID',         'Chef Supermarket user name', required: true
       opt '--client_key KEY',     'Client API key file name', required: true
       opt '--name NAME',          'Cookbook name', note: 'defaults to the name given in metadata.json or metadata.rb', alias: :cookbook_name, deprecated: :cookbook_name
