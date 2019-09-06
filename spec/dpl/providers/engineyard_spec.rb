@@ -84,4 +84,16 @@ describe Dpl::Providers::Engineyard do
 
     it { expect { subject.run }.to raise_error 'Multiple environments match, please be more specific: environment=one account=account, environment=two account=account' }
   end
+
+  describe 'with EY credentials in env vars', run: false do
+    let(:args) { [] }
+    env EY_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with ENGINEYARD credentials in env vars', run: false do
+    let(:args) { [] }
+    env ENGINEYARD_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

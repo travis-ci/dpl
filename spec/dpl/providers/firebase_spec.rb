@@ -34,4 +34,10 @@ describe Dpl::Providers::Firebase do
   describe 'adds node_modules/.bin to $PATH' do
     it { expect(ENV['PATH']).to include 'node_modules/.bin' }
   end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { [] }
+    env FIREBASE_TOKEN: 'token'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

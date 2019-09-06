@@ -31,5 +31,11 @@ describe Dpl::Providers::Transifex do
   describe 'given --hostname https://other.com' do
     it { expect(rc).to include 'hostname = https://other.com' }
   end
-end
 
+  describe 'with credentials in env vars', run: false do
+    let(:args) { [] }
+    env TRANSIFEX_USERNAME: 'user',
+        TRANSIFEX_PASSWORD: 'pass'
+    it { expect { subject.run }.to_not raise_error }
+  end
+end

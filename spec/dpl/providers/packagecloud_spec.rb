@@ -81,5 +81,13 @@ describe Dpl::Providers::Packagecloud do
     it { expect { subject.run }.to raise_error 'No supported packages found' }
   end
 
-      # opt '--package_glob', type: :array, default: ['**/*']
+  # opt '--package_glob', type: :array, default: ['**/*']
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--dist ubuntu/trusty --repo repo) }
+    env PACKAGECLOUD_USERNAME: 'user',
+        PACKAGECLOUD_TOKEN: 'token'
+    file 'one.tgz'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

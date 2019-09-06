@@ -143,6 +143,18 @@ describe Dpl::Providers::Releases do
     it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
   end
 
+  describe 'with GITHUB credentials in env vars', run: false do
+    let(:args) { [] }
+    env GITHUB_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with RELEASES credentials in env vars', run: false do
+    let(:args) { [] }
+    env RELEASES_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
   def compact(hash)
     hash.reject { |_, value| value.nil? }.to_h
   end

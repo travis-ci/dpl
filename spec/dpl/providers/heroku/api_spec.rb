@@ -35,4 +35,10 @@ describe Dpl::Providers::Heroku::Api do
   describe 'given --version version' do
     it { should have_requested(:post, 'https://api.heroku.com/apps/dpl/builds').with(body: { source_blob: { url: 'get_url', version: 'version' } }) }
   end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { |e| %w(--strategy api) }
+    env HEROKU_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

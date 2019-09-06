@@ -93,7 +93,11 @@ describe Dpl::Providers::Convox do
     it { expect { subject.run }.to raise_error 'The given env_file does not exist.' }
   end
 
-  # opt '--env VARS', type: :array
-  # opt '--env_file FILE'
-  # opt '--generation', default: '2'
+  describe 'with credentials in env vars', run: false do
+    let(:args) { |e| %w(--app app --rack rack) }
+
+    env CONVOX_PASS: 'pass'
+
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

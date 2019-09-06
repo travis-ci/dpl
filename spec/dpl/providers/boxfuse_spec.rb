@@ -32,4 +32,11 @@ describe Dpl::Providers::Boxfuse do
   describe 'given --extra_args args' do
     it { should have_run 'boxfuse/boxfuse run -user="user" -secret="1234" args' }
   end
+
+  describe 'with credentials in env vars', run: false do
+    env BOXFUSE_USER: 'user',
+        BOXFUSE_SECRET: '1234'
+
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

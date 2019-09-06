@@ -30,4 +30,10 @@ describe Dpl::Providers::Testfairy do
   describe 'given --advanced_options one,two' do
     it { should have_run /"advanced-options": "one,two"/ }
   end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--app_file file) }
+    env TESTFAIRY_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

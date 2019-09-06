@@ -63,4 +63,10 @@ describe Dpl::Providers::Heroku::Git do
     let(:pass) { 'pass' }
     it { should have_written '~/.netrc', netrc }
   end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { |e| %w(--strategy git) }
+    env HEROKU_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

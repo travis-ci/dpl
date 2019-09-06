@@ -13,10 +13,10 @@ module Dpl
         gem 'octokit', '~> 4.14.0'
         gem 'public_suffix', '~> 3.0.3'
 
-        required :github_token, :deploy_key
+        required :token, :deploy_key
 
         opt '--repo SLUG', 'Repo slug', default: :repo_slug
-        opt '--github_token TOKEN', 'GitHub oauth token with repo permission', secret: true
+        opt '--token TOKEN', 'GitHub oauth token with repo permission', secret: true, alias: :github_token
         opt '--deploy_key PATH', 'Path to a file containing a private deploy key with write access to the repository', see: 'https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys'
         opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
         opt '--keep_history', 'Create incremental commit instead of doing push force', default: true
@@ -30,7 +30,7 @@ module Dpl
         opt '--email EMAIL', 'Committer email', note: 'defaults to the current git commit author email'
         opt '--committer_from_gh', 'Use the token\'s owner name and email for the commit', requires: :github_token
         opt '--deployment_file', 'Enable creation of a deployment-info file'
-        opt '--github_url URL', default: 'github.com'
+        opt '--url URL', default: 'github.com', alias: :github_url
 
         needs :git
 
@@ -39,7 +39,7 @@ module Dpl
              insufficient_scopes: 'Dpl does not have permission to access %{url} using the provided GitHub token. Please make sure the token have the repo or public_repo scope.',
              setup_deploy_key:    'Moving deploy key %{deploy_key} to %{path}',
              check_deploy_key:    'Checking deploy key',
-             deploy:              'Deploying branch %{target_branch} to %{github_url}',
+             deploy:              'Deploying branch %{target_branch} to %{url}',
              keep_history:        'The deployment is configured to preserve the target branch if it exists on remote.',
              work_dir:            'Using temporary work directory %{work_dir}',
              committer_from_gh:   'The repo is configured to use committer user and email.',
@@ -74,7 +74,7 @@ module Dpl
              git_push:            'Failed to push the build to %{url}:%{target_branch}'
 
         def login
-          github_token? ? login_token : setup_deploy_key
+          token? ? login_token : setup_deploy_key
         end
 
         def setup
@@ -199,19 +199,19 @@ module Dpl
         end
 
         def remote_url
-          github_token? ? https_url_with_token : git_url
+          token? ? https_url_with_token : git_url
         end
 
         def https_url_with_token
-          "https://#{github_token}@#{url}"
+          "https://#{token}@#{url}"
         end
 
         def git_url
-          "git@#{github_url}:#{slug}.git"
+          "git@#{opts[:url]}:#{slug}.git"
         end
 
         def url
-          "#{github_url}/#{slug}.git"
+          "#{opts[:url]}/#{slug}.git"
         end
 
         def slug
@@ -231,11 +231,11 @@ module Dpl
         end
 
         def api
-          @api ||= Octokit::Client.new(access_token: github_token, api_endpoint: api_endpoint)
+          @api ||= Octokit::Client.new(access_token: token, api_endpoint: api_endpoint)
         end
 
         def api_endpoint
-          github_url == 'github.com' ? 'https://api.github.com/' : "https://#{github_url}/api/v3/"
+          opts[:url] == 'github.com' ? 'https://api.github.com/' : "https://#{opts[:url]}/api/v3/"
         end
 
         def now

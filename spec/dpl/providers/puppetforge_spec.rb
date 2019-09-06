@@ -1,5 +1,5 @@
 describe Dpl::Providers::Puppetforge do
-  let(:args) { |e| %w(--user user --password pass) + args_from_description(e) }
+  let(:args) { |e| %w(--username user --password pass) + args_from_description(e) }
 
   file 'metadata.json', JSON.dump(name: 'author-module')
 
@@ -15,5 +15,11 @@ describe Dpl::Providers::Puppetforge do
     it { expect(Blacksmith::Forge).to have_received(:new).with('user', 'pass', 'https://forgeapi.puppetlabs.com/') }
     it { expect(forge).to have_received :push! }
   end
-end
 
+  describe 'with credentials in env vars', run: false do
+    let(:args) { [] }
+    env PUPPETFORGE_USERNAME: 'user',
+        PUPPETFORGE_PASSWORD: 'pass'
+    it { expect { subject.run }.to_not raise_error }
+  end
+end

@@ -32,7 +32,7 @@ module Dpl
         str
 
         opt '--repo SLUG', 'GitHub repo slug', default: :repo_slug
-        opt '--github_token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true
+        opt '--token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true, alias: :github_token
 
         msgs pages_not_found:             'GitHub Pages not found for %{slug}. ' \
                'Given token has insufficient scope (\'repo\' or \'public_repo\'), ' \
@@ -87,7 +87,7 @@ module Dpl
         end
 
         def creds
-          { access_token: github_token }
+          { access_token: token }
         end
 
         def pages_enabled?

@@ -3,7 +3,6 @@ describe Dpl::Providers::Gleis do
 
   before { |c| subject.run if run?(c) }
 
-
   describe 'by default', record: true do
     it { should have_run '[info] $ gleis auth login user p******************* --skip-keygen' }
     it { should have_run 'gleis auth login user pass --skip-keygen' }
@@ -25,5 +24,12 @@ describe Dpl::Providers::Gleis do
 
   describe 'given --verbose' do
     it { should have_run 'git push -v -f captured_stdout HEAD:refs/heads/master' }
+  end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--app app) }
+    env GLEIS_USERNAME: 'user',
+        GLEIS_PASSWORD: 'pass'
+    it { expect { subject.run }.to_not raise_error }
   end
 end

@@ -17,7 +17,7 @@ describe Dpl::Providers::Pages::Git do
   describe 'by default', record: true do
     it { should have_run '[info] Authenticated as login' }
     it { should have_run '[info] Configuring git committer to be author name (via Travis CI) <author email>' }
-    it { should have_run '[info] Deploying branch gh-pages to github.com' }
+    it { should have_run '[info] Deploying branch gh-pages to github.com/travis-ci/dpl.git' }
     it { should have_run '[info] Cloning the branch gh-pages from the remote repo' }
     it { should have_run 'git clone --quiet --branch="gh-pages" --depth=1 "https://token@github.com/travis-ci/dpl.git" . > /dev/null 2>&1' }
     it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" .) }
@@ -33,7 +33,7 @@ describe Dpl::Providers::Pages::Git do
 
   describe 'given --verbose' do
     it { should have_run "[info] The source dir for deployment is #{cwd}" }
-    it { should have_run '[info] Deploying branch gh-pages to github.com' }
+    it { should have_run '[info] Deploying branch gh-pages to github.com/travis-ci/dpl.git' }
     it { should have_run '[info] Using temporary work directory tmp' }
     it { should have_run "[info] Cloning the branch gh-pages from the remote repo" }
     it { should have_run "[info] Copying #{cwd} contents to tmp" }
@@ -113,5 +113,17 @@ describe Dpl::Providers::Pages::Git do
     it { should have_run %r(cp .*lib/dpl/assets/git/detect_private_key .git/hooks/pre-commit) }
     it { should have_run 'git push --quiet "git@github.com:travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
     it { should have_run_in_order }
+  end
+
+  describe 'with GITHUB credentials in env vars', run: false do
+    let(:args) { %w(--strategy git) }
+    env GITHUB_TOKEN: 'token'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with PAGES credentials in env vars', run: false do
+    let(:args) { %w(--strategy git) }
+    env PAGES_TOKEN: 'token'
+    it { expect { subject.run }.to_not raise_error }
   end
 end

@@ -4,6 +4,7 @@ describe Dpl::Providers::Pages::Api do
   let(:headers) { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
   let(:cwd)     { File.expand_path('.') }
   let(:tmp)     { File.expand_path('tmp') }
+
   let(:pages_response_body) {
     {
       "url": "https://api.github.com/repos/travis-ci/dpl/pages",
@@ -17,6 +18,7 @@ describe Dpl::Providers::Pages::Api do
       }
     }.to_json
   }
+
   let(:pages_latest_builds_response_body) {
     {
       "url": "https://api.github.com/repos/travis-ci/dpl/pages/builds/5472601",
@@ -35,6 +37,7 @@ describe Dpl::Providers::Pages::Api do
       "updated_at": "2019-02-10T19:00:51Z"
     }.to_json
   }
+
   let(:pages_build_request_response_body) {
     {
       "url": "https://api.github.com/repos/travis-ci/dpl/pages/builds/latest",
@@ -47,9 +50,21 @@ describe Dpl::Providers::Pages::Api do
   before { stub_request(:get, 'https://api.github.com/repos/travis-ci/dpl/pages/builds/latest').and_return(status: 200, body: pages_latest_builds_response_body, headers: headers) }
   before { stub_request(:post, 'https://api.github.com/repos/travis-ci/dpl/pages/builds').and_return(status: 200, body: pages_build_request_response_body, headers: headers) }
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run_in_order }
+  end
+
+  describe 'with GITHUB credentials in env vars', run: false do
+    let(:args) { %w(--strategy api) }
+    env GITHUB_TOKEN: 'token'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with PAGES credentials in env vars', run: false do
+    let(:args) { %w(--strategy api) }
+    env PAGES_TOKEN: 'token'
+    it { expect { subject.run }.to_not raise_error }
   end
 end

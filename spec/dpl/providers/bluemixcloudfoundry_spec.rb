@@ -47,4 +47,13 @@ describe Dpl::Providers::Bluemixcloudfoundry do
   describe 'given --region au-syd' do
     it { should have_run './cf api api.au-syd.bluemix.net' }
   end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--organization org --space space) }
+
+    env CLOUDFOUNDRY_USERNAME: 'name',
+        CLOUDFOUNDRY_PASSWORD: 'password'
+
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

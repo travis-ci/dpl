@@ -20,4 +20,11 @@ describe Dpl::Providers::Hephy do
   describe 'given --verbose' do
     it { should have_run %r(git push -v ssh://git@hephy-builder.hephyapps.com:2222/app.git) }
   end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { |e| %w(--controller hephy.hephyapps.com --app app) }
+    env HEPHY_USERNAME: 'user',
+        HEPHY_PASSWORD: 'pass'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

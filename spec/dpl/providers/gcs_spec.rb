@@ -40,4 +40,11 @@ describe Dpl::Providers::Gcs do
   describe 'given --cache_control max-age=1' do
     it { should have_run 'gsutil -h "Cache-Control:max-age=1" cp -r one gs://bucket/' }
   end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--bucket bucket) }
+    env GCS_ACCESS_KEY_ID: 'token',
+        GCS_SECRET_ACCESS_KEY: '12345'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

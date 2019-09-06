@@ -17,4 +17,11 @@ describe Dpl::Providers::Hackage do
   describe 'given --publish' do
     it { should have_run 'cabal upload --publish --username="user" --password="pass" dist/one.tar.gz' }
   end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { [] }
+    env HACKAGE_USERNAME: 'user',
+        HACKAGE_PASSWORD: 'pass'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

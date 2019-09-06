@@ -14,4 +14,10 @@ describe Dpl::Providers::Openshift do
   describe 'given --app other' do
     it { should have_run './oc start-build other --follow --commit sha' }
   end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--server server --project project) }
+    env OPENSHIFT_TOKEN: 'token'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

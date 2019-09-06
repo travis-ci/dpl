@@ -3,9 +3,9 @@ describe Dpl::Providers::Scalingo do
 
   before { |c| subject.run if run?(c) }
 
-  describe 'given --api_token key', record: true do
+  describe 'given --api_token token', record: true do
     it { should have_run %r(curl --remote-name --location https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz) }
-    it { should have_run %r(timeout 60 ./scalingo login --api-token key) }
+    it { should have_run %r(timeout 60 ./scalingo login --api-token token) }
     it { should have_run 'timeout 60 ./scalingo keys-add dpl_tmp_key ~/.dpl/id_rsa.pub' }
     it { should have_run 'git push scalingo-dpl HEAD:master -f' }
     it { should have_run 'timeout 60 ./scalingo keys-remove dpl_tmp_key' }
@@ -34,5 +34,11 @@ describe Dpl::Providers::Scalingo do
 
   describe 'invalid credentials', run: false do
     it { expect { subject.run }.to raise_error 'Missing options: api_token, or username and password' }
+  end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { [] }
+    env SCALINGO_API_TOKEN: 'token'
+    it { expect { subject.run }.to_not raise_error }
   end
 end
