@@ -4,8 +4,30 @@ $: << File.expand_path('../../lib', __FILE__)
 require 'ffi-icu'
 require 'erb'
 require 'dpl'
+require 'dpl/helper/wrap'
 
 SKIP = %i(help heroku pages)
+
+CTX = Cl::Ctx.new('dpl')
+
+class Header < Struct.new(:cmd)
+  include Wrap
+
+  def to_s
+    cmd.status.msg if cmd.status && cmd.status.announce?
+  end
+end
+
+class Footer < Struct.new(:cmd)
+  include Wrap
+
+  def to_s
+    # TODO
+    return unless env = cmd.instance_variable_get(:@env) || cmd.superclass.instance_variable_get(:@env)
+    str = env.description(cmd)
+    wrap(str, 100)
+  end
+end
 
 def providers
   consts = Dpl::Provider.registry.values
@@ -15,9 +37,15 @@ def providers
 end
 
 def help(name)
-  ctx = Cl::Ctx.new('dpl')
-  str = Cl::Help.new(ctx, [name.to_s]).help
-  str.gsub(/ *$/, '')
+  Cl::Help.new(CTX, [name.to_s]).help.gsub(/ *$/, '')
+end
+
+def header(name)
+  Header.new(Cl::Cmd[name]).to_s
+end
+
+def footer(name)
+  Footer.new(Cl::Cmd[name]).to_s
 end
 
 def contributors
@@ -29,6 +57,7 @@ def contributors
   names = names - ['Travis CI']
   names.join(', ')
 end
+
 
 erb = ERB.new(File.read('lib/dpl/assets/dpl/README.erb.md'), nil, '-')
 puts erb.result

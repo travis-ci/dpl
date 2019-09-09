@@ -101,9 +101,13 @@ Dpl supports the following providers:
 <% providers.each do |key, name|%>
 ### <%= name %>
 
+<%= header(key) %>
+
 ```
 <%= help(key) %>
 ```
+
+<%= footer(key) %>
 <% end -%>
 
 <%= File.read('./CONTRIBUTING.md').gsub(/^#/, '##') %>

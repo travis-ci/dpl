@@ -17,7 +17,7 @@ describe Dpl::Providers::Releases do
   before { stub_request(:patch, %r(/releases/1$)) }
   before { stub_request(:post, %r(/releases/1/assets\?)) }
   before { stub_request(:delete, %r(/releases/1/assets/1$)) }
-  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
+  before { |c| subject.run if run?(c) }
 
   let(:repo)     { 'travis-ci/dpl' }
   let(:tag_name) { 'tag' }
@@ -141,6 +141,18 @@ describe Dpl::Providers::Releases do
   describe 'given --body body' do
     let(:release_notes) { 'body' }
     it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
+  end
+
+  describe 'with GITHUB credentials in env vars', run: false do
+    let(:args) { [] }
+    env GITHUB_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with RELEASES credentials in env vars', run: false do
+    let(:args) { [] }
+    env RELEASES_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
   end
 
   def compact(hash)

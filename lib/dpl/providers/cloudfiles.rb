@@ -13,6 +13,8 @@ module Dpl
       gem 'fog-core', '= 2.1.0', require: 'fog/core'
       gem 'fog-rackspace', '~> 0.1.6', require: 'fog/rackspace'
 
+      env :cloudfiles
+
       opt '--username USER',  'Rackspace username', required: true
       opt '--api_key KEY',    'Rackspace API key', required: true, secret: true
       opt '--region REGION',  'Cloudfiles region', required: true, enum: %w(ord dfw syd iad hkg)

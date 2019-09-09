@@ -8,7 +8,7 @@ describe Dpl::Providers::Npm do
     rc
   end
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run '[info] npm version: 1' }
@@ -34,5 +34,17 @@ describe Dpl::Providers::Npm do
 
   describe 'given --tag tag' do
     it { should have_run 'npm publish . --tag="tag"' }
+  end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--email email) }
+    env NPM_API_TOKEN: '12345'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with credentials in env vars (alias)', run: false do
+    let(:args) { %w(--email email) }
+    env NPM_API_KEY: '12345'
+    it { expect { subject.run }.to_not raise_error }
   end
 end

@@ -12,6 +12,8 @@ module Dpl
       gem 'puppet', '~> 5.5.14', require: 'puppet/face'
       gem 'puppet-blacksmith', '~> 3.3.1', require: 'puppet_blacksmith'
 
+      env :puppetforge
+
       opt '--username NAME', 'Puppet Forge user name', required: true, alias: :user
       opt '--password PASS', 'Puppet Forge password', required: true, secret: true
       opt '--url URL', 'Puppet Forge URL to deploy to', default: 'https://forgeapi.puppetlabs.com/'

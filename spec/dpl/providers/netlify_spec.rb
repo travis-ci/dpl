@@ -1,7 +1,7 @@
 describe Dpl::Providers::Netlify do
   let(:args) { |e| %w(--auth token --site id) + args_from_description(e) }
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default' do
     it { should have_run '[npm:install] netlify-cli (netlify)' }
@@ -22,5 +22,11 @@ describe Dpl::Providers::Netlify do
 
   describe 'given --prod' do
     it { should have_run 'netlify deploy --site="id" --auth="token" --prod' }
+  end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--site id) }
+    env NETLIFY_AUTH: 'token'
+    it { expect { subject.run }.to_not raise_error }
   end
 end

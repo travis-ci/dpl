@@ -11,7 +11,7 @@ module Dpl
 
       python '>= 2.7.9'
 
-      env :googlecloud, :cloudsdk_core, allow_skip_underscore: true
+      env :gae, :googlecloud, :cloudsdk_core, allow_skip_underscore: true
 
       opt '--project ID', 'Project ID used to identify the project on Google Cloud', required: true
       opt '--keyfile FILE', 'Path to the JSON file containing your Service Account credentials in JSON Web Token format. To be obtained via the Google Developers Console. Should be handled with care as it contains authorization keys.', default: 'service-account.json'

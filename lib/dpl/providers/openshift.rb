@@ -9,6 +9,8 @@ module Dpl
         tbd
       str
 
+      env :openshift
+
       opt '--server SERVER',   'OpenShift server', required: true
       opt '--token TOKEN',     'OpenShift token', required: true, secret: true
       opt '--project PROJECT', 'OpenShift project', required: true

@@ -9,6 +9,8 @@ module Dpl
         tbd
       str
 
+      env :cloudfoundry
+
       opt '--username USER',       'Bluemix username', required: true
       opt '--password PASS',       'Bluemix password', required: true, secret: true
       opt '--organization ORG',    'Bluemix target organization', required: true

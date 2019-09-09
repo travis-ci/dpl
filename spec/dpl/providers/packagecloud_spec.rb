@@ -45,19 +45,19 @@ describe Dpl::Providers::Packagecloud do
 
   # the whole source_files code path should be tested more, but it seems rather
   # unclear to me what this is actually supposed to do
-  describe 'given --dist ubuntu/trusty' do
+  describe 'given --dist ubuntu/trusty', run: false do
     file 'one.dsc'
     before { subject.run }
     it { expect(client).to have_received(:put_package).with('repo', package('one.dsc'), 'id') }
   end
 
-  describe 'given --dist ubuntu/trusty --force' do
+  describe 'given --dist ubuntu/trusty --force', run: false do
     file 'one.tgz'
     before { subject.run }
     it { expect(client).to have_received(:delete_package).with('repo', 'ubuntu', 'trusty', 'one.tgz') }
   end
 
-  describe 'given --dist ubuntu/trusty --package_glob one* --package_glob two*' do
+  describe 'given --dist ubuntu/trusty --package_glob one* --package_glob two*', run: false do
     file 'one.tgz'
     file 'two.tgz'
     before { subject.run }
@@ -65,21 +65,29 @@ describe Dpl::Providers::Packagecloud do
     it { expect(client).to have_received(:put_package).with('repo', package('two.tgz'), 'id') }
   end
 
-  describe 'given --dist ubuntu/trusty --read_timeout 1 --write_timeout 1 --connect_timeout 1' do
+  describe 'given --dist ubuntu/trusty --read_timeout 1 --write_timeout 1 --connect_timeout 1', run: false do
     let(:timeouts) { { connect_timeout: 1, read_timeout: 1, write_timeout: 1 } }
     file 'one.tgz'
     before { subject.run }
     it { expect(Packagecloud::Connection).to have_received(:new).with(*url, timeouts) }
   end
 
-  describe 'missing dist' do
+  describe 'missing dist', run: false do
     file 'one.tgz'
     it { expect { subject.run }.to raise_error 'Distribution needed for rpm, deb, python, and dsc packages (e.g. dist: ubuntu/breezy)' }
   end
 
-  describe 'no packages' do
+  describe 'no packages', run: false do
     it { expect { subject.run }.to raise_error 'No supported packages found' }
   end
 
-      # opt '--package_glob', type: :array, default: ['**/*']
+  # opt '--package_glob', type: :array, default: ['**/*']
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--dist ubuntu/trusty --repo repo) }
+    env PACKAGECLOUD_USERNAME: 'user',
+        PACKAGECLOUD_TOKEN: 'token'
+    file 'one.tgz'
+    it { expect { subject.run }.to_not raise_error }
+  end
 end

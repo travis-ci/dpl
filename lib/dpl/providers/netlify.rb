@@ -9,6 +9,8 @@ module Dpl
 
       npm 'netlify-cli', 'netlify'
 
+      env :netlify
+
       opt '--site ID',         'A site ID to deploy to', required: true
       opt '--auth TOKEN',      'An auth token to log in with', required: true, secret: true
       opt '--dir DIR',         'Specify a folder to deploy'

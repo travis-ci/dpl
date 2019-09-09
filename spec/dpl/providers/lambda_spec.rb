@@ -17,6 +17,7 @@ describe Dpl::Providers::Lambda do
   end
 
   before { allow(Aws::Lambda::Client).to receive(:new).and_return(client) }
+  before { |c| subject.run if run?(c) }
 
   file 'one'
 
@@ -25,8 +26,6 @@ describe Dpl::Providers::Lambda do
   describe 'function does not exist' do
     let(:required) { %w(--access_key_id id --secret_access_key key --function_name func --role role --handler_name handler) }
     let(:exists) { false }
-
-    before { subject.run }
 
     describe 'by default', record: true do
       it { should have_run '[info] Using Access Key: i*******************' }
@@ -109,8 +108,6 @@ describe Dpl::Providers::Lambda do
     let(:required) { %w(--access_key_id id --secret_access_key key --function_name func) }
     let(:exists) { true }
 
-    before { subject.run }
-
     describe 'by default' do
       it { should have_run '[info] Using Access Key: i*******************' }
       it { should have_run '[info] Updating existing function func.' }
@@ -189,7 +186,7 @@ describe Dpl::Providers::Lambda do
     end
   end
 
-  describe 'with ~/.aws/credentials' do
+  describe 'with ~/.aws/credentials', run: false do
     let(:args) { |e| %w(--function_name func --role role --handler_name handler) }
     let(:exists) { false }
 
@@ -203,7 +200,7 @@ describe Dpl::Providers::Lambda do
     it { should have_run '[info] Using Access Key: ac******************' }
   end
 
-  describe 'with ~/.aws/config' do
+  describe 'with ~/.aws/config', run: false do
     let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
     let(:exists) { false }
 

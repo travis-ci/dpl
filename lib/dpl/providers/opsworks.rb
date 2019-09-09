@@ -11,7 +11,7 @@ module Dpl
 
       gem 'aws-sdk-opsworks', '~> 1.0'
 
-      env :aws
+      env :aws, :opsworks
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
 
       opt '--access_key_id ID', 'AWS access key id', required: true, secret: true

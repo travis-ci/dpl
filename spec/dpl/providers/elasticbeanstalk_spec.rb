@@ -34,7 +34,7 @@ describe Dpl::Providers::Elasticbeanstalk do
 
   before { allow(Aws::ElasticBeanstalk::Client).to receive(:new).and_return(client) }
   before { allow(Aws::S3::Client).to receive(:new).and_return(s3) }
-  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default' do
     before { subject.run }

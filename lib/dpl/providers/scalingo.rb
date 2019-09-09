@@ -7,6 +7,8 @@ module Dpl
         tbd
       str
 
+      env :scalingo
+
       required :api_token, [:username, :password]
 
       opt '--app APP', default: :repo_name

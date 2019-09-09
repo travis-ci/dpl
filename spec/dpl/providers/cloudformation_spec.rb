@@ -146,9 +146,17 @@ describe Dpl::Providers::Cloudformation do
     end
   end
 
-  describe 'with credentials in env vars', run: false do
+  describe 'with AWS credentials in env vars', run: false do
     env AWS_ACCESS_KEY_ID: 'id',
         AWS_SECRET_ACCESS_KEY: 'key'
+
+    before { subject.run }
+    it { should have_run '[info] Using Access Key: i*******************' }
+  end
+
+  describe 'with CLOUDFORMATION credentials in env vars', run: false do
+    env CLOUDFORMATION_ACCESS_KEY_ID: 'id',
+        CLOUDFORMATION_SECRET_ACCESS_KEY: 'key'
 
     before { subject.run }
     it { should have_run '[info] Using Access Key: i*******************' }

@@ -4,7 +4,7 @@ describe Dpl::Providers::Cloudfoundry do
   file 'manifest.yml'
   file 'other.yml'
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run %r(wget .*cli.run.pivotal.io.* -qO cf.tgz && tar -zxvf cf.tgz) }
@@ -26,5 +26,13 @@ describe Dpl::Providers::Cloudfoundry do
   describe 'given --v3' do
     it { should have_run './cf v3-push' }
   end
-end
 
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--api api.io --organization org --space space) }
+
+    env CLOUDFOUNDRY_USERNAME: 'name',
+        CLOUDFOUNDRY_PASSWORD: 'password'
+
+    it { expect { subject.run }.to_not raise_error }
+  end
+end

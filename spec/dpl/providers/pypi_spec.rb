@@ -16,7 +16,7 @@ describe Dpl::Providers::Pypi do
     rc
   end
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     it { should have_run %r(pip install .* setuptools twine wheel) }
@@ -65,5 +65,12 @@ describe Dpl::Providers::Pypi do
 
   describe 'given --wheel_version 1.0.0' do
     it { should have_run %r(pip install .* wheel==1.0.0) }
+  end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { [] }
+    env PYPI_USERNAME: 'name',
+        PYPI_PASSWORD: 'pass'
+    it { expect { subject.run }.to_not raise_error }
   end
 end

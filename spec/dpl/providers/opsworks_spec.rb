@@ -21,7 +21,7 @@ describe Dpl::Providers::Opsworks do
   end
 
   before { allow(Aws::OpsWorks::Client).to receive(:new).and_return(client) }
-  before { |c| subject.run unless c.example_group.metadata[:run].is_a?(FalseClass) }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     let(:json) { JSON.dump(deploy: { dpl: { migrate: false, scm: { revision: 'sha' } } }) }

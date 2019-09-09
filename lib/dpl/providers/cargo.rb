@@ -7,6 +7,8 @@ module Dpl
         tbd
       str
 
+      env :cargo
+
       opt '--token TOKEN', 'Cargo registry API token', required: true, secret: true
 
       cmds publish: 'cargo publish --token %{token}'

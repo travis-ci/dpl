@@ -8,6 +8,8 @@ module Dpl
         Provider[:"pages:#{strategy}"].new(ctx, args)
       end
 
+      env :github, :pages
+
       opt '--strategy NAME', 'GitHub Pages deployment strategy', default: 'git', enum: %w(api git), internal: true
     end
   end

@@ -142,6 +142,8 @@ Dpl supports the following providers:
 
 ### Anynines
 
+Support for deployments to Anynines is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 ```
 Usage: dpl anynines [options]
 
@@ -152,8 +154,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Anynines is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -178,7 +178,12 @@ Examples:
   dpl anynines --username user --password pass --organization org --space space --app_name app
 ```
 
+Options can be given via env vars if prefixed with `ANYNINES_`. E.g. the option `--password` can be
+given as `ANYNINES_PASSWORD=<password>`.
+
 ### AWS CloudFormation
+
+Support for deployments to AWS CloudFormation is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl cloudformation [options]
@@ -190,8 +195,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to AWS CloudFormation is in development. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -234,7 +237,13 @@ Examples:
   dpl cloudformation --access_key_id id --secret_access_key key --template str --stack_name name --region region
 ```
 
+Options can be given via env vars if prefixed with `[AWS_|CLOUDFORMATION_]`. E.g. the option
+`--access_key_id` can be given as `AWS_ACCESS_KEY_ID=<access_key_id>` or
+`CLOUDFORMATION_ACCESS_KEY_ID=<access_key_id>`.
+
 ### AWS Code Deploy
+
+Support for deployments to AWS Code Deploy is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl codedeploy [options]
@@ -246,8 +255,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to AWS Code Deploy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -282,7 +289,13 @@ Examples:
   dpl codedeploy --access_key_id id --secret_access_key key --application name --deployment_group group --revision_type s3
 ```
 
+Options can be given via env vars if prefixed with `[AWS_|CODEDEPLOY_]`. E.g. the option
+`--access_key_id` can be given as `AWS_ACCESS_KEY_ID=<access_key_id>` or
+`CODEDEPLOY_ACCESS_KEY_ID=<access_key_id>`.
+
 ### AWS Elastic Beanstalk
+
+Support for deployments to AWS Elastic Beanstalk is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl elasticbeanstalk [options]
@@ -294,8 +307,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to AWS Elastic Beanstalk is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -327,7 +338,13 @@ Examples:
   dpl elasticbeanstalk --access_key_id id --secret_access_key key --env name --bucket name --region region
 ```
 
+Options can be given via env vars if prefixed with `[AWS_|ELASTIC_BEANSTALK_]`. E.g. the option
+`--access_key_id` can be given as `AWS_ACCESS_KEY_ID=<access_key_id>` or
+`ELASTIC_BEANSTALK_ACCESS_KEY_ID=<access_key_id>`.
+
 ### AWS Lambda
+
+Support for deployments to AWS Lambda is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl lambda [options]
@@ -339,8 +356,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to AWS Lambda is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -396,7 +411,13 @@ Examples:
   dpl lambda --access_key_id id --secret_access_key key --function_name func --region region --role role
 ```
 
+Options can be given via env vars if prefixed with `[AWS_|LAMBDA_]`. E.g. the option
+`--access_key_id` can be given as `AWS_ACCESS_KEY_ID=<access_key_id>` or
+`LAMBDA_ACCESS_KEY_ID=<access_key_id>`.
+
 ### AWS OpsWorks
+
+Support for deployments to AWS OpsWorks is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl opsworks [options]
@@ -408,8 +429,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to AWS OpsWorks is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -439,7 +458,13 @@ Examples:
   dpl opsworks --access_key_id id --secret_access_key key --app_id app --region region --instance_ids id
 ```
 
+Options can be given via env vars if prefixed with `[AWS_|OPSWORKS_]`. E.g. the option
+`--access_key_id` can be given as `AWS_ACCESS_KEY_ID=<access_key_id>` or
+`OPSWORKS_ACCESS_KEY_ID=<access_key_id>`.
+
 ### AWS S3
+
+Support for deployments to AWS S3 is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl s3 [options]
@@ -451,8 +476,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to AWS S3 is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -501,7 +524,12 @@ Examples:
   dpl s3 --access_key_id id --secret_access_key key --bucket bucket --region region --endpoint url
 ```
 
+Options can be given via env vars if prefixed with `[AWS_|S3_]`. E.g. the option `--access_key_id`
+can be given as `AWS_ACCESS_KEY_ID=<access_key_id>` or `S3_ACCESS_KEY_ID=<access_key_id>`.
+
 ### Azure Web Apps
+
+Support for deployments to Azure Web Apps is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl azure_web_apps [options]
@@ -513,8 +541,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Azure Web Apps is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -539,7 +565,12 @@ Examples:
   dpl azure_web_apps --site site --username name --password pass --slot slot --verbose
 ```
 
+Options can be given via env vars if prefixed with `AZURE_WA_`. E.g. the option `--password` can be
+given as `AZURE_WA_PASSWORD=<password>`.
+
 ### Bintray
+
+Support for deployments to Bintray is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl bintray [options]
@@ -551,8 +582,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Bintray is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -574,7 +603,12 @@ Examples:
   dpl bintray --user user --key key --file file --passphrase phrase --run cmd
 ```
 
+Options can be given via env vars if prefixed with `BINTRAY_`. E.g. the option `--key` can be given
+as `BINTRAY_KEY=<key>`.
+
 ### Bluemix Cloud Foundry
+
+Support for deployments to Bluemix Cloud Foundry is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl bluemixcloudfoundry [options]
@@ -586,8 +620,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Bluemix Cloud Foundry is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -616,7 +648,12 @@ Examples:
   dpl bluemixcloudfoundry --username user --password pass --organization org --space space --region ng
 ```
 
+Options can be given via env vars if prefixed with `CLOUDFOUNDRY_`. E.g. the option `--password` can
+be given as `CLOUDFOUNDRY_PASSWORD=<password>`.
+
 ### Boxfuse
+
+Support for deployments to Boxfuse is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl boxfuse [options]
@@ -628,8 +665,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Boxfuse is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -655,7 +690,12 @@ Examples:
   dpl boxfuse --user user --secret secret --config_file file --payload payload --app app
 ```
 
+Options can be given via env vars if prefixed with `BOXFUSE_`. E.g. the option `--secret` can be
+given as `BOXFUSE_SECRET=<secret>`.
+
 ### Cargo
+
+Support for deployments to Cargo is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl cargo [options]
@@ -667,8 +707,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Cargo is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -687,7 +725,12 @@ Examples:
   dpl cargo --token token --run cmd --cleanup
 ```
 
+Options can be given via env vars if prefixed with `CARGO_`. E.g. the option `--token` can be given
+as `CARGO_TOKEN=<token>`.
+
 ### Chef Supermarket
+
+Support for deployments to Chef Supermarket is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl chef_supermarket [options]
@@ -699,8 +742,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Chef Supermarket is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -726,7 +767,11 @@ Examples:
   dpl chef_supermarket --user_id id --client_key key --category cat --name name --dir dir
 ```
 
+Options can be given via env vars if prefixed with `CHEF_`. 
+
 ### Cloud Files
+
+Support for deployments to Cloud Files is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl cloudfiles [options]
@@ -738,8 +783,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Cloud Files is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -765,7 +808,12 @@ Examples:
   dpl cloudfiles --username user --api_key key --region ord --container name --glob glob
 ```
 
+Options can be given via env vars if prefixed with `CLOUDFILES_`. E.g. the option `--api_key` can be
+given as `CLOUDFILES_API_KEY=<api_key>`.
+
 ### Cloud Foundry
+
+Support for deployments to Cloud Foundry is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl cloudfoundry [options]
@@ -777,8 +825,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Cloud Foundry is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -805,7 +851,12 @@ Examples:
   dpl cloudfoundry --username user --password pass --organization org --space space --api url
 ```
 
+Options can be given via env vars if prefixed with `CLOUDFOUNDRY_`. E.g. the option `--password` can
+be given as `CLOUDFOUNDRY_PASSWORD=<password>`.
+
 ### Cloud66
+
+Support for deployments to Cloud66 is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl cloud66 [options]
@@ -817,8 +868,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Cloud66 is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -837,7 +886,12 @@ Examples:
   dpl cloud66 --redeployment_hook url --run cmd --cleanup
 ```
 
+Options can be given via env vars if prefixed with `CLOUD66_`. E.g. the option `--redeployment_hook`
+can be given as `CLOUD66_REDEPLOYMENT_HOOK=<redeployment_hook>`.
+
 ### Convox
+
+Support for deployments to Convox is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl convox [options]
@@ -849,8 +903,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Convox is in development. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -880,7 +932,11 @@ Examples:
   dpl convox --app app --rack rack --password pass --host host --install_url url
 ```
 
+Options can be given via env vars if prefixed with `CONVOX_`. 
+
 ### Datica
+
+Support for deployments to Datica is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl datica [options]
@@ -892,8 +948,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Datica is in development. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -913,7 +967,11 @@ Examples:
   dpl datica --target target --path path --run cmd --cleanup
 ```
 
+Options can be given via env vars if prefixed with `[CATALYZE_|DATICA_]`. 
+
 ### Engineyard
+
+Support for deployments to Engineyard is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl engineyard [options]
@@ -925,8 +983,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Engineyard is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -954,7 +1010,12 @@ Examples:
   dpl engineyard --api_key key --app app --env env --migrate cmd --account name
 ```
 
+Options can be given via env vars if prefixed with `[ENGINEYARD_|EY_]`. E.g. the option `--api_key`
+can be given as `ENGINEYARD_API_KEY=<api_key>` or `EY_API_KEY=<api_key>`.
+
 ### Firebase
+
+Support for deployments to Firebase is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl firebase [options]
@@ -966,8 +1027,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Firebase is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -993,7 +1052,12 @@ Examples:
   dpl firebase --token token --project name --message msg --only services --force
 ```
 
+Options can be given via env vars if prefixed with `FIREBASE_`. E.g. the option `--token` can be
+given as `FIREBASE_TOKEN=<token>`.
+
 ### GitHub Pages
+
+Support for deployments to GitHub Pages is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl pages git [options]
@@ -1006,14 +1070,12 @@ Description:
 
   tbd
 
-  Support for deployments to GitHub Pages is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 Options:
 
-  Either github_token, or deploy_key are required.
+  Either token, or deploy_key are required.
 
   --repo SLUG                    Repo slug (type: string, default: repo slug)
-  --github_token TOKEN           GitHub oauth token with repo permission (type: string)
+  --token TOKEN                  GitHub oauth token with repo permission (type: string, alias: github_token)
   --deploy_key PATH              Path to a file containing a private deploy key with write access to the
                                  repository (type: string, see:
                                  https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
@@ -1032,7 +1094,7 @@ Options:
                                  email)
   --[no-]committer_from_gh       Use the token's owner name and email for the commit (requires: github_token)
   --[no-]deployment_file         Enable creation of a deployment-info file
-  --github_url URL               type: string, default: github.com
+  --url URL                      type: string, alias: github_url, default: github.com
 
 Common Options:
 
@@ -1043,12 +1105,17 @@ Common Options:
 
 Examples:
 
-  dpl pages git --github_token token
+  dpl pages git --token token
   dpl pages git --deploy_key path
-  dpl pages git --github_token token --repo slug --target_branch branch --keep_history --commit_message msg
+  dpl pages git --token token --repo slug --target_branch branch --keep_history --commit_message msg
 ```
 
+Options can be given via env vars if prefixed with `[GITHUB_|PAGES_]`. E.g. the option `--token` can
+be given as `GITHUB_TOKEN=<token>` or `PAGES_TOKEN=<token>`.
+
 ### GitHub Pages (API)
+
+Support for deployments to GitHub Pages (API) is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl pages api [options]
@@ -1068,27 +1135,31 @@ Description:
   deployment is run on the `master` branch, you would have to ensure that the
   `gh-pages` would be updated accordingly during the build.
 
-  Support for deployments to GitHub Pages (API) is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 Options:
 
-  --repo SLUG               GitHub repo slug (type: string, default: repo slug)
-  --github_token TOKEN      GitHub oauth token with repo permission (type: string, required: true)
+  --repo SLUG        GitHub repo slug (type: string, default: repo slug)
+  --token TOKEN      GitHub oauth token with repo permission (type: string, required: true, alias:
+                     github_token)
 
 Common Options:
 
-  --run CMD                 Command to execute after the deployment finished successfully (type: array
-                            (string, can be given multiple times))
-  --cleanup                 Skip cleaning up build artifacts before the deployment
-  --help                    Get help on this command
+  --run CMD          Command to execute after the deployment finished successfully (type: array
+                     (string, can be given multiple times))
+  --cleanup          Skip cleaning up build artifacts before the deployment
+  --help             Get help on this command
 
 Examples:
 
-  dpl pages api --github_token token
-  dpl pages api --github_token token --repo slug --run cmd --cleanup
+  dpl pages api --token token
+  dpl pages api --token token --repo slug --run cmd --cleanup
 ```
 
+Options can be given via env vars if prefixed with `[GITHUB_|PAGES_]`. E.g. the option `--token` can
+be given as `GITHUB_TOKEN=<token>` or `PAGES_TOKEN=<token>`.
+
 ### GitHub Releases
+
+Support for deployments to GitHub Releases is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl releases [options]
@@ -1100,8 +1171,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to GitHub Releases is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1139,7 +1208,12 @@ Examples:
   dpl releases --api_key token --username login --repo slug --file glob --file_glob
 ```
 
+Options can be given via env vars if prefixed with `[GITHUB_|RELEASES_]`. E.g. the option
+`--api_key` can be given as `GITHUB_API_KEY=<api_key>` or `RELEASES_API_KEY=<api_key>`.
+
 ### Gleis
+
+Support for deployments to Gleis is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl gleis [options]
@@ -1151,8 +1225,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Gleis is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1176,7 +1248,12 @@ Examples:
   dpl gleis --username name --password pass --app app --key_name name --verbose
 ```
 
+Options can be given via env vars if prefixed with `GLEIS_`. E.g. the option `--password` can be
+given as `GLEIS_PASSWORD=<password>`.
+
 ### Google App Engine
+
+Support for deployments to Google App Engine is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl gae [options]
@@ -1188,8 +1265,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Google App Engine is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1222,7 +1297,12 @@ Examples:
   dpl gae --project id --keyfile file --config file --version ver --verbosity level
 ```
 
+Options can be given via env vars if prefixed with
+`[CLOUDSDK_CORE|CLOUDSDK_CORE_|GAE|GAE_|GOOGLECLOUD|GOOGLECLOUD_]`.
+
 ### Google Cloud Store
+
+Support for deployments to Google Cloud Store is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl gcs [options]
@@ -1234,8 +1314,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Google Cloud Store is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1264,7 +1342,12 @@ Examples:
   dpl gcs --access_key_id id --secret_access_key key --bucket bucket --local_dir dir --upload_dir dir
 ```
 
+Options can be given via env vars if prefixed with `GCS_`. E.g. the option `--access_key_id` can be
+given as `GCS_ACCESS_KEY_ID=<access_key_id>`.
+
 ### Hackage
+
+Support for deployments to Hackage is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl hackage [options]
@@ -1276,8 +1359,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Hackage is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1298,7 +1379,12 @@ Examples:
   dpl hackage --username user --password user --publish --run cmd --cleanup
 ```
 
+Options can be given via env vars if prefixed with `HACKAGE_`. E.g. the option `--password` can be
+given as `HACKAGE_PASSWORD=<password>`.
+
 ### Hephy
+
+Support for deployments to Hephy is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl hephy [options]
@@ -1310,8 +1396,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Hephy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1335,7 +1419,12 @@ Examples:
   dpl hephy --controller name --username user --password pass --app app --cli_version ver
 ```
 
+Options can be given via env vars if prefixed with `HEPHY_`. E.g. the option `--password` can be
+given as `HEPHY_PASSWORD=<password>`.
+
 ### Heroku API
+
+Support for deployments to Heroku API is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl heroku api [options]
@@ -1347,8 +1436,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Heroku API is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1368,7 +1455,12 @@ Examples:
   dpl heroku api --api_key key --run cmd --cleanup --app app
 ```
 
+Options can be given via env vars if prefixed with `HEROKU_`. E.g. the option `--api_key` can be
+given as `HEROKU_API_KEY=<api_key>`.
+
 ### Heroku Git
+
+Support for deployments to Heroku Git is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl heroku git [options]
@@ -1380,8 +1472,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Heroku Git is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1407,7 +1497,12 @@ Examples:
   dpl heroku git --api_key key --git url --run cmd --cleanup --app app
 ```
 
+Options can be given via env vars if prefixed with `HEROKU_`. E.g. the option `--api_key` can be
+given as `HEROKU_API_KEY=<api_key>`.
+
 ### Launchpad
+
+Support for deployments to Launchpad is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl launchpad [options]
@@ -1419,8 +1514,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Launchpad is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1441,7 +1534,12 @@ Examples:
   dpl launchpad --slug slug --oauth_token token --oauth_token_secret secret --run cmd --cleanup
 ```
 
+Options can be given via env vars if prefixed with `LAUNCHPAD_`. E.g. the option `--oauth_token` can
+be given as `LAUNCHPAD_OAUTH_TOKEN=<oauth_token>`.
+
 ### Netlify
+
+Support for deployments to Netlify is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl netlify [options]
@@ -1453,8 +1551,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Netlify is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1478,7 +1574,12 @@ Examples:
   dpl netlify --site id --auth token --dir dir --functions funcs --message msg
 ```
 
+Options can be given via env vars if prefixed with `NETLIFY_`. E.g. the option `--auth` can be given
+as `NETLIFY_AUTH=<auth>`.
+
 ### npm
+
+Support for deployments to npm is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl npm [options]
@@ -1490,8 +1591,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to npm is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1518,7 +1617,12 @@ Examples:
   dpl npm --api_token token --email email --access public --registry url --src src
 ```
 
+Options can be given via env vars if prefixed with `NPM_`. E.g. the option `--api_token` can be
+given as `NPM_API_TOKEN=<api_token>`.
+
 ### OpenShift
+
+Support for deployments to OpenShift is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl openshift [options]
@@ -1530,8 +1634,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to OpenShift is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1553,7 +1655,12 @@ Examples:
   dpl openshift --server server --token token --project project --app app --run cmd
 ```
 
+Options can be given via env vars if prefixed with `OPENSHIFT_`. E.g. the option `--token` can be
+given as `OPENSHIFT_TOKEN=<token>`.
+
 ### Packagecloud
+
+Support for deployments to Packagecloud is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl packagecloud [options]
@@ -1565,8 +1672,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Packagecloud is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1596,7 +1701,12 @@ Examples:
   dpl packagecloud --username user --token token --repository repo --local_dir dir --dist dist
 ```
 
+Options can be given via env vars if prefixed with `PACKAGECLOUD_`. E.g. the option `--token` can be
+given as `PACKAGECLOUD_TOKEN=<token>`.
+
 ### Puppet Forge
+
+Support for deployments to Puppet Forge is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl puppetforge [options]
@@ -1608,8 +1718,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Puppet Forge is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1631,7 +1739,12 @@ Examples:
   dpl puppetforge --username name --password pass --url url --run cmd --cleanup
 ```
 
+Options can be given via env vars if prefixed with `PUPPETFORGE_`. E.g. the option `--password` can
+be given as `PUPPETFORGE_PASSWORD=<password>`.
+
 ### PyPI
+
+Support for deployments to PyPI is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl pypi [options]
@@ -1643,8 +1756,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to PyPI is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1678,7 +1789,12 @@ Examples:
   dpl pypi --username name --password pass --server server --distributions dists --docs_dir dir
 ```
 
+Options can be given via env vars if prefixed with `PYPI_`. E.g. the option `--password` can be
+given as `PYPI_PASSWORD=<password>`.
+
 ### Rubygems
+
+Support for deployments to Rubygems is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl rubygems [options]
@@ -1690,8 +1806,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Rubygems is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1720,7 +1834,12 @@ Examples:
   dpl rubygems --api_key key --username user --gem name --gemspec file --gemspec_glob glob
 ```
 
+Options can be given via env vars if prefixed with `RUBYGEMS_`. E.g. the option `--api_key` can be
+given as `RUBYGEMS_API_KEY=<api_key>`.
+
 ### Scalingo
+
+Support for deployments to Scalingo is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl scalingo [options]
@@ -1732,8 +1851,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Scalingo is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1764,7 +1881,12 @@ Examples:
   dpl scalingo --api_token token --app app --region agora-fr1 --remote remote --branch branch
 ```
 
+Options can be given via env vars if prefixed with `SCALINGO_`. E.g. the option `--password` can be
+given as `SCALINGO_PASSWORD=<password>`.
+
 ### Script
+
+Support for deployments to Script is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl script [options]
@@ -1786,8 +1908,6 @@ Description:
   Deployment will be marked a failure if the script exits with nonzero
   status.
 
-  Support for deployments to Script is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
-
 Options:
 
   -s --script SCRIPT      The script to execute (type: string, required: true)
@@ -1805,7 +1925,11 @@ Examples:
   dpl script --script script --run cmd --cleanup
 ```
 
+
+
 ### Snap
+
+Support for deployments to Snap is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl snap [options]
@@ -1817,8 +1941,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Snap is in development. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1839,7 +1961,12 @@ Examples:
   dpl snap --token token --snap str --channel chan --run cmd --cleanup
 ```
 
+Options can be given via env vars if prefixed with `SNAP_`. E.g. the option `--token` can be given
+as `SNAP_TOKEN=<token>`.
+
 ### Surge
+
+Support for deployments to Surge is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl surge [options]
@@ -1851,8 +1978,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Surge is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1877,7 +2002,12 @@ Examples:
   dpl surge --login email --token token --domain name --project path --run cmd
 ```
 
+Options can be given via env vars if prefixed with `SURGE_`. E.g. the option `--token` can be given
+as `SURGE_TOKEN=<token>`.
+
 ### TestFairy
+
+Support for deployments to TestFairy is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl testfairy [options]
@@ -1889,8 +2019,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to TestFairy is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1917,7 +2045,12 @@ Examples:
   dpl testfairy --api_key key --app_file file --symbols_file file --testers_groups groups --notify
 ```
 
+Options can be given via env vars if prefixed with `TESTFAIRY_`. E.g. the option `--api_key` can be
+given as `TESTFAIRY_API_KEY=<api_key>`.
+
 ### Transifex
+
+Support for deployments to Transifex is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl transifex [options]
@@ -1929,8 +2062,6 @@ Summary:
 Description:
 
   tbd
-
-  Support for deployments to Transifex is in alpha. Please see here: https://github.com/travis-ci/dpl/#maturity-levels
 
 Options:
 
@@ -1955,6 +2086,9 @@ Examples:
   dpl transifex --username name --password pass
   dpl transifex --api_token token --hostname name --cli_version ver --run cmd --cleanup
 ```
+
+Options can be given via env vars if prefixed with `TRANSIFEX_`. E.g. the option `--api_token` can
+be given as `TRANSIFEX_API_TOKEN=<api_token>`.
 
 ## Contributing to Dpl
 

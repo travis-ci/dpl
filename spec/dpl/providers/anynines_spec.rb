@@ -1,7 +1,7 @@
 describe Dpl::Providers::Anynines do
   let(:args) { |e| %w(--username name --password pass --organization org --space space) + args_from_description(e) }
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
     # it { should have_run %r(wget .*cli.run.pivotal.io.* -qO cf.tgz && tar -zxvf cf.tgz) }
@@ -20,5 +20,14 @@ describe Dpl::Providers::Anynines do
 
   describe 'given --manifest manifest' do
     it { should have_run './cf push -f manifest' }
+  end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--organization org --space space) }
+
+    env ANYNINES_USERNAME: 'name',
+        ANYNINES_PASSWORD: 'password'
+
+    it { expect { subject.run }.to_not raise_error }
   end
 end

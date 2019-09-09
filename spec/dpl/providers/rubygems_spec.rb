@@ -9,7 +9,7 @@ describe Dpl::Providers::Rubygems do
 
   before { stub_request(:get, %r(/gems/.+json)).and_return(body: JSON.dump(name: name)) }
   before { stub_request(:post, %r(/gems)).and_return(body: "Successfully registered gem: #{name}") }
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'given --api_key 1234', record: true do
     it { should have_run '[info] Authenticating with api key 1*******************' }
@@ -54,5 +54,11 @@ describe Dpl::Providers::Rubygems do
       it { should have_requested(:get, 'https://host.com/api/v1/gems/dpl.json') }
       it { should have_requested(:post, 'https://host.com/api/v1/gems') }
     end
+  end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { [] }
+    env RUBYGEMS_API_KEY: '1234'
+    it { expect { subject.run }.to_not raise_error }
   end
 end
