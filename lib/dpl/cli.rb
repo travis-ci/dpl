@@ -23,7 +23,7 @@ module Dpl
 
     def normalize(args)
       args = untaint(args)
-      args = with_cmd_opts(args, :provider, :strategy)
+      args = with_cmd_opts(args, provider: 0, strategy: 1)
       args = with_strategy_default(args, :strategy) # should be a generic dispatch feature in Cl
       args
     end
@@ -34,17 +34,18 @@ module Dpl
       args.map(&:dup).each(&:untaint)
     end
 
-    def with_cmd_opts(args, *cmds)
-      cmds.inject(args) do |args, cmd|
-        with_cmd_opt(args, cmd)
+    def with_cmd_opts(args, cmds)
+      cmds.inject(args) do |args, (cmd, pos)|
+        with_cmd_opt(args, cmd, pos)
       end
     end
 
-    def with_cmd_opt(args, cmd)
-      return args unless arg = args.detect { |arg| arg.start_with?("--#{cmd}") }
-      ix = args.index(arg)
-      args[ix] = arg.split('=').last if arg.include?('=')
-      args.delete(arg)
+    def with_cmd_opt(args, cmd, pos)
+      return args unless opt = args.detect { |arg| arg.start_with?("--#{cmd}") }
+      ix = args.index(opt)
+      args.delete(opt)
+      value = opt.include?('=') ? opt.split('=').last : args.delete_at(ix)
+      args.insert(pos, value)
       args
     end
 

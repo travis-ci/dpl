@@ -42,7 +42,7 @@ module Dpl
           end
 
           def upload
-            shell :upload
+            shell :upload, echo: false
           end
 
           def build
@@ -56,7 +56,7 @@ module Dpl
           end
 
           def log
-            shell :log
+            shell :log, echo: false
           end
 
           def verify

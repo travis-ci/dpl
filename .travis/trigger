@@ -22,6 +22,7 @@ def parse_opts(opts)
     o.on('-b', '--branch BRANCH') { |obj| opts[:branch] = obj }
     o.on('-r', '--repo REPO') { |obj| opts[:source] = obj }
     o.on('-s', '--source REPO') { |obj| opts[:source] = obj }
+    o.on('--strategy NAME') { |obj| opts[:strategy] = obj }
     o.on('--pretend') { opts[:pretend] = true }
     o.on('--error') { opts[:error] = true }
     o.parse!
@@ -58,10 +59,11 @@ def skip?(path)
   SKIP.any? { |name| path.include?(name) }
 end
 
-def paths
+def paths(opts)
   glob = ARGV.any? ? ARGV.join(',') : '*'
   paths = Dir[".travis/providers/{#{glob}}/*.yml"].sort
   paths = paths.reject { |path| skip?(path) }
+  paths = paths.select { |path| path.include?(opts[:strategy]) } if opts[:strategy]
   abort "No configs found for #{glob}" if paths.empty?
   paths
 end
@@ -81,7 +83,7 @@ def deploy(conf, opts)
 end
 
 def jobs(opts)
-  paths.map do |path|
+  paths(opts).map do |path|
     job = YAML.load(File.read(path))
     job['name'] = path =~ %r(providers/(.+)/(.+)\.yml) && [$1, $2 == 'travis' ? nil : $2].compact.join(':')
     job['deploy'] = Array(job['deploy']).map { |conf| deploy(conf, opts) }
