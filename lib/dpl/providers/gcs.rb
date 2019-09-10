@@ -23,9 +23,9 @@ module Dpl
       opt '--local_dir DIR', 'Local directory to upload from', default: '.'
       opt '--upload_dir DIR', 'GCS directory to upload to'
       opt '--dot_match', 'Upload hidden files starting with a dot'
-      opt '--acl ACL', 'Access control to set for uploaded objects'
+      opt '--acl ACL', 'Access control to set for uploaded objects', default: 'private', enum: %w(private public-read public-read-write authenticated-read bucket-owner-read bucket-owner-full-control), see: 'https://cloud.google.com/storage/docs/reference-headers#xgoogacl'
       opt '--detect_encoding', 'HTTP header Content-Encoding to set for files compressed with gzip and compress utilities.'
-      opt '--cache_control HEADER', 'HTTP header Cache-Control to suggest that the browser cache the file.'
+      opt '--cache_control HEADER', 'HTTP header Cache-Control to suggest that the browser cache the file.', see: 'https://cloud.google.com/storage/docs/xml-api/reference-headers#cachecontrol'
 
       cmds install: 'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
            copy:    'gsutil %{gs_opts}cp %{copy_opts}-r %{source} %{target}'

@@ -2,6 +2,8 @@ module Dpl
   module Providers
     class Heroku
       class Api < Heroku
+        register 'heroku:api'
+
         status :alpha
 
         full_name 'Heroku API'

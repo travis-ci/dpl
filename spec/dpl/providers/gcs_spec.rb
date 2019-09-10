@@ -14,31 +14,31 @@ describe Dpl::Providers::Gcs do
     it { should have_run '[validate:runtime] python (>= 2.7.9)' }
     it { should have_run 'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-252.0.0-linux-x86_64.tar.gz | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false' }
     it { should have_run '[info] Authenticating with access key: i*******************' }
-    it { should have_run 'gsutil cp -r one gs://bucket/' }
-    it { should have_run 'gsutil cp -r two/two gs://bucket/' }
+    it { should have_run 'gsutil cp -a "private" -r one gs://bucket/' }
+    it { should have_run 'gsutil cp -a "private" -r two/two gs://bucket/' }
     it { should have_run 'mv /tmp/boto.cfg /etc/boto.cfg' }
     it { should have_run_in_order }
     it { should_not have_run 'gsutil cp -r .hidden gs://bucket/' }
   end
 
   describe 'given --upload_dir dir' do
-    it { should have_run 'gsutil cp -r one gs://bucket/dir' }
+    it { should have_run 'gsutil cp -a "private" -r one gs://bucket/dir' }
   end
 
   describe 'given --dot_match' do
-    it { should have_run 'gsutil cp -r .hidden gs://bucket/' }
+    it { should have_run 'gsutil cp -a "private" -r .hidden gs://bucket/' }
   end
 
-  describe 'given --acl public_read' do
-    it { should have_run 'gsutil cp -a "public_read" -r one gs://bucket/' }
+  describe 'given --acl public-read' do
+    it { should have_run 'gsutil cp -a "public-read" -r one gs://bucket/' }
   end
 
   describe 'given --detect_encoding' do
-    it { should have_run 'gsutil -h "Content-Encoding:text" cp -r one gs://bucket/' }
+    it { should have_run 'gsutil -h "Content-Encoding:text" cp -a "private" -r one gs://bucket/' }
   end
 
   describe 'given --cache_control max-age=1' do
-    it { should have_run 'gsutil -h "Cache-Control:max-age=1" cp -r one gs://bucket/' }
+    it { should have_run 'gsutil -h "Cache-Control:max-age=1" cp -a "private" -r one gs://bucket/' }
   end
 
   describe 'with credentials in env vars', run: false do

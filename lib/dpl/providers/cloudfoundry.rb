@@ -13,8 +13,8 @@ module Dpl
 
       opt '--username USER',       'Cloud Foundry username', required: true
       opt '--password PASS',       'Cloud Foundry password', required: true, secret: true
-      opt '--organization ORG',    'Cloud Foundry target organization', required: true
-      opt '--space SPACE',         'Cloud Foundry target space', required: true
+      opt '--organization ORG',    'Cloud Foundry organization', required: true
+      opt '--space SPACE',         'Cloud Foundry space', required: true
       opt '--api URL',             'Cloud Foundry api URL', required: true
       opt '--app_name APP',        'Application name'
       opt '--buildpack PACK',      'Custom buildpack name or Git URL'

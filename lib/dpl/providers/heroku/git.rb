@@ -2,6 +2,8 @@ module Dpl
   module Providers
     class Heroku
       class Git < Heroku
+        register 'heroku:git'
+
         status :alpha
 
         full_name 'Heroku Git'
@@ -15,7 +17,7 @@ module Dpl
         opt '--api_key KEY',   'Heroku API key', secret: true
         opt '--username USER', 'Heroku username', alias: :user
         opt '--password PASS', 'Heroku password', secret: true
-        opt '--git URL'
+        opt '--git URL', 'Heroku Git remote URL'
 
         needs :git, :git_http_user_agent
 

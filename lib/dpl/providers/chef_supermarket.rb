@@ -25,9 +25,9 @@ module Dpl
       env :chef
 
       opt '--user_id ID',         'Chef Supermarket user name', required: true
-      opt '--client_key KEY',     'Client API key file name', required: true
       opt '--name NAME',          'Cookbook name', note: 'defaults to the name given in metadata.json or metadata.rb', alias: :cookbook_name, deprecated: :cookbook_name
       opt '--category CAT',       'Cookbook category in Supermarket', required: true, see: 'https://docs.getchef.com/knife_cookbook_site.html#id12', alias: :cookbook_category, deprecated: :cookbook_category
+      opt '--client_key KEY',     'Client API key file name', default: 'client.pem'
       opt '--dir DIR',            'Directory containing the cookbook', default: '.'
 
       URL = "https://supermarket.chef.io/api/v1/cookbooks"

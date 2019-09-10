@@ -8,8 +8,6 @@ module Dpl
     end
 
     def run(args)
-      args = untaint(args)
-      args = with_provider_opt(args)
       super
     rescue UnknownCmd => e
       unknown_provider(e)
@@ -19,17 +17,41 @@ module Dpl
       error(e)
     end
 
+    def runner(args)
+      args = untaint(args)
+      args = with_cmd_opts(args, :provider, :strategy)
+      args = with_strategy_default(args, :strategy) # should be a generic dispatch feature in Cl
+      super
+    end
+
     # Tainting is being used for automatically obfuscating values for secure
     # options, so we want to untaint all incoming args here.
     def untaint(args)
       args.map(&:dup).each(&:untaint)
     end
 
-    # backwards compatibility for travis-build dpl v1 integration
-    def with_provider_opt(args)
-      return args unless arg = args.detect { |arg| arg.include?('--provider') }
+    def with_cmd_opts(args, *cmds)
+      cmds.inject(args) do |args, cmd|
+        with_cmd_opt(args, cmd)
+      end
+    end
+
+    def with_cmd_opt(args, cmd)
+      return args unless arg = args.detect { |arg| arg.start_with?("--#{cmd}") }
       args.delete(arg)
-      [arg.split('=').last, *args]
+      args = [arg.split('=').last, *args] if arg.include?('=')
+      args
+    end
+
+    STRATEGIES = {
+      'heroku' => 'api',
+      'pages'  => 'git'
+    }
+
+    def with_strategy_default(args, cmd)
+      return args unless default = STRATEGIES[args.first]
+      args.insert(1, default) if args[1].nil? || args[1].to_s.start_with?('--')
+      args
     end
 
     def error(e)

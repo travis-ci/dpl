@@ -15,9 +15,9 @@ module Dpl
 
       env :github, :releases
 
-      required :api_key, [:user, :password]
+      required :token, [:user, :password]
 
-      opt '--api_key TOKEN', 'GitHub oauth token (needs public_repo or repo permission)', secret: true
+      opt '--token TOKEN', 'GitHub oauth token (needs public_repo or repo permission)', secret: true, alias: :api_key
       opt '--username LOGIN', 'GitHub login name', alias: :user
       opt '--password PASS', 'GitHub password', secret: true
       opt '--repo SLUG', 'GitHub repo slug', default: :repo_slug
@@ -32,7 +32,7 @@ module Dpl
       opt '--tag_name TAG', 'Git tag from which to create the release'
       opt '--target_commitish STR', 'Commitish value that determines where the Git tag is created from'
       opt '--name NAME', 'Name for the release'
-      # should this have --github_url, like Pages does?
+      # should this have --url, like Pages does?
 
       needs :git
 
@@ -191,7 +191,7 @@ module Dpl
       end
 
       def creds
-        username && password ? { login: username, password: password } : { access_token: api_key }
+        username && password ? { login: username, password: password } : { access_token: token }
       end
 
       def files

@@ -26,19 +26,19 @@ module Dpl
       opt '--region REGION', 'S3 region', default: 'us-east-1'
       opt '--endpoint URL', 'S3 endpoint'
       opt '--upload_dir DIR', 'S3 directory to upload to'
-      opt '--storage_class CLASS', 'S3 storage class to upload as', default: 'STANDARD', enum: %w(STANDARD STANDARD_IA REDUCED_REDUNDANCY)
-      opt '--server_side_encryption', 'Use S3 Server Side Encryption (SSE-AES256)'
       opt '--local_dir DIR', 'Local directory to upload from', default: '.', example: '~/travis/build (absolute path) or ./build (relative path)'
+      opt '--dot_match', 'Upload hidden files starting with a dot'
+      opt '--acl ACL', 'Access control for the uploaded objects', default: 'private', enum: %w(private public_read public_read_write authenticated_read bucket_owner_read bucket_owner_full_control)
       opt '--detect_encoding', 'HTTP header Content-Encoding for files compressed with gzip and compress utilities'
       opt '--cache_control STR', 'HTTP header Cache-Control to suggest that the browser cache the file', type: :array, default: 'no-cache', enum: [/^no-cache.*/, /^no-store.*/, /^max-age=\d+.*/, /^s-maxage=\d+.*/, /^no-transform/, /^public/, /^private/], note: 'accepts mapping values to globs', eg: 'public: *.css,*.js'
       opt '--expires DATE', 'Date and time that the cached object expires', type: :array, format: /^"?\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .+"?.*$/, note: 'accepts mapping values to globs', eg: '2020-01-01 00:00:00 UTC: *.css,*.js'
-      opt '--acl ACL', 'Access control for the uploaded objects', default: 'private', enum: %w(private public_read public_read_write authenticated_read bucket_owner_read bucket_owner_full_control)
-      opt '--dot_match', 'Upload hidden files starting with a dot'
-      opt '--index_document_suffix SUFFIX', 'Index document suffix of a S3 website'
       opt '--default_text_charset CHARSET', 'Default character set to append to the content-type of text files'
-      opt '--max_threads NUM', 'The number of threads to use for S3 file uploads', default: 5, max: 15, type: :integer
+      opt '--storage_class CLASS', 'S3 storage class to upload as', default: 'STANDARD', enum: %w(STANDARD STANDARD_IA REDUCED_REDUNDANCY)
+      opt '--server_side_encryption', 'Use S3 Server Side Encryption (SSE-AES256)'
+      opt '--index_document_suffix SUFFIX', 'Index document suffix of a S3 website'
       opt '--overwrite', 'Whether or not to overwrite existing files', default: true
       opt '--force_path_style', 'Whether to force keeping the bucket name on the path'
+      opt '--max_threads NUM', 'The number of threads to use for S3 file uploads', default: 5, max: 15, type: :integer
       opt '--verbose', 'Be verbose about uploading files'
       # how come there is no glob or file option?
 

@@ -11,8 +11,8 @@ module Dpl
 
       opt '--username USER',    'anynines username', required: true
       opt '--password PASS',    'anynines password', required: true, secret: true
-      opt '--organization ORG', 'anynines target organization', required: true
-      opt '--space SPACE',      'anynines target space', required: true
+      opt '--organization ORG', 'anynines organization', required: true
+      opt '--space SPACE',      'anynines space', required: true
       opt '--app_name APP',     'Application name'
       opt '--buildpack PACK',   'Custom buildpack name or Git URL'
       opt '--manifest FILE',    'Path to the manifest'

@@ -2,6 +2,8 @@ module Dpl
   module Providers
     class Pages
       class Git < Pages
+        register 'pages:git'
+
         status :alpha
 
         full_name 'GitHub Pages'

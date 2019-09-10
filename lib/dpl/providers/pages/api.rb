@@ -4,6 +4,10 @@ module Dpl
   module Providers
     class Pages
       class Api < Pages
+        register 'pages:api'
+
+        status :dev
+
         PAGES_PREVIEW_MEDIA_TYPE = 'application/vnd.github.mister-fantastic-preview+json'
 
         # suppress warnings about preview API
@@ -15,8 +19,6 @@ module Dpl
         }
 
         gem 'octokit', '~> 4.14.0'
-
-        status :alpha
 
         full_name 'GitHub Pages (API)'
 
@@ -34,18 +36,20 @@ module Dpl
         opt '--repo SLUG', 'GitHub repo slug', default: :repo_slug
         opt '--token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true, alias: :github_token
 
-        msgs pages_not_found:             'GitHub Pages not found for %{slug}. ' \
-               'Given token has insufficient scope (\'repo\' or \'public_repo\'), ' \
-               'or GitHub Pages is not enabled for this repo (see https://github.com/%{slug}/settings)',
-             build_pages_request_timeout: 'GitHub Pages build request timed out',
-             deploy_start:                'Requesting GitHub Pages build using API'
+        msgs not_found: sq(<<-msg),
+               GitHub Pages not found for %{slug}.
+               Either the given token has insufficient scope (repo or public_repo), or
+               GitHub Pages is not enabled for this repo (see https://github.com/%{slug}/settings)'
+             msg
+             timeout: 'GitHub Pages build request timed out',
+             deploy:  'Requesting GitHub Pages build using API'
 
         def validate
-          error :pages_not_found unless pages_enabled?
+          error :not_found unless pages_enabled?
         end
 
         def deploy
-          info :deploy_start
+          info :deploy
 
           api.request_page_build slug
 
@@ -71,7 +75,7 @@ module Dpl
         rescue Octokit::Forbidden => fb
           error fb.message
         rescue Timeout::Error => to
-          error :build_pages_request_timeout
+          error :timeout
         end
 
         private

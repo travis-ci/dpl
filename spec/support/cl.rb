@@ -10,7 +10,11 @@ module Support
     end
 
     def self.included(base)
-      base.let(:provider) { described_class.is_a?(Symbol) ? described_class : described_class.registry_key }
+      base.let(:provider) do
+        next described_class if described_class.is_a?(Symbol)
+        next described_class.registry_key if described_class.registry_key
+        described_class.name.split('::').last.downcase
+      end
       base.let(:args) { |e| args_from_description(e) }
       base.subject { cmd }
       base.extend Sq

@@ -19,7 +19,7 @@ module Dpl
       opt '--version VER', 'The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you'
       opt '--verbosity LEVEL', 'Adjust the log verbosity', default: 'warning'
       opt '--promote', 'Do not promote the deployed version', default: true
-      opt '--stop_previous_version', 'Prevent your deployment from stopping the previously promoted version. This is from the future, so might not work (yet).', default: true
+      opt '--stop_previous_version', 'Prevent the deployment from stopping a previously promoted version', default: true
       opt '--install_sdk', 'Do not install the Google Cloud SDK', default: true
 
       cmds install:   'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | gzip -d | tar -x -C ~',

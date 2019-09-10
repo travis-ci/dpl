@@ -147,8 +147,8 @@ module Dpl
 
     arg :provider, 'The provider name', required: true
 
-    opt '--run CMD',      'Command to execute after the deployment finished successfully', type: :array
-    opt '--cleanup',      'Skip cleaning up build artifacts before the deployment', negate: %w(skip)
+    opt '--cleanup',      'Clean up build artifacts from the Git working directory before the deployment', negate: %w(skip)
+    opt '--run CMD',      'Commands to execute after the deployment finished successfully', type: :array
     opt '--stage NAME',   'Execute the given stage(s) only', type: :array, internal: true, default: STAGES
     opt '--backtrace',    'Print the backtrace for exceptions', internal: true
     opt '--fold',         'Wrap log output in folds', internal: true

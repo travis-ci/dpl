@@ -13,8 +13,8 @@ module Dpl
 
       opt '--username USER',       'Bluemix username', required: true
       opt '--password PASS',       'Bluemix password', required: true, secret: true
-      opt '--organization ORG',    'Bluemix target organization', required: true
-      opt '--space SPACE',         'Bluemix target space', required: true
+      opt '--organization ORG',    'Bluemix organization', required: true
+      opt '--space SPACE',         'Bluemix space', required: true
       opt '--region REGION',       'Bluemix region', default: 'ng', enum: %w(ng eu-gb eu-de au-syd)
       opt '--api URL',             'Bluemix api URL'
       opt '--app_name APP',        'Application name'
