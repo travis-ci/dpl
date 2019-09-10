@@ -18,10 +18,14 @@ module Dpl
     end
 
     def runner(args)
+      super(normalize(args))
+    end
+
+    def normalize(args)
       args = untaint(args)
       args = with_cmd_opts(args, :provider, :strategy)
       args = with_strategy_default(args, :strategy) # should be a generic dispatch feature in Cl
-      super
+      args
     end
 
     # Tainting is being used for automatically obfuscating values for secure
