@@ -38,8 +38,9 @@ module Dpl
 
     def with_cmd_opt(args, cmd)
       return args unless arg = args.detect { |arg| arg.start_with?("--#{cmd}") }
+      ix = args.index(arg)
+      args[ix] = arg.split('=').last if arg.include?('=')
       args.delete(arg)
-      args = [arg.split('=').last, *args] if arg.include?('=')
       args
     end
 

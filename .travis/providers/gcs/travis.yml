@@ -18,7 +18,7 @@ deploy:
       secure: "a9yhXPi2v3mlkOJgOHcYoIcYv7Xu7J0hF4EF1f6Zn/ZgpQIBqqV8XKbVCMOX/UG4xbm/ZMarGQFNwdvgWPqYkAyGafffuxG8FOXlgtb39f3PexjDCgJKKVnSVJPX1+t/gMvdHPKcfA78XKIqNmKqbtw44y1GHdpsJ/be6GeVGos="
     bucket: dpl-test
     local_dir: ./tmp/dpl_test
-    acl: public_read
+    acl: public-read
     cache_control: "private, max-age=0, no-transform"
     detect_encoding: true
 
