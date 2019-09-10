@@ -15,9 +15,9 @@ module Dpl
       opt '--password PASS',       'Cloud Foundry password', required: true, secret: true
       opt '--organization ORG',    'Cloud Foundry organization', required: true
       opt '--space SPACE',         'Cloud Foundry space', required: true
-      opt '--api URL',             'Cloud Foundry api URL', required: true
+      opt '--api URL',             'Cloud Foundry api URL', default: 'https://api.run.pivotal.io'
       opt '--app_name APP',        'Application name'
-      opt '--buildpack PACK',      'Custom buildpack name or Git URL'
+      opt '--buildpack PACK',      'Buildpack name or Git URL'
       opt '--manifest FILE',       'Path to the manifest'
       opt '--skip_ssl_validation', 'Skip SSL validation'
       opt '--v3',                  'Use the v3 API version to push the application'

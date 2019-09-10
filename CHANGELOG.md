@@ -6,6 +6,10 @@
 * Add a Cloudformation provider
 * Add a Convox provider
 
+### Cargo
+
+* Add `--allow_dirty` to allow publishing from a dirty Git working directory
+
 ### Releases
 
 * Make --file glob files by default, and default to `*`

@@ -14,7 +14,7 @@ module Dpl
       opt '--organization ORG', 'anynines organization', required: true
       opt '--space SPACE',      'anynines space', required: true
       opt '--app_name APP',     'Application name'
-      opt '--buildpack PACK',   'Custom buildpack name or Git URL'
+      opt '--buildpack PACK',   'Buildpack name or Git URL'
       opt '--manifest FILE',    'Path to the manifest'
       opt '--logout', default: true, internal: true
 

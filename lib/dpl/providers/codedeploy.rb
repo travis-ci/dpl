@@ -28,10 +28,10 @@ module Dpl
       opt '--region REGION', 'AWS availability zone', default: 'us-east-1'
       opt '--file_exists_behavior STR', 'How to handle files that already exist in a deployment target location', enum: %w(disallow overwrite retain), default: 'disallow'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
-      opt '--bundle_type TYPE'
-      opt '--endpoint ENDPOINT'
-      opt '--key KEY'
-      opt '--description DESCR'
+      opt '--bundle_type TYPE', 'Bundle type of the revision'
+      opt '--key KEY', 'S3 bucket key of the revision'
+      opt '--description DESCR', 'Description of the revision'
+      opt '--endpoint ENDPOINT', 'S3 endpoint url'
 
       msgs login:                 'Using Access Key: %{access_key_id}',
            deploy_triggered:      'Deployment triggered: %s',
