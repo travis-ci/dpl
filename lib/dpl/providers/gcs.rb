@@ -34,7 +34,7 @@ module Dpl
 
       errs copy:  'Failed uploading files.'
 
-      URL = 'https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-252.0.0-linux-x86_64.tar.gz'
+      URL = 'https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz'
 
       BOTO = sq(<<-str)
         [Credentials]

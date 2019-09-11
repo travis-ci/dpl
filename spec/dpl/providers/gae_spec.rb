@@ -4,8 +4,8 @@ describe Dpl::Providers::Gae do
   before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
-    it { should have_run 'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | gzip -d | tar -x -C ~' }
-    it { should have_run '~/google-cloud-sdk/bin/bootstrapping/install.py --usage-reporting=false --command-completion=false --path-update=false' }
+    it { should have_run '[info] $ curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false' }
+    it { should have_run 'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false' }
     it { should have_run 'gcloud -q auth activate-service-account --key-file service-account.json' }
     it { should have_run 'gcloud -q app deploy app.yaml --project="id" --verbosity="warning"' }
     it { should have_run_in_order }

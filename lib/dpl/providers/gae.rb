@@ -22,15 +22,15 @@ module Dpl
       opt '--stop_previous_version', 'Prevent the deployment from stopping a previously promoted version', default: true
       opt '--install_sdk', 'Do not install the Google Cloud SDK', default: true
 
-      cmds install:   'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | gzip -d | tar -x -C ~',
-           bootstrap: '~/google-cloud-sdk/bin/bootstrapping/install.py --usage-reporting=false --command-completion=false --path-update=false',
+      URL = 'https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz'
+
+      cmds install:   'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
            login:     'gcloud -q auth activate-service-account --key-file %{keyfile}',
            deploy:    'gcloud -q app deploy %{config} %{deploy_opts}',
            cat_logs:  'find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;'
 
       errs install:   'Failed to download Google Cloud SDK.',
-           login:     'Failed to authenticate.',
-           bootstrap: 'Failed bootstrap Google Cloud SDK.'
+           login:     'Failed to authenticate.'
 
       msgs failed:    'Deployment failed.'
 
@@ -39,7 +39,6 @@ module Dpl
       def install
         return unless install_sdk?
         shell :install
-        shell :bootstrap
       end
 
       def login
