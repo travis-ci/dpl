@@ -15,7 +15,7 @@ module Dpl
 
       env :github, :releases
 
-      required :token, [:user, :password]
+      required :token, [:username, :password]
 
       opt '--token TOKEN', 'GitHub oauth token (needs public_repo or repo permission)', secret: true, alias: :api_key
       opt '--username LOGIN', 'GitHub login name', alias: :user

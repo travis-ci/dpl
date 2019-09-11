@@ -11,7 +11,7 @@ module Dpl
 
       env :rubygems
 
-      required :api_key, [:user, :password]
+      required :api_key, [:username, :password]
 
       opt '--api_key KEY', 'Rubygems api key', secret: true
       opt '--username USER', 'Rubygems user name', alias: :user

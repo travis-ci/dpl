@@ -21,8 +21,8 @@ module Dpl
       opt '--secret_access_key KEY',  'AWS secret key', required: true, secret: true
       opt '--region REGION',          'AWS region the Lambda function is running in', default: 'us-east-1'
       opt '--function_name FUNC',     'Name of the Lambda being created or updated', required: true
-      opt '--role ROLE',              'ARN of the IAM role to assign to the Lambda function', note: 'required for creating a new function'
-      opt '--handler_name NAME',      'Function the Lambda calls to begin execution.', note: 'required for creating a new function'
+      opt '--role ROLE',              'ARN of the IAM role to assign to the Lambda function', note: 'required when creating a new function'
+      opt '--handler_name NAME',      'Function the Lambda calls to begin execution.', note: 'required when creating a new function'
       opt '--module_name NAME',       'Name of the module that exports the handler', default: 'index', requires: :handler_name
       opt '--description DESCR',      'Description of the Lambda being created or updated'
       opt '--timeout SECS',           'Function execution time (in seconds) at which Lambda should terminate the function', default: 3
@@ -30,7 +30,7 @@ module Dpl
       opt '--subnet_ids IDS',         'List of subnet IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSubnets and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--security_group_ids IDS', 'List of security group IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--environment VARS',       'List of Environment Variables to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security', alias: :environment_variables
-      opt '--runtime NAME',           'Lambda runtime to use', default: 'nodejs8.10', enum: %w(java8 nodejs8.10 nodejs10.x python2.7 python3.6 python3.7 dotnetcore2.1 go1.x ruby2.5)
+      opt '--runtime NAME',           'Lambda runtime to use', note: 'required when creating a new function', default: 'nodejs8.10', enum: %w(java8 nodejs8.10 nodejs10.x python2.7 python3.6 python3.7 dotnetcore2.1 go1.x ruby2.5)
       opt '--dead_letter_arn ARN',    'ARN to an SNS or SQS resource used for the dead letter queue.'
       opt '--kms_key_arn ARN',        'KMS key ARN to use to encrypt environment_variables.'
       opt '--tracing_mode MODE',      'Tracing mode', default: 'PassThrough', enum: %w(Active PassThrough), note: 'Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role'

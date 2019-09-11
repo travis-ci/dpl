@@ -61,6 +61,11 @@ describe Dpl::Providers::S3 do
     it { should put_object 'one.txt', 'cache-control': 'max-age=60' }
   end
 
+  describe 'given --cache_control "public, max-age=60: *.txt"' do
+    it { should have_run %r(one.txt.* cache_control=public, max-age=60 ) }
+    it { should put_object 'one.txt', 'cache-control': 'public, max-age=60' }
+  end
+
   describe 'given --expires "2020-01-01 00:00:00 UTC"' do
     it { should have_run %r(one.txt.* expires=2020-01-01 00:00:00 UTC) }
     it { should put_object 'one.txt', 'expires': 'Wed, 01 Jan 2020 00:00:00 GMT' }
