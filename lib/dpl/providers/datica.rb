@@ -25,7 +25,7 @@ module Dpl
            push:     'Deploying to Datica: %{target}'
 
       def setup
-        commit unless cleanup?
+        commit if git_dirty? && !cleanup?
       end
 
       def deploy
