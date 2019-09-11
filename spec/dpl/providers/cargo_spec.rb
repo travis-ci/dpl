@@ -1,12 +1,14 @@
 describe Dpl::Providers::Cargo do
+  let(:args) { |e| %w(--token 1234) + args_from_description(e) }
+
   before { |c| subject.run if run?(c) }
 
-  describe 'given --token 1234' do
+  describe 'by default' do
     it { should have_run '[info] $ cargo publish --token="1*******************"' }
     it { should have_run 'cargo publish --token="1234"' }
   end
 
-  describe 'given --token 1234 --allow_dirty' do
+  describe 'given --allow_dirty' do
     it { should have_run '[info] $ cargo publish --token="1*******************" --allow-dirty' }
     it { should have_run 'cargo publish --token="1234" --allow-dirty' }
   end

@@ -10,7 +10,7 @@ module Dpl
       env :cargo
 
       opt '--token TOKEN', 'Cargo registry API token', required: true, secret: true
-      opt '--allow_dirty', 'Allow cargo to publish from a dirty git working directory'
+      opt '--allow_dirty', 'Allow publishing from a dirty git working directory'
 
       cmds publish: 'cargo publish %{publish_opts}'
 
