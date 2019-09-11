@@ -115,6 +115,14 @@ describe Dpl::Providers::Pages::Git do
     it { should have_run_in_order }
   end
 
+  describe 'working dir not dirty', run: false do
+    before { allow(ctx).to receive(:git_dirty?).and_return false }
+    before { subject.run }
+    it { should have_run '[info] There are no changes to commit, stopping.' }
+    it { should_not have_run /git commit / }
+    it { should_not have_run /git push / }
+  end
+
   describe 'with GITHUB credentials in env vars', run: false do
     let(:args) { %w(--strategy git) }
     env GITHUB_TOKEN: 'token'

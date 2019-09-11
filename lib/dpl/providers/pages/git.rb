@@ -52,7 +52,8 @@ module Dpl
              copy_files:          'Copying %{src_dir} contents to %{work_dir}',
              git_config:          'Configuring git committer to be %{name} <%{email}>',
              prepare:             'Preparing to deploy %{target_branch} branch to gh-pages',
-             git_push:            'Pushing to %{url}'
+             git_push:            'Pushing to %{url}',
+             stop:                'There are no changes to commit, stopping.'
 
         cmds git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{remote_url}" . > /dev/null 2>&1',
              git_init:            'git init .',
@@ -95,6 +96,7 @@ module Dpl
         def deploy
           git_clone? ? git_clone : git_init
           copy_files
+          return info :stop unless git_dirty?
           git_config
           git_commit
           git_push
