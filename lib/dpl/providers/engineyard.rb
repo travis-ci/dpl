@@ -13,7 +13,7 @@ module Dpl
 
       env :engineyard, :ey
 
-      opt '--api_key KEY',   'Engine Yard API key', secret: true
+      opt '--api_key KEY',   'Engine Yard API key', secret: true, note: 'can be obtained at https://cloud.engineyard.com/cli'
       opt '--email EMAIL',   'Engine Yard account email'
       opt '--password PASS', 'Engine Yard password', secret: true
       opt '--app APP',       'Engine Yard application name', default: :repo_name
