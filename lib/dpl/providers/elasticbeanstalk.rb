@@ -141,7 +141,8 @@ module Dpl
 
       def files
         files = Dir.glob('**/*', File::FNM_DOTMATCH)
-        files = filter(files, '.ebignore') if file?('.ebignore')
+        ignore = %w(.ebignore .gitignore).detect { |file| file?(file) }
+        files = filter(files, ignore) if ignore
         files
       end
 

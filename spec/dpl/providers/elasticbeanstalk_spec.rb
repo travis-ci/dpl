@@ -91,6 +91,19 @@ describe Dpl::Providers::Elasticbeanstalk do
     it { should have_zipped "travis-sha-#{now.to_i}.zip", %w(one) }
   end
 
+  describe 'with a .gitignore file', run: false do
+    file '.gitignore', "*\n!one"
+    before { subject.run }
+    it { should have_zipped "travis-sha-#{now.to_i}.zip", %w(one) }
+  end
+
+  describe 'with both an .ebignore and .gitignore file', run: false do
+    file '.ebignore', "*\n!one"
+    file '.gitignore', '*'
+    before { subject.run }
+    it { should have_zipped "travis-sha-#{now.to_i}.zip", %w(one) }
+  end
+
   describe 'with ~/.aws/credentials', run: false do
     let(:args) { |e| %w(--env env --bucket_name bucket) }
 
