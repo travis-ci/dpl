@@ -39,10 +39,11 @@ Dpl is generally optimized for usage on Linux systems.
 
 ## Installation
 
-Installation:
+This version of dpl is currently released as an `alpha` preview release. In
+order to install it, add the `--pre` flag:
 
 ```
-gem install dpl
+gem install dpl --pre
 ```
 
 ## Usage
@@ -159,17 +160,17 @@ Options:
 
   --username USER         anynines username (type: string, required: true)
   --password PASS         anynines password (type: string, required: true)
-  --organization ORG      anynines target organization (type: string, required: true)
-  --space SPACE           anynines target space (type: string, required: true)
+  --organization ORG      anynines organization (type: string, required: true)
+  --space SPACE           anynines space (type: string, required: true)
   --app_name APP          Application name (type: string)
-  --buildpack PACK        Custom buildpack name or Git URL (type: string)
+  --buildpack PACK        Buildpack name or Git URL (type: string)
   --manifest FILE         Path to the manifest (type: string)
 
 Common Options:
 
-  --run CMD               Command to execute after the deployment finished successfully (type: array
+  --cleanup               Clean up build artifacts from the Git working directory before the deployment
+  --run CMD               Commands to execute after the deployment finished successfully (type: array
                           (string, can be given multiple times))
-  --cleanup               Skip cleaning up build artifacts before the deployment
   --help                  Get help on this command
 
 Examples:
@@ -226,9 +227,9 @@ Options:
 
 Common Options:
 
-  --run CMD                    Command to execute after the deployment finished successfully (type: array
+  --cleanup                    Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                    Commands to execute after the deployment finished successfully (type: array
                                (string, can be given multiple times))
-  --cleanup                    Skip cleaning up build artifacts before the deployment
   --help                       Get help on this command
 
 Examples:
@@ -271,16 +272,16 @@ Options:
   --file_exists_behavior STR      How to handle files that already exist in a deployment target location (type:
                                   string, default: disallow, known values: disallow, overwrite, retain)
   --[no-]wait_until_deployed      Wait until the deployment has finished
-  --bundle_type TYPE              type: string
-  --endpoint ENDPOINT             type: string
-  --key KEY                       type: string
-  --description DESCR             type: string
+  --bundle_type TYPE              Bundle type of the revision (type: string)
+  --key KEY                       S3 bucket key of the revision (type: string)
+  --description DESCR             Description of the revision (type: string)
+  --endpoint ENDPOINT             S3 endpoint url (type: string)
 
 Common Options:
 
-  --run CMD                       Command to execute after the deployment finished successfully (type: array
+  --cleanup                       Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                       Commands to execute after the deployment finished successfully (type: array
                                   (string, can be given multiple times))
-  --cleanup                       Skip cleaning up build artifacts before the deployment
   --help                          Get help on this command
 
 Examples:
@@ -327,9 +328,9 @@ Options:
 
 Common Options:
 
-  --run CMD                           Command to execute after the deployment finished successfully (type: array
+  --cleanup                           Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                           Commands to execute after the deployment finished successfully (type: array
                                       (string, can be given multiple times))
-  --cleanup                           Skip cleaning up build artifacts before the deployment
   --help                              Get help on this command
 
 Examples:
@@ -364,8 +365,8 @@ Options:
   --region REGION               AWS region the Lambda function is running in (type: string, default: us-east-1)
   --function_name FUNC          Name of the Lambda being created or updated (type: string, required: true)
   --role ROLE                   ARN of the IAM role to assign to the Lambda function (type: string, note:
-                                required for creating a new function)
-  --handler_name NAME           Function the Lambda calls to begin execution. (type: string, note: required for
+                                required when creating a new function)
+  --handler_name NAME           Function the Lambda calls to begin execution. (type: string, note: required when
                                 creating a new function)
   --module_name NAME            Name of the module that exports the handler (type: string, requires:
                                 handler_name, default: index)
@@ -384,7 +385,7 @@ Options:
                                 note: Can be encrypted for added security)
   --runtime NAME                Lambda runtime to use (type: string, default: nodejs8.10, known values: java8,
                                 nodejs8.10, nodejs10.x, python2.7, python3.6, python3.7, dotnetcore2.1, go1.x,
-                                ruby2.5)
+                                ruby2.5, note: required when creating a new function)
   --dead_letter_arn ARN         ARN to an SNS or SQS resource used for the dead letter queue. (type: string)
   --kms_key_arn ARN             KMS key ARN to use to encrypt environment_variables. (type: string)
   --tracing_mode MODE           Tracing mode (type: string, default: PassThrough, known values: Active,
@@ -400,9 +401,9 @@ Options:
 
 Common Options:
 
-  --run CMD                     Command to execute after the deployment finished successfully (type: array
+  --cleanup                     Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                     Commands to execute after the deployment finished successfully (type: array
                                 (string, can be given multiple times))
-  --cleanup                     Skip cleaning up build artifacts before the deployment
   --help                        Get help on this command
 
 Examples:
@@ -447,9 +448,9 @@ Options:
 
 Common Options:
 
-  --run CMD                       Command to execute after the deployment finished successfully (type: array
+  --cleanup                       Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                       Commands to execute after the deployment finished successfully (type: array
                                   (string, can be given multiple times))
-  --cleanup                       Skip cleaning up build artifacts before the deployment
   --help                          Get help on this command
 
 Examples:
@@ -485,11 +486,12 @@ Options:
   --region REGION                     S3 region (type: string, default: us-east-1)
   --endpoint URL                      S3 endpoint (type: string)
   --upload_dir DIR                    S3 directory to upload to (type: string)
-  --storage_class CLASS               S3 storage class to upload as (type: string, default: STANDARD, known values:
-                                      STANDARD, STANDARD_IA, REDUCED_REDUNDANCY)
-  --[no-]server_side_encryption       Use S3 Server Side Encryption (SSE-AES256)
   --local_dir DIR                     Local directory to upload from (type: string, default: ., e.g.: ~/travis/build
                                       (absolute path) or ./build (relative path))
+  --[no-]dot_match                    Upload hidden files starting with a dot
+  --acl ACL                           Access control for the uploaded objects (type: string, default: private, known
+                                      values: private, public_read, public_read_write, authenticated_read,
+                                      bucket_owner_read, bucket_owner_full_control)
   --[no-]detect_encoding              HTTP header Content-Encoding for files compressed with gzip and compress
                                       utilities
   --cache_control STR                 HTTP header Cache-Control to suggest that the browser cache the file (type:
@@ -499,23 +501,22 @@ Options:
   --expires DATE                      Date and time that the cached object expires (type: array (string, can be given
                                       multiple times), format: /^"?\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .+"?.*$/, note:
                                       accepts mapping values to globs)
-  --acl ACL                           Access control for the uploaded objects (type: string, default: private, known
-                                      values: private, public_read, public_read_write, authenticated_read,
-                                      bucket_owner_read, bucket_owner_full_control)
-  --[no-]dot_match                    Upload hidden files starting with a dot
-  --index_document_suffix SUFFIX      Index document suffix of a S3 website (type: string)
   --default_text_charset CHARSET      Default character set to append to the content-type of text files (type: string)
-  --max_threads NUM                   The number of threads to use for S3 file uploads (type: integer, default: 5,
-                                      max: 15)
+  --storage_class CLASS               S3 storage class to upload as (type: string, default: STANDARD, known values:
+                                      STANDARD, STANDARD_IA, REDUCED_REDUNDANCY)
+  --[no-]server_side_encryption       Use S3 Server Side Encryption (SSE-AES256)
+  --index_document_suffix SUFFIX      Index document suffix of a S3 website (type: string)
   --[no-]overwrite                    Whether or not to overwrite existing files (default: true)
   --[no-]force_path_style             Whether to force keeping the bucket name on the path
+  --max_threads NUM                   The number of threads to use for S3 file uploads (type: integer, default: 5,
+                                      max: 15)
   --[no-]verbose                      Be verbose about uploading files
 
 Common Options:
 
-  --run CMD                           Command to execute after the deployment finished successfully (type: array
+  --cleanup                           Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                           Commands to execute after the deployment finished successfully (type: array
                                       (string, can be given multiple times))
-  --cleanup                           Skip cleaning up build artifacts before the deployment
   --help                              Get help on this command
 
 Examples:
@@ -544,25 +545,25 @@ Description:
 
 Options:
 
-  --site SITE          Web App name (e.g. myapp in myapp.azurewebsites.net) (type: string, required:
-                       true)
   --username NAME      Web App Deployment Username (type: string, required: true)
   --password PASS      Web App Deployment Password (type: string, required: true)
+  --site SITE          Web App name (e.g. myapp in myapp.azurewebsites.net) (type: string, required:
+                       true)
   --slot SLOT          Slot name (if your app uses staging deployment) (type: string)
   --[no-]verbose       Print deployment output from Azure. Warning: If authentication fails, Git prints
                        credentials in clear text. Correct credentials remain hidden.
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
+  --cleanup            Clean up build artifacts from the Git working directory before the deployment
+  --run CMD            Commands to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
 
-  dpl azure_web_apps --site site --username name --password pass
-  dpl azure_web_apps --site site --username name --password pass --slot slot --verbose
+  dpl azure_web_apps --username name --password pass --site site
+  dpl azure_web_apps --username name --password pass --site site --slot slot --verbose
 ```
 
 Options can be given via env vars if prefixed with `AZURE_WA_`. E.g. the option `--password` can be
@@ -592,15 +593,15 @@ Options:
 
 Common Options:
 
-  --run CMD                Command to execute after the deployment finished successfully (type: array
+  --cleanup                Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                Commands to execute after the deployment finished successfully (type: array
                            (string, can be given multiple times))
-  --cleanup                Skip cleaning up build artifacts before the deployment
   --help                   Get help on this command
 
 Examples:
 
   dpl bintray --user user --key key --file file
-  dpl bintray --user user --key key --file file --passphrase phrase --run cmd
+  dpl bintray --user user --key key --file file --passphrase phrase --cleanup
 ```
 
 Options can be given via env vars if prefixed with `BINTRAY_`. E.g. the option `--key` can be given
@@ -625,21 +626,21 @@ Options:
 
   --username USER                 Bluemix username (type: string, required: true)
   --password PASS                 Bluemix password (type: string, required: true)
-  --organization ORG              Bluemix target organization (type: string, required: true)
-  --space SPACE                   Bluemix target space (type: string, required: true)
+  --organization ORG              Bluemix organization (type: string, required: true)
+  --space SPACE                   Bluemix space (type: string, required: true)
   --region REGION                 Bluemix region (type: string, default: ng, known values: ng, eu-gb, eu-de,
                                   au-syd)
   --api URL                       Bluemix api URL (type: string)
   --app_name APP                  Application name (type: string)
-  --buildpack PACK                Custom buildpack name or Git URL (type: string)
+  --buildpack PACK                Buildpack name or Git URL (type: string)
   --manifest FILE                 Path to the manifest (type: string)
   --[no-]skip_ssl_validation      Skip SSL validation
 
 Common Options:
 
-  --run CMD                       Command to execute after the deployment finished successfully (type: array
+  --cleanup                       Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                       Commands to execute after the deployment finished successfully (type: array
                                   (string, can be given multiple times))
-  --cleanup                       Skip cleaning up build artifacts before the deployment
   --help                          Get help on this command
 
 Examples:
@@ -670,24 +671,24 @@ Options:
 
   --user USER             type: string, required: true
   --secret SECRET         type: string, required: true
-  --config_file FILE      type: string, alias: configfile (deprecated, please use config_file)
   --payload PAYLOAD       type: string
   --app APP               type: string
   --version VERSION       type: string
   --env ENV               type: string
+  --config_file FILE      type: string, alias: configfile (deprecated, please use config_file)
   --extra_args ARGS       type: string
 
 Common Options:
 
-  --run CMD               Command to execute after the deployment finished successfully (type: array
+  --cleanup               Clean up build artifacts from the Git working directory before the deployment
+  --run CMD               Commands to execute after the deployment finished successfully (type: array
                           (string, can be given multiple times))
-  --cleanup               Skip cleaning up build artifacts before the deployment
   --help                  Get help on this command
 
 Examples:
 
   dpl boxfuse --user user --secret secret
-  dpl boxfuse --user user --secret secret --config_file file --payload payload --app app
+  dpl boxfuse --user user --secret secret --payload payload --app app --version version
 ```
 
 Options can be given via env vars if prefixed with `BOXFUSE_`. E.g. the option `--secret` can be
@@ -710,19 +711,20 @@ Description:
 
 Options:
 
-  --token TOKEN      Cargo registry API token (type: string, required: true)
+  --token TOKEN           Cargo registry API token (type: string, required: true)
+  --[no-]allow_dirty      Allow publishing from a dirty git working directory
 
 Common Options:
 
-  --run CMD          Command to execute after the deployment finished successfully (type: array
-                     (string, can be given multiple times))
-  --cleanup          Skip cleaning up build artifacts before the deployment
-  --help             Get help on this command
+  --cleanup               Clean up build artifacts from the Git working directory before the deployment
+  --run CMD               Commands to execute after the deployment finished successfully (type: array
+                          (string, can be given multiple times))
+  --help                  Get help on this command
 
 Examples:
 
   dpl cargo --token token
-  dpl cargo --token token --run cmd --cleanup
+  dpl cargo --token token --allow_dirty --cleanup --run cmd
 ```
 
 Options can be given via env vars if prefixed with `CARGO_`. E.g. the option `--token` can be given
@@ -746,25 +748,25 @@ Description:
 Options:
 
   --user_id ID          Chef Supermarket user name (type: string, required: true)
-  --client_key KEY      Client API key file name (type: string, required: true)
   --name NAME           Cookbook name (type: string, alias: cookbook_name (deprecated, please use name),
                         note: defaults to the name given in metadata.json or metadata.rb)
   --category CAT        Cookbook category in Supermarket (type: string, required: true, alias:
                         cookbook_category (deprecated, please use category), see:
                         https://docs.getchef.com/knife_cookbook_site.html#id12)
+  --client_key KEY      Client API key file name (type: string, default: client.pem)
   --dir DIR             Directory containing the cookbook (type: string, default: .)
 
 Common Options:
 
-  --run CMD             Command to execute after the deployment finished successfully (type: array
+  --cleanup             Clean up build artifacts from the Git working directory before the deployment
+  --run CMD             Commands to execute after the deployment finished successfully (type: array
                         (string, can be given multiple times))
-  --cleanup             Skip cleaning up build artifacts before the deployment
   --help                Get help on this command
 
 Examples:
 
-  dpl chef_supermarket --user_id id --client_key key --category cat
-  dpl chef_supermarket --user_id id --client_key key --category cat --name name --dir dir
+  dpl chef_supermarket --user_id id --category cat
+  dpl chef_supermarket --user_id id --category cat --name name --client_key key --dir dir
 ```
 
 Options can be given via env vars if prefixed with `CHEF_`. 
@@ -797,9 +799,9 @@ Options:
 
 Common Options:
 
-  --run CMD             Command to execute after the deployment finished successfully (type: array
+  --cleanup             Clean up build artifacts from the Git working directory before the deployment
+  --run CMD             Commands to execute after the deployment finished successfully (type: array
                         (string, can be given multiple times))
-  --cleanup             Skip cleaning up build artifacts before the deployment
   --help                Get help on this command
 
 Examples:
@@ -830,24 +832,25 @@ Options:
 
   --username USER                 Cloud Foundry username (type: string, required: true)
   --password PASS                 Cloud Foundry password (type: string, required: true)
-  --organization ORG              Cloud Foundry target organization (type: string, required: true)
-  --space SPACE                   Cloud Foundry target space (type: string, required: true)
-  --api URL                       Cloud Foundry api URL (type: string, required: true)
+  --organization ORG              Cloud Foundry organization (type: string, required: true)
+  --space SPACE                   Cloud Foundry space (type: string, required: true)
+  --api URL                       Cloud Foundry api URL (type: string, default: https://api.run.pivotal.io)
   --app_name APP                  Application name (type: string)
-  --buildpack PACK                Custom buildpack name or Git URL (type: string)
+  --buildpack PACK                Buildpack name or Git URL (type: string)
   --manifest FILE                 Path to the manifest (type: string)
   --[no-]skip_ssl_validation      Skip SSL validation
   --[no-]v3                       Use the v3 API version to push the application
 
 Common Options:
 
-  --run CMD                       Command to execute after the deployment finished successfully (type: array
+  --cleanup                       Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                       Commands to execute after the deployment finished successfully (type: array
                                   (string, can be given multiple times))
-  --cleanup                       Skip cleaning up build artifacts before the deployment
   --help                          Get help on this command
 
 Examples:
 
+  dpl cloudfoundry --username user --password pass --organization org --space space
   dpl cloudfoundry --username user --password pass --organization org --space space --api url
 ```
 
@@ -875,15 +878,15 @@ Options:
 
 Common Options:
 
-  --run CMD                    Command to execute after the deployment finished successfully (type: array
+  --cleanup                    Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                    Commands to execute after the deployment finished successfully (type: array
                                (string, can be given multiple times))
-  --cleanup                    Skip cleaning up build artifacts before the deployment
   --help                       Get help on this command
 
 Examples:
 
   dpl cloud66 --redeployment_hook url
-  dpl cloud66 --redeployment_hook url --run cmd --cleanup
+  dpl cloud66 --redeployment_hook url --cleanup --run cmd
 ```
 
 Options can be given via env vars if prefixed with `CLOUD66_`. E.g. the option `--redeployment_hook`
@@ -921,9 +924,9 @@ Options:
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
+  --cleanup              Clean up build artifacts from the Git working directory before the deployment
+  --run CMD              Commands to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
@@ -956,15 +959,15 @@ Options:
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
+  --cleanup            Clean up build artifacts from the Git working directory before the deployment
+  --run CMD            Commands to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
 
   dpl datica --target target
-  dpl datica --target target --path path --run cmd --cleanup
+  dpl datica --target target --path path --cleanup --run cmd
 ```
 
 Options can be given via env vars if prefixed with `[CATALYZE_|DATICA_]`. 
@@ -988,7 +991,8 @@ Options:
 
   Either api_key, or email and password are required.
 
-  --api_key KEY        Engine Yard API key (type: string)
+  --api_key KEY        Engine Yard API key (type: string, note: can be obtained at
+                       https://cloud.engineyard.com/cli)
   --email EMAIL        Engine Yard account email (type: string)
   --password PASS      Engine Yard password (type: string)
   --app APP            Engine Yard application name (type: string, default: repo name)
@@ -998,9 +1002,9 @@ Options:
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
+  --cleanup            Clean up build artifacts from the Git working directory before the deployment
+  --run CMD            Commands to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
@@ -1041,9 +1045,9 @@ Options:
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
+  --cleanup            Clean up build artifacts from the Git working directory before the deployment
+  --run CMD            Commands to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
@@ -1098,9 +1102,11 @@ Options:
 
 Common Options:
 
-  --run CMD                      Command to execute after the deployment finished successfully (type: array
+  --cleanup                      Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                      Commands to execute after the deployment finished successfully (type: array
                                  (string, can be given multiple times))
-  --cleanup                      Skip cleaning up build artifacts before the deployment
+  --strategy NAME                GitHub Pages deployment strategy (type: string, default: git, known values: api,
+                                 git)
   --help                         Get help on this command
 
 Examples:
@@ -1115,7 +1121,7 @@ be given as `GITHUB_TOKEN=<token>` or `PAGES_TOKEN=<token>`.
 
 ### GitHub Pages (API)
 
-Support for deployments to GitHub Pages (API) is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to GitHub Pages (API) is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl pages api [options]
@@ -1137,21 +1143,23 @@ Description:
 
 Options:
 
-  --repo SLUG        GitHub repo slug (type: string, default: repo slug)
-  --token TOKEN      GitHub oauth token with repo permission (type: string, required: true, alias:
-                     github_token)
+  --repo SLUG          GitHub repo slug (type: string, default: repo slug)
+  --token TOKEN        GitHub oauth token with repo permission (type: string, required: true, alias:
+                       github_token)
 
 Common Options:
 
-  --run CMD          Command to execute after the deployment finished successfully (type: array
-                     (string, can be given multiple times))
-  --cleanup          Skip cleaning up build artifacts before the deployment
-  --help             Get help on this command
+  --cleanup            Clean up build artifacts from the Git working directory before the deployment
+  --run CMD            Commands to execute after the deployment finished successfully (type: array
+                       (string, can be given multiple times))
+  --strategy NAME      GitHub Pages deployment strategy (type: string, default: git, known values: api,
+                       git)
+  --help               Get help on this command
 
 Examples:
 
   dpl pages api --token token
-  dpl pages api --token token --repo slug --run cmd --cleanup
+  dpl pages api --token token --repo slug --cleanup --run cmd --strategy api
 ```
 
 Options can be given via env vars if prefixed with `[GITHUB_|PAGES_]`. E.g. the option `--token` can
@@ -1174,9 +1182,10 @@ Description:
 
 Options:
 
-  Either api_key, or user and password are required.
+  Either token, or username and password are required.
 
-  --api_key TOKEN                GitHub oauth token (needs public_repo or repo permission) (type: string)
+  --token TOKEN                  GitHub oauth token (needs public_repo or repo permission) (type: string, alias:
+                                 api_key)
   --username LOGIN               GitHub login name (type: string, alias: user)
   --password PASS                GitHub password (type: string)
   --repo SLUG                    GitHub repo slug (type: string, default: repo slug)
@@ -1196,20 +1205,20 @@ Options:
 
 Common Options:
 
-  --run CMD                      Command to execute after the deployment finished successfully (type: array
+  --cleanup                      Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                      Commands to execute after the deployment finished successfully (type: array
                                  (string, can be given multiple times))
-  --cleanup                      Skip cleaning up build artifacts before the deployment
   --help                         Get help on this command
 
 Examples:
 
-  dpl releases --api_key token
-  dpl releases --password pass
-  dpl releases --api_key token --username login --repo slug --file glob --file_glob
+  dpl releases --token token
+  dpl releases --username login --password pass
+  dpl releases --token token --repo slug --file glob --file_glob --overwrite
 ```
 
-Options can be given via env vars if prefixed with `[GITHUB_|RELEASES_]`. E.g. the option
-`--api_key` can be given as `GITHUB_API_KEY=<api_key>` or `RELEASES_API_KEY=<api_key>`.
+Options can be given via env vars if prefixed with `[GITHUB_|RELEASES_]`. E.g. the option `--token`
+can be given as `GITHUB_TOKEN=<token>` or `RELEASES_TOKEN=<token>`.
 
 ### Gleis
 
@@ -1237,9 +1246,9 @@ Options:
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
+  --cleanup            Clean up build artifacts from the Git working directory before the deployment
+  --run CMD            Commands to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
@@ -1280,15 +1289,15 @@ Options:
                                     you do not specify a version, one will be generated for you (type: string)
   --verbosity LEVEL                 Adjust the log verbosity (type: string, default: warning)
   --[no-]promote                    Do not promote the deployed version (default: true)
-  --[no-]stop_previous_version      Prevent your deployment from stopping the previously promoted version. This is
-                                    from the future, so might not work (yet). (default: true)
+  --[no-]stop_previous_version      Prevent the deployment from stopping a previously promoted version (default:
+                                    true)
   --[no-]install_sdk                Do not install the Google Cloud SDK (default: true)
 
 Common Options:
 
-  --run CMD                         Command to execute after the deployment finished successfully (type: array
+  --cleanup                         Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                         Commands to execute after the deployment finished successfully (type: array
                                     (string, can be given multiple times))
-  --cleanup                         Skip cleaning up build artifacts before the deployment
   --help                            Get help on this command
 
 Examples:
@@ -1323,17 +1332,21 @@ Options:
   --local_dir DIR              Local directory to upload from (type: string, default: .)
   --upload_dir DIR             GCS directory to upload to (type: string)
   --[no-]dot_match             Upload hidden files starting with a dot
-  --acl ACL                    Access control to set for uploaded objects (type: string)
+  --acl ACL                    Access control to set for uploaded objects (type: string, default: private,
+                               known values: private, public-read, public-read-write, authenticated-read,
+                               bucket-owner-read, bucket-owner-full-control, see:
+                               https://cloud.google.com/storage/docs/reference-headers#xgoogacl)
   --[no-]detect_encoding       HTTP header Content-Encoding to set for files compressed with gzip and compress
                                utilities.
   --cache_control HEADER       HTTP header Cache-Control to suggest that the browser cache the file. (type:
-                               string)
+                               string, see:
+                               https://cloud.google.com/storage/docs/xml-api/reference-headers#cachecontrol)
 
 Common Options:
 
-  --run CMD                    Command to execute after the deployment finished successfully (type: array
+  --cleanup                    Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                    Commands to execute after the deployment finished successfully (type: array
                                (string, can be given multiple times))
-  --cleanup                    Skip cleaning up build artifacts before the deployment
   --help                       Get help on this command
 
 Examples:
@@ -1368,15 +1381,15 @@ Options:
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
+  --cleanup            Clean up build artifacts from the Git working directory before the deployment
+  --run CMD            Commands to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
 
   dpl hackage --username user --password user
-  dpl hackage --username user --password user --publish --run cmd --cleanup
+  dpl hackage --username user --password user --publish --cleanup --run cmd
 ```
 
 Options can be given via env vars if prefixed with `HACKAGE_`. E.g. the option `--password` can be
@@ -1403,14 +1416,14 @@ Options:
   --username USER        Hephy username (type: string, required: true)
   --password PASS        Hephy password (type: string, required: true)
   --app APP              Deis app (type: string, required: true)
-  --cli_version VER      Install a specific hephy cli version (type: string, default: stable)
+  --cli_version VER      Install a specific Hephy CLI version (type: string, default: stable)
   --[no-]verbose         Verbose log output
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
+  --cleanup              Clean up build artifacts from the Git working directory before the deployment
+  --run CMD              Commands to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
@@ -1439,20 +1452,21 @@ Description:
 
 Options:
 
-  --api_key KEY      Heroku API key (type: string, required: true)
+  --api_key KEY        Heroku API key (type: string, required: true)
 
 Common Options:
 
-  --run CMD          Command to execute after the deployment finished successfully (type: array
-                     (string, can be given multiple times))
-  --cleanup          Skip cleaning up build artifacts before the deployment
-  --app APP          Heroku app name (type: string, default: repo name)
-  --help             Get help on this command
+  --cleanup            Clean up build artifacts from the Git working directory before the deployment
+  --run CMD            Commands to execute after the deployment finished successfully (type: array
+                       (string, can be given multiple times))
+  --strategy NAME      Heroku deployment strategy (type: string, default: api, known values: api, git)
+  --app APP            Heroku app name (type: string, default: repo name)
+  --help               Get help on this command
 
 Examples:
 
   dpl heroku api --api_key key
-  dpl heroku api --api_key key --run cmd --cleanup --app app
+  dpl heroku api --api_key key --cleanup --run cmd --strategy api --app app
 ```
 
 Options can be given via env vars if prefixed with `HEROKU_`. E.g. the option `--api_key` can be
@@ -1480,13 +1494,14 @@ Options:
   --api_key KEY        Heroku API key (type: string)
   --username USER      Heroku username (type: string, alias: user)
   --password PASS      Heroku password (type: string)
-  --git URL            type: string
+  --git URL            Heroku Git remote URL (type: string)
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
+  --cleanup            Clean up build artifacts from the Git working directory before the deployment
+  --run CMD            Commands to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --cleanup            Skip cleaning up build artifacts before the deployment
+  --strategy NAME      Heroku deployment strategy (type: string, default: api, known values: api, git)
   --app APP            Heroku app name (type: string, default: repo name)
   --help               Get help on this command
 
@@ -1494,7 +1509,7 @@ Examples:
 
   dpl heroku git --api_key key
   dpl heroku git --username user --password pass
-  dpl heroku git --api_key key --git url --run cmd --cleanup --app app
+  dpl heroku git --api_key key --git url --cleanup --run cmd --strategy api
 ```
 
 Options can be given via env vars if prefixed with `HEROKU_`. E.g. the option `--api_key` can be
@@ -1517,21 +1532,21 @@ Description:
 
 Options:
 
-  --slug SLUG                      Launchpad project slug (type: string, format: /^~[^\/]+\/[^\/]+\/[^\/]+$/, e.g.:
-                                   ~user-name/project-name/branch-name)
   --oauth_token TOKEN              Launchpad OAuth token (type: string)
   --oauth_token_secret SECRET      Launchpad OAuth token secret (type: string)
+  --slug SLUG                      Launchpad project slug (type: string, format: /^~[^\/]+\/[^\/]+\/[^\/]+$/, e.g.:
+                                   ~user-name/project-name/branch-name)
 
 Common Options:
 
-  --run CMD                        Command to execute after the deployment finished successfully (type: array
+  --cleanup                        Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                        Commands to execute after the deployment finished successfully (type: array
                                    (string, can be given multiple times))
-  --cleanup                        Skip cleaning up build artifacts before the deployment
   --help                           Get help on this command
 
 Examples:
 
-  dpl launchpad --slug slug --oauth_token token --oauth_token_secret secret --run cmd --cleanup
+  dpl launchpad --oauth_token token --oauth_token_secret secret --slug slug --cleanup --run cmd
 ```
 
 Options can be given via env vars if prefixed with `LAUNCHPAD_`. E.g. the option `--oauth_token` can
@@ -1563,9 +1578,9 @@ Options:
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
+  --cleanup              Clean up build artifacts from the Git working directory before the deployment
+  --run CMD              Commands to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
@@ -1606,9 +1621,9 @@ Options:
 
 Common Options:
 
-  --run CMD               Command to execute after the deployment finished successfully (type: array
+  --cleanup               Clean up build artifacts from the Git working directory before the deployment
+  --run CMD               Commands to execute after the deployment finished successfully (type: array
                           (string, can be given multiple times))
-  --cleanup               Skip cleaning up build artifacts before the deployment
   --help                  Get help on this command
 
 Examples:
@@ -1644,15 +1659,15 @@ Options:
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
+  --cleanup              Clean up build artifacts from the Git working directory before the deployment
+  --run CMD              Commands to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
 
   dpl openshift --server server --token token --project project
-  dpl openshift --server server --token token --project project --app app --run cmd
+  dpl openshift --server server --token token --project project --app app --cleanup
 ```
 
 Options can be given via env vars if prefixed with `OPENSHIFT_`. E.g. the option `--token` can be
@@ -1690,9 +1705,9 @@ Options:
 
 Common Options:
 
-  --run CMD                  Command to execute after the deployment finished successfully (type: array
+  --cleanup                  Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                  Commands to execute after the deployment finished successfully (type: array
                              (string, can be given multiple times))
-  --cleanup                  Skip cleaning up build artifacts before the deployment
   --help                     Get help on this command
 
 Examples:
@@ -1728,15 +1743,15 @@ Options:
 
 Common Options:
 
-  --run CMD            Command to execute after the deployment finished successfully (type: array
+  --cleanup            Clean up build artifacts from the Git working directory before the deployment
+  --run CMD            Commands to execute after the deployment finished successfully (type: array
                        (string, can be given multiple times))
-  --cleanup            Skip cleaning up build artifacts before the deployment
   --help               Get help on this command
 
 Examples:
 
   dpl puppetforge --username name --password pass
-  dpl puppetforge --username name --password pass --url url --run cmd --cleanup
+  dpl puppetforge --username name --password pass --url url --cleanup --run cmd
 ```
 
 Options can be given via env vars if prefixed with `PUPPETFORGE_`. E.g. the option `--password` can
@@ -1778,9 +1793,9 @@ Options:
 
 Common Options:
 
-  --run CMD                     Command to execute after the deployment finished successfully (type: array
+  --cleanup                     Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                     Commands to execute after the deployment finished successfully (type: array
                                 (string, can be given multiple times))
-  --cleanup                     Skip cleaning up build artifacts before the deployment
   --help                        Get help on this command
 
 Examples:
@@ -1809,7 +1824,7 @@ Description:
 
 Options:
 
-  Either api_key, or user and password are required.
+  Either api_key, or username and password are required.
 
   --api_key KEY            Rubygems api key (type: string)
   --username USER          Rubygems user name (type: string, alias: user)
@@ -1822,16 +1837,16 @@ Options:
 
 Common Options:
 
-  --run CMD                Command to execute after the deployment finished successfully (type: array
+  --cleanup                Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                Commands to execute after the deployment finished successfully (type: array
                            (string, can be given multiple times))
-  --cleanup                Skip cleaning up build artifacts before the deployment
   --help                   Get help on this command
 
 Examples:
 
   dpl rubygems --api_key key
-  dpl rubygems --password pass
-  dpl rubygems --api_key key --username user --gem name --gemspec file --gemspec_glob glob
+  dpl rubygems --username user --password pass
+  dpl rubygems --api_key key --gem name --gemspec file --gemspec_glob glob --host url
 ```
 
 Options can be given via env vars if prefixed with `RUBYGEMS_`. E.g. the option `--api_key` can be
@@ -1869,9 +1884,9 @@ Options:
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
+  --cleanup              Clean up build artifacts from the Git working directory before the deployment
+  --run CMD              Commands to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
@@ -1914,15 +1929,15 @@ Options:
 
 Common Options:
 
-  --run CMD               Command to execute after the deployment finished successfully (type: array
+  --cleanup               Clean up build artifacts from the Git working directory before the deployment
+  --run CMD               Commands to execute after the deployment finished successfully (type: array
                           (string, can be given multiple times))
-  --cleanup               Skip cleaning up build artifacts before the deployment
   --help                  Get help on this command
 
 Examples:
 
   dpl script --script script
-  dpl script --script script --run cmd --cleanup
+  dpl script --script script --cleanup --run cmd
 ```
 
 
@@ -1950,15 +1965,15 @@ Options:
 
 Common Options:
 
-  --run CMD           Command to execute after the deployment finished successfully (type: array
+  --cleanup           Clean up build artifacts from the Git working directory before the deployment
+  --run CMD           Commands to execute after the deployment finished successfully (type: array
                       (string, can be given multiple times))
-  --cleanup           Skip cleaning up build artifacts before the deployment
   --help              Get help on this command
 
 Examples:
 
   dpl snap --token token
-  dpl snap --token token --snap str --channel chan --run cmd --cleanup
+  dpl snap --token token --snap str --channel chan --cleanup --run cmd
 ```
 
 Options can be given via env vars if prefixed with `SNAP_`. E.g. the option `--token` can be given
@@ -1991,15 +2006,15 @@ Options:
 
 Common Options:
 
-  --run CMD           Command to execute after the deployment finished successfully (type: array
+  --cleanup           Clean up build artifacts from the Git working directory before the deployment
+  --run CMD           Commands to execute after the deployment finished successfully (type: array
                       (string, can be given multiple times))
-  --cleanup           Skip cleaning up build artifacts before the deployment
   --help              Get help on this command
 
 Examples:
 
   dpl surge --login email --token token
-  dpl surge --login email --token token --domain name --project path --run cmd
+  dpl surge --login email --token token --domain name --project path --cleanup
 ```
 
 Options can be given via env vars if prefixed with `SURGE_`. E.g. the option `--token` can be given
@@ -2034,9 +2049,9 @@ Options:
 
 Common Options:
 
-  --run CMD                    Command to execute after the deployment finished successfully (type: array
+  --cleanup                    Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                    Commands to execute after the deployment finished successfully (type: array
                                (string, can be given multiple times))
-  --cleanup                    Skip cleaning up build artifacts before the deployment
   --help                       Get help on this command
 
 Examples:
@@ -2075,16 +2090,16 @@ Options:
 
 Common Options:
 
-  --run CMD              Command to execute after the deployment finished successfully (type: array
+  --cleanup              Clean up build artifacts from the Git working directory before the deployment
+  --run CMD              Commands to execute after the deployment finished successfully (type: array
                          (string, can be given multiple times))
-  --cleanup              Skip cleaning up build artifacts before the deployment
   --help                 Get help on this command
 
 Examples:
 
   dpl transifex --api_token token
   dpl transifex --username name --password pass
-  dpl transifex --api_token token --hostname name --cli_version ver --run cmd --cleanup
+  dpl transifex --api_token token --hostname name --cli_version ver --cleanup --run cmd
 ```
 
 Options can be given via env vars if prefixed with `TRANSIFEX_`. E.g. the option `--api_token` can

@@ -39,10 +39,11 @@ Dpl is generally optimized for usage on Linux systems.
 
 ## Installation
 
-Installation:
+This version of dpl is currently released as an `alpha` preview release. In
+order to install it, add the `--pre` flag:
 
 ```
-gem install dpl
+gem install dpl --pre
 ```
 
 ## Usage
