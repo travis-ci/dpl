@@ -126,7 +126,7 @@ module Dpl
       end
 
       def url
-        if release_number?
+        @url ||= if release_number?
           URL % [slug, release_number]
         elsif release
           release.rels[:self].href
@@ -141,7 +141,7 @@ module Dpl
 
       def create_release
         api.create_release(slug, local_tag, octokit_opts.merge(draft: true))
-      rescue Octokit::NotFound => nf
+      rescue Octokit::NotFound
         error :insufficient_perm
       end
 
