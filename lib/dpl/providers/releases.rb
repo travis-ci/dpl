@@ -106,6 +106,7 @@ module Dpl
         opts = opts.select { |key, _| OCTOKIT_OPTS.include?(key) }
         compact(opts.merge(body: release_notes, draft: draft?))
       end
+      memoize :octokit_opts
 
       def with_tag(opts)
         return opts if tag_name? || draft?
@@ -126,7 +127,7 @@ module Dpl
       end
 
       def url
-        @url ||= if release_number?
+        if release_number?
           URL % [slug, release_number]
         elsif release
           release.rels[:self].href
@@ -134,6 +135,7 @@ module Dpl
           create_release.rels[:self].href
         end
       end
+      memoize :url
 
       def release
         releases.detect { |release| release.tag_name == local_tag }
