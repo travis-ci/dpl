@@ -5,7 +5,7 @@ require 'json'
 
 $stdout.sync = true
 
-expected = ENV['ID']
+expected = "v0.0.#{ENV['TRAVIS_BUILD_NUMBER']}-#{ENV['ID']}"
 url = 'https://api.github.com/repos/travis-ci/dpl_test/releases/latest'
 
 def poll(url)
