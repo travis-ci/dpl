@@ -10,7 +10,7 @@ before_deploy:
 deploy:
   - provider: npm
     email: dpl-test@travis-ci.org
-    api_key:
+    api_token:
       secure: "cvaSdHFNK//eo1fkI4WKMxAd9L+8kaflwbfaOACnDclt+5iqcOAZ4Rn/x9Ook4DdPg6oahiSqWDwTcnCO/K58BiJkB2jXzdFBsjDUIQfqvI2hpnFnzuUxRi0Q3Smo2NgwZezej5Q7g5zqSRRYVTHiF3eGaQPw8kKM3cE9WaGe8c="
     access: public
 
