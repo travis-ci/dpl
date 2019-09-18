@@ -15,7 +15,7 @@ before_deploy:
 
 deploy:
   - provider: gae
-    project_id: dpl-test-244917
+    project: dpl-test-244917
 
 after_deploy:
   - ../../.travis/providers/gae/test || TRAVIS_TEST_RESULT=$?
