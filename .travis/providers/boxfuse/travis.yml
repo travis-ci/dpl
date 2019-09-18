@@ -21,7 +21,7 @@ deploy:
       secure: "pSNJxd9xH+4EZ+0cHCqsgyjzLyI/hZK7g3SdPGqcQu90EOD6qzm1ET9Wt8eYWAxruKf8o03rEwKfAEdk84N36JxH+57AVLQh2UUM2+jjovXL8VDvpbekbXxisT4TKpzL7fxNpY+/4gkDPnJz/7g9sFbc9WO5ntOBsn7d+vT/FqQ="
     env: prod
     payload: dpl_test
-    configfile: boxfuse.conf
+    config_file: boxfuse.conf
 
 after_deploy:
   - ../../.travis/providers/boxfuse/test || TRAVIS_TEST_RESULT=$?
