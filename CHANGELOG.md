@@ -10,6 +10,10 @@
 
 * Add `--allow_dirty` to allow publishing from a dirty Git working directory
 
+### GCS
+
+* Add `--key_file` to allow using a service account key file
+
 ### Releases
 
 * Make --file glob files by default, and default to `*`
