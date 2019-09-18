@@ -12,7 +12,7 @@ deploy:
   - provider: chef_supermarket
     user_id: dpl-test
     client_key: private_key
-    cookbook_category: Other
+    category: Other
     dir: tmp/dpl_test
 
 after_deploy:
