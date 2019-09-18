@@ -1326,8 +1326,11 @@ Description:
 
 Options:
 
-  --access_key_id ID           GCS Interoperable Access Key ID (type: string, required: true)
-  --secret_access_key KEY      GCS Interoperable Access Secret (type: string, required: true)
+  Either key_file, or access_key_id and secret_access_key are required.
+
+  --key_file FILE              Path to a GCS service account key JSON file (type: string)
+  --access_key_id ID           GCS Interoperable Access Key ID (type: string)
+  --secret_access_key KEY      GCS Interoperable Access Secret (type: string)
   --bucket BUCKET              GCS Bucket (type: string, required: true)
   --local_dir DIR              Local directory to upload from (type: string, default: .)
   --upload_dir DIR             GCS directory to upload to (type: string)
@@ -1351,8 +1354,10 @@ Common Options:
 
 Examples:
 
-  dpl gcs --access_key_id id --secret_access_key key --bucket bucket
-  dpl gcs --access_key_id id --secret_access_key key --bucket bucket --local_dir dir --upload_dir dir
+  dpl gcs --bucket bucket --key_file file
+  dpl gcs --bucket bucket --access_key_id id --secret_access_key key
+  dpl gcs --bucket bucket
+  dpl gcs --bucket bucket --key_file file --local_dir dir --upload_dir dir --dot_match
 ```
 
 Options can be given via env vars if prefixed with `GCS_`. E.g. the option `--access_key_id` can be
