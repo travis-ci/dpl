@@ -6,6 +6,4 @@ include FileUtils
 
 dir = 'tmp/dpl_test'
 mkdir_p dir
-chdir dir
-
-File.write 'index.html', ENV['ID']
+File.write "#{dir}/index.html", ENV['ID']
