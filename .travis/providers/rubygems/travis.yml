@@ -10,7 +10,7 @@ before_deploy:
 
 deploy:
   - provider: rubygems
-    user:
+    username:
       # the string username
       secure: "XGeKKoJAMCH88Es5PvfY/+WW8KneG+fsygOyj0ov+RuJkIlcm44mES6scM8yCXPYecVX6gDPaIegz63g0VDVgM+uGN5/z9UKO2q7t39R+r7APml2CT1hq21zWcF6SsaM+kEwzuK4COy0RsLxOG0fX+wankEUes2n15UBSfasp2s="
     password:
