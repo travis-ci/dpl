@@ -8,7 +8,7 @@ before_deploy:
 
 deploy:
   - provider: pages
-    github_token:
+    token:
       # personal access token with repo and user scopes on travis-dpl-test
       secure: "Iq437TC76lD2pY5BceuaTqcyHt6Xq8dv+/Or6tkdzwMAltmraPKA6AB7MhQTtMVwqd5rSehNqbglzTcaXU4vk8TEGYxA9VDXD/9+9VWYGMHRh5Ql+huOoVPpW4tF+ZRUpAfogB77XRROvb8TjwI2uyO1byDtq/5jRl9CeQNv5sg="
     repo: travis-ci/dpl_test
