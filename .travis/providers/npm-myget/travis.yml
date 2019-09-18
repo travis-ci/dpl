@@ -9,9 +9,8 @@ before_deploy:
 
 deploy:
   - provider: npm
-
     registry: https://www.myget.org/F/dpl-test/npm/
-    api_key:
+    api_token:
       secure: "RJKzq+WIewvXSvU2mTeqDn9eIM7Vq3fAvXrCdHjMGbl301ilq9IzUWhea1UJfcP0WbbF6h7oS6jl3DMKLok9Bi6A7XmT1zd3KVP5ZE8FeKVqGGS7hLk6JtymJPpVudWOb+bhcEzox52g95NHFB8/H1VFr8fSBf89NzFI7QIjBaw="
     access: public
 
