@@ -17,7 +17,6 @@ deploy:
     space: dev
     app_name: dpl-test
     buildpack: ruby_buildpack
-    no_logout: true
 
 after_deploy:
   - cd ../..
