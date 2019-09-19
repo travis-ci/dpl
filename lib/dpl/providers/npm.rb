@@ -19,7 +19,7 @@ module Dpl
       opt '--registry URL', 'npm registry url'
       opt '--src SRC', 'directory or tarball to publish', default: '.'
       opt '--tag TAGS', 'distribution tags to add'
-      opt '--auth_method', 'Authentication method', enum: %w(auth)
+      opt '--auth_method METHOD', 'Authentication method', enum: %w(auth)
 
       REGISTRY = 'registry.npmjs.org'
       NPMRC = '~/.npmrc'

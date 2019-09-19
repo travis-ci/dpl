@@ -1,13 +1,7 @@
 describe Dpl::Providers::Npm do
   let(:args) { |e| %w(--email email --api_key 12345) + args_from_description(e) }
 
-  let(:npmrc) do
-    sq(<<-rc)
-      _auth = 12345
-      email = email
-    rc
-  end
-
+  before { allow(ctx).to receive(:npm_version).and_return(npm_version) if defined?(npm_version) }
   before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
@@ -17,7 +11,6 @@ describe Dpl::Providers::Npm do
     it { should have_run 'npm config set registry "registry.npmjs.org"' }
     it { should have_run 'npm publish .' }
     it { should have_run_in_order }
-    it { should have_written '~/.npmrc', npmrc }
   end
 
   describe 'given --registry registry' do
@@ -34,6 +27,24 @@ describe Dpl::Providers::Npm do
 
   describe 'given --tag tag' do
     it { should have_run 'npm publish . --tag="tag"' }
+  end
+
+  let(:npmrc_1) { "_auth = 12345\nemail = email" }
+  let(:npmrc_2) { '//registry.npmjs.org/:_authToken=12345' }
+
+  describe 'npm_version 1' do
+    let(:npm_version) { '1' }
+    it { should have_written '~/.npmrc', npmrc_1 }
+  end
+
+  describe 'npm_version 2' do
+    let(:npm_version) { '2' }
+    it { should have_written '~/.npmrc', npmrc_2 }
+  end
+
+  describe 'npm_version 2, given --auth_method auth' do
+    let(:npm_version) { '2' }
+    it { should have_written '~/.npmrc', npmrc_1 }
   end
 
   describe 'with credentials in env vars', run: false do
