@@ -18,9 +18,9 @@ module Dpl
       opt '--config FILE', 'Path to your service configuration file', type: :array, default: 'app.yaml'
       opt '--version VER', 'The version of the app that will be created or replaced by this deployment. If you do not specify a version, one will be generated for you'
       opt '--verbosity LEVEL', 'Adjust the log verbosity', default: 'warning'
-      opt '--promote', 'Do not promote the deployed version', default: true
+      opt '--promote', 'Whether to promote the deployed version', default: true
       opt '--stop_previous_version', 'Prevent the deployment from stopping a previously promoted version', default: true
-      opt '--install_sdk', 'Do not install the Google Cloud SDK', default: true
+      opt '--install_sdk', 'Whether to install the Google Cloud SDK', default: true
 
       URL = 'https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz'
 
