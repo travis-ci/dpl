@@ -14,6 +14,10 @@
 
 * Add `--key_file` to allow using a service account key file
 
+### pages
+
+* Fix to allow being run on a Windows Git bash
+
 ### Releases
 
 * Make --file glob files by default, and default to `*`
