@@ -16,10 +16,10 @@ describe Dpl::Providers::Pages::Git do
 
   describe 'by default', record: true do
     it { should have_run '[info] Authenticated as login' }
-    it { should have_run '[info] Configuring git committer to be author name (via Travis CI) <author email>' }
     it { should have_run '[info] Deploying branch gh-pages to github.com/travis-ci/dpl.git' }
     it { should have_run '[info] Cloning the branch gh-pages from the remote repo' }
     it { should have_run 'git clone --quiet --branch="gh-pages" --depth=1 "https://token@github.com/travis-ci/dpl.git" . > /dev/null 2>&1' }
+    it { should have_run '[info] Configuring git committer to be author name (via Travis CI) <author email>' }
     it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" .) }
     it { should have_run 'git config user.name "author name (via Travis CI)"' }
     it { should have_run 'git config user.email "author email"' }
