@@ -82,8 +82,6 @@ module Dpl
 
         def setup
           info :setup_dir, src_dir
-          info :committer_from_gh if committer_from_gh?
-          info :git_config
         end
 
         def prepare
@@ -95,6 +93,8 @@ module Dpl
 
         def deploy
           git_clone? ? git_clone : git_init
+          info :committer_from_gh if committer_from_gh?
+          info :git_config
           copy_files
           return info :stop unless git_dirty?
           git_config
