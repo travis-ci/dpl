@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Elasticbeanstalk < Provider
-      status :alpha
+      status :beta
 
       full_name 'AWS Elastic Beanstalk'
 

@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Gae < Provider
-      status :alpha
+      status :beta
 
       full_name 'Google App Engine'
 

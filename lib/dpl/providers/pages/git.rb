@@ -4,7 +4,7 @@ module Dpl
       class Git < Pages
         register 'pages:git'
 
-        status :alpha
+        status :beta
 
         full_name 'GitHub Pages'
 

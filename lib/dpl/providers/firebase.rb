@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Firebase < Provider
-      status :alpha
+      status :beta
 
       description sq(<<-str)
         tbd
