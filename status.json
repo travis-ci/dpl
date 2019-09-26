@@ -71,8 +71,8 @@
   },
   {
     "name": "elasticbeanstalk",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-09-26"
   },
   {
     "name": "engineyard",
@@ -81,17 +81,17 @@
   },
   {
     "name": "firebase",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-09-26"
   },
   {
     "name": "gae",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-09-26"
   },
   {
     "name": "gcs",
-    "status": "alpha",
+    "status": "beta",
     "date": "2019-05-07"
   },
   {
@@ -111,7 +111,7 @@
   },
   {
     "name": "heroku:api",
-    "status": "alpha",
+    "status": "beta",
     "date": "2019-05-07"
   },
   {
@@ -121,7 +121,7 @@
   },
   {
     "name": "lambda",
-    "status": "alpha",
+    "status": "beta",
     "date": "2019-05-07"
   },
   {
@@ -141,8 +141,8 @@
   },
   {
     "name": "openshift",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-09-26"
   },
   {
     "name": "opsworks",
@@ -161,7 +161,7 @@
   },
   {
     "name": "pages:git",
-    "status": "alpha",
+    "status": "beta",
     "date": "2019-08-21"
   },
   {
@@ -176,8 +176,8 @@
   },
   {
     "name": "releases",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-09-26"
   },
   {
     "name": "rubygems",
@@ -186,7 +186,7 @@
   },
   {
     "name": "s3",
-    "status": "alpha",
+    "status": "beta",
     "date": "2019-05-07"
   },
   {
@@ -196,8 +196,8 @@
   },
   {
     "name": "script",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-09-26"
   },
   {
     "name": "snap",
