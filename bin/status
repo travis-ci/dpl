@@ -40,8 +40,7 @@ class Provider < Struct.new(:path)
   end
 end
 
-paths = Dir['lib/dpl/providers/**/lambda.rb']
-file = Provider.new(paths.first)
+paths = Dir['lib/dpl/providers/**/*.rb']
 files = paths.map { |path| Provider.new(path) }
 files = files.select(&:num)
 files = files.sort_by(&:name)
