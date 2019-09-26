@@ -24,11 +24,11 @@ class Provider < Struct.new(:path)
   end
 
   def num
-    `grep -n 'status :' #{path}` =~ /^(\d+)/ && $1
+    @num ||= `grep -n 'status :' #{path}` =~ /^(\d+)/ && $1
   end
 
   def sha
-    `git blame #{path} -L 4,4`.split(' ').first
+    `git blame #{path} -L #{num},#{num}`.split(' ').first
   end
 
   def date
@@ -40,7 +40,8 @@ class Provider < Struct.new(:path)
   end
 end
 
-paths = Dir['lib/dpl/providers/**/*.rb']
+paths = Dir['lib/dpl/providers/**/lambda.rb']
+file = Provider.new(paths.first)
 files = paths.map { |path| Provider.new(path) }
 files = files.select(&:num)
 files = files.sort_by(&:name)
