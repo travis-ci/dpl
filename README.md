@@ -296,7 +296,7 @@ Options can be given via env vars if prefixed with `[AWS_|CODEDEPLOY_]`. E.g. th
 
 ### AWS Elastic Beanstalk
 
-Support for deployments to AWS Elastic Beanstalk is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to AWS Elastic Beanstalk is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl elasticbeanstalk [options]
@@ -345,7 +345,7 @@ Options can be given via env vars if prefixed with `[AWS_|ELASTIC_BEANSTALK_]`. 
 
 ### AWS Lambda
 
-Support for deployments to AWS Lambda is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to AWS Lambda is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl lambda [options]
@@ -465,7 +465,7 @@ Options can be given via env vars if prefixed with `[AWS_|OPSWORKS_]`. E.g. the 
 
 ### AWS S3
 
-Support for deployments to AWS S3 is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to AWS S3 is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl s3 [options]
@@ -1019,7 +1019,7 @@ can be given as `ENGINEYARD_API_KEY=<api_key>` or `EY_API_KEY=<api_key>`.
 
 ### Firebase
 
-Support for deployments to Firebase is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Firebase is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl firebase [options]
@@ -1061,7 +1061,7 @@ given as `FIREBASE_TOKEN=<token>`.
 
 ### GitHub Pages
 
-Support for deployments to GitHub Pages is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to GitHub Pages is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl pages git [options]
@@ -1167,7 +1167,7 @@ be given as `GITHUB_TOKEN=<token>` or `PAGES_TOKEN=<token>`.
 
 ### GitHub Releases
 
-Support for deployments to GitHub Releases is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to GitHub Releases is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl releases [options]
@@ -1262,7 +1262,7 @@ given as `GLEIS_PASSWORD=<password>`.
 
 ### Google App Engine
 
-Support for deployments to Google App Engine is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Google App Engine is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl gae [options]
@@ -1288,10 +1288,10 @@ Options:
   --version VER                     The version of the app that will be created or replaced by this deployment. If
                                     you do not specify a version, one will be generated for you (type: string)
   --verbosity LEVEL                 Adjust the log verbosity (type: string, default: warning)
-  --[no-]promote                    Do not promote the deployed version (default: true)
+  --[no-]promote                    Whether to promote the deployed version (default: true)
   --[no-]stop_previous_version      Prevent the deployment from stopping a previously promoted version (default:
                                     true)
-  --[no-]install_sdk                Do not install the Google Cloud SDK (default: true)
+  --[no-]install_sdk                Whether to install the Google Cloud SDK (default: true)
 
 Common Options:
 
@@ -1311,7 +1311,7 @@ Options can be given via env vars if prefixed with
 
 ### Google Cloud Store
 
-Support for deployments to Google Cloud Store is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Google Cloud Store is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl gcs [options]
@@ -1442,7 +1442,7 @@ given as `HEPHY_PASSWORD=<password>`.
 
 ### Heroku API
 
-Support for deployments to Heroku API is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Heroku API is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl heroku api [options]
@@ -1614,22 +1614,22 @@ Description:
 
 Options:
 
-  --email EMAIL           npm account email (type: string)
-  --api_token TOKEN       npm api token (type: string, required: true, alias: api_key, note: can be
-                          retrieved from your local ~/.npmrc file, see:
-                          https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
-  --access ACCESS         Access level (type: string, known values: public, private)
-  --registry URL          npm registry url (type: string)
-  --src SRC               directory or tarball to publish (type: string, default: .)
-  --tag TAGS              distribution tags to add (type: string)
-  --[no-]auth_method      Authentication method (known values: auth)
+  --email EMAIL             npm account email (type: string)
+  --api_token TOKEN         npm api token (type: string, required: true, alias: api_key, note: can be
+                            retrieved from your local ~/.npmrc file, see:
+                            https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
+  --access ACCESS           Access level (type: string, known values: public, private)
+  --registry URL            npm registry url (type: string)
+  --src SRC                 directory or tarball to publish (type: string, default: .)
+  --tag TAGS                distribution tags to add (type: string)
+  --auth_method METHOD      Authentication method (type: string, known values: auth)
 
 Common Options:
 
-  --cleanup               Clean up build artifacts from the Git working directory before the deployment
-  --run CMD               Commands to execute after the deployment finished successfully (type: array
-                          (string, can be given multiple times))
-  --help                  Get help on this command
+  --cleanup                 Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                 Commands to execute after the deployment finished successfully (type: array
+                            (string, can be given multiple times))
+  --help                    Get help on this command
 
 Examples:
 
@@ -1642,7 +1642,7 @@ given as `NPM_API_TOKEN=<api_token>`.
 
 ### OpenShift
 
-Support for deployments to OpenShift is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to OpenShift is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl openshift [options]
@@ -1906,7 +1906,7 @@ given as `SCALINGO_PASSWORD=<password>`.
 
 ### Script
 
-Support for deployments to Script is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Script is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl script [options]
