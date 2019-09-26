@@ -89,7 +89,7 @@ the following maturity levels, according to the given criteria:
 * `dev` - the provider is in development (initial level)
 * `alpha` - the provider is fully tested
 * `beta` - the provider has been in alpha for at least a month, and successful real-world production deployments have been observed
-* `stable` - the provider has been in beta for at least two months, and there are no open issues that qualify as critical (such as deployments failing, documented functionality broken, etc)
+* `stable` - the provider has been in beta for at least a month, and there are no open issues that qualify as critical (such as deployments failing, documented functionality broken, etc)
 
 ## Supported Providers
 
