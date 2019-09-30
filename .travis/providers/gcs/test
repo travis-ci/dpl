@@ -6,20 +6,27 @@ require 'json'
 $stdout.sync = true
 
 expected = ENV['ID']
-url = 'https://storage.googleapis.com/dpl-test/index.html'
+urls = %w(
+  https://storage.googleapis.com/dpl-test/index.html
+  https://storage.googleapis.com/dpl-test/foo/index.html
+  https://storage.googleapis.com/dpl-test/foo/bar/index.html
+)
 
 def poll(url)
+  puts "polling #{url} ..."
   URI.parse(url).read
 rescue => e
   puts e.message
 end
 
 10.times do
-  actual = poll(url)
-  puts "expected: #{expected.inspect}"
-  puts "actual: #{actual.inspect}"
-  exit 0 if actual == expected
-  sleep 5
+  urls.each do |url|
+    actual = poll(url)
+    puts "expected: #{expected.inspect}"
+    puts "actual: #{actual.inspect}"
+    exit 0 if actual == expected
+    sleep 5
+  end
 end
 
 abort 'failed'

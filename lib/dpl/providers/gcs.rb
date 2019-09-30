@@ -29,10 +29,12 @@ module Dpl
       opt '--acl ACL', 'Access control to set for uploaded objects', default: 'private', enum: %w(private public-read public-read-write authenticated-read bucket-owner-read bucket-owner-full-control), see: 'https://cloud.google.com/storage/docs/reference-headers#xgoogacl'
       opt '--detect_encoding', 'HTTP header Content-Encoding to set for files compressed with gzip and compress utilities.'
       opt '--cache_control HEADER', 'HTTP header Cache-Control to suggest that the browser cache the file.', see: 'https://cloud.google.com/storage/docs/xml-api/reference-headers#cachecontrol'
+      opt '--glob GLOB', default: '**/*'
 
       cmds install:   'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
            login_key: 'gcloud auth activate-service-account --key-file=%{key_file}',
-           copy:      'gsutil %{gs_opts}cp %{copy_opts}-r %{source} %{target}'
+           rsync:     'gsutil %{gs_opts} rsync %{rsync_opts} %{glob} %{target}',
+           copy:      'gsutil %{gs_opts} cp %{copy_opts} -r %{source} %{target}'
 
       msgs login_key:   'Authenticating with service account key file %{key_file}',
            login_creds: 'Authenticating with access key: %{access_key_id}'
@@ -60,7 +62,7 @@ module Dpl
 
       def deploy
         Dir.chdir(local_dir) do
-          source_files.each { |file| copy(file) }
+          files.each { |file| copy(file) }
         end
       end
 
@@ -79,12 +81,18 @@ module Dpl
           write_file '~/.boto', interpolate(BOTO, opts, secure: true), 0600
         end
 
-        def source_files
-          Dir.glob(*glob).select { |path| File.file?(path) }
+        def files
+          Dir.glob(*glob_args).select { |path| File.file?(path) }
         end
 
         def copy(source)
-          shell :copy, gs_opts: gs_opts(source), source: source
+          to = [target.sub(%r(/$), ''), source].join('/')
+          shell :copy, gs_opts: gs_opts(source), source: source, target: to
+        end
+
+        def dirname(path)
+          dir = File.dirname(path)
+          dir unless dir.empty? || dir == '.'
         end
 
         def gs_opts(path)
@@ -110,10 +118,10 @@ module Dpl
           type.to_s if type
         end
 
-        def glob
-          glob = ['**/*']
-          glob << File::FNM_DOTMATCH if dot_match?
-          glob
+        def glob_args
+          args = [glob]
+          args << File::FNM_DOTMATCH if dot_match?
+          args
         end
     end
   end
