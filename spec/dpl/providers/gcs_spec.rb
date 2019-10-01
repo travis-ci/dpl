@@ -16,31 +16,31 @@ describe Dpl::Providers::Gcs do
       it { should have_run 'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false' }
       it { should have_run '[info] Authenticating with service account key file key.json' }
       it { should have_run '[info] $ gcloud auth activate-service-account --key-file=key.json' }
-      it { should have_run 'gsutil cp -a "private" -r one gs://bucket/' }
-      it { should have_run 'gsutil cp -a "private" -r two/two gs://bucket/' }
+      it { should have_run 'gsutil cp -a "private" -r one gs://bucket/one' }
+      it { should have_run 'gsutil cp -a "private" -r two/two gs://bucket/two/two' }
       it { should have_run 'mv /tmp/boto.cfg /etc/boto.cfg' }
       it { should have_run_in_order }
       it { should_not have_run 'gsutil cp -r .hidden gs://bucket/' }
     end
 
     describe 'given --upload_dir dir' do
-      it { should have_run 'gsutil cp -a "private" -r one gs://bucket/dir' }
+      it { should have_run 'gsutil cp -a "private" -r one gs://bucket/dir/one' }
     end
 
     describe 'given --dot_match' do
-      it { should have_run 'gsutil cp -a "private" -r .hidden gs://bucket/' }
+      it { should have_run 'gsutil cp -a "private" -r .hidden gs://bucket/.hidden' }
     end
 
     describe 'given --acl public-read' do
-      it { should have_run 'gsutil cp -a "public-read" -r one gs://bucket/' }
+      it { should have_run 'gsutil cp -a "public-read" -r one gs://bucket/one' }
     end
 
     describe 'given --detect_encoding' do
-      it { should have_run 'gsutil -h "Content-Encoding:text" cp -a "private" -r one gs://bucket/' }
+      it { should have_run 'gsutil -h "Content-Encoding:text" cp -a "private" -r one gs://bucket/one' }
     end
 
     describe 'given --cache_control max-age=1' do
-      it { should have_run 'gsutil -h "Cache-Control:max-age=1" cp -a "private" -r one gs://bucket/' }
+      it { should have_run 'gsutil -h "Cache-Control:max-age=1" cp -a "private" -r one gs://bucket/one' }
     end
 
     describe 'with credentials in env vars', run: false do
