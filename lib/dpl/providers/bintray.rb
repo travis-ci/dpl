@@ -5,7 +5,7 @@ require 'find'
 module Dpl
   module Providers
     class Bintray < Provider
-      status :alpha
+      status :beta
 
       description sq(<<-str)
         tbd

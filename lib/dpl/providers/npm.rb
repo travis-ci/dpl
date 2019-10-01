@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Npm < Provider
-      status :alpha
+      status :beta
 
       full_name 'npm'
 
