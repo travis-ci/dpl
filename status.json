@@ -11,8 +11,8 @@
   },
   {
     "name": "bintray",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-10-01"
   },
   {
     "name": "bluemixcloudfoundry",
@@ -26,8 +26,8 @@
   },
   {
     "name": "cargo",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-10-01"
   },
   {
     "name": "chef_supermarket",
@@ -136,8 +136,8 @@
   },
   {
     "name": "npm",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-10-01"
   },
   {
     "name": "openshift",
@@ -171,8 +171,8 @@
   },
   {
     "name": "pypi",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-10-01"
   },
   {
     "name": "releases",

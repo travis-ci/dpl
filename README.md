@@ -571,7 +571,7 @@ given as `AZURE_WA_PASSWORD=<password>`.
 
 ### Bintray
 
-Support for deployments to Bintray is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Bintray is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl bintray [options]
@@ -696,7 +696,7 @@ given as `BOXFUSE_SECRET=<secret>`.
 
 ### Cargo
 
-Support for deployments to Cargo is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Cargo is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl cargo [options]
@@ -1599,7 +1599,7 @@ as `NETLIFY_AUTH=<auth>`.
 
 ### npm
 
-Support for deployments to npm is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to npm is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl npm [options]
@@ -1764,7 +1764,7 @@ be given as `PUPPETFORGE_PASSWORD=<password>`.
 
 ### PyPI
 
-Support for deployments to PyPI is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to PyPI is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl pypi [options]
