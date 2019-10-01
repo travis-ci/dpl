@@ -8,9 +8,10 @@ before_deploy:
 
 deploy:
   - provider: npm
-    registry: https://npm.pkg.github.com
+    registry: https://npm.pkg.github.com/travis-dpl-test
     api_token:
-      secure: "fRVQWM14TO7/nHNyXB3fHZPKCqZxNPxN3wKmVsxVqTj99SSPsonr1AvQXziFtLEc44+pmlg0J5diFhhwzWU2W4/UxDaFyrdhkmZWRkRlJTjkgO0kDOJPJFza4stXAsavn4bLpz6YuCD0ZprPTBJu2wDA7e1IvXGRu0nb/PIaRko="
+      # personal access token with package registry scopes
+      secure: "CdB9Js+GeDr7KTyZP+2bdra1OEKBa+Z5UwQ5g1bf0XjOyfsPt/Wxg4TpI8oPlh8KX3Gomn4Rbby/w8gPe5abi7YB9/EaEKc4Y9KV98JDUNYUTmhh9w3a0wgDss2D473+dK/65ABAAo8GYwm8+4fwBmtWVhChCbrFNwa10m4t3is="
     access: public
     src: tmp/dpl_test
 
