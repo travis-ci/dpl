@@ -71,7 +71,7 @@ module Dpl
           if npm_version =~ /^1/ || auth_method == 'auth'
             "_auth = #{api_token}\nemail = #{email}"
           else
-            "//#{registry.sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_token}"
+            "//#{host(registry).sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_token}"
           end
         end
 
@@ -79,7 +79,11 @@ module Dpl
           return super if super
           data = package_json
           url = data && data.fetch('publishConfig', {})['registry']
-          url ? URI(url).host : REGISTRY
+          url ? host(url) : REGISTRY
+        end
+
+        def host(url)
+          URI(url).host
         end
 
         def package_json
