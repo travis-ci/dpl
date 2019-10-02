@@ -2,6 +2,7 @@ require 'cl'
 require 'fileutils'
 require 'logger'
 require 'open3'
+require 'os'
 require 'tmpdir'
 require 'securerandom'
 require 'dpl/support/version'
@@ -262,7 +263,17 @@ module Dpl
         info cmd.echo if cmd.echo?
 
         @last_out, @last_err, @last_status = retrying(cmd.retry ? 2 : 0) do
-          send(cmd.capture? ? :open3 : :system, cmd.cmd, cmd.opts)
+          if OS.windows?
+            command = "set -o pipefail && #{cmd.cmd}"
+            # required to get rsync working as rsync otherwise outputs "ssh: Could not resolve hostname c: Name or service not known"
+            command = command.sub("C:/", "/c/")
+            command = "bash -c \"#{command}\""
+            system("#{command}")
+            cmd_status = $?
+            return cmd_status.exitstatus == 0
+          else
+            send(cmd.capture? ? :open3 : :system, cmd.cmd, cmd.opts)
+          end
         end
 
         info cmd.success % { out: last_out } if success? && cmd.success?
@@ -405,14 +416,14 @@ module Dpl
         `git log #{git_sha} -n 1 --pretty=%an`.chomp
       end
 
-      # Returns the comitter email of the commit `git_sha`.
+      # Returns the committer email of the commit `git_sha`.
       def git_author_email
         `git log #{git_sha} -n 1 --pretty=%ae`.chomp
       end
 
       # Whether or not the git working directory is dirty
       def git_dirty?
-        !Kernel.system('git diff --quiet')
+        !shell('git diff --quiet')
       end
 
       # Returns the output of `git log`, using the given args.
@@ -430,7 +441,7 @@ module Dpl
 
       # Returns true if the given ref exists remotely
       def git_ls_remote?(url, ref)
-        Kernel.system("git ls-remote --exit-code #{url} #{ref} > /dev/null 2>&1")
+        shell("git ls-remote --exit-code #{url} #{ref} > /dev/null 2>&1")
       end
 
       # Returns known Git remote URLs

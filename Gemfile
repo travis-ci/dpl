@@ -12,6 +12,8 @@ gems.each do |name, version, opts|
   gem name, version, opts
 end
 
+gem 'os'
+
 group :test do
   gem 'coveralls'
   gem 'rspec'
