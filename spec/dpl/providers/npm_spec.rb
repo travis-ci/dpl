@@ -8,13 +8,9 @@ describe Dpl::Providers::Npm do
     it { should have_run '[info] npm version: 1' }
     it { should have_run '[info] Authenticated with API token 1*******************' }
     it { should have_run '[info] ~/.npmrc size: 27' }
-    it { should have_run 'npm config set registry "registry.npmjs.org"' }
+    it { should have_run 'npm config set registry "https://registry.npmjs.org"' }
     it { should have_run 'npm publish .' }
     it { should have_run_in_order }
-  end
-
-  describe 'given --registry registry' do
-    it { should have_run 'npm config set registry "registry"' }
   end
 
   describe 'given --src ./dir' do
@@ -40,6 +36,18 @@ describe Dpl::Providers::Npm do
   describe 'npm_version 2' do
     let(:npm_version) { '2' }
     it { should have_written '~/.npmrc', npmrc_2 }
+
+    describe 'given --registry https://npm.pkg.github.com/owner' do
+      let(:npmrc) { '//npm.pkg.github.com/:_authToken=12345' }
+      it { should have_run 'npm config set registry "https://npm.pkg.github.com"' }
+      it { should have_written '~/.npmrc', npmrc }
+    end
+
+    describe 'given --registry https://www.myget.org/F/owner/npm/' do
+      let(:npmrc) { '//www.myget.org/F/owner/npm/:_authToken=12345' }
+      it { should have_run 'npm config set registry "https://www.myget.org/F/owner/npm/"' }
+      it { should have_written '~/.npmrc', npmrc }
+    end
   end
 
   describe 'npm_version 2, given --auth_method auth' do

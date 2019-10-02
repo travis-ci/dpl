@@ -21,7 +21,7 @@ module Dpl
       opt '--tag TAGS', 'distribution tags to add'
       opt '--auth_method METHOD', 'Authentication method', enum: %w(auth)
 
-      REGISTRY = 'registry.npmjs.org'
+      REGISTRY = 'https://registry.npmjs.org'
       NPMRC = '~/.npmrc'
 
       msgs version:  'npm version: %{npm_version}',
@@ -71,19 +71,31 @@ module Dpl
           if npm_version =~ /^1/ || auth_method == 'auth'
             "_auth = #{api_token}\nemail = #{email}"
           else
-            "//#{registry.sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_token}"
+            "//#{strip_protocol(registry).sub(%r(/$), '')}/:_authToken=#{api_token}"
           end
         end
 
         def registry
-          return super if super
-          data = package_json
-          url = data && data.fetch('publishConfig', {})['registry']
-          url ? host(url) : REGISTRY
+          url = super || registry_from_package_json || REGISTRY
+          url = strip_path(url) if url.include?('npm.pkg.github.com')
+          url
+        end
+
+        def registry_from_package_json
+          return unless data = package_json
+          data && data.fetch('publishConfig', {})['registry']
+        end
+
+        def strip_path(url)
+          url.sub(URI(url).path, '')
+        end
+
+        def strip_protocol(url)
+          url.sub("#{URI(url).scheme}://", '')
         end
 
         def host(url)
-          URI(url).host || url
+          URI(url).host
         end
 
         def package_json

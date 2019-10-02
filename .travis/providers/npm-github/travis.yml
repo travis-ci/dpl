@@ -1,5 +1,9 @@
 language: node_js
 
+env:
+  GITHUB_TOKEN:
+    secure: "CdB9Js+GeDr7KTyZP+2bdra1OEKBa+Z5UwQ5g1bf0XjOyfsPt/Wxg4TpI8oPlh8KX3Gomn4Rbby/w8gPe5abi7YB9/EaEKc4Y9KV98JDUNYUTmhh9w3a0wgDss2D473+dK/65ABAAo8GYwm8+4fwBmtWVhChCbrFNwa10m4t3is="
+
 script:
   - true
 
@@ -15,5 +19,5 @@ deploy:
     access: public
     src: tmp/dpl_test
 
-# after_deploy:
-#   - .travis/providers/npm-github/test || TRAVIS_TEST_RESULT=$?
+after_deploy:
+  - .travis/providers/npm-github/test || TRAVIS_TEST_RESULT=$?
