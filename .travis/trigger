@@ -49,8 +49,9 @@ SKIP = [
   'azure_web_apps', # trial account expired
   'cloud66',        # unfinished
   'datica',         # no account
+  'gae',            # suddenly started failing with "api not enabled" https://travis-ci.com/travis-ci/dpl/jobs/241090908#L412
   'hephy',          # keeps failing
-  # 'npm-github',     # no trial account yet
+  'npm-github',     # not fully implemented, yet
   'openshift',      # trial account expired
   'snap'            # unfinished
 ]
