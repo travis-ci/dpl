@@ -1,0 +1,15 @@
+{
+  user(login: "travis-dpl-test") {
+    repository(name: "dpl_test") {
+      registryPackages(name: "dpl_test", first: 1) {
+        edges {
+          node {
+            latestVersion {
+              version
+            }
+          }
+        }
+      }
+    }
+  }
+}
