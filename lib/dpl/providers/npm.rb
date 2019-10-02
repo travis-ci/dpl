@@ -71,7 +71,7 @@ module Dpl
           if npm_version =~ /^1/ || auth_method == 'auth'
             "_auth = #{api_token}\nemail = #{email}"
           else
-            "//#{host(registry).sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_token}"
+            "//#{host(registry).to_s.sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_token}"
           end
         end
 
@@ -83,7 +83,7 @@ module Dpl
         end
 
         def host(url)
-          URI(url).host
+          URI(url).host || url
         end
 
         def package_json
