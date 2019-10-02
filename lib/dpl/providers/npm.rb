@@ -71,7 +71,7 @@ module Dpl
           if npm_version =~ /^1/ || auth_method == 'auth'
             "_auth = #{api_token}\nemail = #{email}"
           else
-            "//#{host(registry).to_s.sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_token}"
+            "//#{registry.sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_token}"
           end
         end
 
