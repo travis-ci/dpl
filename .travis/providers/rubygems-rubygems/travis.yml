@@ -4,7 +4,7 @@ script:
   - true
 
 before_deploy:
-  - .travis/providers/rubygems/prepare&
+  - .travis/providers/rubygems-rubygems/prepare&
   - while ! curl -s http://localhost:9292 >/dev/null; do sleep 1; done
   - cd tmp/dpl_test_rubygems
 
@@ -21,4 +21,4 @@ deploy:
     host: http://localhost:9292
 
 after_deploy:
-  - cd ../.. && .travis/providers/rubygems/test || TRAVIS_TEST_RESULT=$?
+  - cd ../.. && .travis/providers/rubygems-rubygems/test || TRAVIS_TEST_RESULT=$?
