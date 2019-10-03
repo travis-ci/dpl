@@ -10,7 +10,7 @@ chdir dir
 
 File.write 'package.json', <<~str
   {
-    "name": "@travis-dpl-test/dpl_test",
+    "name": "dpl_test",
     "repository": "git://github.com/travis-dpl-test/dpl_test",
     "description": "testing travis ci/dpl github npm integration",
     "version": "1.0.#{ENV['TRAVIS_BUILD_NUMBER']}-#{ENV['ID']}"
