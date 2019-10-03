@@ -71,14 +71,19 @@ module Dpl
           if npm_version =~ /^1/ || auth_method == 'auth'
             "_auth = #{api_token}\nemail = #{email}"
           else
-            "//#{strip_protocol(registry).sub(%r(/$), '')}/:_authToken=#{api_token}"
+            "//#{auth_endpoint}/:_authToken=#{api_token}"
           end
         end
 
+        def auth_endpoint
+          str = registry
+          str = strip_path(str) if str.include?('npm.pkg.github.com')
+          str = strip_protocol(str).sub(%r(/$), '')
+          str
+        end
+
         def registry
-          url = super || registry_from_package_json || REGISTRY
-          url = strip_path(url) if url.include?('npm.pkg.github.com')
-          url
+          super || registry_from_package_json || REGISTRY
         end
 
         def registry_from_package_json

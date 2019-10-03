@@ -39,7 +39,7 @@ describe Dpl::Providers::Npm do
 
     describe 'given --registry https://npm.pkg.github.com/owner' do
       let(:npmrc) { '//npm.pkg.github.com/:_authToken=12345' }
-      it { should have_run 'npm config set registry "https://npm.pkg.github.com"' }
+      it { should have_run 'npm config set registry "https://npm.pkg.github.com/owner"' }
       it { should have_written '~/.npmrc', npmrc }
     end
 
