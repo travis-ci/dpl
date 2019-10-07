@@ -25,6 +25,11 @@ describe Dpl::Providers::Npm do
     it { should have_run 'npm publish . --tag="tag"' }
   end
 
+  describe 'npm_version 6, given --dry-run' do
+    let(:npm_version) { '6' }
+    it { should have_run 'npm publish . --dry-run' }
+  end
+
   let(:npmrc_1) { "_auth = 12345\nemail = email" }
   let(:npmrc_2) { '//registry.npmjs.org/:_authToken=12345' }
 

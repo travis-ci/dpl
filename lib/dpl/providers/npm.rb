@@ -19,6 +19,7 @@ module Dpl
       opt '--registry URL', 'npm registry url'
       opt '--src SRC', 'directory or tarball to publish', default: '.'
       opt '--tag TAGS', 'distribution tags to add'
+      opt '--dry_run', 'performs test run without uploading to registry'
       opt '--auth_method METHOD', 'Authentication method', enum: %w(auth)
 
       REGISTRY = 'https://registry.npmjs.org'
@@ -51,7 +52,7 @@ module Dpl
       private
 
         def publish_opts
-          opts_for(%i(access tag))
+          opts_for(%i(access tag dry_run), dashed: true)
         end
 
         def write_npmrc
