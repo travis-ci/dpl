@@ -418,7 +418,7 @@ Options can be given via env vars if prefixed with `[AWS_|LAMBDA_]`. E.g. the op
 
 ### AWS OpsWorks
 
-Support for deployments to AWS OpsWorks is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to AWS OpsWorks is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl opsworks [options]
@@ -1344,6 +1344,7 @@ Options:
   --cache_control HEADER       HTTP header Cache-Control to suggest that the browser cache the file. (type:
                                string, see:
                                https://cloud.google.com/storage/docs/xml-api/reference-headers#cachecontrol)
+  --glob GLOB                  type: string, default: **/*
 
 Common Options:
 
@@ -1402,7 +1403,7 @@ given as `HACKAGE_PASSWORD=<password>`.
 
 ### Hephy
 
-Support for deployments to Hephy is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Hephy is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl hephy [options]
@@ -1559,7 +1560,7 @@ be given as `LAUNCHPAD_OAUTH_TOKEN=<oauth_token>`.
 
 ### Netlify
 
-Support for deployments to Netlify is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Netlify is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl netlify [options]

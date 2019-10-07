@@ -106,8 +106,8 @@
   },
   {
     "name": "hephy",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-10-07"
   },
   {
     "name": "heroku:api",
@@ -131,8 +131,8 @@
   },
   {
     "name": "netlify",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-10-07"
   },
   {
     "name": "npm",
@@ -146,8 +146,8 @@
   },
   {
     "name": "opsworks",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-10-07"
   },
   {
     "name": "packagecloud",

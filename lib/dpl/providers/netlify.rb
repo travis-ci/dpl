@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Netlify < Provider
-      status :alpha
+      status :beta
 
       description sq(<<-str)
         tbd
