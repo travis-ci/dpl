@@ -1623,6 +1623,7 @@ Options:
   --registry URL            npm registry url (type: string)
   --src SRC                 directory or tarball to publish (type: string, default: .)
   --tag TAGS                distribution tags to add (type: string)
+  --[no-]dry_run            performs test run without uploading to registry
   --auth_method METHOD      Authentication method (type: string, known values: auth)
 
 Common Options:
