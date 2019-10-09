@@ -96,7 +96,7 @@ module Dpl
         def deploy
           git_clone? ? git_clone : git_init
           copy_files
-          return info :stop unless git_dirty?
+          return info :stop if git_clone? && !git_dirty?
           git_config
           git_commit
           git_push
