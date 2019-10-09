@@ -1,3 +1,5 @@
+ENV.delete('TRAVIS_TAG')
+
 require 'coveralls'
 Coveralls.wear! if ENV['TRAVIS']
 
