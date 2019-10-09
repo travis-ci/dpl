@@ -1,18 +1,38 @@
 # Changelog
 
-## Unreleased
+## dpl v2.0.0-alpha.6 - v2.0.0-alpha.10 (2019-08-28)
 
-* Rescue `UnknownOption` and suggest known options on Ruby >= 2.4
 * Add a Cloudformation provider
 * Add a Convox provider
+* Add a Gleis provider
+* Remove the Atlas provider (service retired)
+* Rescue `UnknownOption` and suggest known options on Ruby >= 2.4
+* Allow options to be given as env vars on all providers
 
 ### Cargo
 
 * Add `--allow_dirty` to allow publishing from a dirty Git working directory
 
+### Cloudfoundry
+
+* Default `--api` to `https://api.run.pivotal.io`
+
+### Elasticbeanstalk
+
+* Hornor `.gitignore` if `.ebignore` is not present
+
 ### GCS
 
 * Add `--key_file` to allow using a service account key file
+
+### NPM
+
+* Allow publishing to GitHub Package Registry
+* Add `--dry_run` to allow testing deployments
+
+### Pages
+
+* Do not commit or push unless the working dir is dirty on cloned repos
 
 ### Releases
 
