@@ -52,8 +52,7 @@ SKIP = [
   'gae',            # suddenly started failing with "api not enabled" https://travis-ci.com/travis-ci/dpl/jobs/241090908#L412
   'hephy',          # keeps failing
   'npm-github',     # not fully implemented, yet
-  'openshift',      # trial account expired
-  'snap'            # unfinished
+  'openshift'      # trial account expired
 ]
 
 def skip?(path)
