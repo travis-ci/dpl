@@ -8,7 +8,7 @@ describe Dpl::Providers::Snap do
   describe 'given --snap ./snap', record: true do
     it { should have_run '[apt:get] snapd (snap)' }
     it { should have_run 'sudo snap install snapcraft --classic' }
-    it { should have_run 'snapcraft login --with token' }
+    it { should have_run 'echo "token" | snapcraft login --with -' }
     it { should have_run 'snapcraft push ./snap --release=edge' }
     it { should have_run_in_order }
   end
@@ -27,7 +27,7 @@ describe Dpl::Providers::Snap do
     env SNAP_TOKEN: 'token'
 
     before { subject.run }
-    it { should have_run 'snapcraft login --with token' }
+    it { should have_run 'echo "token" | snapcraft login --with -' }
   end
 
   describe 'given --snap ./snap', run: false do
