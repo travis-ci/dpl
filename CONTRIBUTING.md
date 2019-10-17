@@ -208,7 +208,7 @@ These tests can be run safely on any development machine, anywhere.
 We additionally run tests that exercise runtime dependency installation on
 Travis CI.
 
-These live in [.travis/test_install.rb](.travis/test_install.rb). It is not
+These live in [.travis/test_install](.travis/test_install). It is not
 advisable to run these tests outside of an ephemeral VM or container that can
 be safely discarded, as they are going to leave various artifacts around.
 
