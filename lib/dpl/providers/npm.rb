@@ -19,6 +19,7 @@ module Dpl
       opt '--registry URL', 'npm registry url'
       opt '--src SRC', 'directory or tarball to publish', default: '.'
       opt '--tag TAGS', 'distribution tags to add'
+      opt '--run_script', 'whether to run the publish script from package.json'
       opt '--dry_run', 'performs test run without uploading to registry'
       opt '--auth_method METHOD', 'Authentication method', enum: %w(auth)
 
@@ -29,10 +30,12 @@ module Dpl
            login:    'Authenticated with API token %{api_token}'
 
       cmds registry: 'npm config set registry "%{registry}"',
-           deploy:   'npm publish %{src} %{publish_opts}'
+           publish:  'npm publish %{src} %{publish_opts}',
+           run:      'npm run publish'
 
       errs registry: 'Failed to set registry config',
-           deploy:    'Failed pushing to npm'
+           publish:  'Failed to publish',
+           run:      'Failed to run publish script'
 
       def login
         info :version
@@ -42,7 +45,11 @@ module Dpl
       end
 
       def deploy
-        shell :deploy
+        if run_script?
+          shell :run
+        else
+          shell :publish
+        end
       end
 
       def finish
