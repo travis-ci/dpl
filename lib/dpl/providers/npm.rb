@@ -19,7 +19,7 @@ module Dpl
       opt '--registry URL', 'npm registry url'
       opt '--src SRC', 'directory or tarball to publish', default: '.'
       opt '--tag TAGS', 'distribution tags to add'
-      opt '--run_script', 'whether to run the publish script from package.json'
+      opt '--run_script SCRIPT', 'run the given script from package.json', type: :array, note: 'skips running npm publish'
       opt '--dry_run', 'performs test run without uploading to registry'
       opt '--auth_method METHOD', 'Authentication method', enum: %w(auth)
 
@@ -31,11 +31,11 @@ module Dpl
 
       cmds registry: 'npm config set registry "%{registry}"',
            publish:  'npm publish %{src} %{publish_opts}',
-           run:      'npm run publish'
+           run:      'npm run %{script}'
 
       errs registry: 'Failed to set registry config',
            publish:  'Failed to publish',
-           run:      'Failed to run publish script'
+           run:      'Failed to run script %{script}'
 
       def login
         info :version
@@ -46,7 +46,7 @@ module Dpl
 
       def deploy
         if run_script?
-          shell :run
+          run_scripts
         else
           shell :publish
         end
@@ -57,6 +57,12 @@ module Dpl
       end
 
       private
+
+        def run_scripts
+          run_script.each do |script|
+            shell :run, script: script
+          end
+        end
 
         def publish_opts
           opts_for(%i(access tag dry_run), dashed: true)

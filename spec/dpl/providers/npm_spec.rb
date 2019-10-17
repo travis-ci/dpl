@@ -25,8 +25,9 @@ describe Dpl::Providers::Npm do
     it { should have_run 'npm publish . --tag="tag"' }
   end
 
-  describe 'given --run_script' do
-    it { should have_run 'npm run publish' }
+  describe 'given --run_script one --run_script two' do
+    it { should have_run 'npm run one' }
+    it { should have_run 'npm run two' }
   end
 
   describe 'npm_version 6, given --dry-run' do
