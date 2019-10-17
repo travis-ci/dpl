@@ -23,7 +23,7 @@ def top
 end
 
 def gem_version
-  ENV['DPL_VERSION'] || DPL::VERSION
+  ENV['DPL_VERSION'] || Dpl::VERSION
 end
 
 def confirm(verb = "release")
