@@ -1,6 +1,6 @@
 # Changelog
 
-## dpl v2.0.0-alpha.12 (2019-10-17)
+## Unreleased
 
 * Add npm `--run_script`, allowing one or many scripts from package.json to be run
 
