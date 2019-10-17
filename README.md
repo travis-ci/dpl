@@ -1,7 +1,7 @@
 # Dpl [![Build Status](https://travis-ci.com/travis-ci/dpl.svg?branch=master)](https://travis-ci.com/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.svg)](https://codeclimate.com/github/travis-ci/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github&cache=2019-08-09_17:00)](https://coveralls.io/github/travis-ci/dpl?branch=master) [![Gem Version](https://img.shields.io/gem/v/dpl)](http://rubygems.org/gems/dpl) [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/travis-ci/dpl)
 
 This version of the README documents dpl v2, the next major version of dpl.
-The REAMDE for dpl v1, the version that is currently used in production on
+The README for dpl v1, the version that is currently used in production on
 Travis CI can be found [here](https://github.com/travis-ci/dpl/blob/v1/README.md).
 
 Dpl is command line tool for deploying code, html, packages, or build artifacts
@@ -1194,7 +1194,7 @@ Options:
   --[no-]file_glob               Interpret files as globs (default: true)
   --[no-]overwrite               Overwrite files with the same name
   --[no-]prerelease              Identify the release as a prerelease
-  --release_number NUM           Release number (overide automatic release detection) (type: string)
+  --release_number NUM           Release number (override automatic release detection) (type: string)
   --release_notes STR            Content for the release notes (type: string, alias: body)
   --release_notes_file PATH      Path to a file containing the release notes (type: string, note: will be ignored
                                  if --release_notes is given)
@@ -2161,7 +2161,7 @@ Hopefully helpful resources are:
 
 All provider specific classes live in [dpl/providers](lib/dpl/providers).
 These represent the CLI commands that are executed when the command line
-exectuable `dpl` is run with a given provider name as the first argument.
+executable `dpl` is run with a given provider name as the first argument.
 
 Each provider is a subclass of `Dpl::Provider`, which is defined in
 [dpl/provider.rb](lib/dpl/provider.rb). The provider base class itself
@@ -2228,7 +2228,7 @@ When a provider class is instantiated and run it will go through a number
 of stages that make up the deployment process.
 
 These are documented in [dpl/provider.rb](/lib/dpl/provider.rb).
-If you are adding a new deployment provider please familiarize youself with
+If you are adding a new deployment provider please familiarize yourself with
 this lifecycle.
 
 Feel free to pick and interpret these stages according to the needs and
@@ -2435,7 +2435,7 @@ test.
 ### Testing Dpl Branches or Forks on Travis CI
 
 It is possible to test a new deployment provider or new functionality of dpl on
-Travis CI. In order to do so, add proper configuraiton on the `edge` key to
+Travis CI. In order to do so, add proper configuration on the `edge` key to
 your `.travis.yml` like so:
 
 ```yaml
