@@ -16,6 +16,12 @@ deploy:
     local_dir: tmp/dpl_test
     keep_history: true
     verbose: true
+    commit_message: |-
+      commit https://github.com/%{project_name}/commit/$TRAVIS_COMMIT
+
+      successfully built and checked by Travis CI build $TRAVIS_BUILD_NUMBER.
+
+      see https://travis-ci.org/%{project_name}/builds/$TRAVIS_BUILD_ID for details.
 
 after_deploy:
   - .travis/providers/github-pages/test || TRAVIS_TEST_RESULT=$?

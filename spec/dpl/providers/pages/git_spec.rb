@@ -24,7 +24,7 @@ describe Dpl::Providers::Pages::Git do
     it { should have_run 'git config user.name "author name (via Travis CI)"' }
     it { should have_run 'git config user.email "author email"' }
     it { should have_run 'git add -A .' }
-    it { should have_run 'git commit -qm "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages"' }
+    it { should have_run 'git commit -qm "$(echo -e "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages")"' }
     it { should have_run 'git show --stat-count=10 HEAD' }
     it { should have_run '[info] Pushing to github.com/travis-ci/dpl.git' }
     it { should have_run 'git push --quiet "https://token@github.com/travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
@@ -43,13 +43,13 @@ describe Dpl::Providers::Pages::Git do
   end
 
   describe 'given --repo other/name' do
-    it { should have_run 'git commit -qm "Deploy travis-ci/dpl to github.com/other/name.git:gh-pages"' }
+    it { should have_run 'git commit -qm "$(echo -e "Deploy travis-ci/dpl to github.com/other/name.git:gh-pages")"' }
     it { should have_run '[info] Pushing to github.com/other/name.git' }
     it { should have_run 'git push --quiet "https://token@github.com/other/name.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
   end
 
   describe 'given --target_branch other' do
-    it { should have_run 'git commit -qm "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:other"' }
+    it { should have_run 'git commit -qm "$(echo -e "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:other")"' }
     it { should have_run 'git push --quiet "https://token@github.com/travis-ci/dpl.git" "other":"other" > /dev/null 2>&1' }
   end
 
@@ -59,13 +59,13 @@ describe Dpl::Providers::Pages::Git do
     it { should have_run 'git checkout --orphan "gh-pages"' }
     it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" .) }
     it { should have_run 'git add -A .' }
-    it { should have_run 'git commit -qm "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages"' }
+    it { should have_run 'git commit -qm "$(echo -e "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages")"' }
     it { should have_run 'git show --stat-count=10 HEAD' }
     it { should have_run 'git push --force --quiet "https://token@github.com/travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
   end
 
   describe 'given --no_keep_history --allow_empty' do
-    it { should have_run 'git commit --allow-empty -qm "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages"' }
+    it { should have_run 'git commit --allow-empty -qm "$(echo -e "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages")"' }
   end
 
   describe 'given --committer_from_gh' do
@@ -84,12 +84,12 @@ describe Dpl::Providers::Pages::Git do
   end
 
   describe 'given --project_name project_name' do
-    it { should have_run 'git commit -qm "Deploy project_name to github.com/travis-ci/dpl.git:gh-pages"' }
+    it { should have_run 'git commit -qm "$(echo -e "Deploy project_name to github.com/travis-ci/dpl.git:gh-pages")"' }
   end
 
   describe 'given project_name with a double quote' do
     let(:args) { |e| %w(--github_token token --project_name project"name) }
-    it { should have_run 'git commit -qm "Deploy project\"name to github.com/travis-ci/dpl.git:gh-pages"' }
+    it { should have_run 'git commit -qm "$(echo -e "Deploy project\"name to github.com/travis-ci/dpl.git:gh-pages")"' }
   end
 
   describe 'given --name other' do
@@ -100,8 +100,8 @@ describe Dpl::Providers::Pages::Git do
     it { should have_run 'git config user.email "other"' }
   end
 
-  describe 'given --commit_message "msg %{repo} %{$FOO}"' do
-    it { should have_run 'git commit -qm "msg travis-ci/dpl foo"' }
+  describe 'given --commit_message "msg %{repo}\n%{$FOO}"' do
+    it { should have_run 'git commit -qm "$(echo -e "msg travis-ci/dpl\nfoo")"' }
   end
 
   describe 'given --deploy_key ./key', record: true do
