@@ -43,6 +43,7 @@ module Dpl
            insufficient_perm:    'Release resource not found. Make sure your token belongs to an account which has push permission to this repo.',
            overwrite_existing:   'File %s already exists, overwriting.',
            skip_existing:        'File %s already exists, skipping.',
+           upload_file:          'Uploading file %s.',
            set_tag_name:         'Setting tag_name to %s',
            set_target_commitish: 'Setting target_commitish to %s',
            missing_file:         'File %s does not exist.',
@@ -88,11 +89,13 @@ module Dpl
         files.each { |file| upload_file(file) }
       end
 
-      def upload_file(file)
+      def upload_file(path)
+        file = File.basename(path)
         asset = asset(file)
         return info :skip_existing, file if asset && !overwrite?
         delete(asset, file) if asset
-        api.upload_asset(url, file, name: File.basename(file), content_type: content_type(file))
+        info :upload_file, file
+        api.upload_asset(url, path, name: file, content_type: content_type(path))
       end
 
       def delete(asset, file)
@@ -168,8 +171,8 @@ module Dpl
         slug == repo_slug
       end
 
-      def asset(path)
-        api.release_assets(url).detect { |asset| asset.name == path }
+      def asset(name)
+        api.release_assets(url).detect { |asset| asset.name == name }
       end
 
       def release_notes

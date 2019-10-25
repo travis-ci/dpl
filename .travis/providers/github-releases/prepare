@@ -5,13 +5,14 @@ require 'fileutils'
 include FileUtils
 
 dir = 'tmp/dpl_test'
-mkdir_p dir
+mkdir_p "#{dir}/foo"
 chdir dir
 
-File.write 'dpl_test.rb', <<~str
+File.write 'foo/dpl_test.rb', <<~str
   p #{ENV['ID'].inspect}
 str
 
+# version = 'v0.0.0'
 version = "v0.0.#{ENV['TRAVIS_BUILD_NUMBER']}-#{ENV['ID']}"
 
 system 'git init'
