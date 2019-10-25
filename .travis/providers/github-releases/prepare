@@ -12,7 +12,8 @@ File.write 'dpl_test.rb', <<~str
   p #{ENV['ID'].inspect}
 str
 
-version = "v0.0.#{ENV['TRAVIS_BUILD_NUMBER']}-#{ENV['ID']}"
+# version = "v0.0.#{ENV['TRAVIS_BUILD_NUMBER']}-#{ENV['ID']}"
+version = 'v0.0.0'
 
 system 'git init'
 system 'git add .'

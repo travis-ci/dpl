@@ -90,6 +90,7 @@ module Dpl
 
       def upload_file(file)
         asset = asset(file)
+        p [:upload_file, asset]
         return info :skip_existing, file if asset && !overwrite?
         delete(asset, file) if asset
         api.upload_asset(url, file, name: File.basename(file), content_type: content_type(file))
@@ -97,7 +98,8 @@ module Dpl
 
       def delete(asset, file)
         info :overwrite_existing, file
-        api.delete_release_asset(asset.url)
+        p [:delete, asset.url]
+        p api.delete_release_asset(asset.url)
       end
 
       def octokit_opts
@@ -169,7 +171,8 @@ module Dpl
       end
 
       def asset(path)
-        api.release_assets(url).detect { |asset| asset.name == path }
+        p [:path, path]
+        api.release_assets(url).detect { |asset| p asset; asset.name == path }
       end
 
       def release_notes
