@@ -4,7 +4,7 @@ module Dpl
       class Api < Heroku
         register 'heroku:api'
 
-        status :beta
+        status :stable
 
         full_name 'Heroku API'
 

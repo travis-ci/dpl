@@ -296,7 +296,7 @@ Options can be given via env vars if prefixed with `[AWS_|CODEDEPLOY_]`. E.g. th
 
 ### AWS Elastic Beanstalk
 
-Support for deployments to AWS Elastic Beanstalk is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl elasticbeanstalk [options]
@@ -465,7 +465,7 @@ Options can be given via env vars if prefixed with `[AWS_|OPSWORKS_]`. E.g. the 
 
 ### AWS S3
 
-Support for deployments to AWS S3 is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl s3 [options]
@@ -815,7 +815,7 @@ given as `CLOUDFILES_API_KEY=<api_key>`.
 
 ### Cloud Foundry
 
-Support for deployments to Cloud Foundry is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl cloudfoundry [options]
@@ -1019,7 +1019,7 @@ can be given as `ENGINEYARD_API_KEY=<api_key>` or `EY_API_KEY=<api_key>`.
 
 ### Firebase
 
-Support for deployments to Firebase is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl firebase [options]
@@ -1061,7 +1061,7 @@ given as `FIREBASE_TOKEN=<token>`.
 
 ### GitHub Pages
 
-Support for deployments to GitHub Pages is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl pages git [options]
@@ -1311,7 +1311,7 @@ Options can be given via env vars if prefixed with
 
 ### Google Cloud Store
 
-Support for deployments to Google Cloud Store is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl gcs [options]
@@ -1443,7 +1443,7 @@ given as `HEPHY_PASSWORD=<password>`.
 
 ### Heroku API
 
-Support for deployments to Heroku API is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl heroku api [options]
@@ -1910,7 +1910,7 @@ given as `SCALINGO_PASSWORD=<password>`.
 
 ### Script
 
-Support for deployments to Script is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl script [options]
@@ -2324,7 +2324,7 @@ These tests can be run safely on any development machine, anywhere.
 We additionally run tests that exercise runtime dependency installation on
 Travis CI.
 
-These live in [.travis/test_install.rb](.travis/test_install.rb). It is not
+These live in [.travis/test_install](.travis/test_install). It is not
 advisable to run these tests outside of an ephemeral VM or container that can
 be safely discarded, as they are going to leave various artifacts around.
 

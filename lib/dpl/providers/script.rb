@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Script < Provider
-      status :beta
+      status :stable
 
       summary 'Minimal provider that executes a custom command'
 

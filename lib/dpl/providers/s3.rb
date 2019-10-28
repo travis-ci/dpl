@@ -6,7 +6,7 @@ Thread.abort_on_exception = true
 module Dpl
   module Providers
     class S3 < Provider
-      status :beta
+      status :stable
 
       full_name 'AWS S3'
 

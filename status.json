@@ -51,8 +51,8 @@
   },
   {
     "name": "cloudfoundry",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "codedeploy",
@@ -71,8 +71,8 @@
   },
   {
     "name": "elasticbeanstalk",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "engineyard",
@@ -81,8 +81,8 @@
   },
   {
     "name": "firebase",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "gae",
@@ -91,8 +91,8 @@
   },
   {
     "name": "gcs",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "gleis",
@@ -111,8 +111,8 @@
   },
   {
     "name": "heroku:api",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "heroku:git",
@@ -161,8 +161,8 @@
   },
   {
     "name": "pages:git",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "puppetforge",
@@ -186,8 +186,8 @@
   },
   {
     "name": "s3",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "scalingo",
@@ -196,8 +196,8 @@
   },
   {
     "name": "script",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "snap",
