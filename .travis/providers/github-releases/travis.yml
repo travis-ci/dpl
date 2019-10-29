@@ -6,6 +6,7 @@ script:
 before_deploy:
   - .travis/providers/github-releases/prepare
   - cd tmp/dpl_test
+  - ls -al foo
   - "echo '**release notes**' > RELEASE_NOTES.md"
 
 deploy:
