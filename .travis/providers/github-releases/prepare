@@ -12,6 +12,37 @@ File.write 'foo/dpl_test.rb', <<~str
   p #{ENV['ID'].inspect}
 str
 
+files = %w(
+  a00_!a.txt
+  a01_#a.txt
+  a02_$a.txt
+  a03_%a.txt
+  a04_&a.txt
+  a05_'a.txt
+  a06_(a.txt
+  a07_)a.txt
+  a08_+a.txt
+  a09_,a.txt
+  a10_-a.txt
+  a11_.a.txt
+  a12_;a.txt
+  a13_=a.txt
+  a14_@a.txt
+  a15_[a.txt
+  a16_\a.txt
+  a17_]a.txt
+  a18_^a.txt
+  a19__a.txt
+  a20_`a.txt
+  a21_{a.txt
+  a22_}a.txt
+  a23_~a.txt
+)
+
+files.each do |file|
+  File.write(file, 'foo')
+end
+
 # version = 'v0.0.0'
 version = "v0.0.#{ENV['TRAVIS_BUILD_NUMBER']}-#{ENV['ID']}"
 

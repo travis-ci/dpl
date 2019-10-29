@@ -1,6 +1,10 @@
+require 'dpl/helper/github'
+
 module Dpl
   module Providers
     class Releases < Provider
+      include Github
+
       status :beta
 
       full_name 'GitHub Releases'
@@ -43,7 +47,7 @@ module Dpl
            insufficient_perm:    'Release resource not found. Make sure your token belongs to an account which has push permission to this repo.',
            overwrite_existing:   'File %s already exists, overwriting.',
            skip_existing:        'File %s already exists, skipping.',
-           upload_file:          'Uploading file %s.',
+           upload_file:          'Uploading file %s ...',
            set_tag_name:         'Setting tag_name to %s',
            set_target_commitish: 'Setting target_commitish to %s',
            missing_file:         'File %s does not exist.',
@@ -90,7 +94,7 @@ module Dpl
       end
 
       def upload_file(path)
-        file = File.basename(path)
+        file = normalize_filename(path)
         asset = asset(file)
         return info :skip_existing, file if asset && !overwrite?
         delete(asset, file) if asset
