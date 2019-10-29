@@ -86,8 +86,8 @@ describe Dpl::Providers::Releases do
   describe 'given --file one* --no-file_glob', run: false do
     file 'one*'
     before { subject.run }
-    it { should have_requested(:post, %r(/releases/1/assets\?name=one\*$)) }
-    it { should_not have_requested(:post, %r(/releases/1/assets\?name=one$)) }
+    it { should have_requested(:post, %r(/releases/1/assets\?name=one\.$)) }
+    it { should_not have_requested(:post, %r(/releases/1/assets\?name=one*$)) }
   end
 
   describe 'given --prerelease' do
