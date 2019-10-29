@@ -1167,7 +1167,7 @@ be given as `GITHUB_TOKEN=<token>` or `PAGES_TOKEN=<token>`.
 
 ### GitHub Releases
 
-Support for deployments to GitHub Releases is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl releases [options]
@@ -1262,7 +1262,7 @@ given as `GLEIS_PASSWORD=<password>`.
 
 ### Google App Engine
 
-Support for deployments to Google App Engine is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl gae [options]

@@ -86,8 +86,8 @@
   },
   {
     "name": "gae",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-29"
   },
   {
     "name": "gcs",
@@ -176,8 +176,8 @@
   },
   {
     "name": "releases",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-29"
   },
   {
     "name": "rubygems",
