@@ -14,8 +14,9 @@ deploy:
 
     target_commitish: 'master'
     name: 'dpl test'
-    file: 'dpl_test.rb'
+    file: 'foo/*'
     release_notes_file: ./RELEASE_NOTES.md
+    overwrite: true
 
     token:
       # personal access token with repo scope on travis-dpl-test
