@@ -29,6 +29,7 @@ module Dpl
       opt '--zip_file PATH', 'The zip file that you want to deploy'
       opt '--only_create_app_version', 'Only create the app version, do not actually deploy it'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
+      opt '--wait_until_deployed_timeout SEC', 'How many seconds to wait for Elastic Beanstalk deployment update.', type: :integer, default: 600
       opt '--debug', internal: true
 
       msgs login:   'Using Access Key: %{access_key_id}',
@@ -123,11 +124,11 @@ module Dpl
       def wait_until_deployed
         msgs = []
         1.upto(20) { return if check_deployment(msgs) }
-        error 'Too many failures'
+        error 'Deploy status unknown due to timeout. Increase the wait_until_deployed_timeout option'
       end
 
       def check_deployment(msgs)
-        sleep 5
+        sleep wait_until_deployed_timeout / 20
         events.each do |event|
           msg = "#{event.event_date} [#{event.severity}] #{event.message}"
           error "Deployment failed: #{msg}" if event.severity == 'ERROR'
