@@ -123,12 +123,12 @@ module Dpl
 
       def wait_until_deployed
         msgs = []
-        1.upto(20) { return if check_deployment(msgs) }
+        1.upto(wait_until_deployed_timeout / 5) { return if check_deployment(msgs) }
         error 'Deploy status unknown due to timeout. Increase the wait_until_deployed_timeout option'
       end
 
       def check_deployment(msgs)
-        sleep wait_until_deployed_timeout / 20
+        sleep 5
         events.each do |event|
           msg = "#{event.event_date} [#{event.severity}] #{event.message}"
           error "Deployment failed: #{msg}" if event.severity == 'ERROR'
