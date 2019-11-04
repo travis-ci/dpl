@@ -184,7 +184,7 @@ given as `ANYNINES_PASSWORD=<password>`.
 
 ### AWS CloudFormation
 
-Support for deployments to AWS CloudFormation is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl cloudformation [options]
@@ -345,7 +345,7 @@ Options can be given via env vars if prefixed with `[AWS_|ELASTIC_BEANSTALK_]`. 
 
 ### AWS Lambda
 
-Support for deployments to AWS Lambda is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl lambda [options]
@@ -571,7 +571,7 @@ given as `AZURE_WA_PASSWORD=<password>`.
 
 ### Bintray
 
-Support for deployments to Bintray is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl bintray [options]
@@ -1600,7 +1600,7 @@ as `NETLIFY_AUTH=<auth>`.
 
 ### npm
 
-Support for deployments to npm is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl npm [options]
@@ -1646,7 +1646,7 @@ given as `NPM_API_TOKEN=<api_token>`.
 
 ### OpenShift
 
-Support for deployments to OpenShift is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl openshift [options]
@@ -1768,7 +1768,7 @@ be given as `PUPPETFORGE_PASSWORD=<password>`.
 
 ### PyPI
 
-Support for deployments to PyPI is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl pypi [options]
@@ -1818,7 +1818,7 @@ given as `PYPI_PASSWORD=<password>`.
 
 ### Rubygems
 
-Support for deployments to Rubygems is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl rubygems [options]

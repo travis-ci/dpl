@@ -11,8 +11,8 @@
   },
   {
     "name": "bintray",
-    "status": "beta",
-    "date": "2019-10-01"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "bluemixcloudfoundry",
@@ -46,8 +46,8 @@
   },
   {
     "name": "cloudformation",
-    "status": "dev",
-    "date": "2019-08-14"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "cloudfoundry",
@@ -121,8 +121,8 @@
   },
   {
     "name": "lambda",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "launchpad",
@@ -136,13 +136,13 @@
   },
   {
     "name": "npm",
-    "status": "beta",
-    "date": "2019-10-01"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "openshift",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "opsworks",
@@ -171,8 +171,8 @@
   },
   {
     "name": "pypi",
-    "status": "beta",
-    "date": "2019-10-01"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "releases",
@@ -181,8 +181,8 @@
   },
   {
     "name": "rubygems",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "s3",

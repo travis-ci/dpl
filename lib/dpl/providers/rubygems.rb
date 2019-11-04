@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Rubygems < Provider
-      status :alpha
+      status :stable
 
       description sq(<<-str)
         tbd
