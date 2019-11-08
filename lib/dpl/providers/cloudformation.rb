@@ -182,7 +182,7 @@ module Dpl
         end
 
         def credentials
-          Aws::Credentials.new(access_key_id, secret_access_key, session_token)
+          Aws::Credentials.new(access_key_id, secret_access_key)
         end
 
         def assume_role(params)
