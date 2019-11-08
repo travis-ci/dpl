@@ -97,7 +97,7 @@ describe Dpl::Providers::Cloudformation do
       it { should create_stack with: 'Action=CreateStack&Capabilities.member.1=CAPABILITY_IAM&Capabilities.member.2=CAPABILITY_NAMED_IAM&OnFailure=ROLLBACK&Parameters=&StackName=stack' }
     end
 
-    describe 'given --parameters ONE,two=2' do
+    describe 'given --parameters ONE --parameters two=2' do
       it { should create_stack with: 'Action=CreateStack&OnFailure=ROLLBACK&Parameters.member.1.ParameterKey=ONE&Parameters.member.1.ParameterValue=1&Parameters.member.2.ParameterKey=two&Parameters.member.2.ParameterValue=2&StackName=stack' }
     end
   end

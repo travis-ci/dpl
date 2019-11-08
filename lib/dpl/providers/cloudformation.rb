@@ -27,9 +27,7 @@ module Dpl
       opt '--wait', 'Wait for CloutFormation to finish the stack creation and update', default: true
       opt '--wait_timeout SEC', 'How many seconds to wait for stack creation and update.', type: :integer, default: 3600
       opt '--create_timeout SEC', 'How many seconds to wait before the stack status becomes CREATE_FAILED', type: :integer, default: 3600, note: 'valid only when creating a stack'
-      # if passing a session_token is not recommended in CI/CD why do we add it to dpl?
-      opt '--session_token STR', 'AWS Session Access Token if using STS assume role', note: 'Not recommended on CI/CD'
-      opt '--parameters STR', 'key=value pairs or ENV var names', type: :array, sep: ',', eg: 'one=1 or ENV_VAR_TWO'
+      opt '--parameters STR', 'key=value pairs or ENV var names', type: :array, eg: 'one=1 or ENV_VAR_TWO'
       opt '--output_file PATH', 'Path to output file to store CloudFormation outputs to'
 
       msgs login:             'Using Access Key: %{access_key_id}',
@@ -184,7 +182,7 @@ module Dpl
         end
 
         def credentials
-          Aws::Credentials.new(access_key_id, secret_access_key, session_token)
+          Aws::Credentials.new(access_key_id, secret_access_key)
         end
 
         def assume_role(params)
