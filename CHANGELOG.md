@@ -1,6 +1,14 @@
 # Changelog
 
-## dpl v2.0.0-alpha.6 - v2.0.0-alpha.10 (2019-08-28)
+## Unreleased
+
+* Add npm `--run_script`, allowing one or many scripts from package.json to be run
+
+## dpl v2.0.0-alpha.11 (2019-10-14)
+
+* Fix pages: do not skip if new or only deleted files are present
+
+## dpl v2.0.0-alpha.6 - v2.0.0-alpha.10 (2019-10-09)
 
 * Add a Cloudformation provider
 * Add a Convox provider

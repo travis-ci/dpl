@@ -4,23 +4,36 @@ require 'fileutils'
 
 include FileUtils
 
-mkdir_p 'tmp/dpl-test/snap'
-chdir 'tmp/dpl-test'
+mkdir_p 'tmp/dee-pee-ell-test/snap'
+mkdir_p 'tmp/dee-pee-ell-test/bin'
+chdir 'tmp/dee-pee-ell-test'
 
-File.write 'snap/snapcraft.yaml', <<~str
-  name: dpl-test
-  version: "0.0.0-test.#{ENV['ID'][0..5]}"
-  summary: Travis CI dpl canary test snap
-  description: Travis CI dpl canary test snap.
-  apps:
-    dpl-test:
-      command: dpl-test
-  parts:
-    dpl-test:
-      plugin: ruby
-      source: https://github.com/travis-ci/dpl.git
+File.write 'bin/dee-pee-ell-test', <<~str
+  #!/bin/bash
+  echo -n "This is just a test: #{ENV['ID']}"
 str
 
-cmd = 'snapcraft build'
+FileUtils.chmod 0755, "bin/dee-pee-ell-test"
+
+File.write 'snap/snapcraft.yaml', <<~str
+  name: dee-pee-ell-test
+  version: "#{ENV['ID']}"
+  summary: Travis CI dpl canary test snap
+  description: Travis CI dpl canary test snap.
+  base: core18
+  confinement: strict
+  grade: stable
+
+  apps:
+    dee-pee-ell-test:
+      command: bin/dee-pee-ell-test
+
+  parts:
+    dee-pee-ell-test:
+      plugin: dump
+      source: .
+str
+
+cmd = 'sudo snapcraft snap --use-lxd'
 puts cmd
 system cmd

@@ -3,7 +3,7 @@ require 'dpl/helper/zip'
 module Dpl
   module Providers
     class Lambda < Provider
-      status :beta
+      status :stable
 
       full_name 'AWS Lambda'
 

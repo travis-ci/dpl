@@ -11,8 +11,8 @@
   },
   {
     "name": "bintray",
-    "status": "beta",
-    "date": "2019-10-01"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "bluemixcloudfoundry",
@@ -46,13 +46,13 @@
   },
   {
     "name": "cloudformation",
-    "status": "dev",
-    "date": "2019-08-14"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "cloudfoundry",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "codedeploy",
@@ -71,8 +71,8 @@
   },
   {
     "name": "elasticbeanstalk",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "engineyard",
@@ -81,18 +81,18 @@
   },
   {
     "name": "firebase",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "gae",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-29"
   },
   {
     "name": "gcs",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "gleis",
@@ -111,8 +111,8 @@
   },
   {
     "name": "heroku:api",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "heroku:git",
@@ -121,8 +121,8 @@
   },
   {
     "name": "lambda",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "launchpad",
@@ -136,13 +136,13 @@
   },
   {
     "name": "npm",
-    "status": "beta",
-    "date": "2019-10-01"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "openshift",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "opsworks",
@@ -161,8 +161,8 @@
   },
   {
     "name": "pages:git",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "puppetforge",
@@ -171,23 +171,23 @@
   },
   {
     "name": "pypi",
-    "status": "beta",
-    "date": "2019-10-01"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "releases",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-29"
   },
   {
     "name": "rubygems",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "stable",
+    "date": "2019-11-04"
   },
   {
     "name": "s3",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "scalingo",
@@ -196,8 +196,8 @@
   },
   {
     "name": "script",
-    "status": "beta",
-    "date": "2019-09-26"
+    "status": "stable",
+    "date": "2019-10-28"
   },
   {
     "name": "snap",

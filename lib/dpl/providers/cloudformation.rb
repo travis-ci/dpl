@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Cloudformation < Provider
-      status :dev
+      status :stable
 
       full_name 'AWS CloudFormation'
 

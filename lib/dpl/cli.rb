@@ -22,10 +22,15 @@ module Dpl
     end
 
     def normalize(args)
+      args = unescape(args)
       args = untaint(args)
       args = with_cmd_opts(args, provider: 0, strategy: 1)
       args = with_strategy_default(args, :strategy) # should be a generic dispatch feature in Cl
       args
+    end
+
+    def unescape(args)
+      args.map { |arg| arg.gsub('\\n', "\n") }
     end
 
     # Tainting is being used for automatically obfuscating values for secure

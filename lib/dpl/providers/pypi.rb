@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Pypi < Provider
-      status :beta
+      status :stable
 
       full_name 'PyPI'
 

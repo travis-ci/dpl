@@ -4,7 +4,7 @@ module Dpl
       class Git < Pages
         register 'pages:git'
 
-        status :beta
+        status :stable
 
         full_name 'GitHub Pages'
 
@@ -66,7 +66,7 @@ module Dpl
              cname:               'echo "%{fqdn}" > CNAME',
              git_add:             'git add -A .',
              git_commit_hook:     'cp %{path} .git/hooks/pre-commit',
-             git_commit:          'git commit %{git_commit_opts} -qm %{quoted_commit_message}',
+             git_commit:          'git commit %{git_commit_opts} -q %{git_commit_msg_opts}',
              git_show:            'git show --stat-count=10 HEAD',
              git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
 
@@ -170,6 +170,11 @@ module Dpl
           ' --allow-empty' if allow_empty_commit?
         end
 
+        def git_commit_msg_opts
+          msg = interpolate(commit_message)
+          msg.split("\n").reject(&:empty?).map { |msg| %(-m #{quote(msg)}) }
+        end
+
         def git_push_opts
           ' --force' unless keep_history?
         end
@@ -189,10 +194,6 @@ module Dpl
           str || git_author_email
         end
         memoize :email
-
-        def commit_message
-          interpolate(super)
-        end
 
         def project_name
           super || fqdn || repo_slug

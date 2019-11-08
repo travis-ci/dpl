@@ -3,7 +3,7 @@ require 'kconv'
 module Dpl
   module Providers
     class Gcs < Provider
-      status :beta
+      status :stable
 
       full_name 'Google Cloud Store'
 
