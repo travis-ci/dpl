@@ -131,8 +131,8 @@
   },
   {
     "name": "netlify",
-    "status": "beta",
-    "date": "2019-10-07"
+    "status": "stable",
+    "date": "2019-11-11"
   },
   {
     "name": "npm",
