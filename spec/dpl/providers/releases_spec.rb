@@ -145,11 +145,23 @@ describe Dpl::Providers::Releases do
 
   describe 'with GITHUB credentials in env vars', run: false do
     let(:args) { [] }
+    env GITHUB_TOKEN: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with GITHUB credentials in env vars (alias)', run: false do
+    let(:args) { [] }
     env GITHUB_API_KEY: 'key'
     it { expect { subject.run }.to_not raise_error }
   end
 
   describe 'with RELEASES credentials in env vars', run: false do
+    let(:args) { [] }
+    env RELEASES_TOKEN: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with RELEASES credentials in env vars (alias)', run: false do
     let(:args) { [] }
     env RELEASES_API_KEY: 'key'
     it { expect { subject.run }.to_not raise_error }
