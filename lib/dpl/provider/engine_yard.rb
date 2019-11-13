@@ -26,7 +26,7 @@ module DPL
         resolver = api.resolve_app_environments(
           :app_name => options[:app],
           :account_name => options[:account],
-          :environment_name => options[:environment],
+          :environment_name => options[:env] || options[:environment],
           :remotes => remotes)
         resolver.one_match { @app_env = resolver.matches.first }
         resolver.no_matches { error resolver.errors.join("\n").inspect }

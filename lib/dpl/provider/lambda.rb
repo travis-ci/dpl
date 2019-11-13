@@ -180,7 +180,8 @@ module DPL
       end
 
       def environment_variables
-        options[:environment_variables] ? { :variables => split_string_array_to_hash(options[:environment_variables]) } : nil
+        env = options[:environment_variables] || options[:env]
+        env ? { :variables => split_string_array_to_hash(env) } : nil
       end
 
       def dead_letter_arn

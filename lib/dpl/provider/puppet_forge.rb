@@ -12,7 +12,7 @@ module DPL
       end
 
       def forge
-        @forge ||= Blacksmith::Forge.new(options[:user], options[:password], options[:url])
+        @forge ||= Blacksmith::Forge.new(options[:username] || options[:user], options[:password], options[:url])
       end
 
       def build
@@ -29,7 +29,7 @@ module DPL
       end
 
       def check_auth
-        raise Error, "must supply a user" unless option(:user)
+        raise Error, "must supply a user" unless option(:user, :username)
         raise Error, "must supply a password" unless option(:password)
       end
 

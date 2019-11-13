@@ -5,7 +5,7 @@ module DPL
     class RubyGems < Provider
       def setup_auth
         ::Gems.key = option(:api_key) if options[:api_key]
-        ::Gems.username = option(:user) unless options[:api_key]
+        ::Gems.username = option(:user, :username) unless options[:api_key]
         ::Gems.password = option(:password) unless options[:api_key]
       end
 

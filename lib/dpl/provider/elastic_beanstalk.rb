@@ -82,7 +82,7 @@ module DPL
       end
 
       def bucket_name
-        option(:bucket_name)
+        option(:bucket_name, :bucket)
       end
 
       def bucket_path
@@ -160,7 +160,7 @@ module DPL
             log "Too many failures"
             break
           end
-          
+
           begin
             environment = eb.describe_environments({
               :application_name  => app_name,
