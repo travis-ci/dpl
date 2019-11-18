@@ -3,7 +3,7 @@ describe Dpl::Providers::Convox do
   let(:exists) { true }
 
   let(:desc) do
-    {
+    Shellwords.escape JSON.dump(
       repo_slug: 'travis-ci/dpl',
       git_commit_sha: 'sha',
       git_commit_message: 'commit msg',
@@ -13,7 +13,7 @@ describe Dpl::Providers::Convox do
       travis_build_id: '1',
       travis_build_number: '2',
       pull_request: '3'
-    }
+    )
   end
 
   env TRAVIS_BUILD_ID: 1,
@@ -38,7 +38,7 @@ describe Dpl::Providers::Convox do
     it { should have_run '[info] $ convox apps info --rack rack --app app' }
     it { should have_run 'convox apps info --rack rack --app app' }
     it { should have_run '[info] Building and promoting application ...' }
-    it { should have_run "convox deploy --rack rack --app app --wait --id --description #{Shellwords.escape(JSON.dump(desc))}" }
+    it { should have_run "convox deploy --rack rack --app app --wait --id --description #{desc}" }
     it { should have_run_in_order }
   end
 
@@ -59,8 +59,14 @@ describe Dpl::Providers::Convox do
     it { should have_run 'convox apps create app --generation 1 --rack rack --wait' }
   end
 
+  describe 'given --promote false' do
+    it { should have_run "convox build --rack rack --app app --id --description #{desc}" }
+    it { should_not have_run /convox deploy/ }
+  end
+
   describe 'given --no-promote' do
-    it { should have_run "convox build --rack rack --app app --id --description #{Shellwords.escape(JSON.dump(desc))}" }
+    it { should have_run "convox build --rack rack --app app --id --description #{desc}" }
+    it { should_not have_run /convox deploy/ }
   end
 
   describe 'given --host host' do
