@@ -40,7 +40,7 @@ module Dpl
            missing_template:  'File does not exist: %{template}',
            invalid_creds:     'Invalid credentials'
 
-      strs change_set_name:   "travis-ci-build-%{build_number}-#{Time.now.strftime('%Y%m%d%H%M')}",
+      strs change_set_name:   'travis-ci-build-%{build_number}-%{now}',
            change_set_desc:   'Changeset created by Travis CI job for build #%{build_number} (%{git_sha})'
 
       def login
@@ -198,7 +198,7 @@ module Dpl
         end
 
         def now
-          Time.now.strftime('%Y-%m-%dT%H:%M:%S')
+          Time.now.strftime('%Y%m%d%H%M')
         end
 
         def url?(str)
