@@ -198,7 +198,7 @@ module Dpl
         end
 
         def now
-          Time.now.strftime('%Y%m%d%H%M')
+          Time.now.strftime('%Y%m%d%H%M%S')
         end
 
         def url?(str)
