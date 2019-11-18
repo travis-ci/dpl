@@ -146,8 +146,8 @@
   },
   {
     "name": "opsworks",
-    "status": "beta",
-    "date": "2019-10-07"
+    "status": "stable",
+    "date": "2019-11-18"
   },
   {
     "name": "packagecloud",
@@ -206,8 +206,8 @@
   },
   {
     "name": "surge",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2019-11-18"
   },
   {
     "name": "testfairy",

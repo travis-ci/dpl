@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Opsworks < Provider
-      status :beta
+      status :stable
 
       full_name 'AWS OpsWorks'
 

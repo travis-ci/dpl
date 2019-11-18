@@ -418,7 +418,7 @@ Options can be given via env vars if prefixed with `[AWS_|LAMBDA_]`. E.g. the op
 
 ### AWS OpsWorks
 
-Support for deployments to AWS OpsWorks is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl opsworks [options]
@@ -1990,7 +1990,7 @@ as `SNAP_TOKEN=<token>`.
 
 ### Surge
 
-Support for deployments to Surge is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Surge is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl surge [options]
