@@ -60,7 +60,7 @@ module Dpl
 
       def deploy
         shell :set_env, echo: false unless env.empty?
-        shell promote? ? :deploy : :build, echo: true
+        shell promote? ? :deploy : :build, echo: false
       end
 
       # not sure about this api. i like that there is an api for people to include
