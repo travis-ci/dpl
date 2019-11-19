@@ -5,7 +5,7 @@ module DPL
       def deploy
         @user = options[:user]
         @secret = options[:secret]
-        @configfile = options[:configfile]
+        @configfile = options[:configfile] || options[:config_file]
         @payload = options[:payload]
         @image = options[:image]
         @env = options[:env]

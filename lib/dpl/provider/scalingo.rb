@@ -32,11 +32,10 @@ module DPL
       end
 
       def check_auth
-        token = @options[:api_key] || @options[:api_token]
         if token
           scalingo("login --api-token #{token}")
-        elsif @options[:username] && @options[:password]
-          scalingo('login', [], "echo -e \"#{@options[:username]}\n#{@options[:password]}\"")
+        elsif username && @options[:password]
+          scalingo('login', [], "echo -e \"#{username}\n#{@options[:password]}\"")
         end
       end
 
@@ -64,6 +63,14 @@ module DPL
         if !context.shell "git push #{@remote} #{@branch} --force"
           error "Couldn't push your app."
         end
+      end
+
+      def username
+        @options[:username] || @options[:user]
+      end
+
+      def token
+        @options[:api_key] || @options[:api_token]
       end
 
       def scalingo(command, env = [], input = '')

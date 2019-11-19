@@ -39,10 +39,10 @@ module DPL
             :open_timeout => 180
           }
         }
-        if options[:user] and options[:password]
-          @api ||= Octokit::Client.new(:login => options[:user], :password => options[:password], :auto_paginate => true, :connection_options => connection_options)
+        if (options[:username] || options[:user]) and options[:password]
+          @api ||= Octokit::Client.new(:login => options[:username] || options[:user], :password => options[:password], :auto_paginate => true, :connection_options => connection_options)
         else
-          @api ||= Octokit::Client.new(:access_token => option(:api_key), :auto_paginate => true, :connection_options => connection_options)
+          @api ||= Octokit::Client.new(:access_token => option(:api_key, :token), :auto_paginate => true, :connection_options => connection_options)
         end
       end
 

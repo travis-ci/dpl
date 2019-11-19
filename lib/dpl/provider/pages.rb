@@ -34,7 +34,7 @@ module DPL
         @target_branch = options[:target_branch] || 'gh-pages'
 
         @gh_fqdn = fqdn
-        @gh_url = options[:github_url] || 'github.com'
+        @gh_url = options[:url] || options[:github_url] || 'github.com'
         @keep_history = !!keep_history
         @allow_empty_commit = !!allow_empty_commit
         @committer_from_gh = !!committer_from_gh
@@ -53,7 +53,7 @@ module DPL
       end
 
       def gh_token
-        @gh_token ||= option(:github_token)
+        @gh_token ||= option(:github_token, :token)
       end
 
       def gh_remote_url
