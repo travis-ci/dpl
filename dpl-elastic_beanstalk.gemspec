@@ -1,3 +1,3 @@
 require './gemspec_helper'
 
-gemspec_for 'elastic_beanstalk', [['aws-sdk', '~> 2.0'], ['rubyzip']]
+gemspec_for 'elastic_beanstalk', [['aws-sdk', '~> 2.0'], ['rubyzip', '~> 1.0']]
