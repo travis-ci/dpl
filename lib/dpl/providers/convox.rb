@@ -20,7 +20,8 @@ module Dpl
       opt '--update_cli'
       opt '--create'
       opt '--promote', default: true
-      opt '--env VARS', type: :array, sep: ','
+      opt '--env_vars_names VAR_NAMES', type: :array, sep: ','
+      opt '--env_vars VARS', type: :array, sep: ','
       opt '--env_file FILE'
       opt '--description STR'
       opt '--generation NUM', type: :int, default: '2'
@@ -63,23 +64,15 @@ module Dpl
         shell promote? ? :deploy : :build, echo: false
       end
 
-      # not sure about this api. i like that there is an api for people to include
-      # env vars from the current build env, but maybe it would be better to expose
-      # FOO=$FOO? is mapping a bare env key to a key/value pair a concept in convox?
-      #
-      # def env
-      #   env = env_file.concat(super || []) # TODO Cl should return an empty array, shouldn't it?
-      #   env = env.map { |str| str.include?('=') ? str : "#{str}=#{ENV[str]}" }
-      #   env.map { |str| escape(str) }.join(' ')
-      # end
+      def env_vars_names
+        env = super || []
+        env = env.map { |str| "#{str}=#{ENV[str]}" }
+        env_file.concat(env)
+      end
 
-      # here's an alternative implementation that would expose FOO=$FOO:
-      gem 'sh_vars', '~> 1.0.2'
-
-      def env
-        env = env_file.concat(super || [])
-        env = env.map { |str| ShVars.parse(str).to_h }.inject(&:merge) || {}
-        env.map { |key, value| "#{key}=#{value.inspect}" }.join(' ')
+      def env_vars
+        env = env_vars_names.concat(super || [])
+        env.map { |str| escape(str) }.join(' ')
       end
 
       def env_file
@@ -104,10 +97,10 @@ module Dpl
       end
 
       def export
-        env_vars.each { |key, value| ENV[key.to_s] = value.to_s }
+        sh_env_vars.each { |key, value| ENV[key.to_s] = value.to_s }
       end
 
-      def env_vars
+      def sh_env_vars
         {
           CONVOX_HOST: host,
           CONVOX_PASSWORD: password,
