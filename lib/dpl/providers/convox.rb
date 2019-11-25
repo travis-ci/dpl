@@ -97,10 +97,10 @@ module Dpl
       end
 
       def export
-        sh_env_vars.each { |key, value| ENV[key.to_s] = value.to_s }
+        env_vars.each { |key, value| ENV[key.to_s] = value.to_s }
       end
 
-      def sh_env_vars
+      def env_vars
         {
           CONVOX_HOST: host,
           CONVOX_PASSWORD: password,
