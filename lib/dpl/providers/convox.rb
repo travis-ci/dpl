@@ -20,8 +20,8 @@ module Dpl
       opt '--update_cli'
       opt '--create'
       opt '--promote', default: true
-      opt '--env_vars_names VAR_NAMES', type: :array, sep: ','
-      opt '--env_vars VARS', type: :array, sep: ','
+      opt '--env_names VAR_NAMES', type: :array, sep: ','
+      opt '--env VARS', type: :array, sep: ','
       opt '--env_file FILE'
       opt '--description STR'
       opt '--generation NUM', type: :int, default: '2'
@@ -64,14 +64,14 @@ module Dpl
         shell promote? ? :deploy : :build, echo: false
       end
 
-      def env_vars_names
+      def env_names
         env = super || []
         env = env.map { |str| "#{str}=#{ENV[str]}" }
         env_file.concat(env)
       end
 
-      def env_vars
-        env = env_vars_names.concat(super || [])
+      def env
+        env = env_names.concat(super || [])
         env.map { |str| escape(str) }.join(' ')
       end
 
