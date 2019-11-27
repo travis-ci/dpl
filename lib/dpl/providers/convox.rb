@@ -59,8 +59,7 @@ module Dpl
       end
 
       def prepare
-        cmds = super || []
-        Array(cmds).each do |cmd|
+        Array(opts[:prepare]).each do |cmd|
           cmd.casecmp('restart').zero? ? restart : run_cmd(cmd)
         end
       end
