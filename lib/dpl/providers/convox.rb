@@ -58,6 +58,13 @@ module Dpl
         shell :create
       end
 
+      def prepare
+        cmds = super || []
+        Array(cmds).each do |cmd|
+          cmd.casecmp('restart').zero? ? restart : run_cmd(cmd)
+        end
+      end
+
       def deploy
         shell :set_env, echo: false unless env.empty?
         shell promote? ? :deploy : :build, echo: false
