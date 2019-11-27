@@ -20,11 +20,11 @@ module Dpl
       opt '--update_cli'
       opt '--create'
       opt '--promote', default: true
-      opt '--env VARS', type: :array, sep: ','
+      opt '--env VARS', type: :array
       opt '--env_file FILE'
       opt '--description STR'
       opt '--generation NUM', type: :int, default: '2'
-      opt '--prepare'
+      opt '--prepare CMDS', 'Run commands with convox cli available just before deployment', type: :array
 
       # if app and rack are exported to the env, do they need to be passed to these commands?
       cmds login:    'convox version --rack %{rack}',
@@ -60,8 +60,8 @@ module Dpl
       end
 
       def prepare
-        Array(opts[:prepare]).each do |cmd|
-          cmd.downcase == 'restart' ? restart : run_cmd(cmd)
+        Array(super).each do |cmd|
+          cmd.casecmp('restart').zero? ? restart : run_cmd(cmd)
         end
       end
 
