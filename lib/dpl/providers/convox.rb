@@ -61,7 +61,7 @@ module Dpl
 
       def prepare
         Array(opts[:prepare]).each do |cmd|
-          cmd.casecmp('restart').zero? ? restart : run_cmd(cmd)
+          cmd.downcase == 'restart' ? restart : run_cmd(cmd)
         end
       end
 
