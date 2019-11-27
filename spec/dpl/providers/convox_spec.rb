@@ -85,11 +85,11 @@ describe Dpl::Providers::Convox do
     it { should have_run 'convox deploy --rack rack --app app --wait --id --description other' }
   end
 
-  describe 'given --env "ONE=$one,TWO=two"' do
+  describe 'given --env ONE=$one --env TWO=two' do
     it { should have_run 'convox env set ONE\=\$one TWO\=two --rack rack --app app --replace' }
   end
 
-  describe 'given --env "ONE=$one,TWO=two,THREE=three four five"' do
+  describe 'given --env ONE=$one --env TWO=two --env "THREE=three four five"' do
     it { should have_run 'convox env set ONE\=\$one TWO\=two THREE\=three\ four\ five --rack rack --app app --replace' }
   end
 
