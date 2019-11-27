@@ -24,6 +24,7 @@ module Dpl
       opt '--env_file FILE'
       opt '--description STR'
       opt '--generation NUM', type: :int, default: '2'
+      opt '--prepare'
 
       # if app and rack are exported to the env, do they need to be passed to these commands?
       cmds login:    'convox version --rack %{rack}',
