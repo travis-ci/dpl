@@ -86,13 +86,17 @@ describe Dpl::Providers::Convox do
   end
 
   describe 'given --env "ONE=$one,TWO=two"' do
-    it { should have_run 'convox env set ONE="$one" TWO="two" --rack rack --app app --replace' }
+    it { should have_run 'convox env set ONE\=\$one TWO\=two --rack rack --app app --replace' }
+  end
+
+  describe 'given --env "ONE=$one,TWO=two,THREE=three four five"' do
+    it { should have_run 'convox env set ONE\=\$one TWO\=two THREE\=three\ four\ five --rack rack --app app --replace' }
   end
 
   describe 'given --env_file .env --env TWO=two', run: false do
     file '.env', 'ONE=$one'
     before { subject.run }
-    it { should have_run 'convox env set ONE="$one" TWO="two" --rack rack --app app --replace' }
+    it { should have_run 'convox env set ONE\=\$one TWO\=two --rack rack --app app --replace' }
   end
 
   describe 'missing env file, given --env_file .env', run: false do
