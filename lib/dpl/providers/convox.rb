@@ -20,7 +20,7 @@ module Dpl
       opt '--update_cli'
       opt '--create'
       opt '--promote', default: true
-      opt '--env_names VARS', type: :array
+      opt '--env_names VARS', type: :array, sep: ','
       opt '--env VARS', type: :array
       opt '--env_file FILE'
       opt '--description STR'

@@ -19,7 +19,9 @@ describe Dpl::Providers::Convox do
   env TRAVIS_BUILD_ID: 1,
       TRAVIS_BUILD_NUMBER: 2,
       TRAVIS_PULL_REQUEST: 3,
-      ONE: 'one'
+      ONE: '$one',
+      TWO: 'two',
+      THREE: 'three'
 
   before { ctx.stdout[:validate] = exists }
   before { |c| subject.run unless c.metadata[:example_group][:run].is_a?(FalseClass) }
@@ -91,6 +93,14 @@ describe Dpl::Providers::Convox do
 
   describe 'given --env ONE=$one --env TWO=two --env "THREE=three four five"' do
     it { should have_run 'convox env set ONE\=\$one TWO\=two THREE\=three\ four\ five --rack rack --app app --replace' }
+  end
+
+  describe 'given --env-names ONE --env-names TWO  --env-names THREE' do
+    it { should have_run 'convox env set ONE\=\$one TWO\=two THREE\=three --rack rack --app app --replace' }
+  end
+
+  describe 'given --env-names ONE,TWO,THREE' do
+    it { should have_run 'convox env set ONE\=\$one TWO\=two THREE\=three --rack rack --app app --replace' }
   end
 
   describe 'given --env_file .env --env TWO=two', run: false do
