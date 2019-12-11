@@ -98,7 +98,7 @@ module Dpl
           path = []
           path << local_dir
           path << glob if glob?
-          File::join(path)
+          "'#{File::join(path)}'"
         end
 
     end
