@@ -26,11 +26,9 @@ module Dpl
       opt '--acl ACL', 'Access control to set for uploaded objects', default: 'private', enum: %w(private public-read public-read-write authenticated-read bucket-owner-read bucket-owner-full-control), see: 'https://cloud.google.com/storage/docs/reference-headers#xgoogacl'
       opt '--cache_control HEADER', 'HTTP header Cache-Control to suggest that the browser cache the file.', see: 'https://cloud.google.com/storage/docs/xml-api/reference-headers#cachecontrol'
       opt '--gzip STR', 'Calls gsutil with -z to gzip files with matching extensions.', type: :array, default: ['html', 'js', 'css', 'png', 'jpg'], see: 'https://cloud.google.com/storage/docs/gsutil/commands/cp'
-      opt '--glob GLOB', default: '**/*'
 
       cmds install:   'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
            login_key: 'gcloud auth activate-service-account --key-file=%{key_file}',
-           rsync:     'gsutil %{gs_opts} rsync %{rsync_opts} %{glob} %{target}',
            copy:      'gsutil %{gs_opts} cp %{copy_opts} -r %{source} %{target}'
 
       msgs login_key:   'Authenticating with service account key file %{key_file}',
@@ -97,7 +95,6 @@ module Dpl
         def source
           path = []
           path << local_dir
-          path << glob if glob?
           "'#{File::join(path)}'"
         end
 

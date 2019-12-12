@@ -1343,7 +1343,6 @@ Options:
   --cache_control HEADER       HTTP header Cache-Control to suggest that the browser cache the file. (type:
                                string, see:
                                https://cloud.google.com/storage/docs/xml-api/reference-headers#cachecontrol)
-  --glob GLOB                  type: string, default: **/*
 
 Common Options:
 
@@ -1357,7 +1356,7 @@ Examples:
   dpl gcs --bucket bucket --key_file file
   dpl gcs --bucket bucket --access_key_id id --secret_access_key key
   dpl gcs --bucket bucket
-  dpl gcs --bucket bucket --key_file file --local_dir dir --upload_dir dir
+  dpl gcs --bucket bucket --key_file file --local_dir dir/*.txt --upload_dir dir
 ```
 
 Options can be given via env vars if prefixed with `GCS_`. E.g. the option `--access_key_id` can be
