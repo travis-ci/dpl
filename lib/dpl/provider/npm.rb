@@ -22,7 +22,7 @@ module DPL
 
       def check_auth
         setup_auth
-        log "Authenticated with email #{option(:email)} and API key #{option(:api_key)[-4..-1].rjust(20, '*')}"
+        log "Authenticated with email #{option(:email)} and API key #{api_key[-4..-1].rjust(20, '*')}"
       end
 
       def push_app
@@ -30,7 +30,7 @@ module DPL
         log "http://docs.travis-ci.com/user/deployment/npm/"
         log "#{NPMRC_FILE} size: #{File.size(File.expand_path(NPMRC_FILE))}"
 
-        command = "env NPM_API_KEY=#{option(:api_key)} npm publish"
+        command = "env NPM_API_KEY=#{api_key} npm publish"
         command << " --tag #{option(:tag)}" if options[:tag]
         context.shell "#{command}"
         FileUtils.rm(File.expand_path(NPMRC_FILE))
@@ -58,6 +58,10 @@ module DPL
 
       def npm_version
         `npm --version`
+      end
+      
+      def api_key
+        option(:api_key, :api_token)
       end
     end
   end
