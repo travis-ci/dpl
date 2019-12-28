@@ -145,8 +145,6 @@ module Dpl
 
     abstract
 
-    arg :provider, 'The provider name', required: true
-
     opt '--cleanup',      'Clean up build artifacts from the Git working directory before the deployment', negate: %w(skip)
     opt '--run CMD',      'Commands to execute after the deployment finished successfully', type: :array
     opt '--stage NAME',   'Execute the given stage(s) only', type: :array, internal: true, default: STAGES

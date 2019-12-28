@@ -61,11 +61,6 @@ describe Dpl::Providers::Convox do
     it { should have_run 'convox apps create app --generation 1 --rack rack --wait' }
   end
 
-  describe 'given --promote false' do
-    it { should have_run "convox build --rack rack --app app --id --description #{desc}" }
-    it { should_not have_run /convox deploy/ }
-  end
-
   describe 'given --no-promote' do
     it { should have_run "convox build --rack rack --app app --id --description #{desc}" }
     it { should_not have_run /convox deploy/ }
