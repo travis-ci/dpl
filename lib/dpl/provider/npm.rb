@@ -18,6 +18,7 @@ module DPL
         file = File.open(File.expand_path(NPMRC_FILE), 'w')
         file.puts(npmrc_file_content)
         file.flush
+        file.close
       end
 
       def check_auth

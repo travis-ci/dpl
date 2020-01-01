@@ -91,5 +91,6 @@ def test_setup_auth(registry = DPL::Provider::NPM::DEFAULT_NPM_REGISTRY, content
   expect(File).to receive(:open).with(File.expand_path(DPL::Provider::NPM::NPMRC_FILE), 'w').and_return(f)
   expect(f).to receive(:puts).with(content)
   allow(f).to receive(:flush)
+  allow(f).to receive(:close)
   provider.setup_auth
 end
