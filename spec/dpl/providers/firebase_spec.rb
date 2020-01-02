@@ -6,7 +6,7 @@ describe Dpl::Providers::Firebase do
   before { |c| subject.run if run?(c) }
 
   describe 'by default' do
-    it { should have_run '[npm:install] firebase-tools@^6.3 (firebase)' }
+    it { should have_run '[npm:install] firebase-tools@^7.11 (firebase)' }
     it { should have_run 'firebase deploy --non-interactive --token="token"' }
   end
 
