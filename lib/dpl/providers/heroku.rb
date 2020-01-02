@@ -3,7 +3,7 @@ module Dpl
     class Heroku < Provider
       abstract
 
-      gem 'faraday', '~> 0.9.2'
+      gem 'faraday', '~> 0.17.3'
       gem 'json'
       gem 'netrc', '~> 0.11.0'
       gem 'rendezvous', '~> 0.1.3'
