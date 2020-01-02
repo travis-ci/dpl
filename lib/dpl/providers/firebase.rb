@@ -9,7 +9,7 @@ module Dpl
 
       node_js '>= 8.0.0'
 
-      npm 'firebase-tools@^6.3', 'firebase'
+      npm 'firebase-tools@^7.11', 'firebase'
 
       path 'node_modules/.bin'
 
