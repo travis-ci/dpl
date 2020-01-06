@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Add npm `--run_script`, allowing one or many scripts from package.json to be run
+* Fix pages: update octokit version to 4.15.0
 
 ## dpl v2.0.0-alpha.11 (2019-10-14)
 
