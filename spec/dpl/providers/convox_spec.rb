@@ -90,7 +90,7 @@ describe Dpl::Providers::Convox do
     it { should have_run 'convox env set ONE\=\$one TWO\=two THREE\=three\ four\ five --rack rack --app app --replace' }
   end
 
-  describe 'given --env-names ONE --env-names TWO  --env-names THREE' do
+  describe 'given --env-names ONE --env-names TWO --env-names THREE' do
     it { should have_run 'convox env set ONE\=\$one TWO\=two THREE\=three --rack rack --app app --replace' }
   end
 
