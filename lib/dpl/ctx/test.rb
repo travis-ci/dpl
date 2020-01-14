@@ -36,10 +36,13 @@ module Dpl
       end
 
       def gems_require(gems)
-        gems.each { |gem| gem_require(gem) }
+        gems.each { |gem| gem_require(*gem) }
       end
 
       def gem_require(name, version = nil, opts = {})
+        # not sure why this is needed. bundler should take care of this, but
+        # it does not for octokit for whatever reason
+        require opts[:require] || name rescue nil
         cmds << "[gem:require] #{name} (#{version}, #{opts})"
       end
 

@@ -1,4 +1,4 @@
-describe Dpl::Providers::Heroku::Git do
+describe Dpl::Providers::Heroku do
   let(:args) { |e| %w(--strategy git) + creds + args_from_description(e) }
   let(:user) { JSON.dump(email: 'email') }
   let(:dyno) { JSON.dump(attach_url: 'attach_url') }
@@ -59,7 +59,7 @@ describe Dpl::Providers::Heroku::Git do
   end
 
   describe 'using --username and --password'  do
-    let(:creds) { %w(--username user and --password pass) }
+    let(:creds) { %w(--username user --password pass) }
     let(:pass) { 'pass' }
     it { should have_written '~/.netrc', netrc }
   end

@@ -65,6 +65,7 @@ describe Dpl::Providers::Elasticbeanstalk do
   end
 
   describe "given --description description\u0020a (non-printable chars)" do
+    let(:args) { required + %w(--description description\u0020) }
     before { subject.run }
     it { should create_app_version 'Description=description' }
   end

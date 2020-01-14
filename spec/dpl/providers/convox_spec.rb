@@ -61,11 +61,6 @@ describe Dpl::Providers::Convox do
     it { should have_run 'convox apps create app --generation 1 --rack rack --wait' }
   end
 
-  describe 'given --promote false' do
-    it { should have_run "convox build --rack rack --app app --id --description #{desc}" }
-    it { should_not have_run /convox deploy/ }
-  end
-
   describe 'given --no-promote' do
     it { should have_run "convox build --rack rack --app app --id --description #{desc}" }
     it { should_not have_run /convox deploy/ }
@@ -95,7 +90,7 @@ describe Dpl::Providers::Convox do
     it { should have_run 'convox env set ONE\=\$one TWO\=two THREE\=three\ four\ five --rack rack --app app --replace' }
   end
 
-  describe 'given --env-names ONE --env-names TWO  --env-names THREE' do
+  describe 'given --env-names ONE --env-names TWO --env-names THREE' do
     it { should have_run 'convox env set ONE\=\$one TWO\=two THREE\=three --rack rack --app app --replace' }
   end
 
