@@ -3,7 +3,7 @@ require 'open-uri'
 module Dpl
   module Providers
     class Surge < Provider
-      status :beta
+      status :stable
 
       description sq(<<-str)
         tbd
