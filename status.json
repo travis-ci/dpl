@@ -206,8 +206,8 @@
   },
   {
     "name": "surge",
-    "status": "beta",
-    "date": "2019-11-18"
+    "status": "stable",
+    "date": "2020-01-14"
   },
   {
     "name": "testfairy",
