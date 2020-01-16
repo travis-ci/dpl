@@ -27,6 +27,7 @@ module Dpl
       opt '--endpoint URL', 'S3 endpoint'
       opt '--upload_dir DIR', 'S3 directory to upload to'
       opt '--local_dir DIR', 'Local directory to upload from', default: '.', example: '~/travis/build (absolute path) or ./build (relative path)'
+      opt '--glob GLOB', 'Files to upload', default: '**/*'
       opt '--dot_match', 'Upload hidden files starting with a dot'
       opt '--acl ACL', 'Access control for the uploaded objects', default: 'private', enum: %w(private public_read public_read_write authenticated_read bucket_owner_read bucket_owner_full_control)
       opt '--detect_encoding', 'HTTP header Content-Encoding for files compressed with gzip and compress utilities'
@@ -40,7 +41,6 @@ module Dpl
       opt '--force_path_style', 'Whether to force keeping the bucket name on the path'
       opt '--max_threads NUM', 'The number of threads to use for S3 file uploads', default: 5, max: 15, type: :integer
       opt '--verbose', 'Be verbose about uploading files'
-      # how come there is no glob or file option?
 
       msgs login:                 'Using Access Key: %{access_key_id}',
            default_uri_schema:    'S3 endpoint does not specify a scheme; defaulting to https',
@@ -135,7 +135,7 @@ module Dpl
         end
 
         def glob
-          ['**/*', dot_match? ? File::FNM_DOTMATCH : nil].compact
+          [super, dot_match? ? File::FNM_DOTMATCH : nil].compact
         end
 
         def acl

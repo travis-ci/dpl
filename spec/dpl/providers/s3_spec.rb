@@ -5,6 +5,7 @@ describe Dpl::Providers::S3 do
   let(:client) { Aws::S3::Client.new(stub_responses: {}) }
 
   file 'one.txt'
+  file 'two/two.txt'
   file '.hidden.txt'
 
   before { allow(Aws::S3::Client).to receive(:new).and_return(client) }
@@ -12,12 +13,13 @@ describe Dpl::Providers::S3 do
 
   describe 'by default', record: true do
     it { should have_run '[info] Using Access Key: ac******************' }
-    it { should have_run '[info] Uploading 1 files with up to 5 threads ...' }
+    it { should have_run '[info] Uploading 2 files with up to 5 threads ...' }
     it { should have_run '[print] .' }
     it { should have_run_in_order }
     # for whatever reason host would either include `us-stubbed-1` or not
     # depending if this spec is run as part of the full suite or alone.
     it { should put_object 'one.txt', host: /bucket\.s3\.(us-stubbed-1\.)?amazonaws.com/, 'x-amz-acl': 'private', 'cache-control': 'no-cache', 'x-amz-storage-class': 'STANDARD' }
+    it { should put_object 'two/two.txt' }
   end
 
   describe 'given --endpoint https://host.com' do
@@ -34,6 +36,14 @@ describe Dpl::Providers::S3 do
 
   describe 'given --upload_dir dir' do
     it { should put_object 'one.txt', path: '/dir/one.txt' }
+  end
+
+  describe 'given --local_dir two' do
+    it { should put_object 'two.txt', path: '/two.txt' }
+  end
+
+  describe 'given --glob two/*' do
+    it { should put_object 'two/two.txt', path: '/two/two.txt' }
   end
 
   describe 'given --dot_match' do
