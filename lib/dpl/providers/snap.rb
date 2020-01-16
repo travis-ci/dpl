@@ -15,7 +15,9 @@ module Dpl
 
       apt 'snapd', 'snap'
 
-      cmds install:        'sudo snap install snapcraft --classic',
+      cmds apt_get_update: 'sudo apt-get update -qq',
+           update_snapd:   'sudo apt-get install snapd',
+           install:        'sudo snap install snapcraft --classic',
            login:          'echo "%{token}" | snapcraft login --with -',
            deploy:         'snapcraft push %{snap_path} --release=%{channel}'
 
@@ -26,6 +28,8 @@ module Dpl
 
       def install
         return if which 'snapcraft'
+        shell :apt_get_update
+        shell :update_snapd
         shell :install
         ENV['PATH'] += ':/snap/bin'
       end
