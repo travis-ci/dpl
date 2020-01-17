@@ -1,9 +1,19 @@
 # Changelog
 
-## Unreleased
+## dpl v2.0.0-alpha.13 (2020-01-17)
+
+* Add s3 `--glob`
+
+## dpl v2.0.0-alpha.13 (2020-01-06)
+
+* Bump Cl which now raises on arguments undeclared by the command
+
+## dpl v2.0.0-alpha.12 (2020-01-06)
 
 * Add npm `--run_script`, allowing one or many scripts from package.json to be run
-* Fix pages: update octokit version to 4.15.0
+* Add elasticbeanstalk `--wait_until_deployed_timeout`
+* Update pages to pass one -m option per commit message line
+* Fix releases to transliterate filenames in an attempt to mirror GitHub's behavior
 
 ## dpl v2.0.0-alpha.11 (2019-10-14)
 
