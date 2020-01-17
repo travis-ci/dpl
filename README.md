@@ -130,6 +130,7 @@ Dpl supports the following providers:
   * [Launchpad](#launchpad)
   * [Netlify](#netlify)
   * [npm](#npm)
+  * [NuGet](#nuget)
   * [OpenShift](#openshift)
   * [Packagecloud](#packagecloud)
   * [Puppet Forge](#puppet-forge)
@@ -1720,7 +1721,6 @@ as `NETLIFY_AUTH=<auth>`.
 ### npm
 
 
-
 ```
 Usage: dpl npm [options]
 
@@ -1762,6 +1762,41 @@ Examples:
 
 Options can be given via env vars if prefixed with `NPM_`. E.g. the option `--api_token` can be
 given as `NPM_API_TOKEN=<api_token>`.
+
+### NuGet
+
+
+Support for deployments to NuGet severs is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
+
+```
+Usage: dpl nuget [options]
+
+Summary:
+
+  NuGet deployment provider
+
+Description:
+
+  tbd
+
+Options:
+
+  --api_key KEY           NuGet registry api key (type: string, required, note: can be retrieved from your NuGet registry provider, see: https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
+  --registry URL          NuGet registry url (type: string, required, note: ex: `https://www.myget.org/F/org-name/api/v2/package`
+  --src SRC               `nupkg` file(s) to push', default: `*.nupkg`
+  --no-symbols            does not push symbols (even if present)
+  --skip-duplicate        does not push packages with 409 Conflict response from the server
+
+  --help                    Get help on this command
+
+Examples:
+
+  dpl nuget --api_key key --registry https://registry.url
+  dpl nuget --api_key key --registry https://registry.url --src package.nupkg --no-symbols
+```
+
+Options can be given via env vars if prefixed with `NUGET_` or `DOTNET_`. E.g. the option `--api_key` can be given as `NUGET_API_KEY=<api_key>`.
 
 ### OpenShift
 

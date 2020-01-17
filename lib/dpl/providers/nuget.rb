@@ -9,8 +9,6 @@ module Dpl
         tbd
       str
 
-      gem 'nuget'
-
       env :nuget, :dotnet
 
       opt '--api_key KEY', 'NuGet registry api key', alias: :api_key, required: true, secret: true, note: 'can be retrieved from your NuGet registry provider', see: 'https://docs.npmjs.com/creating-and-viewing-authentication-tokens'
@@ -20,7 +18,7 @@ module Dpl
       #opt '--no-service-endpoint', 'does not append "api/v2/package" to the source URL'
       opt '--skip-duplicate', 'does not push packages with 409 Conflict response from the server'
 
-      msgs login:    'Authenticating with API key %{api_key}'
+      msgs login:    'Authenticating with API key %{api_key}',
            push:     'Pushing package %{src} to %{registry}'
            #version:  '.NET version: %{dotnet_version}',
 
