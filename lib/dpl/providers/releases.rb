@@ -13,6 +13,7 @@ module Dpl
         tbd
       str
 
+      gem 'openssl'
       gem 'octokit', '~> 4.15.0'
       gem 'mime-types', '~> 3.2.2'
       gem 'public_suffix', '~> 3.0.3'
