@@ -130,7 +130,7 @@ Dpl supports the following providers:
   * [Launchpad](#launchpad)
   * [Netlify](#netlify)
   * [npm](#npm)
-  * [NuGet](#nuget)
+  * [nuget](#nuget)
   * [OpenShift](#openshift)
   * [Packagecloud](#packagecloud)
   * [Puppet Forge](#puppet-forge)
@@ -781,7 +781,7 @@ Examples:
   dpl chef_supermarket --user_id id --category cat --name name --client_key key --dir dir
 ```
 
-Options can be given via env vars if prefixed with `CHEF_`. 
+Options can be given via env vars if prefixed with `CHEF_`.
 
 ### Cloud Files
 
@@ -949,7 +949,7 @@ Examples:
   dpl convox --app app --rack rack --password pass --host host --install_url url
 ```
 
-Options can be given via env vars if prefixed with `CONVOX_`. 
+Options can be given via env vars if prefixed with `CONVOX_`.
 
 ### Datica
 
@@ -985,7 +985,7 @@ Examples:
   dpl datica --target target --path path --cleanup --run cmd
 ```
 
-Options can be given via env vars if prefixed with `[CATALYZE_|DATICA_]`. 
+Options can be given via env vars if prefixed with `[CATALYZE_|DATICA_]`.
 
 ### Engineyard
 
@@ -1721,6 +1721,7 @@ as `NETLIFY_AUTH=<auth>`.
 ### npm
 
 
+
 ```
 Usage: dpl npm [options]
 
@@ -1763,18 +1764,16 @@ Examples:
 Options can be given via env vars if prefixed with `NPM_`. E.g. the option `--api_token` can be
 given as `NPM_API_TOKEN=<api_token>`.
 
-### NuGet
+### nuget
 
-
-Support for deployments to NuGet severs is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
-
+Support for deployments to nuget is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl nuget [options]
 
 Summary:
 
-  NuGet deployment provider
+  nuget deployment provider
 
 Description:
 
@@ -1782,21 +1781,30 @@ Description:
 
 Options:
 
-  --api_key KEY           NuGet registry api key (type: string, required, note: can be retrieved from your NuGet registry provider, see: https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
-  --registry URL          NuGet registry url (type: string, required, note: ex: `https://www.myget.org/F/org-name/api/v2/package`
-  --src SRC               `nupkg` file(s) to push', default: `*.nupkg`
-  --no-symbols            does not push symbols (even if present)
-  --skip-duplicate        does not push packages with 409 Conflict response from the server
+  --api_key KEY              NuGet registry api key (type: string, required, note: can be retrieved from your
+                             NuGet registry provider, see:
+                             https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
+  --registry URL             NuGet registry url (type: string, required, note: ex:
+                             "https://www.myget.org/F/org-name/api/v2/package")
+  --src SRC                  nupkg file(s) to push (type: string, default: *.nupkg)
+  --[no-]no-symbols          note: does not push symbols (even if present)
+  --[no-]skip-duplicate      does not push packages with 409 Conflict response from the server
 
-  --help                    Get help on this command
+Common Options:
+
+  --cleanup                  Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                  Commands to execute after the deployment finished successfully (type: array
+                             (string, can be given multiple times))
+  --help                     Get help on this command
 
 Examples:
 
-  dpl nuget --api_key key --registry https://registry.url
-  dpl nuget --api_key key --registry https://registry.url --src package.nupkg --no-symbols
+  dpl nuget --api_key key --registry url
+  dpl nuget --api_key key --registry url --src src --no_symbols --skip_duplicate
 ```
 
-Options can be given via env vars if prefixed with `NUGET_` or `DOTNET_`. E.g. the option `--api_key` can be given as `NUGET_API_KEY=<api_key>`.
+Options can be given via env vars if prefixed with `[DOTNET_|NUGET_]`. E.g. the option `--api_key`
+can be given as `NUGET_API_KEY=<api_key>` or `DOTNET_API_KEY=<api_key>`.
 
 ### OpenShift
 

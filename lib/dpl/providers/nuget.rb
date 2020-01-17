@@ -1,6 +1,6 @@
 module Dpl
   module Providers
-    class NuGet < Provider
+    class Nuget < Provider
       status :dev
 
       full_name 'nuget'
@@ -11,10 +11,10 @@ module Dpl
 
       env :nuget, :dotnet
 
-      opt '--api_key KEY', 'NuGet registry api key', alias: :api_key, required: true, secret: true, note: 'can be retrieved from your NuGet registry provider', see: 'https://docs.npmjs.com/creating-and-viewing-authentication-tokens'
-      opt '--registry URL', 'NuGet registry url', alias: :registry, required: true, note: 'ex: "https://www.myget.org/F/org-name/api/v2/package"'
-      opt '--src SRC', 'nupkg file(s) to push', default: '*.nupkg', alias: :src
-      opt '--no-symbols', 'does not push symbols (even if present).'
+      opt '--api_key KEY', 'NuGet registry api key', required: true, secret: true, note: 'can be retrieved from your NuGet registry provider', see: 'https://docs.npmjs.com/creating-and-viewing-authentication-tokens'
+      opt '--registry URL', 'NuGet registry url', required: true, note: 'ex: "https://www.myget.org/F/org-name/api/v2/package"'
+      opt '--src SRC', 'nupkg file(s) to push', default: '*.nupkg' 
+      opt '--no-symbols', note: 'does not push symbols (even if present)'
       #opt '--no-service-endpoint', 'does not append "api/v2/package" to the source URL'
       opt '--skip-duplicate', 'does not push packages with 409 Conflict response from the server'
 
