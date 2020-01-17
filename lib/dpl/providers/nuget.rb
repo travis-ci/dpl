@@ -9,6 +9,8 @@ module Dpl
         tbd
       str
 
+      gem 'nuget'
+
       env :nuget, :dotnet
 
       opt '--api_key KEY', 'NuGet registry api key', alias: :api_key, required: true, secret: true, note: 'can be retrieved from your NuGet registry provider', see: 'https://docs.npmjs.com/creating-and-viewing-authentication-tokens'
