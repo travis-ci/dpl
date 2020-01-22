@@ -3,7 +3,7 @@ module Dpl
     class Flynn < Providers
       register 'flynn'
 
-      status :alpha
+      status :dev
 
       full_name 'Flynn'
 
