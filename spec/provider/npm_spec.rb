@@ -10,6 +10,19 @@ describe DPL::Provider::NPM do
     described_class.new(DummyContext.new, :email => 'foo@blah.com', :api_key => 'test')
   end
 
+  describe "#api_key" do
+    example do
+      expect(provider).to receive(:api_key).and_return("test")
+      provider.api_key
+    end
+
+    example do
+      alt = described_class.new(DummyContext.new, :api_token => 'test')
+      expect(alt).to receive(:api_key).and_return("test")
+      alt.api_key
+    end
+  end
+
   describe "#check_auth" do
     example do
       expect(provider).to receive(:setup_auth)
