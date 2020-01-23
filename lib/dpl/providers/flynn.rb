@@ -1,8 +1,6 @@
 module Dpl
   module Providers
-    class Flynn < Providers
-      register 'flynn'
-
+    class Flynn < Provider
       status :dev
 
       full_name 'Flynn'
@@ -11,7 +9,7 @@ module Dpl
         Flynn provider for Dpl
       str
 
-      opt '--git URL', 'Flynn Git remote URL' required: true
+      opt '--git URL', 'Flynn Git remote URL', required: true
 
       needs :git, :git_http_user_agent
 
