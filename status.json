@@ -16,8 +16,8 @@
   },
   {
     "name": "bluemixcloudfoundry",
-    "status": "alpha",
-    "date": "2019-08-05"
+    "status": "beta",
+    "date": "2020-01-23"
   },
   {
     "name": "boxfuse",
@@ -83,6 +83,11 @@
     "name": "firebase",
     "status": "stable",
     "date": "2019-10-28"
+  },
+  {
+    "name": "flynn",
+    "status": "dev",
+    "date": "2020-01-22"
   },
   {
     "name": "gae",
