@@ -1,5 +1,9 @@
 # Changelog
 
+## dpl v2.0.1-beta.1 (2020-01-27)
+
+* No changes
+
 ## dpl v2.0.0-alpha.13 (2020-01-17)
 
 * Add s3 `--glob`
