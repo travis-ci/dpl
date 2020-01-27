@@ -26,8 +26,8 @@
   },
   {
     "name": "cargo",
-    "status": "beta",
-    "date": "2019-10-01"
+    "status": "stable",
+    "date": "2020-01-27"
   },
   {
     "name": "chef_supermarket",
