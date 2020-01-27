@@ -1,3 +1,3 @@
 module Dpl
-  VERSION = '2.0.0.alpha.14'
+  VERSION = '2.0.0-beta.1'
 end
