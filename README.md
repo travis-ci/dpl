@@ -115,6 +115,7 @@ Dpl supports the following providers:
   * [Datica](#datica)
   * [Engineyard](#engineyard)
   * [Firebase](#firebase)
+  * [Flynn](#flynn)
   * [GitHub Pages](#github-pages)
   * [GitHub Pages (API)](#github-pages-api-)
   * [GitHub Releases](#github-releases)
@@ -1059,6 +1060,24 @@ Examples:
 
 Options can be given via env vars if prefixed with `FIREBASE_`. E.g. the option `--token` can be
 given as `FIREBASE_TOKEN=<token>`.
+
+### Flynn
+
+```
+Usage: dpl flynn [options]
+
+Description:
+
+  Flynn dpl provider
+ 
+Options:
+
+  --git remote (type: string, required: true)
+
+Examples:
+
+  dpl flynn --git https://git.<flynn_base_url>/myapp.git
+```
 
 ### GitHub Pages
 
