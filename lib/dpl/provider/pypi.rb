@@ -67,7 +67,7 @@ module DPL
 
       def install_deploy_dependencies
         # --user likely fails inside virtualenvs but is needed outside to avoid needing sudo.
-        unless context.shell "if [ -z ${VIRTUAL_ENV+x} ]; then export PIP_USER=yes; fi && " \
+        unless context.shell "if [ -z \"${VIRTUAL_ENV}\" ]; then export PIP_USER=yes; fi && " \
                              "wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && " \
                              "pip install --upgrade #{pypi_setuptools_arg} #{pypi_twine_arg} #{pypi_wheel_arg}"
           error "Couldn't install pip, setuptools, twine or wheel."
