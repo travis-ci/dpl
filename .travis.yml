@@ -26,6 +26,7 @@ jobs:
           gemspec_glob: 'dpl*.gemspec'
           on:
             repo: travis-ci/dpl
+            branch: v1
   allow_failures:
 
 env:
