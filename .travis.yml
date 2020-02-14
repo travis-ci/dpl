@@ -8,7 +8,7 @@ rvm:
 jobs:
   include:
     - stage: deploy
-      if: branch = master AND NOT type IN (pull_request)
+      if: branch = v1 AND NOT type IN (pull_request)
       cache: false
       before_deploy:
         - sed -i.bak "s/VERSION = '.*'/VERSION = '${DPL_VERSION}'/g" lib/dpl/version.rb
