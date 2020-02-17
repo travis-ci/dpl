@@ -18,7 +18,7 @@ module Dpl
         required :token, :deploy_key
 
         opt '--repo SLUG', 'Repo slug', default: :repo_slug
-        opt '--token TOKEN', 'GitHub oauth token with repo permission', secret: true, alias: :github_token
+        opt '--token TOKEN', 'GitHub token with repo permission', secret: true, alias: :github_token
         opt '--deploy_key PATH', 'Path to a file containing a private deploy key with write access to the repository', see: 'https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys'
         opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
         opt '--keep_history', 'Create incremental commit instead of doing push force', default: true
@@ -30,7 +30,7 @@ module Dpl
         opt '--project_name NAME', 'Used in the commit message only (defaults to fqdn or the current repo slug)'
         opt '--name NAME', 'Committer name', note: 'defaults to the current git commit author name'
         opt '--email EMAIL', 'Committer email', note: 'defaults to the current git commit author email'
-        opt '--committer_from_gh', 'Use the token\'s owner name and email for the commit', requires: :github_token
+        opt '--committer_from_gh', 'Use the token\'s owner name and email for the commit', requires: :token
         opt '--deployment_file', 'Enable creation of a deployment-info file'
         opt '--url URL', default: 'github.com', alias: :github_url
 
