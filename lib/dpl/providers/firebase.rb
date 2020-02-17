@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Firebase < Provider
+      register :firebase
+
       status :stable
 
       description sq(<<-str)

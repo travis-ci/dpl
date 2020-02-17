@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Snap < Provider
+      register :snap
+
       status :beta
 
       description sq(<<-str)

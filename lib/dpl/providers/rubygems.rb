@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Rubygems < Provider
+      register :rubygems
+
       status :stable
 
       description sq(<<-str)

@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Gleis < Provider
+      register :gleis
+
       status :alpha
 
       description sq(<<-str)

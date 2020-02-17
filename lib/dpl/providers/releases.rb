@@ -5,6 +5,8 @@ module Dpl
     class Releases < Provider
       include Github
 
+      register :releases
+
       status :stable
 
       full_name 'GitHub Releases'

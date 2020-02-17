@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Hephy < Provider
+      register :hephy
+
       status :beta
 
       description sq(<<-str)

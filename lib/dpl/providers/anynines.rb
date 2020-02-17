@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Anynines < Provider
+      register :anynines
+
       status :alpha
 
       description sq(<<-str)

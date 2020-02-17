@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class AzureWebApps < Provider
+      register :azure_web_apps
+
       status :alpha
 
       full_name 'Azure Web Apps'

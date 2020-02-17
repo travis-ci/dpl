@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Netlify < Provider
+      register :netlify
+
       status :stable
 
       description sq(<<-str)

@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Cargo < Provider
+      register :cargo
+
       status :stable
 
       description sq(<<-str)

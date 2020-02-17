@@ -3,6 +3,8 @@ module Dpl
     # split this up to CodeDeploy::Github and CodeDeploy::S3 using the
     # revision_type, in order to make opts more strict
     class Codedeploy < Provider
+      register :codedeploy
+
       status :beta
 
       full_name 'AWS Code Deploy'

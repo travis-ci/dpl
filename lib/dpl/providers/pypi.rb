@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Pypi < Provider
+      register :pypi
+
       status :stable
 
       full_name 'PyPI'

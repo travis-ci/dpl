@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Bluemixcloudfoundry < Provider
+      register :bluemixcloudfoundry
+
       status :beta
 
       full_name 'Bluemix Cloud Foundry'

@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Engineyard < Provider
+      register :engineyard
+
       status :alpha
 
       description sq(<<-str)

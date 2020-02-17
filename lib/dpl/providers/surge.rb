@@ -3,6 +3,8 @@ require 'open-uri'
 module Dpl
   module Providers
     class Surge < Provider
+      register :surge
+
       status :stable
 
       description sq(<<-str)

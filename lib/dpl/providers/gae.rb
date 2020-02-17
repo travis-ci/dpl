@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Gae < Provider
+      register :gae
+
       status :stable
 
       full_name 'Google App Engine'

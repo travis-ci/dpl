@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Hackage < Provider
+      register :hackage
+
       status :alpha
 
       description sq(<<-str)

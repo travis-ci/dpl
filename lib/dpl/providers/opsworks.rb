@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Opsworks < Provider
+      register :opsworks
+
       status :stable
 
       full_name 'AWS OpsWorks'

@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Heroku < Provider
+      register :heroku
+
       abstract
 
       gem 'faraday', '~> 0.9.2'

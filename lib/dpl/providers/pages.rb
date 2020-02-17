@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Pages < Provider
+      register :pages
+
       abstract
 
       env :github, :pages

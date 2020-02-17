@@ -3,6 +3,8 @@ require 'dpl/helper/zip'
 module Dpl
   module Providers
     class Lambda < Provider
+      register :lambda
+
       status :stable
 
       full_name 'AWS Lambda'

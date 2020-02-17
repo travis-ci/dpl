@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Datica < Provider
+      register :datica
+
       status :dev
 
       register :datica, :catalyze

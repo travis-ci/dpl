@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Scalingo < Provider
+      register :scalingo
+
       status :alpha
 
       description sq(<<-str)

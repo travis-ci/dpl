@@ -2,7 +2,7 @@ module Dpl
   module Providers
     class Heroku
       class Git < Heroku
-        register 'heroku:git'
+        register :'heroku:git'
 
         status :alpha
 

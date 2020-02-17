@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Convox < Provider
+      register :convox
+
       status :dev
 
       description sq(<<-str)

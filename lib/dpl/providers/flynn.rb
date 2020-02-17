@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Flynn < Provider
+      register :flynn
+
       status :dev
 
       full_name 'Flynn'

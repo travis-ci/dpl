@@ -5,6 +5,8 @@ require 'find'
 module Dpl
   module Providers
     class Bintray < Provider
+      register :bintray
+
       status :stable
 
       description sq(<<-str)

@@ -2,7 +2,7 @@ module Dpl
   module Providers
     class Pages
       class Git < Pages
-        register 'pages:git'
+        register :'pages:git'
 
         status :stable
 

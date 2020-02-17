@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Elasticbeanstalk < Provider
+      register :elasticbeanstalk
+
       status :stable
 
       full_name 'AWS Elastic Beanstalk'

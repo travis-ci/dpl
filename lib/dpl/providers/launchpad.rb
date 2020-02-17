@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Launchpad < Provider
+      register :launchpad
+
       status :alpha
 
       description sq(<<-str)

@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Cloudfoundry < Provider
+      register :cloudfoundry
+
       status :stable
 
       full_name 'Cloud Foundry'

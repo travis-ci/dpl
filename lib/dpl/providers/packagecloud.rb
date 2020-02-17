@@ -5,6 +5,8 @@
 module Dpl
   module Providers
     class Packagecloud < Provider
+      register :packagecloud
+
       status :alpha
 
       description sq(<<-str)

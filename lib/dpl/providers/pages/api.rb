@@ -4,7 +4,7 @@ module Dpl
   module Providers
     class Pages
       class Api < Pages
-        register 'pages:api'
+        register :'pages:api'
 
         status :dev
 

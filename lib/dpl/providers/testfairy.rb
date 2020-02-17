@@ -5,6 +5,8 @@ require 'securerandom'
 module Dpl
   module Providers
     class Testfairy < Provider
+      register :testfairy
+
       status :alpha
 
       full_name 'TestFairy'

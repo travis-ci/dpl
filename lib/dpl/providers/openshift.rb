@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Openshift < Provider
+      register :openshift
+
       status :stable
 
       full_name 'OpenShift'

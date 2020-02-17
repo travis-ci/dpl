@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Cloudfiles < Provider
+      register :cloudfiles
+
       status :alpha
 
       full_name 'Cloud Files'

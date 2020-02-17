@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Transifex < Provider
+      register :transifex
+
       status :alpha
 
       description sq(<<-str)

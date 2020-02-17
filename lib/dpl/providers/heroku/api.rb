@@ -2,7 +2,7 @@ module Dpl
   module Providers
     class Heroku
       class Api < Heroku
-        register 'heroku:api'
+        register :'heroku:api'
 
         status :stable
 

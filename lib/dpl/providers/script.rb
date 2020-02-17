@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Script < Provider
+      register :script
+
       status :stable
 
       summary 'Minimal provider that executes a custom command'

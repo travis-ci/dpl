@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Npm < Provider
+      register :npm
+
       status :stable
 
       full_name 'npm'
