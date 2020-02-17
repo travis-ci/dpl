@@ -152,6 +152,16 @@ module Dpl
     opt '--fold',         'Wrap log output in folds', internal: true
     opt '--edge',         internal: true
 
+    vars *%i(
+      git_author_email
+      git_author_name
+      git_branch
+      git_commit_author
+      git_commit_msg
+      git_sha
+      git_tag
+    )
+
     msgs before_install:  'Installing deployment dependencies',
          before_setup:    'Setting the build environment up for the deployment',
          setup_git_ssh:   'Setting up git-ssh',

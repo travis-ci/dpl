@@ -22,7 +22,7 @@ module Dpl
         opt '--deploy_key PATH', 'Path to a file containing a private deploy key with write access to the repository', see: 'https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys'
         opt '--target_branch BRANCH', 'Branch to push force to', default: 'gh-pages'
         opt '--keep_history', 'Create incremental commit instead of doing push force', default: true
-        opt '--commit_message MSG', default: 'Deploy %{project_name} to %{url}:%{target_branch}'
+        opt '--commit_message MSG', default: 'Deploy %{project_name} to %{url}:%{target_branch}', interpolate: true
         opt '--allow_empty_commit', 'Allow an empty commit to be created', requires: :keep_history
         opt '--verbose', 'Be verbose about the deploy process'
         opt '--local_dir DIR', 'Directory to push to GitHub Pages', default: '.'
@@ -171,7 +171,7 @@ module Dpl
         end
 
         def git_commit_msg_opts
-          msg = interpolate(commit_message)
+          msg = interpolate(commit_message, vars: vars)
           msg.split("\n").reject(&:empty?).map { |msg| %(-m #{quote(msg)}) }
         end
 

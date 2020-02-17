@@ -243,7 +243,7 @@ Options can be given via env vars if prefixed with `[AWS_|CLOUDFORMATION_]`. E.g
 
 ### AWS Code Deploy
 
-Support for deployments to AWS Code Deploy is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to AWS Code Deploy is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl codedeploy [options]
@@ -291,6 +291,11 @@ Examples:
 Options can be given via env vars if prefixed with `[AWS_|CODEDEPLOY_]`. E.g. the option
 `--access_key_id` can be given as `AWS_ACCESS_KEY_ID=<access_key_id>` or
 `CODEDEPLOY_ACCESS_KEY_ID=<access_key_id>`.
+
+The following variable are availabe for interpolation on `description`:
+
+  `application`, `bucket`, `bundle_type`, `commit_id`, `deployment_group`, `endpoint`, `file_exists_behavior`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `key`, `region`, `repository`, `revision_type`, `build_number`
+
 
 ### AWS Elastic Beanstalk
 
@@ -416,6 +421,11 @@ Options can be given via env vars if prefixed with `[AWS_|LAMBDA_]`. E.g. the op
 `--access_key_id` can be given as `AWS_ACCESS_KEY_ID=<access_key_id>` or
 `LAMBDA_ACCESS_KEY_ID=<access_key_id>`.
 
+The following variable are availabe for interpolation on `description`:
+
+  `dead_letter_arn`, `function_name`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `handler_name`, `kms_key_arn`, `memory_size`, `module_name`, `region`, `role`, `runtime`, `timeout`, `tracing_mode`, `zip`
+
+
 ### AWS OpsWorks
 
 
@@ -488,6 +498,7 @@ Options:
   --upload_dir DIR                    S3 directory to upload to (type: string)
   --local_dir DIR                     Local directory to upload from (type: string, default: ., e.g.: ~/travis/build
                                       (absolute path) or ./build (relative path))
+  --glob GLOB                         Files to upload (type: string, default: **/*)
   --[no-]dot_match                    Upload hidden files starting with a dot
   --acl ACL                           Access control for the uploaded objects (type: string, default: private, known
                                       values: private, public_read, public_read_write, authenticated_read,
@@ -608,7 +619,7 @@ as `BINTRAY_KEY=<key>`.
 
 ### Bluemix Cloud Foundry
 
-Support for deployments to Bluemix Cloud Foundry is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Bluemix Cloud Foundry is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl bluemixcloudfoundry [options]
@@ -695,7 +706,7 @@ given as `BOXFUSE_SECRET=<secret>`.
 
 ### Cargo
 
-Support for deployments to Cargo is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl cargo [options]
@@ -1063,21 +1074,37 @@ given as `FIREBASE_TOKEN=<token>`.
 
 ### Flynn
 
+Support for deployments to Flynn is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 ```
 Usage: dpl flynn [options]
 
+Summary:
+
+  Flynn deployment provider
+
 Description:
 
-  Flynn dpl provider
- 
+  Flynn provider for Dpl
+
 Options:
 
-  --git remote (type: string, required: true)
+  --git URL      Flynn Git remote URL (type: string, required)
+
+Common Options:
+
+  --cleanup      Clean up build artifacts from the Git working directory before the deployment
+  --run CMD      Commands to execute after the deployment finished successfully (type: array
+                 (string, can be given multiple times))
+  --help         Get help on this command
 
 Examples:
 
-  dpl flynn --git https://git.<flynn_base_url>/myapp.git
+  dpl flynn --git url
+  dpl flynn --git url --cleanup --run cmd
 ```
+
+
 
 ### GitHub Pages
 
@@ -1138,6 +1165,11 @@ Examples:
 
 Options can be given via env vars if prefixed with `[GITHUB_|PAGES_]`. E.g. the option `--token` can
 be given as `GITHUB_TOKEN=<token>` or `PAGES_TOKEN=<token>`.
+
+The following variable are availabe for interpolation on `commit_message`:
+
+  `deploy_key`, `email`, `fqdn`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `local_dir`, `name`, `project_name`, `repo`, `target_branch`, `url`
+
 
 ### GitHub Pages (API)
 
@@ -1972,7 +2004,7 @@ Examples:
 
 ### Snap
 
-Support for deployments to Snap is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+Support for deployments to Snap is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
 
 ```
 Usage: dpl snap [options]
@@ -2547,4 +2579,4 @@ This tool would not exist without your help.
 
 A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors):
 
-5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Chris Patterson, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, dependabot[bot], Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, Marc, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Nikhil, Ole Michaelis, Olle Jonsson, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radek Lisowski, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, Sascha Zarhuber, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wen Kokke, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
+5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Chris Patterson, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, dependabot[bot], Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, JMSwag, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, Marc, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Nikhil, Ole Michaelis, Olle Jonsson, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radek Lisowski, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, Sascha Zarhuber, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wen Kokke, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
