@@ -2,6 +2,15 @@ require 'dpl/helper/squiggle'
 require 'dpl/helper/wrap'
 require 'dpl/provider/status'
 
+# TODO figure out how to allow adding domain specific behavior like this to Cl
+class Cl::Opt
+  OPTS << :interpolate
+
+  def interpolate?
+    opts[:interpolate]
+  end
+end
+
 module Dpl
   class Provider < Cl::Cmd
     # DSL available on the provider's class body.
@@ -34,6 +43,22 @@ module Dpl
       # Set or read the provider's maturity status with an optional message
       def status(status = nil, msg = nil)
         status ? @status = Status.new(self, status, msg) : @status
+      end
+
+      # Declare additional variables available for interpolation.
+      #
+      # Interpolating strings, when these exposed to the user, should safelist
+      # which variables are available. Options declared on a provider are
+      # always available, except if they are flags, arrays, internal, or
+      # secrets. This method can be used to allow additional variables, e.g.
+      # from the git context.
+      def vars(*vars)
+        return self.vars.concat(vars) if vars.any?
+        return @vars if instance_variable_defined?(:@vars)
+        vars = superclass.respond_to?(:vars) ? superclass.vars : []
+        reject = %i(flag array internal interpolate secret)
+        opts = reject.inject(self.opts) { |opts, attr| opts.reject(&:"#{attr}?") }
+        @vars = vars.dup.concat(opts.map(&:name)).uniq.sort - [:strategy]
       end
 
       # @!method env

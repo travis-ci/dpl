@@ -24,7 +24,7 @@ module Dpl
       opt '--role ROLE',              'ARN of the IAM role to assign to the Lambda function', note: 'required when creating a new function'
       opt '--handler_name NAME',      'Function the Lambda calls to begin execution.', note: 'required when creating a new function'
       opt '--module_name NAME',       'Name of the module that exports the handler', default: 'index', requires: :handler_name
-      opt '--description DESCR',      'Description of the Lambda being created or updated'
+      opt '--description DESCR',      'Description of the Lambda being created or updated', interpolate: true
       opt '--timeout SECS',           'Function execution time (in seconds) at which Lambda should terminate the function', default: 3
       opt '--memory_size MB',         'Amount of memory in MB to allocate to this Lambda', default: 128
       opt '--subnet_ids IDS',         'List of subnet IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSubnets and ec2:DescribeVpcs permission for the user of the access/secret key to work'
@@ -157,7 +157,7 @@ module Dpl
         end
 
         def description
-          super || interpolate(msg(:description))
+          interpolate(super || msg(:description), vars: vars)
         end
 
         def client

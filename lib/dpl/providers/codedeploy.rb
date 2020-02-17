@@ -30,7 +30,7 @@ module Dpl
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
       opt '--bundle_type TYPE', 'Bundle type of the revision'
       opt '--key KEY', 'S3 bucket key of the revision'
-      opt '--description DESCR', 'Description of the revision'
+      opt '--description DESCR', 'Description of the revision', interpolate: true
       opt '--endpoint ENDPOINT', 'S3 endpoint url'
 
       msgs login:                 'Using Access Key: %{access_key_id}',
@@ -43,6 +43,8 @@ module Dpl
            missing_key:           'Missing required key for S3 deployment',
            unknown_revision_type: 'Unknown revision type %p',
            unknown_bundle_type:   'Unknown bundle type'
+
+      vars :build_number
 
       def login
         info :login
@@ -152,7 +154,7 @@ module Dpl
       end
 
       def description
-        super || interpolate(msg(:description))
+        interpolate(super || msg(:description), vars: vars)
       end
 
       def build_number

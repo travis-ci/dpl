@@ -4,6 +4,7 @@ $: << File.expand_path('../../lib', __FILE__)
 require 'ffi-icu'
 require 'erb'
 require 'dpl'
+require 'dpl/helper/squiggle'
 require 'dpl/helper/wrap'
 
 SKIP = %i(help heroku pages)
@@ -19,13 +20,31 @@ class Header < Struct.new(:cmd)
 end
 
 class Footer < Struct.new(:cmd)
+  extend Squiggle
   include Wrap
 
   def to_s
-    # TODO
-    return unless env = cmd.instance_variable_get(:@env) || cmd.superclass.instance_variable_get(:@env)
+    [env, vars].compact.join("\n\n")
+  end
+
+  def env
+    return unless env = cmd.instance_variable_get(:@env) || cmd.superclass.instance_variable_get(:@env) # TODO
     str = env.description(cmd)
     wrap(str, 100)
+  end
+
+  VARS = sq(<<-str)
+    The following variable are availabe for interpolation on %s:
+
+      %s
+  str
+
+  def vars
+    opts = cmd.opts.select(&:interpolate?)
+    return unless opts.any?
+    opts = opts.map(&:name).map { |name| "`#{name}`" }.join(', ')
+    vars = cmd.vars.map { |var| "`#{var}`" }.join(', ')
+    VARS % [opts, vars]
   end
 end
 

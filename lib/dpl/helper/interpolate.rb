@@ -52,6 +52,14 @@ module Dpl
       Interpolator.new(str, self, args || {}, opts).apply
     end
 
+    # Interpolation variables as declared by the provider.
+    #
+    # By default this contains string option names, but additional
+    # methods can be added using Provider::Dsl#vars.
+    def vars
+      self.class.vars
+    end
+
     # Obfuscates the given string.
     #
     # Replaces all but the first N characters with asterisks, and paddes
@@ -71,6 +79,7 @@ module Dpl
       PATTERN  = /%\{(\$?[\w]+)\}/
       ENV_VAR  = /^\$[A-Z_]+$/
       UPCASE   = /^[A-Z_]+$/
+      UNKNOWN  = '[unknown variable: %s]'
 
       def apply
         str = interpolate(self.str.to_s)
@@ -102,7 +111,9 @@ module Dpl
       end
 
       def lookup(key)
-        if mod = modifier(key)
+        if vars? && !var?(key)
+          UNKNOWN % key
+        elsif mod = modifier(key)
           key = key.to_s.sub("#{mod}d_", '')
           obj.send(mod, lookup(key))
         elsif key.to_s =~ ENV_VAR
@@ -120,6 +131,18 @@ module Dpl
 
       def modifier(key)
         MODIFIER.detect { |mod| key.to_s.start_with?("#{mod}d_") }
+      end
+
+      def var?(key)
+        vars.include?(key)
+      end
+
+      def vars
+        opts[:vars]
+      end
+
+      def vars?
+        !!vars
       end
     end
   end

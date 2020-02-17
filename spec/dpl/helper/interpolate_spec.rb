@@ -1,6 +1,11 @@
 describe Dpl::Interpolate do
-  let(:provider) { Class.new(Dpl::Provider, &body).new(ctx, %w(--password secret)) }
-  let(:body) { ->(*) { opt '--password PASS', secret: true } }
+  let(:provider) { Class.new(Dpl::Provider, &body).new(ctx, %w(--name a-name --password secret)) }
+  let(:body) do
+    ->(*) do
+      opt '--name NAME'
+      opt '--password PASS', secret: true
+    end
+  end
   let(:args) { [] }
   let(:opts) { {} }
 
@@ -38,5 +43,19 @@ describe Dpl::Interpolate do
   describe 'interpolating an undefined const' do
     let(:str) { 'string containing %{CONST}' }
     it { expect { subject }.to raise_error KeyError, 'CONST' }
+  end
+
+  describe 'safelisting vars' do
+    let(:opts) { { vars: [:name] } }
+
+    describe 'known var' do
+      let(:str) { 'string containing %{name}' }
+      it { should eq 'string containing a-name' }
+    end
+
+    describe 'unknown var' do
+      let(:str) { 'string containing %{unknown}' }
+      it { should eq 'string containing [unknown variable: unknown]' }
+    end
   end
 end
