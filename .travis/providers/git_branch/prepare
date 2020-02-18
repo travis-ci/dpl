@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+include FileUtils
+
+dir = 'tmp/dpl_test'
+mkdir_p dir
+chdir dir
+
+File.write 'id', <<~str
+  #{ENV['ID']}
+str
+
+# system 'git init'
+# system 'git add .'
+# system "git commit -m 'test dpl github pages #{Time.now}'"
