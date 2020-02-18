@@ -32,7 +32,8 @@ module Dpl
       opt '--email EMAIL', 'Committer email', note: 'defaults to the current git commit author email'
       opt '--pull_request', 'Whether to create a pull request for the given branch'
       opt '--allow_same_branch', 'Whether to allow pushing to the same branch as the current branch', default: false, note: 'setting this to true risks creating infinite build loops, use conditional builds or other mechanisms to prevent build from infinitely triggering more builds'
-      opt '--url URL', default: 'github.com', alias: :github_url
+      opt '--host HOST', default: 'github.com'
+      opt '--enterprise', 'Whether to use a GitHub Enterprise API style URL'
 
       needs :git
 
@@ -111,7 +112,7 @@ module Dpl
         end
 
         def login_token
-          user.login
+          return unless github?
           info :login, user.login
           error :insufficient_scopes unless sufficient_scopes?
         rescue Octokit::Unauthorized => e
@@ -191,10 +192,6 @@ module Dpl
           super || repo_slug
         end
 
-        def sufficient_scopes?
-          api.scopes.include?('public_repo') || api.scopes.include?('repo')
-        end
-
         def remote_url
           token? ? https_url_with_token : git_url
         end
@@ -204,19 +201,15 @@ module Dpl
         end
 
         def git_url
-          "git@#{opts[:url]}:#{slug}.git"
+          "git@#{host}:#{slug}.git"
         end
 
         def url
-          "#{opts[:url]}/#{slug}.git"
+          "#{host}/#{slug}.git"
         end
 
         def slug
           repo || repo_slug
-        end
-
-        def user
-          @user ||= api.user
         end
 
         def src_dir
@@ -227,21 +220,37 @@ module Dpl
           @work_dir ||= tmp_dir
         end
 
+        def sufficient_scopes?
+          scopes.include?('public_repo') || scopes.include?('repo')
+        end
+
+        def user
+          @user ||= github.user
+        end
+
+        def scopes
+          @scopes ||= github.scopes
+        end
+
         def pr_exists?
-          !!api.pulls(repo).detect { |pull| pull.head.ref == branch }
+          !!github.pulls(repo).detect { |pull| pull.head.ref == branch }
         end
 
         def create_pr
-          pr = api.create_pull_request(repo, base_branch, branch, "Update #{base_branch}")
+          pr = github.create_pull_request(repo, base_branch, branch, "Update #{base_branch}")
           info :pr_created, number: pr.number
         end
 
-        def api
-          @api ||= Octokit::Client.new(access_token: token, api_endpoint: api_endpoint, auto_paginate: true)
+        def github?
+          host.include?('github') || enterprise?
         end
 
-        def api_endpoint
-          opts[:url] == 'github.com' ? 'https://api.github.com/' : "https://#{opts[:url]}/api/v3/"
+        def github
+          @github ||= Octokit::Client.new(access_token: token, api_endpoint: api_url, auto_paginate: true)
+        end
+
+        def api_url
+          enterprise? ? "https://#{host}/api/v3/" : 'https://api.github.com/'
         end
 
         def now

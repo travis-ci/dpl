@@ -5,6 +5,7 @@ describe Dpl::Providers::GitPush do
   let(:home)    { File.expand_path('~') }
   let!(:cwd)    { File.expand_path('.') }
   let(:tmp)     { File.expand_path('tmp') }
+  let(:api_url) { 'https://api.github.com/user' }
   let(:branch)  { 'other' }
 
   env FOO: 'foo',
@@ -12,7 +13,7 @@ describe Dpl::Providers::GitPush do
 
   file 'key'
 
-  before { stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers: headers) }
+  before { stub_request(:get, api_url).and_return(status: 200, body: user, headers: headers) }
   before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
@@ -30,6 +31,7 @@ describe Dpl::Providers::GitPush do
     it { should have_run '[info] Pushing to github.com/travis-ci/dpl.git HEAD:other' }
     it { should have_run 'git push --quiet "https://token@github.com/travis-ci/dpl.git" HEAD:"other" > /dev/null 2>&1' }
     it { should have_run_in_order }
+    it { expect(WebMock).to have_requested(:get, 'https://api.github.com/user').times(2) }
   end
 
   describe 'given the same branch as the current build branch', run: false do
@@ -93,6 +95,24 @@ describe Dpl::Providers::GitPush do
       it { should have_run '[info] Pull request exists.' }
       it { expect(WebMock).to_not have_requested(:post, %r(repos/.*/pulls)) }
     end
+  end
+
+  describe 'given --host other.com' do
+    it { should_not have_run /Authenticated as/ }
+    it { should have_run 'git push --quiet "https://token@other.com/travis-ci/dpl.git" HEAD:"other" > /dev/null 2>&1' }
+    it { expect(WebMock).to_not have_requested(:get, api_url) }
+  end
+
+  describe 'given --enterprise' do
+    let(:api_url) { 'https://github.com/api/v3/user' }
+    it { expect(WebMock).to have_requested(:get, api_url).times(2) }
+  end
+
+  describe 'given --enterprise --host other.com' do
+    let(:api_url) { 'https://other.com/api/v3/user' }
+    it { should have_run '[info] Authenticated as login' }
+    it { should have_run 'git push --quiet "https://token@other.com/travis-ci/dpl.git" HEAD:"other" > /dev/null 2>&1' }
+    it { expect(WebMock).to have_requested(:get, api_url).times(2) }
   end
 
   describe 'working dir not dirty', run: false do
