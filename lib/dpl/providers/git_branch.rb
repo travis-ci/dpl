@@ -47,6 +47,7 @@ module Dpl
            git_config:          'Configuring git committer to be %{name} <%{email}>',
            git_push:            'Pushing to %{url} HEAD:%{branch}',
            pr_exists:           'Pull request exists.',
+           pr_created:          'Pull request #%{number} created.',
            stop:                'There are no changes to commit, stopping.'
 
       cmds git_clone:           'git clone --quiet --branch="%{clone_branch}" "%{remote_url}" . > /dev/null 2>&1',
@@ -221,7 +222,8 @@ module Dpl
         end
 
         def create_pr
-          api.create_pull_request(repo, base_branch, branch, "Update #{base_branch}")
+          pr = api.create_pull_request(repo, base_branch, branch, "Update #{base_branch}")
+          info :pr_created, number: pr.number
         end
 
         def api
