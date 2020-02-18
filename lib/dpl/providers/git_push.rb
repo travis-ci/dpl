@@ -1,14 +1,15 @@
 module Dpl
   module Providers
-    class GitBranch < Provider
-      register :git_branch
+    class GitPush < Provider
+      register :git_push
 
       status :dev
 
       full_name 'Git (push)'
 
       description sq(<<-str)
-        tbd
+        Experimental, generic provider for updating a Git remote branch with
+        changes produced by the build, and optionally opening a pull request.
       str
 
       gem 'octokit', '~> 4.15.0'

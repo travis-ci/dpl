@@ -116,6 +116,7 @@ Dpl supports the following providers:
   * [Engineyard](#engineyard)
   * [Firebase](#firebase)
   * [Flynn](#flynn)
+  * [Git (push)](#git-push-)
   * [GitHub Pages](#github-pages)
   * [GitHub Pages (API)](#github-pages-api-)
   * [GitHub Releases](#github-releases)
@@ -1106,6 +1107,73 @@ Examples:
 
 
 
+### Git (push)
+
+Support for deployments to Git (push) is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
+```
+Usage: dpl git_push [options]
+
+Summary:
+
+  Git (push) deployment provider
+
+Description:
+
+  Experimental, generic provider for updating a Git remote branch with
+  changes produced by the build, and optionally opening a pull request.
+
+Options:
+
+  Either token, or deploy_key are required.
+
+  --repo SLUG                    Repo slug (type: string, default: repo slug)
+  --token TOKEN                  GitHub token with repo permission (type: string, alias: github_token)
+  --deploy_key PATH              Path to a file containing a private deploy key with write access to the
+                                 repository (type: string, see:
+                                 https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
+  --branch BRANCH                Target branch to push to (type: string, required)
+  --base_branch BRANCH           Base branch to branch off initially, and (optionally) create a pull request for
+                                 (type: string, default: master)
+  --commit_message MSG           type: string, default: Update %{base_branch}
+  --[no-]allow_empty_commit      Allow an empty commit to be created
+  --[no-]force                   Whether to push --force (default: false)
+  --local_dir DIR                Local directory to push (type: string, default: .)
+  --name NAME                    Committer name (type: string, note: defaults to the current git commit author
+                                 name)
+  --email EMAIL                  Committer email (type: string, note: defaults to the current git commit author
+                                 email)
+  --remote REMOTE                Git remote (type: string)
+  --[no-]pull_request            Whether to create a pull request for the given branch
+  --[no-]allow_same_branch       Whether to allow pushing to the same branch as the current branch (default:
+                                 false, note: setting this to true risks creating infinite build loops, use
+                                 conditional builds or other mechanisms to prevent build from infinitely
+                                 triggering more builds)
+  --url URL                      type: string, alias: github_url, default: github.com
+
+Common Options:
+
+  --cleanup                      Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                      Commands to execute after the deployment finished successfully (type: array
+                                 (string, can be given multiple times))
+  --help                         Get help on this command
+
+Examples:
+
+  dpl git_push --branch branch --token token
+  dpl git_push --branch branch --deploy_key path
+  dpl git_push --branch branch
+  dpl git_push --branch branch --token token --repo slug --base_branch branch --commit_message msg
+```
+
+Options can be given via env vars if prefixed with `[GITHUB_|GIT_]`. E.g. the option `--token` can
+be given as `GITHUB_TOKEN=<token>` or `GIT_TOKEN=<token>`.
+
+The following variable are availabe for interpolation on `commit_message`:
+
+  `base_branch`, `branch`, `deploy_key`, `email`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `local_dir`, `name`, `remote`, `repo`, `url`
+
+
 ### GitHub Pages
 
 
@@ -1126,7 +1194,7 @@ Options:
   Either token, or deploy_key are required.
 
   --repo SLUG                    Repo slug (type: string, default: repo slug)
-  --token TOKEN                  GitHub oauth token with repo permission (type: string, alias: github_token)
+  --token TOKEN                  GitHub token with repo permission (type: string, alias: github_token)
   --deploy_key PATH              Path to a file containing a private deploy key with write access to the
                                  repository (type: string, see:
                                  https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys)
@@ -1143,7 +1211,7 @@ Options:
                                  name)
   --email EMAIL                  Committer email (type: string, note: defaults to the current git commit author
                                  email)
-  --[no-]committer_from_gh       Use the token's owner name and email for the commit (requires: github_token)
+  --[no-]committer_from_gh       Use the token's owner name and email for the commit (requires: token)
   --[no-]deployment_file         Enable creation of a deployment-info file
   --url URL                      type: string, alias: github_url, default: github.com
 

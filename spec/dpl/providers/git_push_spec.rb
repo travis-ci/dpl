@@ -1,4 +1,4 @@
-describe Dpl::Providers::GitBranch do
+describe Dpl::Providers::GitPush do
   let(:args)    { |e| %W(--token token --branch #{branch}) + args_from_description(e) }
   let(:user)    { JSON.dump(login: 'login', name: 'name', email: 'email') }
   let(:headers) { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
