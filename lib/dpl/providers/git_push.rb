@@ -197,6 +197,7 @@ module Dpl
         end
 
         def remote_url
+          super if remote_url?
           token? ? https_url_with_token : git_url
         end
 
