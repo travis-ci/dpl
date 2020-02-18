@@ -30,7 +30,6 @@ module Dpl
       opt '--local_dir DIR', 'Local directory to push', default: '.'
       opt '--name NAME', 'Committer name', note: 'defaults to the current git commit author name'
       opt '--email EMAIL', 'Committer email', note: 'defaults to the current git commit author email'
-      opt '--remote REMOTE', 'Git remote'
       opt '--pull_request', 'Whether to create a pull request for the given branch'
       opt '--allow_same_branch', 'Whether to allow pushing to the same branch as the current branch', default: false, note: 'setting this to true risks creating infinite build loops, use conditional builds or other mechanisms to prevent build from infinitely triggering more builds'
       opt '--url URL', default: 'github.com', alias: :github_url
@@ -197,7 +196,6 @@ module Dpl
         end
 
         def remote_url
-          super if remote_url?
           token? ? https_url_with_token : git_url
         end
 
