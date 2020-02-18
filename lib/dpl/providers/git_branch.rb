@@ -31,6 +31,7 @@ module Dpl
       opt '--email EMAIL', 'Committer email', note: 'defaults to the current git commit author email'
       opt '--remote REMOTE', 'Git remote'
       opt '--pull_request', 'Whether to create a pull request for the given branch'
+      opt '--allow_same_branch', 'Whether to allow pushing to the same branch as the current branch', default: false, note: 'setting this to true risks creating infinite build loops, use conditional builds or other mechanisms to prevent build from infinitely triggering more builds'
       opt '--url URL', default: 'github.com', alias: :github_url
 
       needs :git
@@ -38,6 +39,7 @@ module Dpl
       msgs login:               'Authenticated as %s',
            invalid_token:       'The provided GitHub token is invalid (error: %s)',
            insufficient_scopes: 'Dpl does not have permission to access %{url} using the provided GitHub token. Please make sure the token have the repo or public_repo scope.',
+           same_branch:         'Prevented from pushing to the same branch as the current build branch %{git_branch}. This is meant to prevent infinite build loops. If you do need to push back to the same branch enable `allow_same_branch` and take precautions to prevent infinite loops as needed, for example using conditional builds.',
            setup_deploy_key:    'Moving deploy key %{deploy_key} to %{path}',
            check_deploy_key:    'Checking deploy key',
            setup:               'Source dir: %{src_dir}, branch: %{branch}, base branch: %{base_branch}',
@@ -67,13 +69,17 @@ module Dpl
            git_init:            'Failed to create new git repo',
            git_push:            'Failed to push the build to %{url}:%{branch}'
 
-      def login
-        token? ? login_token : setup_deploy_key
+      def validate
+        error :same_branch if same_branch? && !allow_same_branch?
       end
 
       def setup
         info :setup
         info :git_config
+      end
+
+      def login
+        token? ? login_token : setup_deploy_key
       end
 
       def prepare
@@ -99,6 +105,10 @@ module Dpl
       end
 
       private
+
+        def same_branch?
+          git_branch == branch
+        end
 
         def login_token
           user.login
@@ -218,7 +228,7 @@ module Dpl
         end
 
         def pr_exists?
-          api.pulls(repo).detect { |pull| pull.head.ref == branch }
+          !!api.pulls(repo).detect { |pull| pull.head.ref == branch }
         end
 
         def create_pr

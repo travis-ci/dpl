@@ -1,10 +1,11 @@
 describe Dpl::Providers::GitBranch do
-  let(:args)    { |e| %w(--token token --branch other) + args_from_description(e) }
+  let(:args)    { |e| %W(--token token --branch #{branch}) + args_from_description(e) }
   let(:user)    { JSON.dump(login: 'login', name: 'name', email: 'email') }
   let(:headers) { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
   let(:home)    { File.expand_path('~') }
   let!(:cwd)    { File.expand_path('.') }
   let(:tmp)     { File.expand_path('tmp') }
+  let(:branch)  { 'other' }
 
   env FOO: 'foo',
       TRAVIS: true
@@ -29,6 +30,11 @@ describe Dpl::Providers::GitBranch do
     it { should have_run '[info] Pushing to github.com/travis-ci/dpl.git HEAD:other' }
     it { should have_run 'git push --quiet "https://token@github.com/travis-ci/dpl.git" HEAD:"other" > /dev/null 2>&1' }
     it { should have_run_in_order }
+  end
+
+  describe 'given the same branch as the current build branch', run: false do
+    let(:branch) { 'git branch' }
+    it { expect { subject.run }.to raise_error /Prevented from pushing to the same branch as the current build branch/ }
   end
 
   describe 'given --repo other/name' do
@@ -69,8 +75,24 @@ describe Dpl::Providers::GitBranch do
     it { should have_run_in_order }
   end
 
-  describe 'given --pull_request' do
-    xit { }
+  describe 'given --pull_request', run: false do
+    before { stub_request(:get, %r(repos/.*/pulls)).and_return(body: JSON.dump(prs), headers: { 'Content-Type': 'application/json' }) }
+    before { stub_request(:post, %r(repos/.*/pulls)).and_return(body: JSON.dump(number: 1), headers: { 'Content-Type': 'application/json' }) }
+    before { subject.run }
+
+    context 'pr does not exist' do
+      let(:prs) { [] }
+      let(:body) { JSON.dump(base: 'master', head: 'other', title: 'Update master') }
+
+      it { should have_run '[info] Pull request #1 created.' }
+      it { expect(WebMock).to have_requested(:post, %r(repos/.*/pulls)).with(body: body) }
+    end
+
+    context 'pr exists' do
+      let(:prs) { [head: { ref: 'other' }] }
+      it { should have_run '[info] Pull request exists.' }
+      it { expect(WebMock).to_not have_requested(:post, %r(repos/.*/pulls)) }
+    end
   end
 
   describe 'working dir not dirty', run: false do

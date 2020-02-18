@@ -23,11 +23,14 @@ module Support
     include Sq
 
     def args_from_description(e)
-      str = e.example_group.description
-      return [] unless str.include?('given -')
-      str = str.sub(/.*given /, '').sub(/\(.*/, '').strip
-      strs = str.split(/\s(?=(?:[^"]|"[^"]*")*$)/)
-      strs.map { |str| str.gsub('"', '') }
+      strs = e.example_group.parent_groups.map(&:description)
+      args = strs.map do |str|
+        next unless str.include?('given -')
+        str = str.sub(/.*given /, '').sub(/\(.*/, '').strip
+        strs = str.split(/\s(?=(?:[^"]|"[^"]*")*$)/)
+        strs.map { |str| str.gsub('"', '') }
+      end
+      args.flatten.compact
     end
 
     def runner(args = nil)
