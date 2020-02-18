@@ -1,5 +1,10 @@
 # Changelog
 
+## dpl v2.0.1-beta.2 (2020-01-27)
+
+* Change codedeploy, lambda, and pages to safelist variables available for
+  interpolation on user facing options
+
 ## dpl v2.0.1-beta.1 (2020-01-27)
 
 * No changes
