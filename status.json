@@ -100,6 +100,11 @@
     "date": "2019-10-28"
   },
   {
+    "name": "git_push",
+    "status": "dev",
+    "date": "2020-02-17"
+  },
+  {
     "name": "gleis",
     "status": "alpha",
     "date": "2019-09-04"
@@ -206,8 +211,8 @@
   },
   {
     "name": "snap",
-    "status": "beta",
-    "date": "2020-01-20"
+    "status": "stable",
+    "date": "2020-02-20"
   },
   {
     "name": "surge",

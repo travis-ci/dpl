@@ -3,7 +3,7 @@ module Dpl
     class Snap < Provider
       register :snap
 
-      status :beta
+      status :stable
 
       description sq(<<-str)
         tbd
