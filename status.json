@@ -56,8 +56,8 @@
   },
   {
     "name": "codedeploy",
-    "status": "beta",
-    "date": "2020-01-20"
+    "status": "stable",
+    "date": "2020-02-21"
   },
   {
     "name": "convox",

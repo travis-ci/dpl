@@ -5,7 +5,7 @@ module Dpl
     class Codedeploy < Provider
       register :codedeploy
 
-      status :beta
+      status :stable
 
       full_name 'AWS Code Deploy'
 
