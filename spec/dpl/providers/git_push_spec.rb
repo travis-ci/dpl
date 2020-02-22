@@ -19,12 +19,12 @@ describe Dpl::Providers::GitPush do
   describe 'by default', record: true do
     it { should have_run '[info] Authenticated as login' }
     it { should have_run "[info] Source dir: #{cwd}, branch: other, base branch: master" }
-    it { should have_run '[info] Configuring git committer to be author name (via Travis CI) <author email>' }
+    it { should have_run '[info] Configuring git committer to be: name (via Travis CI) <email>' }
     it { should have_run '[info] Cloning the branch other to tmp' }
     it { should have_run 'git clone --quiet --branch="other" "https://token@github.com/travis-ci/dpl.git" . > /dev/null 2>&1' }
     it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" .) }
-    it { should have_run 'git config user.name "author name (via Travis CI)"' }
-    it { should have_run 'git config user.email "author email"' }
+    it { should have_run 'git config user.name "name (via Travis CI)"' }
+    it { should have_run 'git config user.email "email"' }
     it { should have_run 'git add -A .' }
     it { should have_run 'git commit -q -m "Update master"' }
     it { should have_run 'git show --stat-count=10 HEAD' }
@@ -66,7 +66,7 @@ describe Dpl::Providers::GitPush do
     it { should have_run 'git commit -q -m "msg travis-ci/dpl foo"' }
   end
 
-  describe 'given --deploy_key ./key', record: true do
+  describe 'given --deploy_key ./key --name name --email email', record: true do
     let(:args) { |e| %w(--branch other) + args_from_description(e) }
     it { should have_run '[info] Moving deploy key ./key to ~/.dpl/deploy_key' }
     it { should have_run '[info] Setting up git-ssh' }
@@ -97,7 +97,7 @@ describe Dpl::Providers::GitPush do
     end
   end
 
-  describe 'given --host other.com' do
+  describe 'given --host other.com --name name --email email' do
     it { should_not have_run /Authenticated as/ }
     it { should have_run 'git push --quiet "https://token@other.com/travis-ci/dpl.git" HEAD:"other" > /dev/null 2>&1' }
     it { expect(WebMock).to_not have_requested(:get, api_url) }

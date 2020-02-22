@@ -17,19 +17,19 @@ module Dpl
 
       env :github, :git
 
-      required :token, :deploy_key
+      required :token, [:deploy_key, :name, :email]
 
       opt '--repo SLUG', 'Repo slug', default: :repo_slug
       opt '--token TOKEN', 'GitHub token with repo permission', secret: true, alias: :github_token
       opt '--deploy_key PATH', 'Path to a file containing a private deploy key with write access to the repository', see: 'https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys'
       opt '--branch BRANCH', 'Target branch to push to', required: true
       opt '--base_branch BRANCH', 'Base branch to branch off initially, and (optionally) create a pull request for', default: 'master'
+      opt '--name NAME', 'Committer name', note: 'defaults to the GitHub name or login associated with the GitHub token' #, default: :user_name
+      opt '--email EMAIL', 'Committer email', note: 'defaults to the GitHub email associated with the GitHub token' #, default: :user_email
       opt '--commit_message MSG', default: 'Update %{base_branch}', interpolate: true
       opt '--allow_empty_commit', 'Allow an empty commit to be created'
       opt '--force', 'Whether to push --force', default: false
       opt '--local_dir DIR', 'Local directory to push', default: '.'
-      opt '--name NAME', 'Committer name', note: 'defaults to the current git commit author name'
-      opt '--email EMAIL', 'Committer email', note: 'defaults to the current git commit author email'
       opt '--pull_request', 'Whether to create a pull request for the given branch'
       opt '--allow_same_branch', 'Whether to allow pushing to the same branch as the current branch', default: false, note: 'setting this to true risks creating infinite build loops, use conditional builds or other mechanisms to prevent build from infinitely triggering more builds'
       opt '--host HOST', default: 'github.com'
@@ -47,7 +47,7 @@ module Dpl
            git_clone:           'Cloning the branch %{branch} to %{work_dir}',
            git_branch:          'Switching to branch %{branch}',
            copy_files:          'Copying %{src_dir} contents to %{work_dir}',
-           git_config:          'Configuring git committer to be %{name} <%{email}>',
+           git_config:          'Configuring git committer to be: %{name} <%{email}>',
            git_push:            'Pushing to %{url} HEAD:%{branch}',
            pr_exists:           'Pull request exists.',
            pr_created:          'Pull request #%{number} created.',
@@ -176,7 +176,7 @@ module Dpl
 
         def name
           str = super if name?
-          str ||= git_author_name
+          str ||= user_name
           str = "#{str} (via Travis CI)" if ENV['TRAVIS'] && !name?
           str
         end
@@ -184,7 +184,7 @@ module Dpl
 
         def email
           str = super if email?
-          str || git_author_email
+          str || user_email
         end
         memoize :email
 
@@ -226,6 +226,14 @@ module Dpl
 
         def user
           @user ||= github.user
+        end
+
+        def user_name
+          user.name || user.login
+        end
+
+        def user_email
+          user.email
         end
 
         def scopes
