@@ -59,7 +59,7 @@ module Dpl
              git_init:            'git init .',
              git_checkout:        'git checkout --orphan "%{target_branch}"',
              check_deploy_key:    'ssh -i %{key} -T git@github.com 2>&1 | grep successful > /dev/null',
-             copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
+             copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" "."',
              git_config_email:    'git config user.email %{quoted_email}',
              git_config_name:     'git config user.name %{quoted_name}',
              deployment_file:     'touch "deployed at %{now} by %{name}"',
