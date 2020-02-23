@@ -46,10 +46,11 @@ module Dpl
              work_dir:            'Using temporary work directory %{work_dir}',
              committer_from_gh:   'The repo is configured to use committer user and email.',
              setup_dir:           'The source dir for deployment is %s',
+             target_dir:          'The target dir for deployment is %s',
              git_clone:           'Cloning the branch %{target_branch} from the remote repo',
              git_init:            'Initializing local git repo',
              git_checkout:        'Checking out orphan branch %{target_branch}',
-             copy_files:          'Copying %{src_dir} contents to %{work_dir}',
+             copy_files:          'Copying %{src_dir} contents to %{dst_dir}',
              git_config:          'Configuring git committer to be %{name} <%{email}>',
              prepare:             'Preparing to deploy %{target_branch} branch to gh-pages',
              git_push:            'Pushing to %{url}',
@@ -59,7 +60,7 @@ module Dpl
              git_init:            'git init .',
              git_checkout:        'git checkout --orphan "%{target_branch}"',
              check_deploy_key:    'ssh -i %{key} -T git@github.com 2>&1 | grep successful > /dev/null',
-             copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" "."',
+             copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" "%{dst_dir}"',
              git_config_email:    'git config user.email %{quoted_email}',
              git_config_name:     'git config user.name %{quoted_name}',
              deployment_file:     'touch "deployed at %{now} by %{name}"',
@@ -82,6 +83,7 @@ module Dpl
 
         def setup
           info :setup_dir, src_dir
+          info :target_dir, dst_dir
           info :committer_from_gh if committer_from_gh?
           info :git_config
         end
@@ -229,6 +231,10 @@ module Dpl
 
         def src_dir
           @src_dir ||= expand(local_dir)
+        end
+
+        def dst_dir
+          @dst_dir ||= "."
         end
 
         def work_dir

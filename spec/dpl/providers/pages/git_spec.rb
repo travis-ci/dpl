@@ -36,7 +36,7 @@ describe Dpl::Providers::Pages do
     it { should have_run '[info] Deploying branch gh-pages to github.com/travis-ci/dpl.git' }
     it { should have_run '[info] Using temporary work directory tmp' }
     it { should have_run "[info] Cloning the branch gh-pages from the remote repo" }
-    it { should have_run "[info] Copying #{cwd} contents to tmp" }
+    it { should have_run "[info] Copying #{cwd} contents to ." }
     it { should have_run '[info] Configuring git committer to be author name (via Travis CI) <author email>' }
     it { should have_run '[info] Preparing to deploy gh-pages branch to gh-pages' }
     it { should have_run '[info] Pushing to github.com/travis-ci/dpl.git' }
@@ -76,7 +76,7 @@ describe Dpl::Providers::Pages do
   describe 'given --local_dir ./dir --verbose' do
     it { should have_run "rsync -rl --exclude .git --delete \"#{cwd}/dir/\" \".\"" }
     it { should have_run "[info] The source dir for deployment is #{cwd}/dir" }
-    it { should have_run "[info] Copying #{cwd}/dir contents to tmp" }
+    it { should have_run "[info] Copying #{cwd}/dir contents to ." }
   end
 
   describe 'given --fqdn fqdn.com' do
