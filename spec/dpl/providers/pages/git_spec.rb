@@ -79,6 +79,12 @@ describe Dpl::Providers::Pages do
     it { should have_run "[info] Copying #{cwd}/dir contents to ." }
   end
 
+  describe 'given --target_dir ./dir --verbose' do
+    it { should have_run "rsync -rl --exclude .git --delete \"#{cwd}/\" \"./dir\"" }
+    it { should have_run "[info] The target dir for deployment is ./dir" }
+    it { should have_run "[info] Copying #{cwd} contents to ./dir" }
+  end
+
   describe 'given --fqdn fqdn.com' do
     it { should have_run 'echo "fqdn.com" > CNAME' }
   end

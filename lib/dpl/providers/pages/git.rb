@@ -26,6 +26,7 @@ module Dpl
         opt '--allow_empty_commit', 'Allow an empty commit to be created', requires: :keep_history
         opt '--verbose', 'Be verbose about the deploy process'
         opt '--local_dir DIR', 'Directory to push to GitHub Pages', default: '.'
+        opt '--target_dir DIR', 'Target directory within repository', default: '.'
         opt '--fqdn FQDN', 'Write the given domain name to the CNAME file'
         opt '--project_name NAME', 'Used in the commit message only (defaults to fqdn or the current repo slug)'
         opt '--name NAME', 'Committer name', note: 'defaults to the current git commit author name'
@@ -234,7 +235,7 @@ module Dpl
         end
 
         def dst_dir
-          @dst_dir ||= "."
+          @dst_dir ||= target_dir
         end
 
         def work_dir
