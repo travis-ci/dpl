@@ -1,5 +1,10 @@
 # Changelog
 
+## dpl v2.0.1-beta.3 (unreleased)
+
+* Change git_push to use the GitHub token's user name and email as the
+  committer name and email
+
 ## dpl v2.0.1-beta.2 (2020-01-27)
 
 * Change codedeploy, lambda, and pages to safelist variables available for
