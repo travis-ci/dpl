@@ -8,7 +8,14 @@ module Dpl
       full_name 'AWS Elastic Beanstalk'
 
       description sq(<<-str)
-        tbd
+        Deploy to AWS Elastic Beanstalk: https://aws.amazon.com/elasticbeanstalk/
+
+        This provider:
+
+        1. Creates a zip file (or uses one you provide)
+        2. Uploads it to your EB application
+        3. (Optionally) deploys to a specific EB environment
+            a. (Optionally) waits until the deployment finishes
       str
 
       gem 'aws-sdk-elasticbeanstalk', '~> 1.0'
