@@ -28,7 +28,7 @@ module Dpl
       opt '--bucket_path PATH', 'Location within Bucket to upload app to'
       opt '--description DESC', 'Description for the application version'
       opt '--label LABEL', 'Label for the application version'
-      opt '--zip_file PATH', 'The zip file that you want to deploy'
+      opt '--zip_file PATH', 'The zip file that you want to deploy. You probably also should set cleanup to false if you set this. If unset, a zipfile will be created from the current directory, honoring .ebignore and .gitignore.'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
       opt '--wait_until_deployed_timeout SEC', 'How many seconds to wait for Elastic Beanstalk deployment update.', type: :integer, default: 600
       opt '--debug', internal: true

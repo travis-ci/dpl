@@ -326,7 +326,9 @@ Options:
   --bucket_path PATH                     Location within Bucket to upload app to (type: string)
   --description DESC                     Description for the application version (type: string)
   --label LABEL                          Label for the application version (type: string)
-  --zip_file PATH                        The zip file that you want to deploy (type: string)
+  --zip_file PATH                        The zip file that you want to deploy. You probably also should set cleanup to
+                                         false if you set this. If unset, a zipfile will be created from the current
+                                         directory, honoring .ebignore and .gitignore. (type: string)
   --[no-]wait_until_deployed             Wait until the deployment has finished
   --wait_until_deployed_timeout SEC      How many seconds to wait for Elastic Beanstalk deployment update. (type:
                                          integer, default: 600)
