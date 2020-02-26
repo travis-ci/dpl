@@ -31,7 +31,7 @@ module Dpl
       opt '--file_glob', 'Interpret files as globs', default: true
       opt '--overwrite', 'Overwrite files with the same name'
       opt '--prerelease', 'Identify the release as a prerelease'
-      opt '--release_number NUM', 'Release number (overide automatic release detection)'
+      opt '--release_number NUM', 'Release number (override automatic release detection)'
       opt '--release_notes STR', 'Content for the release notes', alias: :body
       opt '--release_notes_file PATH', 'Path to a file containing the release notes', note: 'will be ignored if --release_notes is given'
       opt '--draft', 'Identify the release as a draft'

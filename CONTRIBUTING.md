@@ -45,7 +45,7 @@ Hopefully helpful resources are:
 
 All provider specific classes live in [dpl/providers](lib/dpl/providers).
 These represent the CLI commands that are executed when the command line
-exectuable `dpl` is run with a given provider name as the first argument.
+executable `dpl` is run with a given provider name as the first argument.
 
 Each provider is a subclass of `Dpl::Provider`, which is defined in
 [dpl/provider.rb](lib/dpl/provider.rb). The provider base class itself
@@ -112,7 +112,7 @@ When a provider class is instantiated and run it will go through a number
 of stages that make up the deployment process.
 
 These are documented in [dpl/provider.rb](/lib/dpl/provider.rb).
-If you are adding a new deployment provider please familiarize youself with
+If you are adding a new deployment provider please familiarize yourself with
 this lifecycle.
 
 Feel free to pick and interpret these stages according to the needs and
@@ -319,7 +319,7 @@ test.
 ## Testing Dpl Branches or Forks on Travis CI
 
 It is possible to test a new deployment provider or new functionality of dpl on
-Travis CI. In order to do so, add proper configuraiton on the `edge` key to
+Travis CI. In order to do so, add proper configuration on the `edge` key to
 your `.travis.yml` like so:
 
 ```yaml

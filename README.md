@@ -1,7 +1,7 @@
 # Dpl [![Build Status](https://travis-ci.com/travis-ci/dpl.svg?branch=master)](https://travis-ci.com/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.svg)](https://codeclimate.com/github/travis-ci/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github&cache=2019-08-09_17:00)](https://coveralls.io/github/travis-ci/dpl?branch=master) [![Gem Version](https://img.shields.io/gem/v/dpl)](http://rubygems.org/gems/dpl) [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/travis-ci/dpl)
 
 This version of the README documents dpl v2, the next major version of dpl.
-The REAMDE for dpl v1, the version that is currently used in production on
+The README for dpl v1, the version that is currently used in production on
 Travis CI can be found [here](https://github.com/travis-ci/dpl/blob/v1/README.md).
 
 Dpl is command line tool for deploying code, html, packages, or build artifacts
@@ -244,7 +244,7 @@ Options can be given via env vars if prefixed with `[AWS_|CLOUDFORMATION_]`. E.g
 
 ### AWS Code Deploy
 
-Support for deployments to AWS Code Deploy is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl codedeploy [options]
@@ -1125,7 +1125,7 @@ Description:
 
 Options:
 
-  Either token, or deploy_key are required.
+  Either token, or deploy_key and name and email are required.
 
   --repo SLUG                    Repo slug (type: string, default: repo slug)
   --token TOKEN                  GitHub token with repo permission (type: string, alias: github_token)
@@ -1135,21 +1135,21 @@ Options:
   --branch BRANCH                Target branch to push to (type: string, required)
   --base_branch BRANCH           Base branch to branch off initially, and (optionally) create a pull request for
                                  (type: string, default: master)
+  --name NAME                    Committer name (type: string, note: defaults to the GitHub name or login
+                                 associated with the GitHub token)
+  --email EMAIL                  Committer email (type: string, note: defaults to the GitHub email associated
+                                 with the GitHub token)
   --commit_message MSG           type: string, default: Update %{base_branch}
   --[no-]allow_empty_commit      Allow an empty commit to be created
   --[no-]force                   Whether to push --force (default: false)
   --local_dir DIR                Local directory to push (type: string, default: .)
-  --name NAME                    Committer name (type: string, note: defaults to the current git commit author
-                                 name)
-  --email EMAIL                  Committer email (type: string, note: defaults to the current git commit author
-                                 email)
-  --remote REMOTE                Git remote (type: string)
   --[no-]pull_request            Whether to create a pull request for the given branch
   --[no-]allow_same_branch       Whether to allow pushing to the same branch as the current branch (default:
                                  false, note: setting this to true risks creating infinite build loops, use
                                  conditional builds or other mechanisms to prevent build from infinitely
                                  triggering more builds)
-  --url URL                      type: string, alias: github_url, default: github.com
+  --host HOST                    type: string, default: github.com
+  --[no-]enterprise              Whether to use a GitHub Enterprise API style URL
 
 Common Options:
 
@@ -1161,7 +1161,7 @@ Common Options:
 Examples:
 
   dpl git_push --branch branch --token token
-  dpl git_push --branch branch --deploy_key path
+  dpl git_push --branch branch --deploy_key path --name name --email email
   dpl git_push --branch branch
   dpl git_push --branch branch --token token --repo slug --base_branch branch --commit_message msg
 ```
@@ -1171,7 +1171,7 @@ be given as `GITHUB_TOKEN=<token>` or `GIT_TOKEN=<token>`.
 
 The following variable are availabe for interpolation on `commit_message`:
 
-  `base_branch`, `branch`, `deploy_key`, `email`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `local_dir`, `name`, `remote`, `repo`, `url`
+  `base_branch`, `branch`, `deploy_key`, `email`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `host`, `local_dir`, `name`, `repo`
 
 
 ### GitHub Pages
@@ -1314,7 +1314,7 @@ Options:
   --[no-]file_glob               Interpret files as globs (default: true)
   --[no-]overwrite               Overwrite files with the same name
   --[no-]prerelease              Identify the release as a prerelease
-  --release_number NUM           Release number (overide automatic release detection) (type: string)
+  --release_number NUM           Release number (override automatic release detection) (type: string)
   --release_notes STR            Content for the release notes (type: string, alias: body)
   --release_notes_file PATH      Path to a file containing the release notes (type: string, note: will be ignored
                                  if --release_notes is given)
@@ -2072,7 +2072,7 @@ Examples:
 
 ### Snap
 
-Support for deployments to Snap is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl snap [options]
@@ -2278,7 +2278,7 @@ Hopefully helpful resources are:
 
 All provider specific classes live in [dpl/providers](lib/dpl/providers).
 These represent the CLI commands that are executed when the command line
-exectuable `dpl` is run with a given provider name as the first argument.
+executable `dpl` is run with a given provider name as the first argument.
 
 Each provider is a subclass of `Dpl::Provider`, which is defined in
 [dpl/provider.rb](lib/dpl/provider.rb). The provider base class itself
@@ -2345,7 +2345,7 @@ When a provider class is instantiated and run it will go through a number
 of stages that make up the deployment process.
 
 These are documented in [dpl/provider.rb](/lib/dpl/provider.rb).
-If you are adding a new deployment provider please familiarize youself with
+If you are adding a new deployment provider please familiarize yourself with
 this lifecycle.
 
 Feel free to pick and interpret these stages according to the needs and
@@ -2552,7 +2552,7 @@ test.
 ### Testing Dpl Branches or Forks on Travis CI
 
 It is possible to test a new deployment provider or new functionality of dpl on
-Travis CI. In order to do so, add proper configuraiton on the `edge` key to
+Travis CI. In order to do so, add proper configuration on the `edge` key to
 your `.travis.yml` like so:
 
 ```yaml
