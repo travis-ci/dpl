@@ -332,9 +332,8 @@ Options:
   --bucket_path PATH                     Location within Bucket to upload app to (type: string)
   --description DESC                     Description for the application version (type: string)
   --label LABEL                          Label for the application version (type: string)
-  --zip_file PATH                        The zip file that you want to deploy. You probably also should set cleanup to
-                                         false if you set this. If unset, a zipfile will be created from the current
-                                         directory, honoring .ebignore and .gitignore. (type: string)
+  --zip_file PATH                        The zip file that you want to deploy. If unset, a zipfile will be created
+                                         from the current directory, honoring .ebignore and .gitignore. (type: string)
   --[no-]wait_until_deployed             Wait until the deployment has finished
   --wait_until_deployed_timeout SEC      How many seconds to wait for Elastic Beanstalk deployment update. (type:
                                          integer, default: 600)
@@ -787,7 +786,7 @@ Examples:
   dpl chef_supermarket --user_id id --category cat --name name --client_key key --dir dir
 ```
 
-Options can be given via env vars if prefixed with `CHEF_`. 
+Options can be given via env vars if prefixed with `CHEF_`.
 
 ### Cloud Files
 
@@ -955,7 +954,7 @@ Examples:
   dpl convox --app app --rack rack --password pass --host host --install_url url
 ```
 
-Options can be given via env vars if prefixed with `CONVOX_`. 
+Options can be given via env vars if prefixed with `CONVOX_`.
 
 ### Datica
 
@@ -991,7 +990,7 @@ Examples:
   dpl datica --target target --path path --cleanup --run cmd
 ```
 
-Options can be given via env vars if prefixed with `[CATALYZE_|DATICA_]`. 
+Options can be given via env vars if prefixed with `[CATALYZE_|DATICA_]`.
 
 ### Engineyard
 
