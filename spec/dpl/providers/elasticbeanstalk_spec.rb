@@ -53,12 +53,6 @@ describe Dpl::Providers::Elasticbeanstalk do
     it { should create_app_version /S3Key=one%2Ftwo%2Ftravis-sha-.*.zip/ }
   end
 
-  describe 'given --only_create_app_version' do
-    before { subject.run }
-    it { should create_app_version }
-    it { should_not update_environment }
-  end
-
   describe 'given --description description' do
     before { subject.run }
     it { should create_app_version 'Description=description' }
