@@ -320,14 +320,13 @@ Options:
   --region REGION                        AWS Region the Elastic Beanstalk app is running in (type: string, default:
                                          us-east-1)
   --app NAME                             Elastic Beanstalk application name (type: string, default: repo name)
-  --env NAME                             Elastic Beanstalk environment name which will be updated (type: string,
-                                         required)
+  --env NAME                             Elastic Beanstalk environment name which will be updated. If unset, no
+                                         environment will be updated. (type: string)
   --bucket NAME                          Bucket name to upload app to (type: string, required, alias: bucket_name)
   --bucket_path PATH                     Location within Bucket to upload app to (type: string)
   --description DESC                     Description for the application version (type: string)
   --label LABEL                          Label for the application version (type: string)
   --zip_file PATH                        The zip file that you want to deploy (type: string)
-  --[no-]only_create_app_version         Only create the app version, do not actually deploy it
   --[no-]wait_until_deployed             Wait until the deployment has finished
   --wait_until_deployed_timeout SEC      How many seconds to wait for Elastic Beanstalk deployment update. (type:
                                          integer, default: 600)

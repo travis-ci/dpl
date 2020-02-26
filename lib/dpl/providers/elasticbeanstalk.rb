@@ -23,13 +23,12 @@ module Dpl
       opt '--secret_access_key KEY', 'AWS Secret Key', required: true, secret: true
       opt '--region REGION', 'AWS Region the Elastic Beanstalk app is running in', default: 'us-east-1'
       opt '--app NAME', 'Elastic Beanstalk application name', default: :repo_name
-      opt '--env NAME', 'Elastic Beanstalk environment name which will be updated', required: true
+      opt '--env NAME', 'Elastic Beanstalk environment name which will be updated. If unset, no environment will be updated.'
       opt '--bucket NAME', 'Bucket name to upload app to', required: true, alias: :bucket_name
       opt '--bucket_path PATH', 'Location within Bucket to upload app to'
       opt '--description DESC', 'Description for the application version'
       opt '--label LABEL', 'Label for the application version'
       opt '--zip_file PATH', 'The zip file that you want to deploy'
-      opt '--only_create_app_version', 'Only create the app version, do not actually deploy it'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
       opt '--wait_until_deployed_timeout SEC', 'How many seconds to wait for Elastic Beanstalk deployment update.', type: :integer, default: 600
       opt '--debug', internal: true
@@ -56,7 +55,7 @@ module Dpl
         create_zip unless zip_exists?
         upload
         create_version
-        update_app unless only_create_app_version?
+        update_app unless env.empty?
       end
 
       def zip_file
