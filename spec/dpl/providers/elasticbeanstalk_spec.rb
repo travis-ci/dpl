@@ -2,7 +2,7 @@ describe Dpl::Providers::Elasticbeanstalk do
   include Support::Matchers::Aws
 
   let(:args) { |e| required + args_from_description(e) }
-  let(:required) { %w(--access_key_id id --secret_access_key key --env env --bucket bucket) }
+  let(:required) { %w(--access_key_id id --secret_access_key key --bucket bucket) }
   let(:events) { [] }
 
   let(:client)   { Aws::ElasticBeanstalk::Client.new(stub_responses: responses) }
@@ -45,8 +45,14 @@ describe Dpl::Providers::Elasticbeanstalk do
     it { should create_app_version 'S3Bucket=bucket' }
     it { should create_app_version /S3Key=travis-sha-.*.zip/ }
     it { should create_app_version /VersionLabel=travis-sha.*/ }
-    it { should update_environment }
+    it { should_not update_environment }
   end
+
+    describe 'given --env env' do
+      before { subject.run }
+      it { should create_app_version }
+      it { should update_environment }
+    end
 
   describe 'given --bucket_path one/two' do
     before { subject.run }
