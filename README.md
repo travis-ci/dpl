@@ -1781,14 +1781,13 @@ Description:
 
 Options:
 
-  --api_key KEY              NuGet registry api key (type: string, required, note: can be retrieved from your
+  --api_key KEY              NuGet registry API key (type: string, required, note: can be retrieved from your
                              NuGet registry provider, see:
                              https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
-  --registry URL             NuGet registry url (type: string, required, note: ex:
-                             "https://www.myget.org/F/org-name/api/v2/package")
-  --src SRC                  nupkg file(s) to push (type: string, default: *.nupkg)
-  --[no-]no_symbols          note: does not push symbols (even if present)
-  --[no-]skip_duplicate      does not push packages with 409 Conflict response from the server
+  --registry URL             NuGet registry url (type: string, required)
+  --src SRC                  The nupkg file(s) to publish (type: string, default: *.nupkg)
+  --[no-]no_symbols          Do not push symbols, even if present
+  --[no-]skip_duplicate      Do not overwrite existing packages
 
 Common Options:
 
