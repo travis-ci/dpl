@@ -62,7 +62,7 @@ module Dpl
         create_zip unless zip_exists?
         upload
         create_version
-        update_app unless env
+        update_app unless env?
       end
 
       def zip_file
