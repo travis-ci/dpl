@@ -79,4 +79,5 @@ end
 
 
 erb = ERB.new(File.read('lib/dpl/assets/dpl/README.erb.md'), nil, '-')
-puts erb.result
+str = erb.result
+puts str.split("\n").map(&:rstrip).join("\n")
