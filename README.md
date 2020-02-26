@@ -130,6 +130,7 @@ Dpl supports the following providers:
   * [Launchpad](#launchpad)
   * [Netlify](#netlify)
   * [npm](#npm)
+  * [nuget](#nuget)
   * [OpenShift](#openshift)
   * [Packagecloud](#packagecloud)
   * [Puppet Forge](#puppet-forge)
@@ -1763,6 +1764,47 @@ Examples:
 Options can be given via env vars if prefixed with `NPM_`. E.g. the option `--api_token` can be
 given as `NPM_API_TOKEN=<api_token>`.
 
+### nuget
+
+Support for deployments to nuget is in **development**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
+```
+Usage: dpl nuget [options]
+
+Summary:
+
+  nuget deployment provider
+
+Description:
+
+  tbd
+
+Options:
+
+  --api_key KEY              NuGet registry API key (type: string, required, note: can be retrieved from your
+                             NuGet registry provider, see:
+                             https://docs.npmjs.com/creating-and-viewing-authentication-tokens)
+  --registry URL             NuGet registry url (type: string, required)
+  --src SRC                  The nupkg file(s) to publish (type: string, default: *.nupkg)
+  --[no-]no_symbols          Do not push symbols, even if present
+  --[no-]skip_duplicate      Do not overwrite existing packages
+
+Common Options:
+
+  --cleanup                  Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                  Commands to execute after the deployment finished successfully (type: array
+                             (string, can be given multiple times))
+  --help                     Get help on this command
+
+Examples:
+
+  dpl nuget --api_key key --registry url
+  dpl nuget --api_key key --registry url --src src --no_symbols --skip_duplicate
+```
+
+Options can be given via env vars if prefixed with `[DOTNET_|NUGET_]`. E.g. the option `--api_key`
+can be given as `NUGET_API_KEY=<api_key>` or `DOTNET_API_KEY=<api_key>`.
+
 ### OpenShift
 
 
@@ -2647,4 +2689,4 @@ This tool would not exist without your help.
 
 A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors):
 
-5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Chris Patterson, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, dependabot[bot], Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, JMSwag, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, Marc, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Nikhil, Ole Michaelis, Olle Jonsson, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radek Lisowski, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, Sascha Zarhuber, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wen Kokke, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
+5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Chris Patterson, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, dependabot[bot], Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, JMSwag, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, Marc, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Nikhil, Ole Michaelis, Olle Jonsson, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radek Lisowski, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, Sascha Zarhuber, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wen Kokke, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson

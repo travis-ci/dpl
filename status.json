@@ -150,6 +150,11 @@
     "date": "2019-11-04"
   },
   {
+    "name": "nuget",
+    "status": "dev",
+    "date": "2020-01-17"
+  },
+  {
     "name": "openshift",
     "status": "stable",
     "date": "2019-11-04"
