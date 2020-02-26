@@ -2,7 +2,7 @@ describe Dpl::Providers::Elasticbeanstalk do
   include Support::Matchers::Aws
 
   let(:args) { |e| required + args_from_description(e) }
-  let(:required) { %w(--access_key_id id --secret_access_key key --env env --bucket bucket) }
+  let(:required) { %w(--access_key_id id --secret_access_key key --bucket bucket) }
   let(:events) { [] }
 
   let(:client)   { Aws::ElasticBeanstalk::Client.new(stub_responses: responses) }
@@ -45,18 +45,18 @@ describe Dpl::Providers::Elasticbeanstalk do
     it { should create_app_version 'S3Bucket=bucket' }
     it { should create_app_version /S3Key=travis-sha-.*.zip/ }
     it { should create_app_version /VersionLabel=travis-sha.*/ }
+    it { should_not update_environment }
+  end
+
+  describe 'given --env env' do
+    before { subject.run }
+    it { should create_app_version }
     it { should update_environment }
   end
 
   describe 'given --bucket_path one/two' do
     before { subject.run }
     it { should create_app_version /S3Key=one%2Ftwo%2Ftravis-sha-.*.zip/ }
-  end
-
-  describe 'given --only_create_app_version' do
-    before { subject.run }
-    it { should create_app_version }
-    it { should_not update_environment }
   end
 
   describe 'given --description description' do
@@ -81,7 +81,7 @@ describe Dpl::Providers::Elasticbeanstalk do
     it { should create_app_version /S3Key=travis-sha-.*.zip/ }
   end
 
-  describe 'given --wait_until_deployed', run: false do
+  describe 'given --env env --wait_until_deployed', run: false do
     let(:events) { [event_date: Time.now, severity: 'ERROR', message: 'msg'] }
     it { expect { subject.run }.to raise_error /Deployment failed/ }
   end

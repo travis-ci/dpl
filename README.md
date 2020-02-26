@@ -312,7 +312,14 @@ Summary:
 
 Description:
 
-  tbd
+  Deploy to AWS Elastic Beanstalk: https://aws.amazon.com/elasticbeanstalk/
+
+  This provider:
+
+  * Creates a zip file (or uses one you provide)
+  * Uploads it to your EB application
+  * Optionally deploys to a specific EB environment
+  * Optionally waits until the deployment finishes
 
 Options:
 
@@ -321,15 +328,14 @@ Options:
   --region REGION                        AWS Region the Elastic Beanstalk app is running in (type: string, default:
                                          us-east-1)
   --app NAME                             Elastic Beanstalk application name (type: string, default: repo name)
-  --env NAME                             Elastic Beanstalk environment name which will be updated (type: string,
-                                         required)
+  --env NAME                             Elastic Beanstalk environment name to be updated. (type: string)
   --bucket NAME                          Bucket name to upload app to (type: string, required, alias: bucket_name)
   --bucket_path PATH                     Location within Bucket to upload app to (type: string)
   --description DESC                     Description for the application version (type: string)
   --label LABEL                          Label for the application version (type: string)
-  --zip_file PATH                        The zip file that you want to deploy (type: string)
-  --[no-]only_create_app_version         Only create the app version, do not actually deploy it
-  --[no-]wait_until_deployed             Wait until the deployment has finished
+  --zip_file PATH                        The zip file that you want to deploy. If not given, a zipfile will be created
+                                         from the current directory, honoring .ebignore and .gitignore. (type: string)
+  --[no-]wait_until_deployed             Wait until the deployment has finished (requires: env)
   --wait_until_deployed_timeout SEC      How many seconds to wait for Elastic Beanstalk deployment update. (type:
                                          integer, default: 600)
 
@@ -342,8 +348,8 @@ Common Options:
 
 Examples:
 
-  dpl elasticbeanstalk --access_key_id id --secret_access_key key --env name --bucket name
-  dpl elasticbeanstalk --access_key_id id --secret_access_key key --env name --bucket name --region region
+  dpl elasticbeanstalk --access_key_id id --secret_access_key key --bucket name
+  dpl elasticbeanstalk --access_key_id id --secret_access_key key --bucket name --region region --app name
 ```
 
 Options can be given via env vars if prefixed with `[AWS_|ELASTIC_BEANSTALK_]`. E.g. the option
@@ -781,7 +787,7 @@ Examples:
   dpl chef_supermarket --user_id id --category cat --name name --client_key key --dir dir
 ```
 
-Options can be given via env vars if prefixed with `CHEF_`. 
+Options can be given via env vars if prefixed with `CHEF_`.
 
 ### Cloud Files
 
@@ -949,7 +955,7 @@ Examples:
   dpl convox --app app --rack rack --password pass --host host --install_url url
 ```
 
-Options can be given via env vars if prefixed with `CONVOX_`. 
+Options can be given via env vars if prefixed with `CONVOX_`.
 
 ### Datica
 
@@ -985,7 +991,7 @@ Examples:
   dpl datica --target target --path path --cleanup --run cmd
 ```
 
-Options can be given via env vars if prefixed with `[CATALYZE_|DATICA_]`. 
+Options can be given via env vars if prefixed with `[CATALYZE_|DATICA_]`.
 
 ### Engineyard
 
@@ -2689,4 +2695,4 @@ This tool would not exist without your help.
 
 A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors):
 
-5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Chris Patterson, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, dependabot[bot], Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, JMSwag, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, Mahdi Nami Damirchi, Marc, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Nikhil, Ole Michaelis, Olle Jonsson, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radek Lisowski, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, Sascha Zarhuber, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wen Kokke, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
+5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alex Jurkiewicz, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Chris Patterson, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, dependabot[bot], Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, JMSwag, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, Mahdi Nami Damirchi, Marc, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Nikhil, Ole Michaelis, Olle Jonsson, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radek Lisowski, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, Sascha Zarhuber, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wen Kokke, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
