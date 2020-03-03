@@ -151,8 +151,8 @@
   },
   {
     "name": "nuget",
-    "status": "dev",
-    "date": "2020-01-17"
+    "status": "alpha",
+    "date": "2020-03-03"
   },
   {
     "name": "openshift",
