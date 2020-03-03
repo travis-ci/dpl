@@ -6,7 +6,7 @@ require 'json'
 $stdout.sync = true
 
 expected = ENV['ID']
-url = "https://www.myget.org/F/dpl-nuget-test/api/v2/package/dpl-test/1.0.#{ENV['ID']}"
+url = "https://www.myget.org/F/dpl-nuget-test/api/v2/package/dpl-test/1.0.0-#{ENV['ID']}"
 
 def poll(url)
   URI.parse(url).read
