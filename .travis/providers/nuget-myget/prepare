@@ -17,6 +17,4 @@ File.write 'dpl-test.csproj', <<~str
 </Project>
 str
 
-system 'git init'
-system 'git add .'
-system "git commit -m 'testing travis ci/dpl nuget integration'"
+system 'dotnet pack'
