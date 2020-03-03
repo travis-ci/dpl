@@ -13,7 +13,7 @@ deploy:
   - provider: nuget
     registry: https://www.myget.org/F/dpl-nuget-test/api/v2/package
     api_key:
-      secure: "iH22IMdsdEx/Oq1YLS2ktgws0I5/k1dyW0uP4nIoZcJeI0+LbMEMPSvCVO4GsvTZ5SSBq2yYoaGBjWabdiUtdNwDg1jq+mVra3vQVCW1xdkU6M8qb2jG2O3PWO0y6u0a7YjlG02cPO0TxsrQojqtDzZS/bZYT5v4nzRI3tv42Nc="
+      secure: "o7/D199WZFJgyJNg+PW+dLOqV/3V2/1/BUF+3cLTudllzUbGyudeJNNXd7iYWRXT42t6Q3TRTGK3JCK4kCVodPDmawPpRJik54fJ/b+x5m9tz682Isw1qeg4fIQB8D1UsUevd1HHPHsqOgXtrPRcvhYWW7AbOCSNsLuES8LKdLY="
 
 after_deploy:
   - cd ../..
