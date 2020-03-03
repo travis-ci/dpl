@@ -18,3 +18,4 @@ File.write 'dpl-test.csproj', <<~str
 str
 
 system 'dotnet pack'
+system 'mv bin/Debug/*.nupkg .'
