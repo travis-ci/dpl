@@ -1,4 +1,6 @@
 language: csharp
+mono: none
+dotnet: 2.1.502
 
 script:
   - true
@@ -10,9 +12,9 @@ before_deploy:
 deploy:
   - provider: nuget
     registry: https://www.myget.org/F/dpl-nuget-test/api/v2/package
-    api_key: 
+    api_key:
       secure: "iH22IMdsdEx/Oq1YLS2ktgws0I5/k1dyW0uP4nIoZcJeI0+LbMEMPSvCVO4GsvTZ5SSBq2yYoaGBjWabdiUtdNwDg1jq+mVra3vQVCW1xdkU6M8qb2jG2O3PWO0y6u0a7YjlG02cPO0TxsrQojqtDzZS/bZYT5v4nzRI3tv42Nc="
-      
+
 after_deploy:
   - cd ../..
   - .travis/providers/nuget-myget/test || TRAVIS_TEST_RESULT=$?
