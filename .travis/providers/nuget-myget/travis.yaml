@@ -10,7 +10,8 @@ before_deploy:
 deploy:
   - provider: nuget
     registry: https://www.myget.org/F/dpl-nuget-test/api/v2/package
-    api_key: "dba10d90-e6e2-4eb7-8e6e-e6f6905ef889"
+    api_key: 
+      secure: "iH22IMdsdEx/Oq1YLS2ktgws0I5/k1dyW0uP4nIoZcJeI0+LbMEMPSvCVO4GsvTZ5SSBq2yYoaGBjWabdiUtdNwDg1jq+mVra3vQVCW1xdkU6M8qb2jG2O3PWO0y6u0a7YjlG02cPO0TxsrQojqtDzZS/bZYT5v4nzRI3tv42Nc="
       
 after_deploy:
   - cd ../..
