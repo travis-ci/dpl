@@ -1,0 +1,17 @@
+language: csharp
+
+script:
+  - true
+
+before_deploy:
+  - .travis/providers/nuget-myget/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: nuget
+    registry: https://www.myget.org/F/dpl-nuget-test/api/v2/package
+    api_key: "dba10d90-e6e2-4eb7-8e6e-e6f6905ef889"
+      
+after_deploy:
+  - cd ../..
+  - .travis/providers/nuget-myget/test || TRAVIS_TEST_RESULT=$?
