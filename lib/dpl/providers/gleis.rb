@@ -9,7 +9,7 @@ module Dpl
         tbd
       str
 
-      gem 'gleis', '~> 0.6.0'
+      gem 'gleis', '~> 0.7.0'
 
       env :gleis
 
