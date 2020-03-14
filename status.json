@@ -16,8 +16,8 @@
   },
   {
     "name": "bluemixcloudfoundry",
-    "status": "beta",
-    "date": "2020-01-23"
+    "status": "stable",
+    "date": "2020-03-14"
   },
   {
     "name": "boxfuse",

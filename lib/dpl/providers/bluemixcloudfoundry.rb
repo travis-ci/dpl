@@ -3,7 +3,7 @@ module Dpl
     class Bluemixcloudfoundry < Provider
       register :bluemixcloudfoundry
 
-      status :beta
+      status :stable
 
       full_name 'Bluemix Cloud Foundry'
 
