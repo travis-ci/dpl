@@ -621,7 +621,7 @@ as `BINTRAY_KEY=<key>`.
 
 ### Bluemix Cloud Foundry
 
-Support for deployments to Bluemix Cloud Foundry is in **beta**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
 
 ```
 Usage: dpl bluemixcloudfoundry [options]
