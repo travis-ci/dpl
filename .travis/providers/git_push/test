@@ -5,7 +5,7 @@ require 'open-uri'
 $stdout.sync = true
 
 expected = ENV['ID']
-url = 'https://raw.githubusercontent.com/travis-ci/dpl_test/test-git-branch/id'
+url = 'https://raw.githubusercontent.com/travis-ci/dpl_test/test-git-push/id'
 
 def poll(url)
   URI.parse(url).read
