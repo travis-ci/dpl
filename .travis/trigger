@@ -106,7 +106,7 @@ body = {
     branch: opts[:branch],
     message: "test dpl (#{opts[:branch]}) #{ARGV.any? ? ARGV.join(', ') : '(all providers)'} #{Time.now}",
     config: {
-      import: './.travis/blank.yml', # skips .travis.yml
+      merge_mode: :replace,
       env: {
         global: {
           ID: SecureRandom.hex
