@@ -33,7 +33,7 @@ describe Dpl::Providers::Lambda do
       it { should have_run_in_order }
 
       it { should create_function FunctionName: 'func' }
-      it { should create_function Runtime: 'nodejs8.10' }
+      it { should create_function Runtime: 'nodejs10.x' }
       it { should create_function Code: { ZipFile: instance_of(String) } }
       it { should create_function Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
       it { should create_function Handler: 'index.handler' }
@@ -113,7 +113,7 @@ describe Dpl::Providers::Lambda do
       it { should have_run '[info] Updating existing function func.' }
       it { should have_run '[info] Updating code.' }
 
-      it { should update_function_config Runtime: 'nodejs8.10' }
+      it { should update_function_config Runtime: 'nodejs10.x' }
       it { should update_function_config Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
       it { should update_function_config Timeout: 3 }
       it { should update_function_config MemorySize: 128 }
