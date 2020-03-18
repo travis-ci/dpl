@@ -553,7 +553,7 @@ module Dpl
 
     # Double quotes the given string.
     def quote(str)
-      %("#{str.gsub('"', '\"')}")
+      %("#{str.to_s.gsub('"', '\"')}")
     end
 
     # Outdents the given string.
