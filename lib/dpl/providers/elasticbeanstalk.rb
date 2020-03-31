@@ -109,16 +109,28 @@ module Dpl
       end
 
       def create_version
-        @version = eb.create_application_version(
-          application_name: app,
-          version_label: label,
-          description: clean(description[0, 200]),
-          source_bundle: {
-            s3_bucket: bucket.name,
-            s3_key: object.key
-          },
-          auto_create_application: false
-        )
+        begin
+          @version = eb.create_application_version(
+            application_name: app,
+            version_label: label,
+            description: clean(description[0, 200]),
+            source_bundle: {
+              s3_bucket: bucket.name,
+              s3_key: object.key
+            },
+            auto_create_application: false
+          )
+        rescue rescue Aws::ElasticBeanstalk::Errors::ServiceError => e
+          raise e unless e.message.match?(/^Application Version %{version_label} already exists.$/)
+          info "%{e.message} Will use this version and proceed."
+          ver = eb.describe_application_versions({
+            application_name: app,
+            version_labels: [label],
+          }).application_versions[0]
+          @version = { application_version: ver }
+        end
+
+
       end
 
       def update_app
