@@ -86,6 +86,20 @@ describe Dpl::Providers::Codedeploy do
     it { should get_deployment }
   end
 
+  describe 'given --wait_until_deployed', run: false do
+    let(:responses) do
+      {
+        eb: {
+          get_deployment: {
+            deployment_info: { status: 'Failed' }
+          }
+        }
+      }
+    end
+
+    it { expect { subject.run }.to raise_error 'Waiting terminated with status: Failed' }
+  end
+
   describe 'with ~/.aws/credentials', run: false do
     let(:args) { |e| %w(--application app) }
 
