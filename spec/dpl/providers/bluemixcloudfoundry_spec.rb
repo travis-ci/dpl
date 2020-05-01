@@ -9,8 +9,8 @@ describe Dpl::Providers::Bluemixcloudfoundry do
   describe 'by default', record: true do
     it { should have_run %r(wget .*cli.run.pivotal.io.* -qO cf.tgz && tar -zxvf cf.tgz) }
     it { should have_run './cf api api.ng.bluemix.net' }
-    it { should have_run './cf login -u name -p pass' }
-    it { should have_run './cf target -o org -s space' }
+    it { should have_run './cf login -u name -p pass -o "org" -s "space"' }
+    it { should have_run './cf target -o "org" -s "space"' }
     it { should have_run './cf push' }
     it { should have_run './cf logout' }
     it { should have_run_in_order }
