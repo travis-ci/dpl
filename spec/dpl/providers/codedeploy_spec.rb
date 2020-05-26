@@ -97,7 +97,7 @@ describe Dpl::Providers::Codedeploy do
       }
     end
 
-    it { expect { subject.run }.to raise_error 'Waiting terminated with status: Failed' }
+    it { expect { subject.run }.to raise_error(/Failed/)}
   end
 
   describe 'with ~/.aws/credentials', run: false do

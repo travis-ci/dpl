@@ -84,8 +84,12 @@ module Dpl
       def wait_until_deployed(id)
         print :waiting_for_deploy
         status = poll(id) until %w(Succeeded Failed Stopped).include?(status)
-        error "Waiting terminated with status: #{status}" if status != 'Succeeded'
-        info :finished_deploy, status
+        case status
+        when 'Succeeded'
+          info :finished_deploy, status
+        else
+          error :finished_deploy, status
+        end
       end
 
       def poll(id)
