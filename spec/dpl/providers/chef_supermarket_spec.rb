@@ -8,7 +8,7 @@ describe Dpl::Providers::ChefSupermarket do
   file 'chef.pem'
   file 'metadata.json', '{"name":"dpl"}'
   # metadata must be more than one property, see #1199
-  file 'metadata.rb', <<~METADATA
+  file 'metadata.rb', <<-METADATA
     name "dpl"
     description "something"
   METADATA
