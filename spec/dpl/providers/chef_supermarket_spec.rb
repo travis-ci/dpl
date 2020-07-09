@@ -7,7 +7,11 @@ describe Dpl::Providers::ChefSupermarket do
 
   file 'chef.pem'
   file 'metadata.json', '{"name":"dpl"}'
-  file 'metadata.rb', 'name "dpl"'
+  # metadata must be more than one property, see #1199
+  file 'metadata.rb', <<~METADATA
+    name "dpl"
+    description "something"
+  METADATA
 
   before do |c|
     # all this stubbing business makes the tests rather ineffective

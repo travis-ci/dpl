@@ -80,7 +80,11 @@ module Dpl
         end
 
         def name_from_rb
-          Chef::Cookbook::Metadata.new.from_file('metadata.rb') if file?('metadata.rb')
+          if file?('metadata.rb')
+            metadata = Chef::Cookbook::Metadata.new
+            metadata.from_file('metadata.rb')
+            metadata.name
+          end
         end
 
         def cookbook
