@@ -21,7 +21,7 @@ module Dpl
            update_snapd:   'sudo apt-get install snapd',
            install:        'sudo snap install snapcraft --classic',
            login:          'echo "%{token}" | snapcraft login --with -',
-           deploy:         'snapcraft push %{snap_path} --release=%{channel}'
+           deploy:         'snapcraft upload %{snap_path} --release=%{channel}'
 
       msgs login:          'Attemping to login ...',
            no_snaps:       'No snap found matching %{snap}',
