@@ -22,8 +22,9 @@ module Dpl
       opt '--json',            'Output json data'
 
       def deploy
-        output = shell "netlify deploy #{deploy_opts}"
-        json && (shell "export NETLIFY_DEPLOY_JSON_ID_#{site.gsub(/-/, '_')}=#{output}")
+        output = shell "netlify deploy #{deploy_opts}", echo: false, capture:true
+        info output
+        json && (shell "export NETLIFY_DEPLOY_JSON_ID_#{site.gsub(/-/, '_')}=\"#{output.gsub(/\n/,'').gsub(/"/, '\"')}\"")
       end
 
       private
