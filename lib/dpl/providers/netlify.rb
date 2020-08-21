@@ -25,7 +25,7 @@ module Dpl
         output = shell "netlify deploy #{deploy_opts}", echo: false, capture:true
         info output
         if json
-          write_file "./NETLIFY_DEPLOY_JSON_ID_#{site}.json", output
+          shell "echo \"#{output.gsub(/\n/, '').gsub(/"/, '\"')}\" > ./NETLIFY_DEPLOY_JSON_ID_#{site}.json"
         end
       end
 
