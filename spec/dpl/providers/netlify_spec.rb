@@ -24,6 +24,11 @@ describe Dpl::Providers::Netlify do
     it { should have_run 'netlify deploy --site="id" --auth="token" --prod' }
   end
 
+  describe 'given --json' do
+    it { should have_run 'netlify deploy --site="id" --auth="token" --json' }
+    it { should have_env NETLIFY_DEPLOY_JSON_ID_id }
+  end
+
   describe 'with credentials in env vars', run: false do
     let(:args) { %w(--site id) }
     env NETLIFY_AUTH: 'token'
