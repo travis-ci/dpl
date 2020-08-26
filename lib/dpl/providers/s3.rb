@@ -16,7 +16,7 @@ module Dpl
         tbd
       str
 
-      gem 'aws-sdk-s3', '~> 1.0'
+      gem 'aws-sdk-s3', '~> 3.0'
       gem 'mime-types', '~> 3.2.2'
 
       env :aws, :s3
