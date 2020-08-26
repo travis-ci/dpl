@@ -2,7 +2,6 @@ require 'json'
 require 'aws-sdk'
 require 'mime-types'
 require 'uri'
-require 'dpl/support/aws_sdk_patch'
 
 Aws.eager_autoload!
 
