@@ -22,7 +22,7 @@ module Dpl
       opt '--buildpack PACK',      'Buildpack name or Git URL'
       opt '--manifest FILE',       'Path to the manifest'
       opt '--skip_ssl_validation', 'Skip SSL validation'
-      opt '--strategy STRATEGY',   'Deployment strategy, either rolling or null'
+      opt '--deployment_strategy STRATEGY', 'Deployment strategy, either rolling or null'
       opt '--v3',                  'Use the v3 API version to push the application'
       opt '--logout', default: true, internal: true
 
@@ -71,7 +71,7 @@ module Dpl
           args = []
           args << quote(app_name)  if app_name?
           args << "-f #{manifest}" if manifest?
-          args << "--strategy #{strategy}" if strategy?
+          args << "--deployment_strategy #{deployment_strategy}" if deployment_strategy?
           args.join(' ')
         end
 
