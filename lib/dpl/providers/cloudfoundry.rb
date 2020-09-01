@@ -71,7 +71,7 @@ module Dpl
           args = []
           args << quote(app_name)  if app_name?
           args << "-f #{manifest}" if manifest?
-          args << "--deployment_strategy #{deployment_strategy}" if deployment_strategy?
+          args << "--strategy #{deployment_strategy}" if deployment_strategy?
           args.join(' ')
         end
 

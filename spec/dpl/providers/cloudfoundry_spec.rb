@@ -28,7 +28,7 @@ describe Dpl::Providers::Cloudfoundry do
   end
 
   describe 'given --deployment_strategy rolling' do
-    it { should have_run './cf push --deployment_strategy rolling' }
+    it { should have_run './cf push --strategy rolling' }
   end
 
   describe 'given --v3' do
