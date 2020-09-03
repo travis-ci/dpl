@@ -22,10 +22,11 @@ module Dpl
       opt '--buildpack PACK',      'Buildpack name or Git URL'
       opt '--manifest FILE',       'Path to the manifest'
       opt '--skip_ssl_validation', 'Skip SSL validation'
+      opt '--deployment_strategy STRATEGY', 'Deployment strategy, either rolling or null'
       opt '--v3',                  'Use the v3 API version to push the application'
       opt '--logout', default: true, internal: true
 
-      cmds install: 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz',
+      cmds install: 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&version=v7&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz',
            api:     './cf api %{api} %{skip_ssl_validation_opt}',
            login:   './cf login -u %{username} -p %{password} -o %{organization} -s %{space}',
            push:    './cf %{push_cmd} %{push_args}',
@@ -70,6 +71,7 @@ module Dpl
           args = []
           args << quote(app_name)  if app_name?
           args << "-f #{manifest}" if manifest?
+          args << "--strategy #{deployment_strategy}" if deployment_strategy?
           args.join(' ')
         end
 

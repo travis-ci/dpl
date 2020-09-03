@@ -27,6 +27,10 @@ describe Dpl::Providers::Cloudfoundry do
     it { should have_run './cf push -f other.yml' }
   end
 
+  describe 'given --deployment_strategy rolling' do
+    it { should have_run './cf push --strategy rolling' }
+  end
+
   describe 'given --v3' do
     it { should have_run './cf v3-push' }
   end
