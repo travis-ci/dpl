@@ -11,11 +11,8 @@ require 'dpl/providers/cloudfiles'
 require 'dpl/providers/cloudformation'
 require 'dpl/providers/cloudfoundry'
 require 'dpl/providers/codedeploy'
-<<<<<<< HEAD
 require 'dpl/providers/ecr'
-=======
 require 'dpl/providers/convox'
->>>>>>> master
 require 'dpl/providers/elasticbeanstalk'
 require 'dpl/providers/engineyard'
 require 'dpl/providers/firebase'
