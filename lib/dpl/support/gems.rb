@@ -4,7 +4,7 @@ module Dpl
   module Support
     class Gems < Struct.new(:glob, :opts)
       def each(&block)
-        all.uniq.each(&block)
+        all.uniq{|e| e.first}.each(&block)
       end
 
       def all
