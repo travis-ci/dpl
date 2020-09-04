@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Puppetforge < Provider
+      register :puppetforge
+
       status :alpha
 
       full_name 'Puppet Forge'
@@ -11,6 +13,8 @@ module Dpl
 
       gem 'puppet', '~> 5.5.14', require: 'puppet/face'
       gem 'puppet-blacksmith', '~> 3.3.1', require: 'puppet_blacksmith'
+
+      env :puppetforge
 
       opt '--username NAME', 'Puppet Forge user name', required: true, alias: :user
       opt '--password PASS', 'Puppet Forge password', required: true, secret: true

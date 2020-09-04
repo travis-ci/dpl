@@ -1,11 +1,15 @@
 module Dpl
   module Providers
     class Cloud66 < Provider
+      register :cloud66
+
       status :alpha
 
       description sq(<<-str)
         tbd
       str
+
+      env :cloud66
 
       opt '--redeployment_hook URL', 'The redeployment hook URL', required: true, secret: true
 

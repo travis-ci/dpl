@@ -1,57 +1,45 @@
 describe Dpl::Providers::Codedeploy do
-  let(:args) { |e| %w(--access_key_id id --secret_access_key key --application app) + args_from_description(e) }
-  let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
+  include Support::Matchers::Aws
 
-  env TRAVIS_BUILD_NUMBER: 1
+  let(:args)   { |e| %w(--access_key_id access_key_id --secret_access_key secret_access_key --application app) + args_from_description(e) }
+  let(:client) { Aws::CodeDeploy::Client.new(stub_responses: responses[:eb]) }
+  let(:s3)     { Aws::S3::Client.new(stub_responses: true) }
 
-  before do
-    Aws.config[:s3] = {
-      stub_responses: {
-        get_object: ->(ctx) {
-          requests[:buckets] << ctx.http_request
-          { deployment_id: 'id' }
-        }
-      }
-    }
-    Aws.config[:codedeploy] = {
-      stub_responses: {
-        create_deployment: ->(ctx) {
-          requests[:create_deployment] << ctx.http_request
-          { deployment_id: 'id' }
+  let(:responses) do
+    {
+      eb: {
+        create_deployment: {
+          deployment_id: 'deployment_id'
         },
-        get_deployment: ->(ctx) {
-          requests[:get_deployment] << ctx.http_request
-          { deployment_info: { status: 'Succeeded' } }
+        get_deployment: {
+          deployment_info: { status: 'Succeeded' }
         }
       }
     }
   end
-
-  after { Aws.config.clear }
-
-  matcher :create_deployment do |params = {}|
-    match do |*|
-      next false unless request = requests[:create_deployment][0]
-      body = symbolize(JSON.parse(request.body.read))
-      params.all? { |key, value| body[key] == value }
-    end
-  end
-
-  matcher :get_deployment do |*|
-    match { |*| requests[:get_deployment].any? }
-  end
-
-  before { subject.run }
 
   let(:github_revision) { { revisionType: 'GitHub', gitHubLocation: { repository: 'dpl', commitId: 'sha' } } }
   let(:s3_revision) { { revisionType: 'S3', s3Location: { bucket: 'bucket', bundleType: 'zip', version: 'ObjectVersionId', eTag: 'ETag' } } }
 
+  env TRAVIS_BUILD_NUMBER: 1
+
+  before { allow(Aws::CodeDeploy::Client).to receive(:new).and_return(client) }
+  before { allow(Aws::S3::Client).to receive(:new).and_return(s3) }
+  before { |c| subject.run if run?(c) }
+
+  let(:github_revision) { { revisionType: 'GitHub', gitHubLocation: { repository: 'dpl', commitId: 'sha' } } }
+  let(:s3_revision) { { revisionType: 'S3', s3Location: { bucket: 'bucket', bundleType: 'zip', version: 'ObjectVersionId', eTag: 'ETag' } } }
+
+  before { |c| subject.run unless c.metadata[:run].is_a?(FalseClass) }
+  after { Aws.config.clear }
+
   describe 'by default', record: true do
-    it { should have_run '[info] Using Access Key: i*******************' }
+    it { should have_run '[info] Using Access Key: ac******************' }
     it { should create_deployment applicationName: 'app' }
     it { should create_deployment description: 'Deploy build 1 via Travis CI' }
     it { should create_deployment revision: github_revision }
-    it { should have_run '[info] Deployment triggered: id' }
+    it { should create_deployment fileExistsBehavior: 'DISALLOW' }
+    it { should have_run '[info] Deployment triggered: deployment_id' }
     it { should have_run_in_order }
   end
 
@@ -96,5 +84,48 @@ describe Dpl::Providers::Codedeploy do
     it { should create_deployment revision: github_revision }
     it { should have_run '[print] Waiting for the deployment to finish ' }
     it { should get_deployment }
+  end
+
+  describe 'given --wait_until_deployed', run: false do
+    let(:responses) do
+      {
+        eb: {
+          get_deployment: {
+            deployment_info: { status: 'Failed' }
+          }
+        }
+      }
+    end
+
+    it { expect { subject.run }.to raise_error(/Failed/)}
+  end
+
+  describe 'with ~/.aws/credentials', run: false do
+    let(:args) { |e| %w(--application app) }
+
+    file '~/.aws/credentials', <<-str.sub(/^\s*/, '')
+      [default]
+      aws_access_key_id=access_key_id
+      aws_secret_access_key=secret_access_key
+    str
+
+    before { subject.run }
+    it { should have_run '[info] Using Access Key: ac******************' }
+  end
+
+  describe 'with ~/.aws/config', run: false do
+    let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
+
+    file '~/.aws/config', <<-str.sub(/^\s*/, '')
+      [default]
+      application=app
+      revision_type=s3
+      bucket=bucket
+      key=bundle.zip
+    str
+
+    before { s3_revision[:s3Location][:key] = 'bundle.zip' }
+    before { subject.run }
+    it { should create_deployment revision: s3_revision }
   end
 end

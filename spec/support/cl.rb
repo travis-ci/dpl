@@ -1,7 +1,7 @@
 module Support
   module Cl
     module Sq
-      # Beloved squiggly heredocs did not existin Ruby 2.1.0, which we still
+      # Beloved squiggly heredocs did not exist in Ruby 2.1.0, which we still
       # want to support, so let's give kudos with this method in the meantime.
       def sq(str)
         width = str =~ /( *)\S/ && $1.size
@@ -10,7 +10,11 @@ module Support
     end
 
     def self.included(base)
-      base.let(:provider) { described_class.is_a?(Symbol) ? described_class : described_class.registry_key }
+      base.let(:provider) do
+        next described_class if described_class.is_a?(Symbol)
+        next described_class.registry_key if described_class.registry_key
+        described_class.name.split('::').last.downcase
+      end
       base.let(:args) { |e| args_from_description(e) }
       base.subject { cmd }
       base.extend Sq
@@ -19,10 +23,14 @@ module Support
     include Sq
 
     def args_from_description(e)
-      str = e.example_group.description
-      return [] unless str.include?('given')
-      strs = str.sub('given', '').strip.split(/\s(?=(?:[^"]|"[^"]*")*$)/)
-      strs.map { |str| str.gsub('"', '') }
+      strs = e.example_group.parent_groups.map(&:description)
+      args = strs.map do |str|
+        next unless str.include?('given -')
+        str = str.sub(/.*given /, '').sub(/\(.*/, '').strip
+        strs = str.split(/\s(?=(?:[^"]|"[^"]*")*$)/)
+        strs.map { |str| str.gsub('"', '') }
+      end
+      args.flatten.compact
     end
 
     def runner(args = nil)
@@ -37,6 +45,10 @@ module Support
 
     def run
       runner.run
+    end
+
+    def run?(c)
+      not c.metadata[:example_group][:run].is_a?(FalseClass)
     end
   end
 end

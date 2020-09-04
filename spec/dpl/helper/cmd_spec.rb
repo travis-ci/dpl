@@ -23,7 +23,7 @@ describe Dpl::Cmd do
       end
 
       describe 'interpolating a secure opt' do
-        let(:body) { ->(*) { cmds cmd: 'cmd %{var}'; opt '--var', secure: true } }
+        let(:body) { ->(*) { cmds cmd: 'cmd %{var}'; opt '--var', secret: true } }
         let(:opts) { { var: 'secure' } }
         it { expect(subject.cmd).to eq 'cmd secure' }
       end

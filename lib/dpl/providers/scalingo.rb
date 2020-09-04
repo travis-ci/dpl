@@ -1,11 +1,15 @@
 module Dpl
   module Providers
     class Scalingo < Provider
+      register :scalingo
+
       status :alpha
 
       description sq(<<-str)
         tbd
       str
+
+      env :scalingo
 
       required :api_token, [:username, :password]
 

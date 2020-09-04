@@ -30,7 +30,6 @@ module Support
       end
     end
 
-    # fakefs does not support File.write?
     def file(path, content = '')
       path = path.to_s
       FileUtils.mkdir_p(::File.dirname(path))

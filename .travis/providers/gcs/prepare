@@ -5,7 +5,12 @@ require 'fileutils'
 include FileUtils
 
 dir = 'tmp/dpl_test'
-mkdir_p dir
-chdir dir
 
-File.write 'index.html', ENV['ID']
+def write(path, content)
+  mkdir_p File.dirname(path)
+  File.write(path, content)
+end
+
+write "#{dir}/index.html", ENV['ID']
+write "#{dir}/foo/index.html", ENV['ID']
+write "#{dir}/foo/bar/index.html", ENV['ID']

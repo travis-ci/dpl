@@ -3,7 +3,9 @@ require 'open-uri'
 module Dpl
   module Providers
     class Surge < Provider
-      status :alpha
+      register :surge
+
+      status :stable
 
       description sq(<<-str)
         tbd
@@ -11,7 +13,7 @@ module Dpl
 
       node_js '>= 8.8.1'
 
-      gem 'json', '~> 2.2.0'
+      gem 'json'
       npm :surge
       env :surge
 
@@ -48,7 +50,7 @@ module Dpl
       end
 
       def project
-        File.expand_path(super, build_dir)
+        expand(super, build_dir)
       end
     end
   end

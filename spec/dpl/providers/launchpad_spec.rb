@@ -16,10 +16,15 @@ describe Dpl::Providers::Launchpad do
   end
 
   before { stub_request(:post, /.*/) }
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default' do
     it { should have_requested(:post, url).with(body: body, headers: { Authorization: auth }) }
   end
-end
 
+  describe 'with credentials in env vars', run: false do
+    let(:args) { %w(--slug ~user/project/branch --oauth_token token) }
+    env LAUNCHPAD_OAUTH_TOKEN_SECRET: 'secret'
+    it { expect { subject.run }.to_not raise_error }
+  end
+end

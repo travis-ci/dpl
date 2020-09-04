@@ -1,0 +1,18 @@
+language: shell
+
+script:
+  true
+
+env:
+  - secure: "KbgeC+baSQKcldV2TPC6C295LB2ufaReuC5Wcx/r+pSwesXNG15phNltwZL9TjptxPxgllbC4LncopL8vBkh9tvrNLkBvXFeVu4meHRW6opFeHSjsaQOQr0zwcAJiUt5Pp4R+E5XbiIbFpZKUU6vY5oeyIEt45MhyxjciKYAUUI="
+
+before_deploy:
+  - .travis/providers/testfairy/prepare
+
+deploy:
+  - provider: testfairy
+    api_key: ${TESTFAIRY_API_KEY}
+    app_file: tmp/dpl_test/${ID}.apk
+
+after_deploy:
+  - .travis/providers/testfairy/test || TRAVIS_TEST_RESULT=$?

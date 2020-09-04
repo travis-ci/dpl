@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Datica < Provider
+      register :datica
+
       status :dev
 
       register :datica, :catalyze
@@ -25,7 +27,7 @@ module Dpl
            push:     'Deploying to Datica: %{target}'
 
       def setup
-        commit unless cleanup?
+        commit if git_dirty? && !cleanup?
       end
 
       def deploy

@@ -3,7 +3,9 @@ module Dpl
     # split this up to CodeDeploy::Github and CodeDeploy::S3 using the
     # revision_type, in order to make opts more strict
     class Codedeploy < Provider
-      status :alpha
+      register :codedeploy
+
+      status :stable
 
       full_name 'AWS Code Deploy'
 
@@ -11,9 +13,11 @@ module Dpl
         tbd
       str
 
-      gem 'aws-sdk', '~> 2.0'
+      gem 'aws-sdk-codedeploy', '~> 1.0'
+      gem 'aws-sdk-s3', '~> 1.0'
 
-      env :aws
+      env :aws, :codedeploy
+      config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
 
       opt '--access_key_id ID', 'AWS access key', required: true, secret: true
       opt '--secret_access_key KEY', 'AWS secret access key', required: true, secret: true
@@ -24,13 +28,12 @@ module Dpl
       opt '--repository NAME', 'Repository name in case of GitHub'
       opt '--bucket NAME', 'S3 bucket in case of S3'
       opt '--region REGION', 'AWS availability zone', default: 'us-east-1'
+      opt '--file_exists_behavior STR', 'How to handle files that already exist in a deployment target location', enum: %w(disallow overwrite retain), default: 'disallow'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
-      # mentioned in both the code and the docs
-      opt '--bundle_type TYPE'
-      opt '--endpoint ENDPOINT'
-      opt '--key KEY'
-      # mentioned only in the code
-      opt '--description DESCR'
+      opt '--bundle_type TYPE', 'Bundle type of the revision'
+      opt '--key KEY', 'S3 bucket key of the revision'
+      opt '--description DESCR', 'Description of the revision', interpolate: true
+      opt '--endpoint ENDPOINT', 'S3 endpoint url'
 
       msgs login:                 'Using Access Key: %{access_key_id}',
            deploy_triggered:      'Deployment triggered: %s',
@@ -42,6 +45,8 @@ module Dpl
            missing_key:           'Missing required key for S3 deployment',
            unknown_revision_type: 'Unknown revision type %p',
            unknown_bundle_type:   'Unknown bundle type'
+
+      vars :build_number
 
       def login
         info :login
@@ -70,7 +75,8 @@ module Dpl
           revision: revision,
           application_name: application,
           deployment_group_name: deployment_group,
-          description: description
+          description: description,
+          file_exists_behavior: file_exists_behavior.upcase
         )
         deployment.deployment_id
       end
@@ -78,7 +84,12 @@ module Dpl
       def wait_until_deployed(id)
         print :waiting_for_deploy
         status = poll(id) until %w(Succeeded Failed Stopped).include?(status)
-        info :finished_deploy, status
+        case status
+        when 'Succeeded'
+          info :finished_deploy, status
+        else
+          error :finished_deploy, status
+        end
       end
 
       def poll(id)
@@ -150,7 +161,7 @@ module Dpl
       end
 
       def description
-        super || interpolate(msg(:description))
+        interpolate(super || msg(:description), vars: vars)
       end
 
       def build_number

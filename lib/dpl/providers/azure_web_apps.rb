@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class AzureWebApps < Provider
+      register :azure_web_apps
+
       status :alpha
 
       full_name 'Azure Web Apps'
@@ -11,9 +13,9 @@ module Dpl
 
       env :AZURE_WA
 
-      opt '--site SITE',     'Web App name (e.g. myapp in myapp.azurewebsites.net)', required: true
       opt '--username NAME', 'Web App Deployment Username', required: true
       opt '--password PASS', 'Web App Deployment Password', required: true, secret: true
+      opt '--site SITE',     'Web App name (e.g. myapp in myapp.azurewebsites.net)', required: true
       opt '--slot SLOT',     'Slot name (if your app uses staging deployment)'
       opt '--verbose',       'Print deployment output from Azure. Warning: If authentication fails, Git prints credentials in clear text. Correct credentials remain hidden.'
 

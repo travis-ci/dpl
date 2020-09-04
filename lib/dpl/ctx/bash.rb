@@ -9,12 +9,14 @@ require 'dpl/support/version'
 module Dpl
   module Ctx
     class Bash < Cl::Ctx
+      include FileUtils
+
       attr_accessor :folds, :stdout, :stderr, :last_out, :last_err
 
       def initialize(stdout = $stdout, stderr = $stderr)
         @stdout, @stderr = stdout, stderr
         @folds = 0
-        super('dpl')
+        super('dpl', abort: false)
       end
 
       # Folds any log output from the given block
@@ -290,7 +292,8 @@ module Dpl
       # @option chdir [String] directory temporarily to change to before running the command
       def open3(cmd, opts)
         opts = [opts[:chdir] ? only(opts, :chdir) : nil].compact
-        Open3.capture3(cmd, *opts)
+        out, err, status = Open3.capture3(cmd, *opts)
+        [out, err, status.success?]
       end
 
       # Runs a shell command, streaming any stdout or stderr output, and
@@ -387,14 +390,29 @@ module Dpl
         end
       end
 
+      # Returns the current branch name
+      def git_branch
+        ENV['TRAVIS_BRANCH'] || git_rev_parse('HEAD')
+      end
+
       # Returns the message of the commit `git_sha`.
       def git_commit_msg
         `git log #{git_sha} -n 1 --pretty=%B`.chomp
       end
 
-      # Whether or not the git working directory is dirty
+      # Returns the committer name of the commit `git_sha`.
+      def git_author_name
+        `git log #{git_sha} -n 1 --pretty=%an`.chomp
+      end
+
+      # Returns the comitter email of the commit `git_sha`.
+      def git_author_email
+        `git log #{git_sha} -n 1 --pretty=%ae`.chomp
+      end
+
+      # Whether or not the git working directory is dirty or has new or deleted files
       def git_dirty?
-        !system('git diff --quiet')
+        !`git status --short`.chomp.empty?
       end
 
       # Returns the output of `git log`, using the given args.
@@ -412,7 +430,7 @@ module Dpl
 
       # Returns true if the given ref exists remotely
       def git_ls_remote?(url, ref)
-        system("git ls-remote --exit-code #{url} #{ref} > /dev/null 2>&1")
+        Kernel.system("git ls-remote --exit-code #{url} #{ref} > /dev/null 2>&1")
       end
 
       # Returns known Git remote URLs
@@ -491,6 +509,7 @@ module Dpl
       # Writes the given content to the given file path
       def write_file(path, content, chmod = nil)
         path = File.expand_path(path)
+        FileUtils.mkdir_p(File.dirname(path))
         File.open(path, 'w+') { |f| f.write(content) }
         FileUtils.chmod(chmod, path) if chmod
       end

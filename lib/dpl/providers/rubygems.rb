@@ -1,7 +1,9 @@
 module Dpl
   module Providers
     class Rubygems < Provider
-      status :alpha
+      register :rubygems
+
+      status :stable
 
       description sq(<<-str)
         tbd
@@ -9,7 +11,9 @@ module Dpl
 
       gem 'gems', '~> 1.1.1'
 
-      required :api_key, [:user, :password]
+      env :rubygems
+
+      required :api_key, [:username, :password]
 
       opt '--api_key KEY', 'Rubygems api key', secret: true
       opt '--username USER', 'Rubygems user name', alias: :user

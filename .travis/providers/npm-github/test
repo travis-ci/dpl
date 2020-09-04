@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+require 'net/http'
+require 'json'
+
+$stdout.sync = true
+
+expected = ENV['ID']
+
+def query
+  File.read(File.expand_path('../query.graphql', __FILE__))
+end
+
+def uri
+  URI.parse('https://api.github.com/graphql')
+end
+
+def http
+  http = Net::HTTP.new(uri.host, 443)
+  http.use_ssl = true
+  http
+end
+
+def request
+  req = Net::HTTP::Post.new(uri.path)
+  req['Authorization'] = "token #{ENV['GITHUB_TOKEN']}"
+  req['Accept'] = 'application/vnd.github.v3+json'
+  req.body = JSON.dump(query: query)
+  req
+end
+
+def response
+  http.request(request)
+end
+
+def poll
+  data = JSON.load(response.body)
+  data['data']['user']['repository']['registryPackages']['edges'][0]['node']['latestVersion']['version']
+rescue => e
+  puts e.message
+end
+
+10.times do
+  actual = poll.to_s.split('-').last
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual.include?(expected)
+  sleep 5
+end
+
+abort 'failed'
+

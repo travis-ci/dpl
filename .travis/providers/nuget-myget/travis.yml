@@ -1,0 +1,20 @@
+language: csharp
+mono: none
+dotnet: 2.1.502
+
+script:
+  - true
+
+before_deploy:
+  - .travis/providers/nuget-myget/prepare
+  - cd tmp/dpl_test
+
+deploy:
+  - provider: nuget
+    registry: https://www.myget.org/F/dpl-nuget-test/api/v2/package
+    api_key:
+      secure: "o7/D199WZFJgyJNg+PW+dLOqV/3V2/1/BUF+3cLTudllzUbGyudeJNNXd7iYWRXT42t6Q3TRTGK3JCK4kCVodPDmawPpRJik54fJ/b+x5m9tz682Isw1qeg4fIQB8D1UsUevd1HHPHsqOgXtrPRcvhYWW7AbOCSNsLuES8LKdLY="
+
+after_deploy:
+  - cd ../..
+  - .travis/providers/nuget-myget/test || TRAVIS_TEST_RESULT=$?

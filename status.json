@@ -1,0 +1,237 @@
+[
+  {
+    "name": "anynines",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "azure_web_apps",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "bintray",
+    "status": "stable",
+    "date": "2019-11-04"
+  },
+  {
+    "name": "bluemixcloudfoundry",
+    "status": "stable",
+    "date": "2020-03-14"
+  },
+  {
+    "name": "boxfuse",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "cargo",
+    "status": "stable",
+    "date": "2020-01-27"
+  },
+  {
+    "name": "chef_supermarket",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "cloud66",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "cloudfiles",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "cloudformation",
+    "status": "stable",
+    "date": "2019-11-04"
+  },
+  {
+    "name": "cloudfoundry",
+    "status": "stable",
+    "date": "2019-10-28"
+  },
+  {
+    "name": "codedeploy",
+    "status": "stable",
+    "date": "2020-02-21"
+  },
+  {
+    "name": "convox",
+    "status": "dev",
+    "date": "2019-08-16"
+  },
+  {
+    "name": "datica",
+    "status": "dev",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "elasticbeanstalk",
+    "status": "stable",
+    "date": "2019-10-28"
+  },
+  {
+    "name": "engineyard",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "firebase",
+    "status": "stable",
+    "date": "2019-10-28"
+  },
+  {
+    "name": "flynn",
+    "status": "dev",
+    "date": "2020-01-22"
+  },
+  {
+    "name": "gae",
+    "status": "stable",
+    "date": "2019-10-29"
+  },
+  {
+    "name": "gcs",
+    "status": "stable",
+    "date": "2019-10-28"
+  },
+  {
+    "name": "git_push",
+    "status": "dev",
+    "date": "2020-02-17"
+  },
+  {
+    "name": "gleis",
+    "status": "alpha",
+    "date": "2019-09-04"
+  },
+  {
+    "name": "hackage",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "hephy",
+    "status": "beta",
+    "date": "2019-10-07"
+  },
+  {
+    "name": "heroku:api",
+    "status": "stable",
+    "date": "2019-10-28"
+  },
+  {
+    "name": "heroku:git",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "lambda",
+    "status": "stable",
+    "date": "2019-11-04"
+  },
+  {
+    "name": "launchpad",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "netlify",
+    "status": "stable",
+    "date": "2019-11-11"
+  },
+  {
+    "name": "npm",
+    "status": "stable",
+    "date": "2019-11-04"
+  },
+  {
+    "name": "nuget",
+    "status": "alpha",
+    "date": "2020-03-03"
+  },
+  {
+    "name": "openshift",
+    "status": "stable",
+    "date": "2019-11-04"
+  },
+  {
+    "name": "opsworks",
+    "status": "stable",
+    "date": "2019-11-18"
+  },
+  {
+    "name": "packagecloud",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "pages:api",
+    "status": "dev",
+    "date": "2019-09-10"
+  },
+  {
+    "name": "pages:git",
+    "status": "stable",
+    "date": "2019-10-28"
+  },
+  {
+    "name": "puppetforge",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "pypi",
+    "status": "stable",
+    "date": "2019-11-04"
+  },
+  {
+    "name": "releases",
+    "status": "stable",
+    "date": "2019-10-29"
+  },
+  {
+    "name": "rubygems",
+    "status": "stable",
+    "date": "2019-11-04"
+  },
+  {
+    "name": "s3",
+    "status": "stable",
+    "date": "2019-10-28"
+  },
+  {
+    "name": "scalingo",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "script",
+    "status": "stable",
+    "date": "2019-10-28"
+  },
+  {
+    "name": "snap",
+    "status": "stable",
+    "date": "2020-02-20"
+  },
+  {
+    "name": "surge",
+    "status": "stable",
+    "date": "2020-01-14"
+  },
+  {
+    "name": "testfairy",
+    "status": "alpha",
+    "date": "2019-08-05"
+  },
+  {
+    "name": "transifex",
+    "status": "alpha",
+    "date": "2019-08-05"
+  }
+]

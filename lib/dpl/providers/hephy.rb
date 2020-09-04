@@ -1,17 +1,21 @@
 module Dpl
   module Providers
     class Hephy < Provider
-      status :alpha
+      register :hephy
+
+      status :beta
 
       description sq(<<-str)
         tbd
       str
 
+      env :hephy
+
       opt '--controller NAME', 'Hephy controller', required: true, example: 'hephy.hephyapps.com'
       opt '--username USER',   'Hephy username', required: true
       opt '--password PASS',   'Hephy password', required: true, secret: true
       opt '--app APP',         'Deis app', required: true
-      opt '--cli_version VER', 'Install a specific hephy cli version', default: 'stable'
+      opt '--cli_version VER', 'Install a specific Hephy CLI version', default: 'stable'
       opt '--verbose',         'Verbose log output'
 
       needs :git, :ssh_key

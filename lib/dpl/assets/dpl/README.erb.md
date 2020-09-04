@@ -1,4 +1,8 @@
-# Dpl [![Build Status](https://travis-ci.com/travis-ci/dpl.svg?branch=master)](https://travis-ci.com/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.png)](https://codeclimate.com/github/travis-ci/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github&cache=2019-08-09_17:00)](https://coveralls.io/github/travis-ci/dpl?branch=master) [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/travis-ci/dpl) [![Gem Version](https://badge.fury.io/rb/dpl.png)](http://badge.fury.io/rb/dpl)
+# Dpl [![Build Status](https://travis-ci.com/travis-ci/dpl.svg?branch=master)](https://travis-ci.com/travis-ci/dpl) [![Code Climate](https://codeclimate.com/github/travis-ci/dpl.svg)](https://codeclimate.com/github/travis-ci/dpl) [![Coverage Status](https://coveralls.io/repos/travis-ci/dpl/badge.svg?branch=master&service=github&cache=2019-08-09_17:00)](https://coveralls.io/github/travis-ci/dpl?branch=master) [![Gem Version](https://img.shields.io/gem/v/dpl)](http://rubygems.org/gems/dpl) [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/travis-ci/dpl)
+
+This version of the README documents dpl v2, the next major version of dpl.
+The README for dpl v1, the version that is currently used in production on
+Travis CI can be found [here](https://github.com/travis-ci/dpl/blob/v1/README.md).
 
 Dpl is command line tool for deploying code, html, packages, or build artifacts
 to various service providers.
@@ -20,8 +24,8 @@ please do not hesitate to get in touch, and we'll help you [add it](#contributin
 * [Contributing to Dpl](#contributing-to-dpl)
 * [Old Issues](#old-issues)
 * [Code of Conduct](#code-of-conduct)
-* [Credits](#credits)
 * [License](#license)
+* [Credits](#credits)
 
 ## Requirements
 
@@ -35,10 +39,11 @@ Dpl is generally optimized for usage on Linux systems.
 
 ## Installation
 
-Installation:
+This version of dpl is currently released as an `alpha` preview release. In
+order to install it, add the `--pre` flag:
 
 ```
-gem install dpl
+gem install dpl --pre
 ```
 
 ## Usage
@@ -84,7 +89,7 @@ the following maturity levels, according to the given criteria:
 * `dev` - the provider is in development (initial level)
 * `alpha` - the provider is fully tested
 * `beta` - the provider has been in alpha for at least a month, and successful real-world production deployments have been observed
-* `stable` - the provider has been in beta for at least two months, and there are no open issues that qualify as critical (such as deployments failing, documented functionality broken, etc)
+* `stable` - the provider has been in beta for at least a month, and there are no open issues that qualify as critical (such as deployments failing, documented functionality broken, etc)
 
 ## Supported Providers
 
@@ -97,9 +102,13 @@ Dpl supports the following providers:
 <% providers.each do |key, name|%>
 ### <%= name %>
 
+<%= header(key) %>
+
 ```
 <%= help(key) %>
 ```
+
+<%= footer(key) %>
 <% end -%>
 
 <%= File.read('./CONTRIBUTING.md').gsub(/^#/, '##') %>
@@ -116,11 +125,14 @@ relevant are closed. You can read more about this [here](https://blog.travis-ci.
 Please see [our code of conduct](CODE_OF_CONDUCT.md) for how to interact with
 this project and its community.
 
-## Credits
-
-A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors).
-This tool would not exist without your help.
-
 ## License
 
 Dpl is licensed under the [MIT License](https://github.com/travis-ci/dpl/blob/master/LICENSE).
+
+## Credits
+
+This tool would not exist without your help.
+
+A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors):
+
+<%= contributors %>

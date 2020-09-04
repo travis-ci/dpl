@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Boxfuse < Provider
+      register :boxfuse
+
       status :alpha
 
       description sq(<<-str)
@@ -11,11 +13,11 @@ module Dpl
 
       opt '--user USER', required: true
       opt '--secret SECRET', required: true, secret: true
-      opt '--config_file FILE', alias: :configfile, deprecated: :configfile
       opt '--payload PAYLOAD'
       opt '--app APP'
       opt '--version VERSION'
       opt '--env ENV'
+      opt '--config_file FILE', alias: :configfile, deprecated: :configfile
       opt '--extra_args ARGS'
 
       URL = 'https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/latest/boxfuse-commandline-latest-linux-x64.tar.gz'

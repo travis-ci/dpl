@@ -5,19 +5,23 @@ script:
 
 before_deploy:
   - .travis/providers/github-pages/prepare
-  - cd tmp/dpl_test_github_pages
 
 deploy:
   - provider: pages
+    token:
+      # personal access token with repo and user scopes on travis-dpl-test
+      secure: "Iq437TC76lD2pY5BceuaTqcyHt6Xq8dv+/Or6tkdzwMAltmraPKA6AB7MhQTtMVwqd5rSehNqbglzTcaXU4vk8TEGYxA9VDXD/9+9VWYGMHRh5Ql+huOoVPpW4tF+ZRUpAfogB77XRROvb8TjwI2uyO1byDtq/5jRl9CeQNv5sg="
     repo: travis-ci/dpl_test
-    github_token:
-      # personal access token with repo scope on travis-dpl-test
-      secure: "fRVQWM14TO7/nHNyXB3fHZPKCqZxNPxN3wKmVsxVqTj99SSPsonr1AvQXziFtLEc44+pmlg0J5diFhhwzWU2W4/UxDaFyrdhkmZWRkRlJTjkgO0kDOJPJFza4stXAsavn4bLpz6YuCD0ZprPTBJu2wDA7e1IvXGRu0nb/PIaRko="
     committer_from_gh: true
-    deployment_file: true
-    keep_history: false
+    local_dir: tmp/dpl_test
+    keep_history: true
     verbose: true
+    commit_message: |-
+      commit https://github.com/%{project_name}/commit/$TRAVIS_COMMIT
+
+      successfully built and checked by Travis CI build $TRAVIS_BUILD_NUMBER.
+
+      see https://travis-ci.org/%{project_name}/builds/$TRAVIS_BUILD_ID for details.
 
 after_deploy:
-  - cd ../..
   - .travis/providers/github-pages/test || TRAVIS_TEST_RESULT=$?

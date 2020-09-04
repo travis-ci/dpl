@@ -251,14 +251,14 @@ describe Dpl::Ctx::Bash do
     end
 
     describe 'capture' do
-      let(:captures) { ['stdout', '', true] }
+      let(:captures) { ['stdout', '', double(success?: true)] }
       let!(:result) { subject.shell('echo one', capture: true) }
       it { expect(result).to eq 'stdout' }
       it { should call_capture3 'echo one' }
     end
 
     describe 'capture (info)' do
-      let(:captures) { ['stdout', '', true] }
+      let(:captures) { ['stdout', '', double(success?: true)] }
       let!(:result) { subject.shell('echo one', capture: true, success: 'stdout: %{out}') }
       it { expect(result).to eq 'stdout' }
       it { should call_capture3 'echo one' }
@@ -266,7 +266,7 @@ describe Dpl::Ctx::Bash do
     end
 
     describe 'capture (assert)' do
-      let(:captures) { ['', 'stderr', false] }
+      let(:captures) { ['', 'stderr', double(success?: false)] }
       let(:result) { subject.shell('echo one', capture: true, assert: 'stderr: %{err}') }
       it { expect { result }.to raise_error Dpl::Error, 'stderr: stderr' }
     end
@@ -339,6 +339,18 @@ describe Dpl::Ctx::Bash do
     before { allow(subject).to receive(:git_sha).and_return('1234') }
     cmds 'git log 1234 -n 1 --pretty=%B': "commit msg\n"
     it { expect(subject.git_commit_msg).to eq 'commit msg' }
+  end
+
+  describe 'git_author_name' do
+    before { allow(subject).to receive(:git_sha).and_return('1234') }
+    cmds 'git log 1234 -n 1 --pretty=%an': "author name\n"
+    it { expect(subject.git_author_name).to eq 'author name' }
+  end
+
+  describe 'git_author_email' do
+    before { allow(subject).to receive(:git_sha).and_return('1234') }
+    cmds 'git log 1234 -n 1 --pretty=%ae': "author email\n"
+    it { expect(subject.git_author_email).to eq 'author email' }
   end
 
   describe 'git_log' do

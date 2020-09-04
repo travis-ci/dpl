@@ -5,19 +5,22 @@ require 'find'
 module Dpl
   module Providers
     class Bintray < Provider
-      status :alpha
+      register :bintray
+
+      status :stable
 
       description sq(<<-str)
         tbd
       str
 
-      gem 'json', '~> 2.2.0'
+      gem 'json'
+
+      env :bintray
 
       opt '--user USER', 'Bintray user', required: true
       opt '--key KEY', 'Bintray API key', required: true, secret: true
       opt '--file FILE', 'Path to a descriptor file for the Bintray upload', required: true
       opt '--passphrase PHRASE', 'Passphrase as configured on Bintray (if GPG signing is used)'
-      # mentioned in code
       opt '--url URL', default: 'https://api.bintray.com', internal: true
 
       msgs missing_file:    'Missing descriptor file: %{file}',
@@ -30,6 +33,9 @@ module Dpl
            sign_version:    'Signing version %s passphrase',
            publish_version: 'Publishing version %{version_name} of package %{package_name}',
            missing_path:    'Path: %{path} does not exist.',
+           list_download:   'Listing %{path} in downloads',
+           retrying:        '%{code} response from Bintray. It may take some time for a version to be published, retrying in %{pause} sec ... (%{count}/%{max})',
+           giveup_retries:  'Too many retries failed, giving up, something went wrong.',
            unexpected_code: 'Unexpected HTTP response code %s while checking if the %s exists' ,
            request_failed:  '%s %s returned unexpected HTTP response code %s',
            request_success: 'Bintray response: %s %s. %s'
@@ -43,7 +49,8 @@ module Dpl
         version_attrs:   '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}/attributes',
         version_sign:    '/gpg/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
         version_publish: '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/publish',
-        version_file:    '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{target}'
+        version_file:    '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{target}',
+        file_metadata:   '/file_metadata/%{subject}/%{repo}/%{target}'
       }
 
       MAP = {
@@ -66,8 +73,8 @@ module Dpl
         create_package unless package_exists?
         create_version unless version_exists?
         upload_files
-        sign_version    if sign_version?
-        publish_version if publish_version?
+        sign_version if sign_version?
+        publish_version && update_files if publish_version?
       end
 
       def package_exists?
@@ -97,7 +104,7 @@ module Dpl
       def upload_files
         files.each do |file|
           info :upload_file, source: file.source, target: file.target
-          put_file(file.source, path(:version_file, target: file.target), file.params)
+          put(path(:version_file, target: file.target), file.read, file.params)
         end
       end
 
@@ -112,19 +119,45 @@ module Dpl
         post(path(:version_publish))
       end
 
-      def files
-        return {} unless files = descriptor[:files]
-        keys  = %i(path includePattern excludePattern uploadPattern matrixParams)
-        files = files.map { |file| file if file[:path] = path_for(file[:includePattern]) }
-        files.compact.map { |file| find(*file.values_at(*keys)) }.flatten
+      def update_files
+        files.select(&:download).each do |file|
+          info :list_download, path: file.target
+          update_file(file)
+        end
       end
 
-      def find(path, includes, excludes, uploads, params)
+      def update_file(file)
+        retrying(max: 10, pause: 5) do
+          body = { list_in_downloads: file.download }.to_json
+          headers = { 'Content-Type': 'application/json' }
+          put(path(:file_metadata, target: file.target), body, {}, headers)
+        end
+      end
+
+      def retrying(opts, &block)
+        1.upto(opts[:max]) do |count|
+          code = yield
+          return if code < 400
+          info :retrying, opts.merge(count: count, code: code)
+          sleep opts[:pause]
+        end
+        error :giveup_retries
+      end
+
+      def files
+        return {} unless files = descriptor[:files]
+        return @files if @files
+        keys = %i(path includePattern excludePattern uploadPattern matrixParams listInDownloads)
+        files = files.map { |file| file if file[:path] = path_for(file[:includePattern]) }
+        @files = files.compact.map { |file| find(*file.values_at(*keys)) }.flatten
+      end
+
+      def find(path, includes, excludes, uploads, params, download)
         paths = Find.find(path).select { |path| File.file?(path) }
         paths = paths.reject { |path| excluded?(path, excludes) }
         paths = paths.map { |path| [path, path.match(/#{includes}/)] }
         paths = paths.select(&:last)
-        paths.map { |path, match| Upload.new(path, fmt(uploads, match.captures), params) }
+        paths.map { |path, match| Upload.new(path, fmt(uploads, match.captures), params, download) }
       end
 
       def fmt(pattern, captures)
@@ -167,10 +200,11 @@ module Dpl
         request(req)
       end
 
-      def put_file(source, path, params)
+      def put(path, body, params = {}, headers = {})
         req = Net::HTTP::Put.new(append_params(path, params))
+        headers.each { |key, value| req.add_field(key.to_s, value) }
         req.basic_auth(user, key)
-        req.body = IO.read(source)
+        req.body = body
         request(req)
       end
 
@@ -261,7 +295,19 @@ module Dpl
         {}
       end
 
-      class Upload < Struct.new(:source, :target, :params)
+      def compact(hash)
+        hash.reject { |_, value| value.nil? }
+      end
+
+      def only(hash, *keys)
+        hash.select { |key, _| keys.include?(key) }
+      end
+
+      class Upload < Struct.new(:source, :target, :params, :download)
+        def read
+          IO.read(source)
+        end
+
         def eql?(other)
           source == other.source
         end

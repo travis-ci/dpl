@@ -1,7 +1,9 @@
 module Dpl
   module Providers
     class Snap < Provider
-      status :dev
+      register :snap
+
+      status :stable
 
       description sq(<<-str)
         tbd
@@ -15,8 +17,10 @@ module Dpl
 
       apt 'snapd', 'snap'
 
-      cmds install:        'sudo snap install snapcraft --classic',
-           login:          'snapcraft login --with %{token}',
+      cmds apt_get_update: 'sudo apt-get update -qq',
+           update_snapd:   'sudo apt-get install snapd',
+           install:        'sudo snap install snapcraft --classic',
+           login:          'echo "%{token}" | snapcraft login --with -',
            deploy:         'snapcraft push %{snap_path} --release=%{channel}'
 
       msgs login:          'Attemping to login ...',
@@ -26,6 +30,8 @@ module Dpl
 
       def install
         return if which 'snapcraft'
+        shell :apt_get_update
+        shell :update_snapd
         shell :install
         ENV['PATH'] += ':/snap/bin'
       end

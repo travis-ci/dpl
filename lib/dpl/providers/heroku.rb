@@ -1,22 +1,19 @@
 module Dpl
   module Providers
     class Heroku < Provider
-      def self.new(ctx, args)
-        # can this be a generic dispatch feature in Cl?
-        return super unless registry_key.to_sym == :heroku
-        arg = args.detect { |arg| arg.include?('--strategy') }
-        strategy = arg ? arg.split('=').last : 'api'
-        Provider[:"heroku:#{strategy}"].new(ctx, args)
-      end
+      register :heroku
+
+      abstract
 
       gem 'faraday', '~> 0.9.2'
-      gem 'json', '~> 2.2.0'
+      gem 'json'
       gem 'netrc', '~> 0.11.0'
       gem 'rendezvous', '~> 0.1.3'
 
-      opt '--strategy NAME', 'Heroku deployment strategy', default: 'api', enum: %w(api git), internal: true
+      env :heroku
+
+      opt '--strategy NAME', 'Heroku deployment strategy', default: 'api', enum: %w(api git)
       opt '--app APP', 'Heroku app name', default: :repo_name
-      # mentioned in the code
       opt '--log_level LEVEL', internal: true
 
       msgs login:     'Authenticating ... ',

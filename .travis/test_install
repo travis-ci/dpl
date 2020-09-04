@@ -23,7 +23,7 @@ def run(cmd)
   fail unless system cmd
 end
 
-skip = %i(help heroku provider)
+skip = %i(help heroku pages provider)
 keys = Dpl::Provider.registry.keys.sort - skip
 providers = keys.map { |key| Dpl::Provider[key] }
 

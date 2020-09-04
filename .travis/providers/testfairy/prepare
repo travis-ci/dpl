@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mkdir -p tmp/dpl_test
+cp .travis/providers/testfairy/testfairy.apk tmp/dpl_test/${ID}.apk

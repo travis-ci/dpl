@@ -1,5 +1,5 @@
 describe Dpl::Providers::Releases do
-  let(:args)     { |e| %w(--api_key key --file one --file two) + args_from_description(e) }
+  let(:args)     { |e| %w(--api_key key) + args_from_description(e) }
   let(:headers)  { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
   let(:user)     { JSON.dump(login: 'login', name: 'name', email: 'email') }
   let(:releases) { JSON.dump([tag_name: 'tag', url: '/releases/1']) }
@@ -17,15 +17,15 @@ describe Dpl::Providers::Releases do
   before { stub_request(:patch, %r(/releases/1$)) }
   before { stub_request(:post, %r(/releases/1/assets\?)) }
   before { stub_request(:delete, %r(/releases/1/assets/1$)) }
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   let(:repo)     { 'travis-ci/dpl' }
   let(:tag_name) { 'tag' }
   let(:name_)    { nil }
-  let(:body)     { nil }
   let(:draft)    { false }
   let(:prerelease) { nil }
   let(:release_number) { nil }
+  let(:release_notes) { nil }
   let(:target_commitish) { 'sha' }
 
   matcher :release_json do
@@ -36,6 +36,7 @@ describe Dpl::Providers::Releases do
         tag_name: tag_name,
         target_commitish: target_commitish,
         release_number: release_number,
+        body: release_notes,
         prerelease: prerelease,
         draft: draft,
       ))
@@ -43,7 +44,7 @@ describe Dpl::Providers::Releases do
   end
 
   describe 'by default', record: true do
-    it { should have_run '[info] Logged in as name' }
+    it { should have_run '[info] Authenticated as login' }
     it { should have_run '[info] Deploying to repo: travis-ci/dpl' }
     it { should have_run 'git fetch --tags' }
     it { should have_run '[info] Current tag is: tag' }
@@ -77,10 +78,16 @@ describe Dpl::Providers::Releases do
     it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
   end
 
-  describe 'given --file one* --file_glob' do
-    it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
+  describe 'given --file one*' do
     it { should have_requested(:post, %r(/releases/1/assets\?name=one$)) }
     it { should have_requested(:post, %r(/releases/1/assets\?name=one_two$)) }
+  end
+
+  describe 'given --file one* --no-file_glob', run: false do
+    file 'one*'
+    before { subject.run }
+    it { should have_requested(:post, %r(/releases/1/assets\?name=one\.$)) }
+    it { should_not have_requested(:post, %r(/releases/1/assets\?name=one*$)) }
   end
 
   describe 'given --prerelease' do
@@ -114,9 +121,50 @@ describe Dpl::Providers::Releases do
     it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
   end
 
-  describe 'given --body body' do
-    let(:body) { 'body' }
+  describe 'given --release_notes release_notes' do
+    let(:release_notes) { 'release_notes' }
     it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
+  end
+
+  describe 'given --release_notes_file ./release_notes', run: false do
+    let(:release_notes) { 'release_notes' }
+    file './release_notes', 'release_notes'
+    before { subject.run }
+    it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
+  end
+
+  describe 'missing release notes file, given --release_notes_file ./release_notes', run: false do
+    let(:release_notes) { 'release_notes' }
+    it { expect { subject.run }.to raise_error('File ./release_notes does not exist.') }
+  end
+
+  describe 'given --body body' do
+    let(:release_notes) { 'body' }
+    it { should have_requested(:patch, %r(/releases/1)).with(body: release_json) }
+  end
+
+  describe 'with GITHUB credentials in env vars', run: false do
+    let(:args) { [] }
+    env GITHUB_TOKEN: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with GITHUB credentials in env vars (alias)', run: false do
+    let(:args) { [] }
+    env GITHUB_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with RELEASES credentials in env vars', run: false do
+    let(:args) { [] }
+    env RELEASES_TOKEN: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with RELEASES credentials in env vars (alias)', run: false do
+    let(:args) { [] }
+    env RELEASES_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
   end
 
   def compact(hash)

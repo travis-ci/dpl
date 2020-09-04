@@ -1,7 +1,9 @@
 module Dpl
   module Providers
     class Npm < Provider
-      status :alpha
+      register :npm
+
+      status :stable
 
       full_name 'npm'
 
@@ -9,25 +11,33 @@ module Dpl
         tbd
       str
 
-      gem 'json', '~> 2.2.0'
+      gem 'json'
+
+      env :npm
 
       opt '--email EMAIL', 'npm account email'
       opt '--api_token TOKEN', 'npm api token', alias: :api_key, required: true, secret: true, note: 'can be retrieved from your local ~/.npmrc file', see: 'https://docs.npmjs.com/creating-and-viewing-authentication-tokens'
-      opt '--access ACCESS', 'access level', enum: %w(public private)
+      opt '--access ACCESS', 'Access level', enum: %w(public private)
       opt '--registry URL', 'npm registry url'
-      opt '--tag TAGS', 'npm distribution tags to add'
+      opt '--src SRC', 'directory or tarball to publish', default: '.'
+      opt '--tag TAGS', 'distribution tags to add'
+      opt '--run_script SCRIPT', 'run the given script from package.json', type: :array, note: 'skips running npm publish'
+      opt '--dry_run', 'performs test run without uploading to registry'
+      opt '--auth_method METHOD', 'Authentication method', enum: %w(auth)
 
-      REGISTRY = 'registry.npmjs.org'
+      REGISTRY = 'https://registry.npmjs.org'
       NPMRC = '~/.npmrc'
 
       msgs version:  'npm version: %{npm_version}',
            login:    'Authenticated with API token %{api_token}'
 
       cmds registry: 'npm config set registry "%{registry}"',
-           deploy:   'npm publish %{publish_opts}'
+           publish:  'npm publish %{src} %{publish_opts}',
+           run:      'npm run %{script}'
 
       errs registry: 'Failed to set registry config',
-           deploy:    'Failed pushing to npm'
+           publish:  'Failed to publish',
+           run:      'Failed to run script %{script}'
 
       def login
         info :version
@@ -37,7 +47,11 @@ module Dpl
       end
 
       def deploy
-        shell :deploy
+        if run_script?
+          run_scripts
+        else
+          shell :publish
+        end
       end
 
       def finish
@@ -46,8 +60,14 @@ module Dpl
 
       private
 
+        def run_scripts
+          run_script.each do |script|
+            shell :run, script: script
+          end
+        end
+
         def publish_opts
-          opts_for(%i(access tag))
+          opts_for(%i(access tag dry_run), dashed: true)
         end
 
         def write_npmrc
@@ -60,22 +80,43 @@ module Dpl
         end
 
         def npmrc_path
-          File.expand_path(NPMRC)
+          expand(NPMRC)
         end
 
         def npmrc
-          if npm_version =~ /^1/
+          if npm_version =~ /^1/ || auth_method == 'auth'
             "_auth = #{api_token}\nemail = #{email}"
           else
-            "//#{registry.sub('https://', '').sub(%r(/$), '')}/:_authToken=#{api_token}"
+            "//#{auth_endpoint}/:_authToken=#{api_token}"
           end
         end
 
+        def auth_endpoint
+          str = registry
+          str = strip_path(str) if str.include?('npm.pkg.github.com')
+          str = strip_protocol(str).sub(%r(/$), '')
+          str
+        end
+
         def registry
-          return super if super
-          data = package_json
-          url = data && data.fetch('publishConfig', {})['registry']
-          url ? URI(url).host : REGISTRY
+          super || registry_from_package_json || REGISTRY
+        end
+
+        def registry_from_package_json
+          return unless data = package_json
+          data && data.fetch('publishConfig', {})['registry']
+        end
+
+        def strip_path(url)
+          url.sub(URI(url).path, '')
+        end
+
+        def strip_protocol(url)
+          url.sub("#{URI(url).scheme}://", '')
+        end
+
+        def host(url)
+          URI(url).host
         end
 
         def package_json

@@ -1,6 +1,8 @@
 module Dpl
   module Providers
     class Transifex < Provider
+      register :transifex
+
       status :alpha
 
       description sq(<<-str)
@@ -10,6 +12,8 @@ module Dpl
       python '>= 2.7', '!= 3.0', '!= 3.1', '!= 3.2', '!= 3.3', '< 3.8'
 
       required :api_token, [:username, :password]
+
+      env :transifex
 
       opt '--api_token TOKEN', 'Transifex API token', secret: true
       opt '--username NAME',   'Transifex username'

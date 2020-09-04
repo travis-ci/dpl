@@ -1,7 +1,9 @@
 module Dpl
   module Providers
     class Opsworks < Provider
-      status :alpha
+      register :opsworks
+
+      status :stable
 
       full_name 'AWS OpsWorks'
 
@@ -9,7 +11,10 @@ module Dpl
         tbd
       str
 
-      env :aws
+      gem 'aws-sdk-opsworks', '~> 1.0'
+
+      env :aws, :opsworks
+      config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
 
       opt '--access_key_id ID', 'AWS access key id', required: true, secret: true
       opt '--secret_access_key KEY', 'AWS secret key', required: true, secret: true
@@ -22,7 +27,7 @@ module Dpl
       opt '--update_on_success', 'When wait-until-deployed and updated-on-success are both not given, application source is updated to the current SHA. Ignored when wait-until-deployed is not given.', alias: :update_app_on_success
       opt '--custom_json JSON', 'Custom json options override (overwrites default configuration)'
 
-      msgs login:         'Logging in with Access Key: %{access_key_id}',
+      msgs login:         'Using Access Key: %{access_key_id}',
            create_deploy: 'Creating deployment ... ',
            done:          'Done: %s',
            waiting:       'Deploying ',

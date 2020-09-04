@@ -1,7 +1,9 @@
 module Dpl
   module Providers
     class Bluemixcloudfoundry < Provider
-      status :alpha
+      register :bluemixcloudfoundry
+
+      status :stable
 
       full_name 'Bluemix Cloud Foundry'
 
@@ -9,14 +11,16 @@ module Dpl
         tbd
       str
 
+      env :cloudfoundry
+
       opt '--username USER',       'Bluemix username', required: true
       opt '--password PASS',       'Bluemix password', required: true, secret: true
-      opt '--organization ORG',    'Bluemix target organization', required: true
-      opt '--space SPACE',         'Bluemix target space', required: true
+      opt '--organization ORG',    'Bluemix organization', required: true
+      opt '--space SPACE',         'Bluemix space', required: true
       opt '--region REGION',       'Bluemix region', default: 'ng', enum: %w(ng eu-gb eu-de au-syd)
       opt '--api URL',             'Bluemix api URL'
       opt '--app_name APP',        'Application name'
-      opt '--buildpack PACK',      'Custom buildpack name or Git URL'
+      opt '--buildpack PACK',      'Buildpack name or Git URL'
       opt '--manifest FILE',       'Path to the manifest'
       opt '--skip_ssl_validation', 'Skip SSL validation'
       opt '--logout', default: true, internal: true

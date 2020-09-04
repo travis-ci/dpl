@@ -1,9 +1,8 @@
-runtime: go
-api_version: go1
+runtime: go112
 
 handlers:
 - url: /.*
-  script: _go_app
+  script: auto
 
 # manual_scaling:
 #   instances: 1

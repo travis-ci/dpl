@@ -1,13 +1,17 @@
 module Dpl
   module Providers
     class Openshift < Provider
-      status :alpha
+      register :openshift
+
+      status :stable
 
       full_name 'OpenShift'
 
       description sq(<<-str)
         tbd
       str
+
+      env :openshift
 
       opt '--server SERVER',   'OpenShift server', required: true
       opt '--token TOKEN',     'OpenShift token', required: true, secret: true

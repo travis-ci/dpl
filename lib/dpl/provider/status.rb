@@ -4,11 +4,11 @@ module Dpl
       STATUS = %i(dev alpha beta stable deprecated)
 
       MSG = {
-        dev:        'Support for deployments to %s is in development',
-        alpha:      'Support for deployments to %s is in alpha',
-        beta:       'Support for deployments to %s is in beta',
-        deprecated: 'Support for deployments to %s is deprecated',
-        pre_stable: 'Please see here: %s'
+        dev:        'Support for deployments to %s is in **development**',
+        alpha:      'Support for deployments to %s is in **alpha**',
+        beta:       'Support for deployments to %s is in **beta**',
+        deprecated: 'Support for deployments to %s is *deprecated**',
+        pre_stable: 'Please see [Maturity Levels](%s) for details.'
       }
 
       URL = 'https://github.com/travis-ci/dpl/#maturity-levels'
@@ -26,7 +26,7 @@ module Dpl
         msg = "#{MSG[status] % name}"
         msg << "(#{info})" if info
         msg << ". #{MSG[:pre_stable] % URL}" if pre_stable?
-        "\n#{msg}\n"
+        msg
       end
 
       private

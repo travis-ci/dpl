@@ -5,6 +5,9 @@ require 'json'
 
 $stdout.sync = true
 
-expected = ENV['ID']
-url = ''
+expected = "This is just a test: #{ENV['ID']}"
+actual = %x[dee-pee-ell-test]
 
+exit 0 if actual == expected
+
+abort 'failed'

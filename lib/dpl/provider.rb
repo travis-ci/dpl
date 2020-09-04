@@ -4,8 +4,10 @@ require 'forwardable'
 require 'shellwords'
 require 'dpl/helper/assets'
 require 'dpl/helper/cmd'
+require 'dpl/helper/config_file'
 require 'dpl/helper/env'
 require 'dpl/helper/interpolate'
+require 'dpl/helper/memoize'
 require 'dpl/helper/squiggle'
 require 'dpl/provider/dsl'
 require 'dpl/provider/examples'
@@ -80,7 +82,7 @@ module Dpl
 
   class Provider < Cl::Cmd
     extend Dsl, Forwardable
-    include Assets, Env, FileUtils, Interpolate, Squiggle
+    include Assets, Env, ConfigFile, FileUtils, Interpolate, Memoize, Squiggle
 
     class << self
       def examples
@@ -143,13 +145,22 @@ module Dpl
 
     abstract
 
-    arg :provider, 'The provider name', required: true
-
-    opt '--run CMD',      'Command to execute after the deployment finished successfully', type: :array
-    opt '--cleanup',      'Skip cleaning up build artifacts before the deployment', negate: %w(skip)
+    opt '--cleanup',      'Clean up build artifacts from the Git working directory before the deployment', negate: %w(skip)
+    opt '--run CMD',      'Commands to execute after the deployment finished successfully', type: :array
     opt '--stage NAME',   'Execute the given stage(s) only', type: :array, internal: true, default: STAGES
     opt '--backtrace',    'Print the backtrace for exceptions', internal: true
     opt '--fold',         'Wrap log output in folds', internal: true
+    opt '--edge',         internal: true
+
+    vars *%i(
+      git_author_email
+      git_author_name
+      git_branch
+      git_commit_author
+      git_commit_msg
+      git_sha
+      git_tag
+    )
 
     msgs before_install:  'Installing deployment dependencies',
          before_setup:    'Setting the build environment up for the deployment',
@@ -167,12 +178,15 @@ module Dpl
       :validate_runtimes, :user_agent
 
     def_delegators :ctx, :apt_get, :gem_require, :npm_install, :pip_install,
-      :build_dir, :build_number, :repo_slug, :encoding, :git_commit_msg,
-      :git_dirty?, :git_log, :git_ls_files, :git_ls_remote?, :git_remote_urls,
-      :git_rev_parse, :git_sha, :git_tag, :machine_name, :node_version,
-      :npm_version, :sleep, :ssh_keygen, :success?, :mv, :tmp_dir, :which,
-      :logger, :rendezvous, :file_size, :write_file, :write_netrc, :last_out,
-      :last_err, :test?, :tty?
+      :build_dir, :build_number, :encoding, :file_size, :git_author_email,
+      :git_author_name, :git_branch, :git_branch, :git_commit_author,
+      :git_commit_msg, :git_commit_msg, :git_dirty?, :git_log, :git_log,
+      :git_ls_files, :git_ls_remote?, :git_remote_urls, :git_remote_urls,
+      :git_rev_parse, :git_rev_parse, :git_sha, :git_tag, :last_err, :last_out,
+      :last_out, :logger, :machine_name, :mv, :node_version, :node_version,
+      :npm_version, :rendezvous, :rendezvous, :repo_slug, :sleep, :sleep,
+      :ssh_keygen, :success?, :test?, :test?, :tmp_dir, :tty?, :which, :which,
+      :write_file, :write_netrc
 
     attr_reader :repo_name, :key_name
 
@@ -192,7 +206,7 @@ module Dpl
     rescue Error
       raise
     rescue Exception => e
-      raise Error.new("#{e.message} (#{e.class})", backtrace: backtrace? ? caller : nil) unless test?
+      raise Error.new("#{e.message} (#{e.class})", backtrace: backtrace? ? e.backtrace : nil) unless test?
       raise
     ensure
       run_stage(:finish, fold: false) if finish?
@@ -224,11 +238,16 @@ module Dpl
 
     # Initialize the deployment process.
     #
-    # Displays warning messages about experimental providers, and deprecated
-    # options used.
+    # This will:
+    #
+    # * Displays warning messages about the provider's maturity status, and deprecated
+    #   options used.
+    # * Setup a ~/.dpl working directory
+    # * Move files out of the way that have been declared as such
     def before_init
       warn status.msg if status && status.announce?
       deprecations.each { |(key, msg)| ctx.deprecate_opt(key, msg) }
+      setup_dpl_dir
       move_files(ctx)
     end
 
@@ -250,7 +269,6 @@ module Dpl
     # * Either set or unset the environment variable `GIT_HTTP_USER_AGENT` depending if the feature `git_http_user_agent` has been declared as required.
     def before_setup
       info :before_setup
-      setup_dpl_dir
       setup_ssh_key if needs?(:ssh_key)
       setup_git_config if needs?(:git)
       setup_git_http_user_agent
@@ -290,10 +308,12 @@ module Dpl
     #   feature `ssh_key` has been declared as required.
     # * Revert the cleanup process, i.e. restore files moved out of the way
     #   during `cleanup`.
+    # * Remove the temporary directory `~/.dpl`
     def before_finish
       remove_key if needs?(:ssh_key) && respond_to?(:remove_key)
       uncleanup if cleanup?
       unmove_files(ctx)
+      remove_dpl_dir
     end
 
     # Resets the current working directory to the commited state.
@@ -320,6 +340,12 @@ module Dpl
     def setup_dpl_dir
       rm_rf '~/.dpl'
       mkdir_p '~/.dpl'
+      chmod 0700, '~/.dpl'
+    end
+
+    # Remove the internal working directory `~/.dpl`.
+    def remove_dpl_dir
+      rm_rf '~/.dpl'
     end
 
     # Creates an SSH key, and sets up git-ssh if needed.
@@ -527,7 +553,7 @@ module Dpl
 
     # Double quotes the given string.
     def quote(str)
-      %("#{str}")
+      %("#{str.to_s.gsub('"', '\"')}")
     end
 
     # Outdents the given string.
@@ -593,11 +619,15 @@ module Dpl
     end
 
     def mkdir_p(path)
-      super(expand(path))
+      FileUtils.mkdir_p(expand(path))
     end
 
     def chmod(perm, path)
       super(perm, expand(path))
+    end
+
+    def mv(src, dest)
+      super(expand(src), expand(dest))
     end
 
     def rm_rf(path)
@@ -612,8 +642,8 @@ module Dpl
       File.read(expand(path))
     end
 
-    def expand(path)
-      File.expand_path(path)
+    def expand(*args)
+      File.expand_path(*args)
     end
   end
 end

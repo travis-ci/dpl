@@ -2,7 +2,9 @@ module Dpl
   module Providers
     class Heroku
       class Api < Heroku
-        status :alpha
+        register :'heroku:api'
+
+        status :stable
 
         full_name 'Heroku API'
 
@@ -40,7 +42,7 @@ module Dpl
           end
 
           def upload
-            shell :upload
+            shell :upload, echo: false
           end
 
           def build
@@ -54,7 +56,7 @@ module Dpl
           end
 
           def log
-            shell :log
+            shell :log, echo: false
           end
 
           def verify

@@ -7,7 +7,7 @@ module Support
 
       def matches?(cmd)
         @cmd = cmd
-        cmd.ctx.cmds.any? { |cmd| cmd =~ /deprecated option.*#{opt} / }
+        cmd.ctx.cmds.any? { |cmd| cmd =~ /Deprecated option.*#{opt} / }
       end
 
       def description
@@ -15,11 +15,11 @@ module Support
       end
 
       def failure_message
-        "Expected the command\n\n  #{opt}\n\nto be deprecated. Instead, we have run the commands:\n\n  #{indent(cmds.join("\n"))}"
+        "Expected the command\n\n  #{opt}\n\nto be deprecated. Instead, we have run the commands:\n\n  #{indent(cmd.ctx.cmds.join("\n"))}"
       end
 
       def failure_message_when_negated
-        "Expected the command\n\n  #{opt}\n\nto not be deprecated, but it is:\n\n  #{indent(cmds.join("\n"))}"
+        "Expected the command\n\n  #{opt}\n\nto not be deprecated, but it is:\n\n  #{indent(cmd.ctx.cmds.join("\n"))}"
       end
     end
 

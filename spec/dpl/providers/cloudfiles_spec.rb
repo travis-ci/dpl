@@ -11,7 +11,7 @@ describe Dpl::Providers::Cloudfiles do
     dirs.create(key: 'name')
   end
 
-  before { subject.run }
+  before { |c| subject.run if run?(c) }
 
   describe 'by default' do
     it { expect(dirs.get('name').files.get('one').key).to eq 'one' }
@@ -21,5 +21,14 @@ describe Dpl::Providers::Cloudfiles do
   describe 'given --glob one' do
     it { expect(dirs.get('name').files.get('one').key).to eq 'one' }
     it { expect(dirs.get('name').files.get('two')).to be_nil }
+  end
+
+  describe 'with credentials in env vars', run: false do
+    let(:args) { |e| %w(--region ord --container name) }
+
+    env CLOUDFILES_USERNAME: 'user',
+        CLOUDFILES_API_KEY: 'key'
+
+    it { expect { subject.run }.to_not raise_error }
   end
 end

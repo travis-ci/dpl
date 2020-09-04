@@ -1,68 +1,99 @@
 describe Dpl::Providers::Engineyard do
-  let(:args)    { |e| args_from_description(e) }
+  let(:args)    { |e| %w(--api_key key) + args_from_description(e) }
   let(:headers) { { content_type: 'application/json' } }
 
-  def response(key)
-    { body: fixture(:engineyard, "#{key}.json"), status: 200, headers: headers }
+  let(:envs) do
+    <<-str.gsub(/^\s+/, '')
+      ID | Name | Account
+      ---|------|-----------
+      1  | env  | account
+    str
+  end
+
+  let(:whoami) do
+    <<-str.gsub(/^\s+/, '')
+      User:f7ecb9e2-946c-47ae-8ae1-2ef44aab3486 {
+        email : "dpl-test@travis-ci.org"
+      }
+    str
   end
 
   before do
-    stub_request(:post, %r(/authenticate)).to_return(response(:auth))
-    stub_request(:get,  %r(/current_user)).to_return(response(:user))
-    stub_request(:get,  %r(/app_environments)).to_return(response(:app_env_one))
-    stub_request(:post, %r(/deploy)).to_return(response(:deploy))
-    stub_request(:get,  %r(/deployments/\d+)).to_return(response(:deployment))
+    ctx.stdout.update(
+      envs: envs,
+      whoami: whoami
+    )
   end
 
+  before { |c| subject.run if run?(c) }
+
   describe 'given --api_key key' do
-    before { subject.run }
-    it { should have_run '[info] Authenticated as test@test.test' }
-    it { should have_run '[print] Deploying ...' }
-    it { should have_run '[print] .' }
-    it { should have_run '[info] Done: https://cloud.engineyard.com/apps/7/environments/7/deployments/2/pretty' }
+    it { should have_run '[info] Authenticating via api token ...' }
+    it { should have_run 'ey-core whoami' }
+    it { should have_run '[info] Authenticated as dpl-test@travis-ci.org' }
+    it { should have_run '[info] Setting the build environment up for the deployment' }
+    it { should have_run '[info] Checking environment ...' }
+    it { should have_run 'ey-core environments' }
+    it { should have_run '[info] Deploying ...' }
+    it { should have_run '[info] $ ey-core deploy --ref="sha" --environment="env" --app="dpl" --no-migrate' }
+    it { should have_run 'ey-core deploy --ref="sha" --environment="env" --app="dpl" --no-migrate' }
+    it { should have_written '~/.ey-core', 'https://api.engineyard.com/: key' }
   end
 
   describe 'given --email email --password password' do
-    before { subject.run }
-    it { should have_run '[info] Authenticated as test@test.test' }
+    let(:args) { |e| args_from_description(e) }
+    it { should have_run '[info] Authenticating via email and password ...' }
+    it { should have_run "ey-core login << str\nemail\npassword\nstr" }
   end
 
-  describe 'no credentials' do
+  describe 'no credentials', run: false do
+    let(:args) { [] }
     it { expect { subject.run }.to raise_error 'Missing options: api_key, or email and password' }
   end
 
-  # These are rather hard to test in a more meaningful way, as they are passed
-  # to the EY Ruby client, which returns an OOP representation of the API
-  # response. This would require lots of stubbing ...
-  context do
-    let(:args) { |e| %w(--api_key key) + args_from_description(e) }
-    before { subject.run }
-
-    describe 'given --app app' do
-      it { should have_attributes app: 'app' }
-    end
-
-    describe 'given --environment env' do
-      it { should have_attributes environment: 'env' }
-    end
-
-    describe 'given --migrate cmd' do
-      it { should have_attributes migrate: 'cmd' }
-    end
-
-    describe 'given --account account' do
-      it { should have_attributes account: 'account' }
-    end
+  describe 'given --app app' do
+    it { should have_run 'ey-core deploy --ref="sha" --environment="env" --app="app" --no-migrate' }
   end
 
-  describe 'no env matches, given --api_key key' do
-    before { stub_request(:get, %r(/app_environments)).to_return(response(:app_env_none)) }
-    it { expect { subject.run }.to raise_error /No environment found matching/ }
+  describe 'given --env other' do
+    it { should have_run 'ey-core deploy --ref="sha" --environment="other" --app="dpl" --no-migrate' }
   end
 
-  describe 'multiple envs match, given --api_key key' do
-    before { stub_request(:get, %r(/app_environments)).to_return(response(:app_env_multi)) }
-    it { expect { subject.run }.to raise_error /Multiple matches possible/ }
+  describe 'given --account account' do
+    it { should have_run 'ey-core deploy --ref="sha" --environment="env" --app="dpl" --account="account" --no-migrate' }
+  end
+
+  describe 'given --migrate cmd' do
+    it { should have_run 'ey-core deploy --ref="sha" --environment="env" --app="dpl" --migrate="cmd"' }
+  end
+
+  describe 'no env matches', run: false do
+    let(:envs) { '' }
+    it { expect { subject.run }.to raise_error /No matching environment found/ }
+  end
+
+  describe 'multiple envs match', run: false do
+    let(:envs) do
+      <<-str.gsub(/^\s+/, '')
+        ID | Name | Account
+        ---|------|-----------
+        1  | one  | account
+        2  | two  | account
+      str
+    end
+
+    it { expect { subject.run }.to raise_error 'Multiple environments match, please be more specific: environment=one account=account, environment=two account=account' }
+  end
+
+  describe 'with EY credentials in env vars', run: false do
+    let(:args) { [] }
+    env EY_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
+  end
+
+  describe 'with ENGINEYARD credentials in env vars', run: false do
+    let(:args) { [] }
+    env ENGINEYARD_API_KEY: 'key'
+    it { expect { subject.run }.to_not raise_error }
   end
 end
-

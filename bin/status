@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+$: << File.expand_path('../../lib', __FILE__)
+
+$stdout.sync = true
+$stderr.sync = true
+
+require 'date'
+require 'json'
+require 'dpl'
+
+SKIP = %i(help heroku pages)
+
+class Provider < Struct.new(:path)
+  def data
+    { name: name, status: status, date: format_date(date) }
+  end
+
+  def name
+    path.sub('lib/dpl/providers/', '').sub('.rb', '').sub('/', ':')
+  end
+
+  def status
+    `grep -n 'status :' #{path}`.chomp.split(':').last
+  end
+
+  def num
+    @num ||= `grep -n 'status :' #{path}` =~ /^(\d+)/ && $1
+  end
+
+  def sha
+    `git blame #{path} -L #{num},#{num}`.split(' ').first
+  end
+
+  def date
+    `git log #{sha} --pretty=format:"%ad" -n 1`
+  end
+
+  def format_date(date)
+    Date.parse(date).strftime('%F')
+  end
+end
+
+paths = Dir['lib/dpl/providers/**/*.rb']
+files = paths.map { |path| Provider.new(path) }
+files = files.select(&:num)
+files = files.sort_by(&:name)
+puts JSON.pretty_generate(files.map(&:data))

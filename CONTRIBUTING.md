@@ -45,7 +45,7 @@ Hopefully helpful resources are:
 
 All provider specific classes live in [dpl/providers](lib/dpl/providers).
 These represent the CLI commands that are executed when the command line
-exectuable `dpl` is run with a given provider name as the first argument.
+executable `dpl` is run with a given provider name as the first argument.
 
 Each provider is a subclass of `Dpl::Provider`, which is defined in
 [dpl/provider.rb](lib/dpl/provider.rb). The provider base class itself
@@ -57,7 +57,7 @@ provider class [S3](lib/dpl/providers/s3.rb).
 
 The class `Cl::Cmd` contributes the command line options parser, and its
 class level DSL. Please see the [cl README](https://github.com/svenfuchs/cl/blob/master/README.md)
-for this DSL, and the [S3 provider](/travis-ci/dpl/blob/master/lib/dpl/provider/s3.rb)
+for this DSL, and the [S3 provider](/lib/dpl/provider/s3.rb)
 for an example how dpl uses it.
 
 The class `Dpl::Provider` adds, amongst other things, the order of stages
@@ -74,14 +74,14 @@ The class `Dpl::Provider` adds, amongst other things, the order of stages
 
 Implementors of concrete provider classes may or may not choose to implement
 any of these instance methods according to their needs, and semantics of their
-tooling and service providers. Please refer to [Dpl::Provider](/travis-ci/dpl/blob/master/lib/dpl/provider.rb)
+tooling and service providers. Please refer to [Dpl::Provider](/lib/dpl/provider.rb)
 for details.
 
 The DSL that is used to declare features, dependencies, environment integration
 etc. on the concrete provider classes is defined in the module
-`Dpl::Provider::DSL`, in [dpl/provider/dsl](/travis-ci/dpl/blob/master/lib/dpl/provider/dsl.rb).
+`Dpl::Provider::DSL`, in [dpl/provider/dsl](/lib/dpl/provider/dsl.rb).
 
-Also of interest is [Dpl::Ctx::Bash](/travis-ci/dpl/blob/master/lib/dpl/ctx/bash.rb),
+Also of interest is [Dpl::Ctx::Bash](/lib/dpl/ctx/bash.rb),
 the Bash execution context, that runs shell commands, installs dependencies
 etc. (while the `Test` context class is used for testing in order to keep your
 development machine clean and safe when you run tests locally).
@@ -111,8 +111,8 @@ lib
 When a provider class is instantiated and run it will go through a number
 of stages that make up the deployment process.
 
-These are documented in [dpl/provider.rb](/travis-ci/dpl/blob/master/lib/dpl/provider.rb).
-If you are adding a new deployment provider please familiarize youself with
+These are documented in [dpl/provider.rb](/lib/dpl/provider.rb).
+If you are adding a new deployment provider please familiarize yourself with
 this lifecycle.
 
 Feel free to pick and interpret these stages according to the needs and
@@ -152,7 +152,7 @@ dependencies that do not look stable or widely supported.
 ## Runtime Dependencies
 
 Runtime dependencies can be declared on the provider class using the
-[DSL](/travis-ci/dpl/blob/masterlib/dpl/provider/dsl.rb).
+[DSL](lib/dpl/provider/dsl.rb).
 
 In the case of APT, NPM, and Pip dependencies these will be installed via
 shell commands at the beginning of the deployment process.
@@ -208,7 +208,7 @@ These tests can be run safely on any development machine, anywhere.
 We additionally run tests that exercise runtime dependency installation on
 Travis CI.
 
-These live in [.travis/test_install.rb](.travis/test_install.rb). It is not
+These live in [.travis/test_install](.travis/test_install). It is not
 advisable to run these tests outside of an ephemeral VM or container that can
 be safely discarded, as they are going to leave various artifacts around.
 
@@ -218,7 +218,8 @@ In order to ensure proper integration with the service providers supported
 we also periodically run a test suite that exercises actual deployments to
 these providers.
 
-These tests live in [.travis](https://github.com/travis-ci/dpl/tree/dpl-2/.travis).
+These tests live in [.travis/providers](/.travis/providers), and the are
+triggered using the script [trigger](/.travis/trigger).
 
 An integration test consists of:
 
@@ -230,15 +231,15 @@ An integration test consists of:
 
 For example:
 
-* [github-pages/prepare](/travis-ci/dpl/blob/master/.travis/providers/github-pages/prepare)
+* [github-pages/prepare](/.travis/providers/github-pages/prepare)
   creates a minimal Git repository that serves an `index.html` on GitHub Pages in a temporary directory.
-* [github-pages/travis.yml](/travis-ci/dpl/blob/master/.travis/providers/github-pages/travis.yml)
+* [github-pages/travis.yml](/.travis/providers/github-pages/travis.yml)
   configures the build to use Dpl 2.0 to deploy this repository to GitHub Pages.
-* [github-pages/test](/travis-ci/dpl/blob/master/.travis/providers/github-pages/test)
+* [github-pages/test](/.travis/providers/github-pages/test)
   tests if the deployment was successful.
 
 The tests can be run on Travis CI individually, or combined, by triggering a
-build via our API, using the script [.travis/trigger](/travis-ci/dpl/blob/master/.travis/trigger).
+build via our API, using the script [.travis/trigger](/.travis/trigger).
 This takes a provider name as an argument, and requires a Travis CI API token.
 
 For example, this triggers a build that executes the GitHub Pages test on
@@ -318,7 +319,7 @@ test.
 ## Testing Dpl Branches or Forks on Travis CI
 
 It is possible to test a new deployment provider or new functionality of dpl on
-Travis CI. In order to do so, add proper configuraiton on the `edge` key to
+Travis CI. In order to do so, add proper configuration on the `edge` key to
 your `.travis.yml` like so:
 
 ```yaml
@@ -347,7 +348,7 @@ Dpl does not follow any strict code styleguide.
 Please take a look around other providers, and try to follow a similar code
 style to what you find.
 
-Try to use the [DSL](/travis-ci/dpl/blob/master/lib/dpl/helpers/dsl.rb) as much
+Try to use the [DSL](/lib/dpl/provider/dsl.rb) as much
 as possible.  It keeps the code declarative and readable, so that people not
 familiar with Ruby or programming in general can still follow it, and make
 sense of it.
@@ -380,11 +381,12 @@ they chose in their [aws-sdk](https://github.com/aws/aws-sdk-ruby) is
 
 ## Updating the README
 
-The [README](/travis-ci/dpl/blob/master/README.md) is generated from a
-[template](/travis-ci/dpl/blob/master/lib/dpl/assets/dpl/README.erb.md).
+The [README](/README.md) is generated from a
+[template](/lib/dpl/assets/dpl/README.erb.md).
 
-In order to update the README please edit the template, and run the command:
+In order to update the README please edit the template, and run:
 
 ```
+gem install ffi-icu
 bin/readme > README.md
 ```

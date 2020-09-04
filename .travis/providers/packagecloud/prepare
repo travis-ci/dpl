@@ -37,7 +37,7 @@ str
 file 'dpl_test.gemspec', <<~str
   Gem::Specification.new do |s|
     s.name        = 'dpl_test'
-    s.version     = "0.0.1.dev-#{ENV['ID']}"
+    s.version     = "0.0.#{ENV['TRAVIS_BUILD_NUMBER']}.dev-#{ENV['ID']}"
     s.licenses    = ['MIT']
     s.summary     = "This is dpl_test"
     s.description = "This is dpl_test."

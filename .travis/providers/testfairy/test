@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'open-uri'
+require 'base64'
+
+$stdout.sync = true
+
+expected = ENV['ID']
+url = 'https://api.testfairy.com/api/1/projects/6820850/builds'
+auth = Base64.strict_encode64('travis-dpl-tests@testfairy.com' + ':' + ENV['TESTFAIRY_API_KEY'])
+
+def poll(url, headers)
+  uri = URI.parse(url)
+  data = JSON.parse(uri.read(headers))
+  filename = File.basename(data['builds'][0]['appUrl'])
+  filename.sub('.apk', '')
+rescue => e
+  puts e.message
+end
+
+40.times do
+  actual = poll(url, 'Authorization' => "Basic #{auth}")
+  puts "expected: #{expected.inspect}"
+  puts "actual: #{actual.inspect}"
+  exit 0 if actual == expected
+  sleep 5
+end
+
+abort 'failed'

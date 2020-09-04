@@ -1,13 +1,17 @@
 module Dpl
   module Providers
     class Netlify < Provider
-      status :alpha
+      register :netlify
+
+      status :stable
 
       description sq(<<-str)
         tbd
       str
 
       npm 'netlify-cli', 'netlify'
+
+      env :netlify
 
       opt '--site ID',         'A site ID to deploy to', required: true
       opt '--auth TOKEN',      'An auth token to log in with', required: true, secret: true

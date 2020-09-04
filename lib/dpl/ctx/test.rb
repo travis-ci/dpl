@@ -36,10 +36,13 @@ module Dpl
       end
 
       def gems_require(gems)
-        gems.each { |gem| gem_require(gem) }
+        gems.each { |gem| gem_require(*gem) }
       end
 
       def gem_require(name, version = nil, opts = {})
+        # not sure why this is needed. bundler should take care of this, but
+        # it does not for octokit for whatever reason
+        require opts[:require] || name rescue nil
         cmds << "[gem:require] #{name} (#{version}, #{opts})"
       end
 
@@ -60,8 +63,8 @@ module Dpl
         info cmd.msg if cmd.msg?
         info cmd.echo if cmd.echo?
         cmds << cmd.cmd
-        return true unless cmd.capture?
-        stdout[cmd.key] || 'captured_stdout'
+        return stdout[cmd.key] if stdout.key?(cmd.key)
+        cmd.capture? ? 'captured_stdout' : true
       end
 
       def success?
@@ -86,7 +89,7 @@ module Dpl
 
       def deprecate_opt(key, msg)
         msg = "please use #{msg}" if msg.is_a?(Symbol)
-        warn("deprecated option #{key} (#{msg})")
+        warn "Deprecated option #{key} used (#{msg})."
       end
 
       def repo_name
@@ -105,8 +108,20 @@ module Dpl
         1
       end
 
+      def git_branch
+        'git branch'
+      end
+
       def git_commit_msg
         'commit msg'
+      end
+
+      def git_author_name
+        'author name'
+      end
+
+      def git_author_email
+        'author email'
       end
 
       def git_dirty?
@@ -197,6 +212,14 @@ module Dpl
 
       def mv(src, dest)
         cmds << [:mv, src, dest].join(' ')
+      end
+
+      def rm_rf(path)
+        cmds << [:rm_rf, path].join(' ')
+      end
+
+      def chmod(perm, path)
+        cmds << [:chmod, perm, path].join(' ')
       end
 
       def write_file(path, content, chmod = nil)

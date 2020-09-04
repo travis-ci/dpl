@@ -48,10 +48,16 @@ module Dpl
     # Implementors are encouraged to use named variables when possible, but
     # are free to choose according to their needs.
     def interpolate(str, args = [], opts = {})
-      args = args.pop if args.first.is_a?(Hash)
-      return str % args if args.is_a?(Array) && args.any?
-      args = {} if args.is_a?(Array)
+      args = args.shift if args.is_a?(Array) && args.first.is_a?(Hash)
       Interpolator.new(str, self, args || {}, opts).apply
+    end
+
+    # Interpolation variables as declared by the provider.
+    #
+    # By default this contains string option names, but additional
+    # methods can be added using Provider::Dsl#vars.
+    def vars
+      self.class.vars
     end
 
     # Obfuscates the given string.
@@ -70,35 +76,73 @@ module Dpl
       include Interpolate
 
       MODIFIER = %i(obfuscate escape quote)
-      PATTERN  = /%\{(\w+)\}/
+      PATTERN  = /%\{(\$?[\w]+)\}/
+      ENV_VAR  = /^\$[A-Z_]+$/
       UPCASE   = /^[A-Z_]+$/
+      UNKNOWN  = '[unknown variable: %s]'
 
       def apply
-        str = self.str.gsub(PATTERN) { lookup($1.to_sym) }
+        str = interpolate(self.str.to_s)
         str = obfuscate(str) unless opts[:secure]
         str = str.gsub('  ', ' ') if str.lines.size == 1
         str
       end
 
+      def interpolate(str)
+        str = str % args if args.is_a?(Array) && args.any?
+        str.to_s.gsub(PATTERN) { normalize(lookup($1.to_sym)) }
+      end
+
       def obfuscate(str)
-        obj.opts.inject(str) do |str, (key, value)|
-          value.tainted? ? str.gsub(value, super(value)) : str
+        secrets(str).inject(str) do |str, secret|
+          str.gsub(secret, super(secret))
         end
       end
 
+      def secrets(str)
+        return [] unless str.is_a?(String) && str.tainted?
+        opts = obj.class.opts.select(&:secret?)
+        secrets = opts.map { |opt| obj.opts[opt.name] }.compact
+        secrets.select { |secret| str.include?(secret) }
+      end
+
+      def normalize(obj)
+        obj.is_a?(Array) ? obj.join(' ') : obj.to_s
+      end
+
       def lookup(key)
-        if mod = modifier(key)
+        if vars? && !var?(key)
+          UNKNOWN % key
+        elsif mod = modifier(key)
           key = key.to_s.sub("#{mod}d_", '')
           obj.send(mod, lookup(key))
-        elsif key.to_s =~ UPCASE
+        elsif key.to_s =~ ENV_VAR
+          ENV[key.to_s.sub('$', '')]
+        elsif key.to_s =~ UPCASE && obj.class.const_defined?(key)
           obj.class.const_get(key)
+        elsif args.is_a?(Hash) && args.key?(key)
+          args[key]
+        elsif obj.respond_to?(key, true)
+          obj.send(key)
         else
-          args.key?(key) ? args[key] : obj.send(key).to_s
+          raise KeyError, key
         end
       end
 
       def modifier(key)
         MODIFIER.detect { |mod| key.to_s.start_with?("#{mod}d_") }
+      end
+
+      def var?(key)
+        vars.include?(key)
+      end
+
+      def vars
+        opts[:vars]
+      end
+
+      def vars?
+        !!vars
       end
     end
   end
