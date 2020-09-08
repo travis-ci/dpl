@@ -9,9 +9,9 @@ module Dpl
         tbd
       str
 
-      gem 'aws-sdk', '~> 2.0'
+      gem 'aws-sdk-ecr', '~> 1.0'
       # gem 'docker-api', '~> 1.34'
-      gem 'json', '~> 2.2.0'
+      gem 'json'
 
       env :aws
 
