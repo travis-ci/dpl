@@ -1,7 +1,7 @@
 module Dpl
   module Providers
     class Ecr < Provider
-      status :dev
+      status :alpha
 
       full_name 'AWS ECR'
 
