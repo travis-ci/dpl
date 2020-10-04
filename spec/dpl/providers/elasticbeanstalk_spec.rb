@@ -118,6 +118,20 @@ describe Dpl::Providers::Elasticbeanstalk do
     it { should have_run '[info] Using Access Key: ac******************' }
   end
 
+  describe 'with ~/.aws/credentials', run: false do
+    let(:args) { |e| %w(--env env --bucket_name bucket) }
+
+    file '~/.aws/credentials', <<-str.sub(/^\s*/, '')
+      [default]
+      aws_access_key_id=access_key_id
+      aws_secret_access_key=secret_access_key
+      aws_session_token=token
+    str
+
+    before { subject.run }
+    it { should have_run '[info] Using Access Key: ac******************, Session Token: t*******************' }
+  end
+
   describe 'with ~/.aws/config', run: false do
     let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
 
