@@ -67,9 +67,10 @@ module DPL
 
       def install_deploy_dependencies
         # --user likely fails inside virtualenvs but is needed outside to avoid needing sudo.
+        # `--upgrade-strategy eager` prevents the old resolver from keeping an outdated dependency if it's preinstalled
         unless context.shell "if [ -z ${VIRTUAL_ENV+x} ]; then export PIP_USER=yes; fi && " \
                              "wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && " \
-                             "pip install --upgrade #{pypi_setuptools_arg} #{pypi_twine_arg} #{pypi_wheel_arg}"
+                             "pip install --upgrade --upgrade-strategy eager #{pypi_setuptools_arg} #{pypi_twine_arg} #{pypi_wheel_arg}"
           error "Couldn't install pip, setuptools, twine or wheel."
         end
       end
