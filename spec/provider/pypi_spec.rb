@@ -114,6 +114,7 @@ describe DPL::Provider::PyPI do
         expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
         expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
         expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r false").and_return(true)
+        expect(provider).to receive(:log).with('Uploading documentation (skip with "skip_upload_docs: true")')
         provider.push_app
       end
 
@@ -123,6 +124,7 @@ describe DPL::Provider::PyPI do
         expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
         expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
         expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir some/dir -r false").and_return(true)
+        expect(provider).to receive(:log).with('Uploading documentation (skip with "skip_upload_docs: true")')
         provider.push_app
       end
     end
