@@ -43,7 +43,7 @@ end
 
 gemspecs = FileList[File.join(top, "dpl-*.gemspec")]
 
-providers = gemspecs.map { |f| /dpl-(?<provider>.*)\.gemspec/ =~ f && provider }
+providers = gemspecs.map { |f| /^dpl-(?<provider>.*)\.gemspec$/ =~ File.basename(f) && provider }
 
 desc "Build dpl gem"
 file "dpl-#{gem_version}.gem" do
