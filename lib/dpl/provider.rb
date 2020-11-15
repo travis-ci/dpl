@@ -81,7 +81,7 @@ module DPL
             # don't know what to do with this error
             raise e
           end
-          install_cmd = "gem install dpl-#{provider_gem_name || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
+          install_cmd = "gem install --pre dpl-#{provider_gem_name || opt} -v #{ENV['DPL_VERSION'] || DPL::VERSION}"
 
           if File.exist?(local_gem = File.join(Dir.pwd, "dpl-#{GEM_NAME_OF[provider_gem_name] || opt_lower}-#{ENV['DPL_VERSION'] || DPL::VERSION}.gem"))
             install_cmd = "gem install #{local_gem}"

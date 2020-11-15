@@ -23,7 +23,7 @@ describe DPL::Provider do
     end
 
     it "installs correct gem when provider name does not match" do
-      expect(context).to receive(:shell).with("gem install dpl-cloud_foundry -v #{ENV['DPL_VERSION'] || DPL::VERSION}")
+      expect(context).to receive(:shell).with("gem install --pre dpl-cloud_foundry -v #{ENV['DPL_VERSION'] || DPL::VERSION}")
       expect(described_class).to receive(:require).with("dpl/provider/cloud_foundry").and_raise LoadError.new("cannot load such file -- dpl/provider/cloud_foundry")
       expect(described_class).to receive(:require).with("dpl/provider/cloud_foundry").and_call_original
       described_class.new(context, :provider => 'cloudfoundry')
