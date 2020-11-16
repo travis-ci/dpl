@@ -98,6 +98,7 @@ Dpl supports the following providers:
   * [Anynines](#anynines)
   * [AWS CloudFormation](#aws-cloudformation)
   * [AWS Code Deploy](#aws-code-deploy)
+  * [AWS ECR](#aws-ecr)
   * [AWS Elastic Beanstalk](#aws-elastic-beanstalk)
   * [AWS Lambda](#aws-lambda)
   * [AWS OpsWorks](#aws-opsworks)
@@ -116,9 +117,9 @@ Dpl supports the following providers:
   * [Engineyard](#engineyard)
   * [Firebase](#firebase)
   * [Flynn](#flynn)
-  * [Git (push)](#git-push-)
+  * [Git (push)](#git-push)
   * [GitHub Pages](#github-pages)
-  * [GitHub Pages (API)](#github-pages-api-)
+  * [GitHub Pages (API)](#github-pages-api)
   * [GitHub Releases](#github-releases)
   * [Gleis](#gleis)
   * [Google App Engine](#google-app-engine)
@@ -298,6 +299,49 @@ The following variable are availabe for interpolation on `description`:
 
   `application`, `bucket`, `bundle_type`, `commit_id`, `deployment_group`, `endpoint`, `file_exists_behavior`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `key`, `region`, `repository`, `revision_type`, `build_number`
 
+
+### AWS ECR
+
+Support for deployments to AWS ECR is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details.
+
+```
+Usage: dpl ecr [options]
+
+Summary:
+
+  AWS ECR deployment provider
+
+Description:
+
+  tbd
+
+Options:
+
+  --access_key_id ID           AWS access key (type: string, required)
+  --secret_access_key KEY      AWS secret access key (type: string, required)
+  --account_id ID              AWS Account ID (type: string, note: Required if the repository is owned by a
+                               different account than the IAM user)
+  --source SOURCE              Image to push (type: string, required, note: can be the id or the name and
+                               optional tag (e.g. mysql:5.6))
+  --target TARGET              Comma separated list of partial repository names to push to (type: string,
+                               required)
+  --region REGION              Comma separated list of regions to push to (type: string, default: us-east-1)
+
+Common Options:
+
+  --cleanup                    Clean up build artifacts from the Git working directory before the deployment
+  --run CMD                    Commands to execute after the deployment finished successfully (type: array
+                               (string, can be given multiple times))
+  --help                       Get help on this command
+
+Examples:
+
+  dpl ecr --access_key_id id --secret_access_key key --source source --target target
+  dpl ecr --access_key_id id --secret_access_key key --source source --target target --account_id id
+```
+
+Options can be given via env vars if prefixed with `AWS_`. E.g. the option `--access_key_id` can be
+given as `AWS_ACCESS_KEY_ID=<access_key_id>`.
 
 ### AWS Elastic Beanstalk
 
@@ -2697,4 +2741,4 @@ This tool would not exist without your help.
 
 A huge thank you goes out to all of our current and past [contributors](https://github.com/travis-ci/dpl/graphs/contributors):
 
-5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alex Jurkiewicz, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrew Nichols, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Chris Patterson, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, dependabot[bot], Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, JMSwag, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, Mahdi Nami Damirchi, Marc, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Nikhil, Ole Michaelis, Olle Jonsson, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radek Lisowski, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, Sascha Zarhuber, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wen Kokke, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
+5c077yP, A.J. May, A92hm, Aakriti Gupta, Aaron Hill, Aaron1011, Abdón Rodríguez Davila, Adam King, Adam Mcgrath, adinata, Adrian Moreno, Ahmad Nassri, Ahmed Refaey, Ainun Nazieb, Albertin Loic, Alex Jurkiewicz, Alexander Springer, Alexey Kotlyarov, Ali Hajimirza, Amos Wenger, Anders Olsen Sandvik, Andrew Nichols, Andrey Lushchick, Andy Vanbutsele, Angelo Livanos, Anne-Julia Seitz, Antoine Savignac, Anton Babenko, Anton Ilin, Arnold Daniels, Ashen Gunaratne, awesomescot, Axel Fontaine, Baptiste Courtois, Ben Hale, Benjamin Guttmann, Bob, Bob Zoller, Brad Gignac, Brandon Burton, Brandon LeBlanc, Brian Hou, Cameron White, capotej, Carla, carlad, Chad Engler, Chathan Driehuys, Chris Patterson, Christian Elsen, Christian Rackerseder, Clay Reimann, cleem, Cryptophobia, Damien Mathieu, Dan Buch, Dan Powell, Daniel X Moore, David F. Severski, Denis Cornehl, Dennis Koot, dependabot[bot], Devin J. Pohly, Dominic Jodoin, Dwayne Forde, emdantrim, Eric Peterson, Erik Dalén, Esteban Santiesteban, Étienne Michon, Eugene, Eugene Shubin, eyalbe4, Fabio Napoleoni, Felix Rieseberg, fgogolli, Filip Š, Flamur Gogolli, Gabriel Saldana, George Brighton, Gil, Gil Megidish, Gil Tselenchuk, Hao Luo, Hauke Stange, Henrik Hodne, Hiro Asari, IMANAKA, Kouta, Ivan Evtuhovich, Ivan Kusalic, Ivan Pozdeev, Jacob Burkhart, Jake Hewitt, Jakub Holy, James Adam, James Awesome, James Parker, Janderson, Jannis Leidel, Jeffrey Yasskin, Jeremy Frasier, JMSwag, Joe Damato, Joep van Delft, Johannes Würbach, johanneswuerbach, Johnny Dobbins, Jon Benson, Jon Rowe, Jon-Erik Schneiderhan, Jonatan Männchen, Jonathan Stites, Jonathan Sundqvist, jorgecasar, Josh Kalderimis, joshua-anderson, Jouni Kaplas, Julia S.Simon, Julio Capote, jung_b@localhost, Karim Fateem, Ke Zhu, konrad-c, Konstantin Haase, Kouta Imanaka, Kristofer Svardstal, Kyle Fazzari, Kyle VanderBeek, Loïc Mahieu, Lorenz Leutgeb, Lorne Currie, Louis Lagrange, Louis St-Amour, Luke Yeager, Maciej Skierkowski, Mahdi Nami Damirchi, Marc, María de Antón, mariadeanton, Mariana Lenetis and Zachary Gershman, Marius Gripsgard, Mark Pundsack, marscher, Marwan Rabbâa, Mathias Meyer, Mathias Rangel Wulff, Mathias San Miguel, Matt Hernandez, Matt Knox, Matt Travi, Matthew Knox, Maxime Brugidou, mayeut, Meir Gottlieb, Michael Bleigh, Michael Dunn, Michael Friis, Michel Boudreau, Mike Bryant, Nat Welch, Nicholas Bruning, Nick Mohoric, Nico Lindemann, Nigel Ramsay, Nikhil, Ole Michaelis, Olle Jonsson, Omer Katz, Patrique Legault, Paul Beaudoin, Paul Nikitochkin, Peter, Peter Georgantas, Peter Newman, Philipp Hansch, Piotr Sarnacki, Radek Lisowski, Radosław Lisowski, Rail Aliiev, Randall A. Gordon, Robert, Robert Gogolok, Rokas Brazdžionis, Romuald Bulyshko, root, ryanj, Ryn Daniels, Samir Talwar, Samuel Wright, Sandor Zeestraten, Sascha Zarhuber, SAULEAU Sven, Scot Spinner, Sebastien Estienne, Sergei Chertkov, shunyi, Simon, Solly, Sorin Sbarnea, Soulou, Stefan Kolb, Steffen Kötte, step76, Steven Berlanga, Sven Fuchs, Sviatoslav Sydorenko, testfairy, Tim Ysewyn, Troels Thomsen, Tyler Cross, Uriah Levy, Vincent Jacques, Vojtech Vondra, Vojtěch Vondra, Wael M. Nasreddine, Wen Kokke, Wim Looman, Xavier Krantz, yeonhoyoon, Zane Williamson
