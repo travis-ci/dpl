@@ -44,3 +44,5 @@ jobs:
     - <<: *job
       language: python
       python: 3.6
+  allow_failures:
+    - rvm: 2.7.2
