@@ -1,5 +1,9 @@
 # Changelog
 
+## dpl v2.0.2-beta.1 (2020-09-15)
+
+* Add AWS ECR support
+
 ## dpl v2.0.1-beta.3 (unreleased)
 
 * Change git_push to use the GitHub token's user name and email as the
