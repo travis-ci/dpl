@@ -96,7 +96,7 @@ the following maturity levels, according to the given criteria:
 Dpl supports the following providers:
 
 <% providers.each do |key, name| -%>
-  * <%= "[#{name}](##{name.gsub(/\W+/, '-').downcase})" %>
+  * <%= "[#{name}](##{name.split(/\W+/).compact.join('-').downcase})" %>
 <% end -%>
 
 <% providers.each do |key, name|%>
