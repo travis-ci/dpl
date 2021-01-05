@@ -7,7 +7,7 @@ module DPL
       new(args).run
     end
 
-    OPTION_PATTERN = /\A--([a-z][a-z_\-]*)(?:=(.+))?\z/
+    OPTION_PATTERN = /\A--([a-z][a-z_\-]*)(?:=(.+))?\z/m
     attr_accessor :options, :fold_count
 
     def initialize(*args)
