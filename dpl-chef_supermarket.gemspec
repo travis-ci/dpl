@@ -12,7 +12,7 @@ if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.3.0")
 elsif Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.4.0")
   gemspec_for 'chef_supermarket', (deps << ['chef', '~> 13.0'])
 elsif Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.5.0")
-  gemspec_for 'chef_supermarket', (deps << ['chef', '~> 14.0'])
+  gemspec_for 'chef_supermarket', (deps << ['chef', '~> 14.0'] << ['chef-utils', '<= 16.6.14'])
 elsif Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.6.0")
   gemspec_for 'chef_supermarket', (deps << ['chef', '~> 15.0'] << ['chef-zero', '<= 14.0.17'])
 else

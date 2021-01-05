@@ -5,7 +5,7 @@ describe DPL::CLI do
   describe "#options" do
     example { expect(described_class.new.options[:app])                           .to eq(File.basename(Dir.pwd)) }
     example { expect(described_class.new(:app => 'foo')            .options[:app]).to eq('foo')                  }
-    example { expect(described_class.new("--app=foo")              .options[:app]).to eq('foo')                  }
+    example { expect(described_class.new("--app=foo\nbar")         .options[:app]).to eq("foo\nbar")             }
     example { expect(described_class.new("--app")                  .options[:app]).to eq(true)                   }
     example { expect(described_class.new("--app=foo", "--app=bar") .options[:app]).to eq(['foo', 'bar'])         }
 
