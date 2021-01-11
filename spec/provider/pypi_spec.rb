@@ -9,7 +9,7 @@ describe DPL::Provider::PyPI do
   describe "#install_deploy_dependencies" do
     example do
       expect(provider.context).to receive(:shell).with(
-        "if [ -z ${VIRTUAL_ENV+x} ]; then export PIP_USER=yes; fi && wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade --upgrade-strategy eager setuptools twine wheel"
+        "if [ -z \"${VIRTUAL_ENV}\" ]; then export PIP_USER=yes; fi && wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade --upgrade-strategy eager setuptools twine wheel"
       ).and_return(true)
       provider.install_deploy_dependencies
     end
@@ -21,7 +21,7 @@ describe DPL::Provider::PyPI do
       provider.options.update(:twine_version => '1.1.0')
       provider.options.update(:wheel_version => '0.1.0')
       expect(provider.context).to receive(:shell).with(
-        "if [ -z ${VIRTUAL_ENV+x} ]; then export PIP_USER=yes; fi && wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade --upgrade-strategy eager setuptools==1.0.1 twine==1.1.0 wheel==0.1.0"
+        "if [ -z \"${VIRTUAL_ENV}\" ]; then export PIP_USER=yes; fi && wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade --upgrade-strategy eager setuptools==1.0.1 twine==1.1.0 wheel==0.1.0"
       ).and_return(true)
       provider.install_deploy_dependencies
     end
