@@ -9,7 +9,7 @@ describe DPL::Provider::PyPI do
   describe "#install_deploy_dependencies" do
     example do
       expect(provider.context).to receive(:shell).with(
-        "if [ -z \"${VIRTUAL_ENV}\" ]; then export PIP_USER=yes; fi && wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade setuptools twine wheel"
+        "if [ -z \"${VIRTUAL_ENV}\" ]; then export PIP_USER=yes; fi && wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade --upgrade-strategy eager setuptools twine wheel"
       ).and_return(true)
       provider.install_deploy_dependencies
     end
@@ -21,7 +21,7 @@ describe DPL::Provider::PyPI do
       provider.options.update(:twine_version => '1.1.0')
       provider.options.update(:wheel_version => '0.1.0')
       expect(provider.context).to receive(:shell).with(
-        "if [ -z \"${VIRTUAL_ENV}\" ]; then export PIP_USER=yes; fi && wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade setuptools==1.0.1 twine==1.1.0 wheel==0.1.0"
+        "if [ -z \"${VIRTUAL_ENV}\" ]; then export PIP_USER=yes; fi && wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel && pip install --upgrade --upgrade-strategy eager setuptools==1.0.1 twine==1.1.0 wheel==0.1.0"
       ).and_return(true)
       provider.install_deploy_dependencies
     end
@@ -114,6 +114,7 @@ describe DPL::Provider::PyPI do
         expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
         expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
         expect(provider.context).to receive(:shell).with("python setup.py upload_docs  -r false").and_return(true)
+        expect(provider).to receive(:log).with('Uploading documentation (skip with "skip_upload_docs: true")')
         provider.push_app
       end
 
@@ -123,6 +124,7 @@ describe DPL::Provider::PyPI do
         expect(provider.context).to receive(:shell).with("twine upload -r pypi dist/*").and_return(true)
         expect(provider.context).to receive(:shell).with("rm -rf dist/*").and_return(true)
         expect(provider.context).to receive(:shell).with("python setup.py upload_docs --upload-dir some/dir -r false").and_return(true)
+        expect(provider).to receive(:log).with('Uploading documentation (skip with "skip_upload_docs: true")')
         provider.push_app
       end
     end

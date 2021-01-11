@@ -4,11 +4,12 @@ rvm:
 - "2.3.6"
 - "2.4"
 - "2.5.3"
+- "2.6.3"
 
 jobs:
   include:
     - stage: deploy
-      if: branch = master AND NOT type IN (pull_request)
+      if: branch = v1 AND NOT type IN (pull_request)
       cache: false
       before_deploy:
         - sed -i.bak "s/VERSION = '.*'/VERSION = '${DPL_VERSION}'/g" lib/dpl/version.rb
@@ -26,6 +27,7 @@ jobs:
           gemspec_glob: 'dpl*.gemspec'
           on:
             repo: travis-ci/dpl
+            branch: v1
   allow_failures:
 
 env:
