@@ -441,7 +441,7 @@ Options:
                                 be given multiple times), alias: environment_variables, format: /[\w\-]+=.+/,
                                 note: Can be encrypted for added security)
   --runtime NAME                Lambda runtime to use (type: string, default: nodejs10.x, known values:
-                                nodejs12.x, nodejs10.x, python3.8, python3.7, python3.6, python2.7, ruby2.7,
+                                nodejs14.x nodejs12.x, nodejs10.x, python3.8, python3.7, python3.6, python2.7, ruby2.7,
                                 ruby2.5, java11, java8, go1.x, dotnetcore2.1, note: required when creating a new
                                 function)
   --dead_letter_arn ARN         ARN to an SNS or SQS resource used for the dead letter queue. (type: string)
