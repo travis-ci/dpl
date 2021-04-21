@@ -66,6 +66,12 @@ module Dpl
 
       def deploy
         if deploy_method == 'git'
+          # pushing code from a shallow repository is not possible with git,
+          # the :fetch action aims at transforming a shallow clone of the
+          # repository usually used by CIs to a complete git repository
+          #
+          # If the repository is already full, the command will return an error
+          # we will ignore (assert: false)
           shell :fetch, assert: false
           shell :push
         elsif deploy_method == 'archive'
