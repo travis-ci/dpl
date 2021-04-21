@@ -7,7 +7,8 @@ describe Dpl::Providers::Scalingo do
     it { should have_run %r(curl --remote-name --location https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz) }
     it { should have_run %r(timeout 60 ./scalingo login --api-token token) }
     it { should have_run 'timeout 60 ./scalingo keys-add dpl_tmp_key ~/.dpl/id_rsa.pub' }
-    it { should have_run 'git push scalingo-dpl HEAD:master -f' }
+    it { should have_run 'git fetch origin --unshallow' }
+    it { should have_run 'git push scalingo-dpl HEAD:refs/heads/master -f' }
     it { should have_run 'timeout 60 ./scalingo keys-remove dpl_tmp_key' }
     it { should have_run_in_order }
   end
@@ -20,16 +21,17 @@ describe Dpl::Providers::Scalingo do
     it { should have_run %r(echo -e "user\npass" | timeout 60 ./scalingo login) }
   end
 
-  describe 'given --api_token key --branch branch' do
-    it { should have_run 'git push scalingo-dpl HEAD:branch -f' }
-  end
-
   describe 'given --api_token key --app app' do
     it { should have_run %r(./scalingo --app app git-setup --remote scalingo-dpl) }
   end
 
   describe 'given --api_token key --app app --remote remote' do
     it { should have_run %r(./scalingo --app app git-setup --remote remote) }
+  end
+
+  describe 'given --api_token key --app app --deploy-method archive' do
+    it { should have_run %r(git archive --prefix dpl-scalingo-deploy/ HEAD | gzip - > dpl-scalingo-deploy.tar.gz) }
+    it { should have_run %r(./scalingo --app app deploy "dpl-scalingo-deploy.tar.gz" ".+") }
   end
 
   describe 'invalid credentials', run: false do
