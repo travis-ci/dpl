@@ -2098,11 +2098,10 @@ Options:
                          api_token))
   --username NAME        Scalingo username (type: string)
   --password PASS        Scalingo password (type: string)
-  --region REGION        Scalingo region (type: string, default: agora-fr1, known values: agora-fr1,
-                         osc-fr1)
+  --region REGION        Scalingo region (type: string, default: osc-fr1, known values: osc-fr1, osc-secnum-fr1)
   --remote REMOTE        Git remote name (type: string, default: scalingo-dpl)
-  --branch BRANCH        Git branch (type: string, default: master)
   --timeout SEC          Timeout for Scalingo CLI commands (type: integer, default: 60)
+  --deploy-method METHOD Method of deployment, git or archive (type: string, default: 'git')
 
 Common Options:
 
@@ -2115,7 +2114,7 @@ Examples:
 
   dpl scalingo --api_token token
   dpl scalingo --username name --password pass
-  dpl scalingo --api_token token --app app --region agora-fr1 --remote remote --branch branch
+  dpl scalingo --api_token token --app app --region agora-fr1 --remote remote
 ```
 
 Options can be given via env vars if prefixed with `SCALINGO_`. E.g. the option `--password` can be
