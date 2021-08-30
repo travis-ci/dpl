@@ -6,24 +6,33 @@ describe Dpl::Providers::Firebase do
   before { |c| subject.run if run?(c) }
 
   describe 'by default' do
-    it { should have_run '[npm:install] firebase-tools@^6.3 (firebase)' }
-    it { should have_run 'firebase deploy --non-interactive --token="token"' }
+    it { should have_run '[validate:runtime] node_js (>= 10.13.0)' }
+    it { should have_run '[npm:install] firebase-tools@^9.16 (firebase)' }
+    it { should have_run 'firebase deploy --token="token"' }
   end
 
   describe 'given --project name' do
-    it { should have_run 'firebase deploy --non-interactive --project="name" --token="token"' }
+    it { should have_run 'firebase deploy --project="name" --token="token"' }
   end
 
   describe 'given --message msg' do
-    it { should have_run 'firebase deploy --non-interactive --message="msg" --token="token"' }
+    it { should have_run 'firebase deploy --message="msg" --token="token"' }
   end
 
   describe 'given --only only' do
-    it { should have_run 'firebase deploy --non-interactive --token="token" --only="only"' }
+    it { should have_run 'firebase deploy --token="token" --only="only"' }
+  end
+
+  describe 'given --except except' do
+    it { should have_run 'firebase deploy --token="token" --except="except"' }
+  end
+
+  describe 'given --public public' do
+    it { should have_run 'firebase deploy --token="token" --public="public"' }
   end
 
   describe 'given --force' do
-    it { should have_run 'firebase deploy --non-interactive --token="token" --force' }
+    it { should have_run 'firebase deploy --token="token" --force' }
   end
 
   describe 'missing firebase.json', run: false do
