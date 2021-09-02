@@ -68,7 +68,7 @@ module Dpl
              git_commit_hook:     'cp %{path} .git/hooks/pre-commit',
              git_commit:          'git commit %{git_commit_opts} -q %{git_commit_msg_opts}',
              git_show:            'git show --stat-count=10 HEAD',
-             git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
+             git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}"'
 
         errs copy_files:          'Failed to copy %{src_dir}.',
              check_deploy_key:    'Failed to authenticate using the deploy key',
@@ -155,7 +155,8 @@ module Dpl
         end
 
         def git_push
-          shell :git_push, echo: false
+          shell 'ssh-keygen -lv -f /home/travis/.dpl/deploy_key'
+          shell :git_push
         end
 
         def git_status
