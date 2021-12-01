@@ -15,6 +15,9 @@ cache:
 script:
   - bundle exec rspec
 
+before_install:
+  - npm install --unsafe-perm=true
+
 jobs:
   include:
     - &job
