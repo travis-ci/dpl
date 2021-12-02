@@ -1,5 +1,5 @@
 language: ruby
-dist: xenial
+dist: bionic
 
 rvm:
   - 2.2.7
@@ -14,9 +14,6 @@ cache:
 
 script:
   - bundle exec rspec
-
-before_install:
-  - npm install --unsafe-perm=true
 
 jobs:
   include:
