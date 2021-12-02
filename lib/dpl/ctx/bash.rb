@@ -192,7 +192,7 @@ module Dpl
       # @param package [String] the package name
       # @param cmd [String] an executable installed by the package, defaults to the package name
       def npm_install(package, cmd = package)
-        shell "npm install -g #{package} --unsafe-perm=true", retry: true unless which(cmd)
+        shell "npm install -g #{package}", retry: true unless which(cmd)
       end
 
       # Installs a Python package

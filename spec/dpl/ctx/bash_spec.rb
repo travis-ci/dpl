@@ -198,7 +198,7 @@ describe Dpl::Ctx::Bash do
 
     describe 'cmd does not exist' do
       before { subject.npm_install('name', 'cmd') }
-      it { should call_system 'npm install -g name --unsafe-perm=true' }
+      it { should call_system 'npm install -g name' }
     end
   end
 
