@@ -33,7 +33,7 @@ module Dpl
       opt '--cache_control HEADER', 'HTTP header Cache-Control to suggest that the browser cache the file.', see: 'https://cloud.google.com/storage/docs/xml-api/reference-headers#cachecontrol'
       opt '--glob GLOB', default: '**/*'
 
-      cmds install:   'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
+      cmds install:   'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --quiet --path-update false --usage-reporting false --command-completion false',
            login_key: 'gcloud auth activate-service-account --key-file=%{key_file}',
            rsync:     'gsutil %{gs_opts} rsync %{rsync_opts} %{glob} %{target}',
            copy:      'gsutil %{gs_opts} cp %{copy_opts} -r %{source} %{target}'

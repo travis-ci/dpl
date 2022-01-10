@@ -12,8 +12,8 @@ describe Dpl::Providers::Gcs do
     describe 'by default', record: true do
       it { should have_run 'mv /etc/boto.cfg /tmp/boto.cfg' }
       it { should have_run '[validate:runtime] python (>= 2.7.9)' }
-      it { should have_run '[info] $ curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false' }
-      it { should have_run 'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false' }
+      it { should have_run '[info] $ curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | tar xz -C ~ && ~/google-cloud-sdk/install.sh --quiet --path-update false --usage-reporting false --command-completion false' }
+      it { should have_run 'curl -L https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz | tar xz -C ~ && ~/google-cloud-sdk/install.sh --quiet --path-update false --usage-reporting false --command-completion false' }
       it { should have_run '[info] Authenticating with service account key file key.json' }
       it { should have_run '[info] $ gcloud auth activate-service-account --key-file=key.json' }
       it { should have_run 'gsutil cp -a "private" -r one gs://bucket/one' }
