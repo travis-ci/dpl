@@ -20,7 +20,7 @@ module Dpl
       opt '--config_file FILE', alias: :configfile, deprecated: :configfile
       opt '--extra_args ARGS'
 
-      URL = 'https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/latest/boxfuse-commandline-latest-linux-x64.tar.gz'
+      URL = 'https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/1.33.0.1460/boxfuse-commandline-1.33.0.1460-linux-x64.tar.gz'
 
       cmds install: 'curl -L %{URL} | tar xz',
            deploy:  'boxfuse/boxfuse run %{deploy_opts}'
