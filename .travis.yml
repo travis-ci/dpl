@@ -9,8 +9,6 @@ rvm:
 - 2.6.2
 - 2.7.2
 
-node_js: 12
-
 cache:
   - bundler
 
@@ -26,6 +24,8 @@ jobs:
       install:
       - gem build dpl.gemspec
       - gem install dpl-*.gem
+      - nvm install 12.22.0
+      - nvm use 12.22.0
       - node --version
       script:
       - .travis/test_install
