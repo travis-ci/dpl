@@ -9,7 +9,7 @@ module Dpl
         tbd
       str
 
-      node_js '>= 12.22.10'
+      node_js '>= 12.0.0'
 
       npm 'netlify-cli', 'netlify'
 
