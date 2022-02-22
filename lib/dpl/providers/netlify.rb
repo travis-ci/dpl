@@ -9,6 +9,8 @@ module Dpl
         tbd
       str
 
+      node_js '>= 12.22.10'
+
       npm 'netlify-cli', 'netlify'
 
       env :netlify
