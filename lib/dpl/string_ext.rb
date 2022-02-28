@@ -1,17 +1,17 @@
 class String
   def whitelist
-    @flag = true
+    @is_whitelisted = true
   end
 
   def whitelisted?
-    !@flag
+    @is_whitelisted
   end
 
   def blacklist
-    @flag = false
+    @is_whitelisted = false
   end
 
   def blacklisted?
-    @flag
+    !@is_whitelisted
   end
 end
