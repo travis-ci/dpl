@@ -90,6 +90,7 @@ module Dpl
 
       def interpolate(str)
         str = str % args if args.is_a?(Array) && args.any?
+        str.blacklist if args.is_a?(Array) && args.any?(&:blacklisted?)
         str.to_s.gsub(PATTERN) { normalize(lookup($1.to_sym)) }
       end
 
@@ -100,7 +101,7 @@ module Dpl
       end
 
       def secrets(str)
-        return [] unless str.is_a?(String) && str.whitelisted?
+        return [] unless str.is_a?(String) && str.blacklisted?
         opts = obj.class.opts.select(&:secret?)
         secrets = opts.map { |opt| obj.opts[opt.name] }.compact
         secrets.select { |secret| str.include?(secret) }
