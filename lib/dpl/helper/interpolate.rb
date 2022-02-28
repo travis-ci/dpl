@@ -90,7 +90,7 @@ module Dpl
 
       def interpolate(str)
         str = str % args if args.is_a?(Array) && args.any?
-        str.blacklist if args.is_a?(Array) && args.any?(&:blacklisted?)
+        str.blacklist if args.is_a?(Array) && args.any? { |arg| arg.is_a?(String) && arg.blacklisted? }
         str.to_s.gsub(PATTERN) { normalize(lookup($1.to_sym)) }
       end
 
