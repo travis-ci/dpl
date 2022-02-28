@@ -2,6 +2,7 @@ require 'dpl/cli'
 require 'dpl/ctx'
 require 'dpl/provider'
 require 'dpl/version'
+require 'dpl/string_ext'
 
 module Dpl
   class Error < StandardError
