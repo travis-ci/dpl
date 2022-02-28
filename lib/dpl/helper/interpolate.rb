@@ -100,7 +100,7 @@ module Dpl
 
       def obfuscate(str)
         secrets(str).inject(str) do |str, secret|
-          secret = +secret if secret.frozen?
+          secret = secret.dup if secret.frozen?
           secret.blacklist if str.blacklisted?
           str.gsub(secret, super(secret))
         end
