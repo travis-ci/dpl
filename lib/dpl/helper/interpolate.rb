@@ -66,7 +66,7 @@ module Dpl
     # the string to a standard length of 20 characters. N depends on the
     # length of the original string.
     def obfuscate(str, opts = {})
-      return str if opts[:secure]
+      return str if opts[:secure] || !str.blacklisted?
       keep = (str.length / (4.0 + str.length / 5).round).round
       keep = 1 if keep == 0
       str[0, keep] + '*' * (20 - keep)
@@ -100,7 +100,7 @@ module Dpl
       end
 
       def secrets(str)
-        return [] unless str.is_a?(String)
+        return [] unless str.is_a?(String) && str.blacklisted?
         opts = obj.class.opts.select(&:secret?)
         secrets = opts.map { |opt| obj.opts[opt.name] }.compact
         secrets.select { |secret| str.include?(secret) }
