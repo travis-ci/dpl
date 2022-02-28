@@ -100,7 +100,7 @@ module Dpl
       end
 
       def secrets(str)
-        return [] unless str.is_a?(String) && str.blacklisted?
+        return [] unless str.is_a?(String) && str.whitelisted?
         opts = obj.class.opts.select(&:secret?)
         secrets = opts.map { |opt| obj.opts[opt.name] }.compact
         secrets.select { |secret| str.include?(secret) }
