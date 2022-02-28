@@ -1,6 +1,8 @@
 class String
   def whitelist
     @is_whitelisted = true
+
+    self
   end
 
   def whitelisted?
@@ -9,9 +11,11 @@ class String
 
   def blacklist
     @is_whitelisted = false
+
+    self
   end
 
   def blacklisted?
-    !@is_whitelisted
+    @is_whitelisted.nil? ? false : !@is_whitelisted
   end
 end

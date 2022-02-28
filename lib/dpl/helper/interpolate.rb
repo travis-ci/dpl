@@ -90,12 +90,18 @@ module Dpl
 
       def interpolate(str)
         str = str % args if args.is_a?(Array) && args.any?
-        str.blacklist if args.is_a?(Array) && args.any? { |arg| arg.is_a?(String) && arg.blacklisted? }
-        str.to_s.gsub(PATTERN) { normalize(lookup($1.to_sym)) }
+        @blacklist_result = false
+        str = str.to_s.gsub(PATTERN) do
+          @blacklist_result = true
+          normalize(lookup($1.to_sym))
+        end
+        @blacklist_result || (args.is_a?(Array) && args.any? { |arg| arg.is_a?(String) && arg.blacklisted? }) ? str.blacklist : str
       end
 
       def obfuscate(str)
         secrets(str).inject(str) do |str, secret|
+          secret = +secret if secret.frozen?
+          secret.blacklist if str.blacklisted?
           str.gsub(secret, super(secret))
         end
       end
@@ -111,7 +117,7 @@ module Dpl
         obj.is_a?(Array) ? obj.join(' ') : obj.to_s
       end
 
-      def lookup(key)
+      def lookup(key)        
         if vars? && !var?(key)
           UNKNOWN % key
         elsif mod = modifier(key)
