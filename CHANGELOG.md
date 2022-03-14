@@ -1,5 +1,9 @@
 # Changelog
 
+## dpl v2.0.3-beta.1 (2022-03-15)
+
+* Deprecate support for Ruby 2.2
+
 ## dpl v2.0.2-beta.1 (2020-09-15)
 
 * Add AWS ECR support

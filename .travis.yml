@@ -2,7 +2,6 @@ language: ruby
 dist: xenial
 
 rvm:
-- 2.2.7
 - 2.3.8
 - 2.4.5
 - 2.5.3
@@ -29,8 +28,6 @@ jobs:
       - node --version
       script:
       - .travis/test_install
-      rvm: 2.2.7
-    - <<: *job
       rvm: 2.3.8
     - <<: *job
       rvm: 2.4.5
@@ -46,5 +43,3 @@ jobs:
     - <<: *job
       language: python
       python: 3.6
-  allow_failures:
-    - rvm: 2.7.2
