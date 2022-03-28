@@ -1,4 +1,5 @@
-language: ruby
+language: node_js
+node_js: 12
 
 install: true
 script: true

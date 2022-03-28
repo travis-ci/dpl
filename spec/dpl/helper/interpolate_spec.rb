@@ -18,7 +18,7 @@ describe Dpl::Interpolate do
 
   describe 'passing args as an array' do
     let(:str)  { 'string containing %s' }
-    let(:args) { ['secret'.taint] }
+    let(:args) { ['secret'.blacklist] }
     it { should eq 'string containing s*******************' }
   end
 

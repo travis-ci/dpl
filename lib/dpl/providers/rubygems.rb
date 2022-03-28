@@ -70,13 +70,13 @@ module Dpl
 
         def build
           Dir[gemspec_glob].each do |gemspec|
-            shell :gem_build, gemspec: gemspec.untaint
+            shell :gem_build, gemspec: gemspec.whitelist
           end
         end
 
         def push
           Dir["#{gem}-*.gem"].each do |file|
-            info :gem_push, gem: file.untaint
+            info :gem_push, gem: file.whitelist
             info Gems.push(File.new(file), *[host].compact)
           end
         end

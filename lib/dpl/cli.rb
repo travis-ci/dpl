@@ -36,7 +36,7 @@ module Dpl
     # Tainting is being used for automatically obfuscating values for secure
     # options, so we want to untaint all incoming args here.
     def untaint(args)
-      args.map(&:dup).each(&:untaint)
+      args.map(&:dup).each(&:whitelist)
     end
 
     def with_cmd_opts(args, cmds)

@@ -29,7 +29,7 @@ please do not hesitate to get in touch, and we'll help you [add it](#contributin
 
 ## Requirements
 
-Dpl requires Ruby 2.2 or later.
+Dpl requires Ruby 2.3 or later.
 
 Depending on the deployment target dpl might require additional runtimes (e.g.
 Go, Node.js, or Python) to be installed. It also might require sudo access in
