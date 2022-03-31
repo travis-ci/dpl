@@ -20,7 +20,7 @@ describe Dpl::Providers::Pages do
     it { should have_run '[info] Deploying branch gh-pages to github.com/travis-ci/dpl.git' }
     it { should have_run '[info] Cloning the branch gh-pages from the remote repo' }
     it { should have_run 'git clone --quiet --branch="gh-pages" --depth=1 "https://token@github.com/travis-ci/dpl.git" . > /dev/null 2>&1' }
-    it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" .) }
+    it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" ".") }
     it { should have_run 'git config user.name "author name (via Travis CI)"' }
     it { should have_run 'git config user.email "author email"' }
     it { should have_run 'git add -A .' }
@@ -36,7 +36,7 @@ describe Dpl::Providers::Pages do
     it { should have_run '[info] Deploying branch gh-pages to github.com/travis-ci/dpl.git' }
     it { should have_run '[info] Using temporary work directory tmp' }
     it { should have_run "[info] Cloning the branch gh-pages from the remote repo" }
-    it { should have_run "[info] Copying #{cwd} contents to tmp" }
+    it { should have_run "[info] Copying #{cwd} contents to ." }
     it { should have_run '[info] Configuring git committer to be author name (via Travis CI) <author email>' }
     it { should have_run '[info] Preparing to deploy gh-pages branch to gh-pages' }
     it { should have_run '[info] Pushing to github.com/travis-ci/dpl.git' }
@@ -57,7 +57,7 @@ describe Dpl::Providers::Pages do
     it { should have_run '[info] Initializing local git repo' }
     it { should have_run 'git init .' }
     it { should have_run 'git checkout --orphan "gh-pages"' }
-    it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" .) }
+    it { should have_run %(rsync -rl --exclude .git --delete "#{cwd}/" ".") }
     it { should have_run 'git add -A .' }
     it { should have_run 'git commit -q -m "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages"' }
     it { should have_run 'git show --stat-count=10 HEAD' }
@@ -74,9 +74,15 @@ describe Dpl::Providers::Pages do
   end
 
   describe 'given --local_dir ./dir --verbose' do
-    it { should have_run "rsync -rl --exclude .git --delete \"#{cwd}/dir/\" ." }
+    it { should have_run "rsync -rl --exclude .git --delete \"#{cwd}/dir/\" \".\"" }
     it { should have_run "[info] The source dir for deployment is #{cwd}/dir" }
-    it { should have_run "[info] Copying #{cwd}/dir contents to tmp" }
+    it { should have_run "[info] Copying #{cwd}/dir contents to ." }
+  end
+
+  describe 'given --target_dir ./dir --verbose' do
+    it { should have_run "rsync -rl --exclude .git --delete \"#{cwd}/\" \"./dir\"" }
+    it { should have_run "[info] The target dir for deployment is ./dir" }
+    it { should have_run "[info] Copying #{cwd} contents to ./dir" }
   end
 
   describe 'given --fqdn fqdn.com' do
