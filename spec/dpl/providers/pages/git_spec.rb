@@ -27,7 +27,7 @@ describe Dpl::Providers::Pages do
     it { should have_run 'git commit -q -m "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages"' }
     it { should have_run 'git show --stat-count=10 HEAD' }
     it { should have_run '[info] Pushing to github.com/travis-ci/dpl.git' }
-    it { should have_run 'git push --quiet "https://token@github.com/travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
+    it { should have_run 'git push --quiet "https://token@github.com/travis-ci/dpl.git" "gh-pages":"gh-pages"' }
     it { should have_run_in_order }
   end
 
@@ -45,12 +45,12 @@ describe Dpl::Providers::Pages do
   describe 'given --repo other/name' do
     it { should have_run 'git commit -q -m "Deploy travis-ci/dpl to github.com/other/name.git:gh-pages"' }
     it { should have_run '[info] Pushing to github.com/other/name.git' }
-    it { should have_run 'git push --quiet "https://token@github.com/other/name.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
+    it { should have_run 'git push --quiet "https://token@github.com/other/name.git" "gh-pages":"gh-pages"' }
   end
 
   describe 'given --target_branch other' do
     it { should have_run 'git commit -q -m "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:other"' }
-    it { should have_run 'git push --quiet "https://token@github.com/travis-ci/dpl.git" "other":"other" > /dev/null 2>&1' }
+    it { should have_run 'git push --quiet "https://token@github.com/travis-ci/dpl.git" "other":"other"' }
   end
 
   describe 'given --no_keep_history' do
@@ -61,7 +61,7 @@ describe Dpl::Providers::Pages do
     it { should have_run 'git add -A .' }
     it { should have_run 'git commit -q -m "Deploy travis-ci/dpl to github.com/travis-ci/dpl.git:gh-pages"' }
     it { should have_run 'git show --stat-count=10 HEAD' }
-    it { should have_run 'git push --force --quiet "https://token@github.com/travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
+    it { should have_run 'git push --force --quiet "https://token@github.com/travis-ci/dpl.git" "gh-pages":"gh-pages"' }
   end
 
   describe 'given --no_keep_history --allow_empty' do
@@ -111,7 +111,7 @@ describe Dpl::Providers::Pages do
     it { should have_run '[info] $ ssh -i ~/.dpl/deploy_key -T git@github.com 2>&1 | grep successful > /dev/null' }
     it { should have_run 'ssh -i ~/.dpl/deploy_key -T git@github.com 2>&1 | grep successful > /dev/null' }
     it { should have_run %r(cp .*lib/dpl/assets/git/detect_private_key .git/hooks/pre-commit) }
-    it { should have_run 'git push --quiet "git@github.com:travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
+    it { should have_run 'git push --quiet "git@github.com:travis-ci/dpl.git" "gh-pages":"gh-pages"' }
     it { should have_run_in_order }
   end
 

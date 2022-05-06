@@ -58,7 +58,7 @@ module Dpl
         cmds git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{remote_url}" . > /dev/null 2>&1',
              git_init:            'git init .',
              git_checkout:        'git checkout --orphan "%{target_branch}"',
-             check_deploy_key:    'ssh -i %{key} -T git@github.com 2>&1 | grep successful > /dev/null',
+             check_deploy_key:    'ssh -i %{key} -T git@%{url} 2>&1 | grep successful > /dev/null',
              copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
              git_config_email:    'git config user.email %{quoted_email}',
              git_config_name:     'git config user.name %{quoted_name}',
@@ -68,7 +68,7 @@ module Dpl
              git_commit_hook:     'cp %{path} .git/hooks/pre-commit',
              git_commit:          'git commit %{git_commit_opts} -q %{git_commit_msg_opts}',
              git_show:            'git show --stat-count=10 HEAD',
-             git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
+             git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}"'
 
         errs copy_files:          'Failed to copy %{src_dir}.',
              check_deploy_key:    'Failed to authenticate using the deploy key',
@@ -119,7 +119,7 @@ module Dpl
           mv deploy_key, path
           chmod 0600, path
           setup_git_ssh path
-          shell :check_deploy_key, key: path
+          shell :check_deploy_key, key: path, url: opts[:url]
         end
 
         def git_clone?
@@ -155,7 +155,8 @@ module Dpl
         end
 
         def git_push
-          shell :git_push, echo: false
+          shell 'ssh-keygen -lv -f /home/travis/.dpl/deploy_key'
+          shell :git_push
         end
 
         def git_status
