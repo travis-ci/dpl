@@ -32,7 +32,7 @@ module Dpl
       opt '--subnet_ids IDS',         'List of subnet IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSubnets and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--security_group_ids IDS', 'List of security group IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--environment VARS',       'List of Environment Variables to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security', alias: :environment_variables
-      opt '--runtime NAME',           'Lambda runtime to use', note: 'required when creating a new function', default: 'nodejs10.x', enum: %w(nodejs12.x nodejs10.x python3.8 python3.7 python3.6 python2.7 ruby2.7 ruby2.5 java11 java8 go1.x dotnetcore2.1)
+      opt '--runtime NAME',           'Lambda runtime to use', note: 'required when creating a new function', default: 'nodejs10.x', enum: %w(nodejs14.x nodejs12.x nodejs10.x python3.8 python3.7 python3.6 python2.7 ruby2.7 ruby2.5 java11 java8.al2 java8 go1.x dotnetcore3.1 dotnetcore2.1 provided.al2 provided)
       opt '--dead_letter_arn ARN',    'ARN to an SNS or SQS resource used for the dead letter queue.'
       opt '--kms_key_arn ARN',        'KMS key ARN to use to encrypt environment_variables.'
       opt '--tracing_mode MODE',      'Tracing mode', default: 'PassThrough', enum: %w(Active PassThrough), note: 'Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role'
