@@ -14,6 +14,7 @@ module Dpl
       str
 
       gem 'aws-sdk-lambda', '~> 1.84.0'
+      gem 'nokogiri', '< 1.10'
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
 
       env :aws, :lambda
@@ -32,7 +33,7 @@ module Dpl
       opt '--subnet_ids IDS',         'List of subnet IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSubnets and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--security_group_ids IDS', 'List of security group IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--environment VARS',       'List of Environment Variables to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security', alias: :environment_variables
-      opt '--runtime NAME',           'Lambda runtime to use', note: 'required when creating a new function', default: 'nodejs10.x', enum: %w(nodejs12.x nodejs10.x python3.8 python3.7 python3.6 python2.7 ruby2.7 ruby2.5 java11 java8 go1.x dotnetcore2.1)
+      opt '--runtime NAME',           'Lambda runtime to use', note: 'required when creating a new function', default: 'nodejs12.x', enum: %w(nodejs16.x nodejs14.x nodejs12.x python3.8 python3.7 python3.6 python2.7 ruby2.7 ruby2.5 java11 java8 go1.x dotnetcore2.1)
       opt '--dead_letter_arn ARN',    'ARN to an SNS or SQS resource used for the dead letter queue.'
       opt '--kms_key_arn ARN',        'KMS key ARN to use to encrypt environment_variables.'
       opt '--tracing_mode MODE',      'Tracing mode', default: 'PassThrough', enum: %w(Active PassThrough), note: 'Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role'
@@ -76,9 +77,15 @@ module Dpl
         end
 
         def update
-          arn = update_config
-          update_tags(arn) if function_tags?
-          update_code
+          begin
+            arn = update_config
+            client.wait_until(:function_updated, { function_name: function_name })
+            update_tags(arn) if function_tags?
+            client.wait_until(:function_updated, { function_name: function_name })
+            update_code
+          rescue Aws::Waiters::Errors::WaiterFailed
+            error 'Update timed out.'
+          end
         end
 
         def update_config
