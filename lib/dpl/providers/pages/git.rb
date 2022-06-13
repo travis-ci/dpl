@@ -155,7 +155,6 @@ module Dpl
         end
 
         def git_push
-          shell 'ssh-keygen -lv -f /home/travis/.dpl/deploy_key'
           shell :git_push
         end
 
