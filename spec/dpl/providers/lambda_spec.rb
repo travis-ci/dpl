@@ -17,6 +17,7 @@ describe Dpl::Providers::Lambda do
   end
 
   before { allow(Aws::Lambda::Client).to receive(:new).and_return(client) }
+  before { allow_any_instance_of(Aws::Lambda::Client).to receive(:wait_until).and_return({}) }
   before { |c| subject.run if run?(c) }
 
   file 'one'
@@ -33,7 +34,7 @@ describe Dpl::Providers::Lambda do
       it { should have_run_in_order }
 
       it { should create_function FunctionName: 'func' }
-      it { should create_function Runtime: 'nodejs10.x' }
+      it { should create_function Runtime: 'nodejs12.x' }
       it { should create_function Code: { ZipFile: instance_of(String) } }
       it { should create_function Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
       it { should create_function Handler: 'index.handler' }
@@ -113,7 +114,7 @@ describe Dpl::Providers::Lambda do
       it { should have_run '[info] Updating existing function func.' }
       it { should have_run '[info] Updating code.' }
 
-      it { should update_function_config Runtime: 'nodejs10.x' }
+      it { should update_function_config Runtime: 'nodejs12.x' }
       it { should update_function_config Description: 'Deploy build 1 to AWS Lambda via Travis CI' }
       it { should update_function_config Timeout: 3 }
       it { should update_function_config MemorySize: 128 }
