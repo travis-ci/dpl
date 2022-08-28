@@ -28,6 +28,7 @@ module Dpl
       opt '--description STR'
       opt '--generation NUM', type: :int, default: '2'
       opt '--prepare CMDS', 'Run commands with convox cli available just before deployment', type: :array
+      opt '--manifest STR', 'Manifest file to be used during deployment', default: 'convox.yml'
 
       # if app and rack are exported to the env, do they need to be passed to these commands?
       cmds login:    'convox version --rack %{rack}',
@@ -35,8 +36,8 @@ module Dpl
            create:   'convox apps create %{app} --generation %{generation} --rack %{rack} --wait',
            update:   'convox update',
            set_env:  'convox env set %{env} --rack %{rack} --app %{app} --replace',
-           build:    'convox build --rack %{rack} --app %{app} --id --description %{escaped_description}',
-           deploy:   'convox deploy --rack %{rack} --app %{app} --wait --id --description %{escaped_description}'
+           build:    'convox build --rack %{rack} --app %{app} --id --manifest %{manifest} --description %{escaped_description}',
+           deploy:   'convox deploy --rack %{rack} --app %{app} --wait --id --manifest %{manifest} --description %{escaped_description}'
 
       msgs create:   'Application %{app} does not exist on rack %{rack}. Creating it ...',
            missing:  'Application %{app} does not exist on rack %{rack}.',

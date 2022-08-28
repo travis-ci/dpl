@@ -987,6 +987,7 @@ Options:
   --generation NUM       type: integer, default: 2
   --prepare CMDS         Run commands with convox cli available just before deployment (type: array
                          (string, can be given multiple times))
+  --manifest STR         Manifest file to be used during deployment (type: string, default: convox.yml)
 
 Common Options:
 

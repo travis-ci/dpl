@@ -1,6 +1,7 @@
 describe Dpl::Providers::Convox do
   let(:args)   { |e| %w(--app app --rack rack --password pass) + args_from_description(e) }
   let(:exists) { true }
+  let(:manifest) { 'convox.yml' }
 
   let(:desc) do
     Shellwords.escape JSON.dump(
@@ -40,7 +41,7 @@ describe Dpl::Providers::Convox do
     it { should have_run '[info] $ convox apps info --rack rack --app app' }
     it { should have_run 'convox apps info --rack rack --app app' }
     it { should have_run '[info] Building and promoting application ...' }
-    it { should have_run "convox deploy --rack rack --app app --wait --id --description #{desc}" }
+    it { should have_run "convox deploy --rack rack --app app --wait --id --manifest #{manifest} --description #{desc}" }
     it { should have_run_in_order }
   end
 
@@ -62,7 +63,7 @@ describe Dpl::Providers::Convox do
   end
 
   describe 'given --no-promote' do
-    it { should have_run "convox build --rack rack --app app --id --description #{desc}" }
+    it { should have_run "convox build --rack rack --app app --id --manifest #{manifest} --description #{desc}" }
     it { should_not have_run /convox deploy/ }
   end
 
@@ -79,7 +80,7 @@ describe Dpl::Providers::Convox do
   end
 
   describe 'given --description other' do
-    it { should have_run 'convox deploy --rack rack --app app --wait --id --description other' }
+    it { should have_run "convox deploy --rack rack --app app --wait --id --manifest #{manifest} --description other" }
   end
 
   describe 'given --env ONE=$one --env TWO=two' do
@@ -106,6 +107,10 @@ describe Dpl::Providers::Convox do
 
   describe 'missing env file, given --env_file .env', run: false do
     it { expect { subject.run }.to raise_error 'The given env_file does not exist.' }
+  end
+
+  describe 'given --manifest custom-convox.yml' do
+    it { should have_run "convox deploy --rack rack --app app --wait --id --manifest custom-convox.yml --description #{desc}" }
   end
 
   describe 'with credentials in env vars', run: false do
