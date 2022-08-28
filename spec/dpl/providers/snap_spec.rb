@@ -9,16 +9,16 @@ describe Dpl::Providers::Snap do
     it { should have_run '[apt:get] snapd (snap)' }
     it { should have_run 'sudo snap install snapcraft --classic' }
     it { should have_run 'echo "token" | snapcraft login --with -' }
-    it { should have_run 'snapcraft push ./snap --release=edge' }
+    it { should have_run 'snapcraft upload ./snap --release=edge' }
     it { should have_run_in_order }
   end
 
   describe 'given --snap ./sn*' do
-    it { should have_run 'snapcraft push ./snap --release=edge' }
+    it { should have_run 'snapcraft upload ./snap --release=edge' }
   end
 
   describe 'given --snap ./snap --channel channel' do
-    it { should have_run 'snapcraft push ./snap --release=channel' }
+    it { should have_run 'snapcraft upload ./snap --release=channel' }
   end
 
   describe 'given --snap ./snap', run: false do
