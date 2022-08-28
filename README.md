@@ -1481,7 +1481,7 @@ Examples:
 Options can be given via env vars if prefixed with
 `[CLOUDSDK_CORE|CLOUDSDK_CORE_|GAE|GAE_|GOOGLECLOUD|GOOGLECLOUD_]`.
 
-### Google Cloud Store
+### Google Cloud Storage
 
 
 
@@ -1490,7 +1490,7 @@ Usage: dpl gcs [options]
 
 Summary:
 
-  Google Cloud Store deployment provider
+  Google Cloud Storage deployment provider
 
 Description:
 
@@ -1506,17 +1506,15 @@ Options:
   --bucket BUCKET              GCS Bucket (type: string, required)
   --local_dir DIR              Local directory to upload from (type: string, default: .)
   --upload_dir DIR             GCS directory to upload to (type: string)
-  --[no-]dot_match             Upload hidden files starting with a dot
   --acl ACL                    Access control to set for uploaded objects (type: string, default: private,
                                known values: private, public-read, public-read-write, authenticated-read,
                                bucket-owner-read, bucket-owner-full-control, see:
                                https://cloud.google.com/storage/docs/reference-headers#xgoogacl)
-  --[no-]detect_encoding       HTTP header Content-Encoding to set for files compressed with gzip and compress
-                               utilities.
+  --gzip STR                   Calls gsutil with -z to gzip files with matching extensions. (type: array (string, can be given multiple
+                               times))
   --cache_control HEADER       HTTP header Cache-Control to suggest that the browser cache the file. (type:
                                string, see:
                                https://cloud.google.com/storage/docs/xml-api/reference-headers#cachecontrol)
-  --glob GLOB                  type: string, default: **/*
 
 Common Options:
 
@@ -1530,7 +1528,7 @@ Examples:
   dpl gcs --bucket bucket --key_file file
   dpl gcs --bucket bucket --access_key_id id --secret_access_key key
   dpl gcs --bucket bucket
-  dpl gcs --bucket bucket --key_file file --local_dir dir --upload_dir dir --dot_match
+  dpl gcs --bucket bucket --key_file file --local_dir dir/*.txt --upload_dir dir
 ```
 
 Options can be given via env vars if prefixed with `GCS_`. E.g. the option `--access_key_id` can be
