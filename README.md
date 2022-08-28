@@ -1107,6 +1107,8 @@ Options:
                        firebase.json) (type: string)
   --message MSG        Message describing this deployment. (type: string)
   --only SERVICES      Firebase services to deploy (type: string, note: can be a comma-separated list)
+  --except SERVICES    Firebase services to not deploy  (type: string, note: can be a comma-separated list)
+  --public PATH        Override the Hosting public directory specified in firebase.json
   --[no-]force         Whether or not to delete Cloud Functions missing from the current working
                        directory
 
@@ -1120,7 +1122,7 @@ Common Options:
 Examples:
 
   dpl firebase --token token
-  dpl firebase --token token --project name --message msg --only services --force
+  dpl firebase --token token --project name --message msg --only services --except services --public path --force
 ```
 
 Options can be given via env vars if prefixed with `FIREBASE_`. E.g. the option `--token` can be
