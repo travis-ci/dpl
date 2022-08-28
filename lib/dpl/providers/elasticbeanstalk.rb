@@ -94,21 +94,30 @@ module Dpl
       end
 
       def create_zip
+        n_files = 0
         ::Zip::File.open(zip_file, ::Zip::File::CREATE) do |zip|
           files.each do |path|
-            debug :zip_add, path
+            n_files +=  1
             zip.add(path.sub(cwd, ''), path)
           end
         end
+        debug "Zip contains #{n_files} files"
+        size = File.size(zip_file)
+        warn "Zip file is empty." if size == 0
+        # https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications-versions.html
+        warn "Zip file may be too large." if size > 524288000
+        debug "Zip file size: #{size.to_f / 2**10}kb"
       end
 
       def upload
+        debug "upload zipfile:#{zip_file} bucket path: #{bucket_path}"
         @object = bucket.object(bucket_path)
         object.put(body: File.open(zip_file))
         sleep 5 # s3 eventual consistency
       end
 
       def create_version
+        debug "create_version app:#{app}, label:#{label}, bucket:#{bucket.name}, key:#{object.key}"
         @version = eb.create_application_version(
           application_name: app,
           version_label: label,
