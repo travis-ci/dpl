@@ -94,6 +94,7 @@ module Dpl
       end
 
       def create_zip
+        ::Zip.write_zip64_support = true # Support >65k files in archive
         ::Zip::File.open(zip_file, ::Zip::File::CREATE) do |zip|
           files.each do |path|
             debug :zip_add, path
