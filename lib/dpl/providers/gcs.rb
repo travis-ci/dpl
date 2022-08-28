@@ -15,8 +15,6 @@ module Dpl
 
       gem 'mime-types', '~> 3.2.2'
 
-      python '>= 2.7.9'
-
       env :gcs
 
       required :key_file, [:access_key_id, :secret_access_key]
