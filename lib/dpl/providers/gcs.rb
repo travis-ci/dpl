@@ -13,7 +13,7 @@ module Dpl
         tbd
       str
 
-      gem 'mime-types', '~> 3.2.2'
+      gem 'mime-types', '~> 3.3.1'
 
       python '>= 2.7.9'
 
