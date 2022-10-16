@@ -12,7 +12,7 @@ module Dpl
           tbd
         str
 
-        gem 'octokit', '~> 5.1.0'
+        gem 'octokit', '~> 5.0.0'
         gem 'public_suffix', '~> 3.0.3'
 
         required :token, :deploy_key
