@@ -12,7 +12,7 @@ module Dpl
         changes produced by the build, and optionally opening a pull request.
       str
 
-      gem 'octokit', '~> 4.20.0'
+      gem 'octokit', '~> 4.23.0'
       gem 'public_suffix', '~> 3.0.3'
 
       env :github, :git
