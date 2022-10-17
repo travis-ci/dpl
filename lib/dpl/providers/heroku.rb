@@ -5,7 +5,7 @@ module Dpl
 
       abstract
 
-      gem 'faraday', '~> 0.9.2'
+      gem 'faraday', '~> 1.10.0'
       gem 'json'
       gem 'netrc', '~> 0.11.0'
       gem 'rendezvous', '~> 0.1.3'
