@@ -9,7 +9,7 @@ module Dpl
         tbd
       str
 
-      gem 'json'
+      gem 'json', '~> 2.6.1'
 
       env :convox
 
