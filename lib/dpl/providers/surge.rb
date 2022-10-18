@@ -13,7 +13,7 @@ module Dpl
 
       node_js '>= 8.8.1'
 
-      gem 'json', '~> 2.6.1'
+      gem 'json', '~> 2.3.0'
       npm :surge
       env :surge
 
