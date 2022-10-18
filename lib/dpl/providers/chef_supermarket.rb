@@ -12,7 +12,7 @@ module Dpl
         tbd
       str
 
-      gem 'chef', '~> 15.17.4', require: %w(
+      gem 'chef', '~> 16.7.61', require: %w(
         chef/cookbook/cookbook_version_loader
         chef/cookbook_site_streaming_uploader
         chef/cookbook_uploader
