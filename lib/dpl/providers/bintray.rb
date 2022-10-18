@@ -13,7 +13,7 @@ module Dpl
         tbd
       str
 
-      gem 'json', '~> 2.3.0'
+      gem 'json', '~> 1.8.6'
 
       env :bintray
 
