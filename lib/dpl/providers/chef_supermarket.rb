@@ -17,7 +17,7 @@ module Dpl
         chef/cookbook_site_streaming_uploader
         chef/cookbook_uploader
       )
-      gem 'json', '~> 2.3.0'
+      gem 'json'
       gem 'mime-types', '~> 3.3.1'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
       gem 'rack'
