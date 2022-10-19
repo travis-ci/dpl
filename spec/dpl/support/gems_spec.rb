@@ -6,8 +6,8 @@ describe Dpl::Support::Gems::Parse do
       module Dpl
         module Providers
           class CloudFiles < Provider
-            gem 'nokogiri', '< 1.12.0'
-            gem 'fog-core', '= 2.3.0', require: 'fog/core'
+            gem 'nokogiri', '< 1.10.0'
+            gem 'fog-core', '= 2.1.0', require: 'fog/core'
             gem 'fog-rackspace', '~> 0.1.6', require: 'fog/rackspace'
           end
         end

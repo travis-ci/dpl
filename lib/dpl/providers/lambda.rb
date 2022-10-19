@@ -14,7 +14,7 @@ module Dpl
       str
 
       gem 'aws-sdk-lambda', '~> 1.84.0'
-      gem 'nokogiri', '< 1.12.0'
+      gem 'nokogiri', '< 1.10.0'
       gem 'rubyzip', '~> 1.2.2', require: 'zip'
 
       env :aws, :lambda
