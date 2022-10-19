@@ -11,7 +11,7 @@ module Dpl
         tbd
       str
 
-      gem 'json'
+      gem 'json', '~> 2.3.1'
 
       env :npm
 
