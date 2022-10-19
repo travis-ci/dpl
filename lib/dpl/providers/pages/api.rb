@@ -18,7 +18,7 @@ module Dpl
           open_timeout: 180
         }
 
-        gem 'octokit', '~> 4.23.0'
+        gem 'octokit', '~> 5.6.1'
 
         full_name 'GitHub Pages (API)'
 
