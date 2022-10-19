@@ -15,7 +15,7 @@ module Dpl
         tbd
       str
 
-      gem 'json'
+      gem 'json', '~> 1.8.6'
       gem 'multipart-post', '~> 2.0.0', require: 'net/http/post/multipart'
 
       env :testfairy
