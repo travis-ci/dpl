@@ -18,7 +18,7 @@ module Dpl
       opt '--app APP', required: true
       opt '--rack RACK', required: true
       opt '--password PASS', required: true
-      opt '--install_url URL', default: 'https://convox.com/cli/linux/convox'
+      opt '--install_url URL', default: 'https://convox.s3.amazonaws.com/cli/linux/convox'
       opt '--update_cli'
       opt '--create'
       opt '--promote', default: true
