@@ -33,7 +33,7 @@ describe Dpl::Providers::Convox do
     it { should have_env CONVOX_RACK: 'rack' }
     it { should have_env CONVOX_CLI: 'convox' }
 
-    it { should have_run %r(curl -sL -o \$HOME/bin/convox https://convox.com/cli/linux/convox) }
+    it { should have_run %r(curl -sL -o \$HOME/bin/convox https://convox.s3.amazonaws.com/cli/linux/convox) }
     it { should have_run '[info] $ convox version --rack rack' }
     it { should have_run 'convox version --rack rack' }
     it { should have_run '[info] Setting the build environment up for the deployment' }
