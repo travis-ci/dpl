@@ -2,11 +2,9 @@ $: << 'lib'
 require 'dpl/support/gems'
 
 source 'https://rubygems.org'
-ruby '>= 2.3'
+ruby '>= 2.7'
 
 gemspec name: 'dpl'
-# gem 'cl', path: '../../cl'
-# gem 'regstry', path: '../../registry'
 
 gems = Dpl::Support::Gems.new('lib/dpl/providers/**/*.rb')
 gems.each do |name, version, opts|

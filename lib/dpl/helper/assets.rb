@@ -16,7 +16,7 @@ module Dpl
       end
 
       def exists?
-        File.exists?(path)
+        File.exist?(path)
       end
 
       def unknown

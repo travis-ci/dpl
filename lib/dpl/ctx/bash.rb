@@ -491,14 +491,14 @@ module Dpl
       def move_files(paths)
         paths.each do |path|
           target = "#{tmp_dir}/#{File.basename(path)}"
-          mv(path, target) if File.exists?(path)
+          mv(path, target) if File.exist?(path)
         end
       end
 
       def unmove_files(paths)
         paths.each do |path|
           source = "#{tmp_dir}/#{File.basename(path)}"
-          mv(source, path) if File.exists?(source)
+          mv(source, path) if File.exist?(source)
         end
       end
 

@@ -28,7 +28,7 @@ module Dpl
       msgs missing_config: 'Missing firebase.json'
 
       def validate
-        error :missing_config unless File.exists?('firebase.json')
+        error :missing_config unless File.exist?('firebase.json')
       end
 
       def deploy

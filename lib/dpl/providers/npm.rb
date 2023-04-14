@@ -11,7 +11,7 @@ module Dpl
         tbd
       str
 
-      gem 'json'
+      gem 'json', '~> 2.3.1'
 
       env :npm
 
@@ -120,7 +120,7 @@ module Dpl
         end
 
         def package_json
-          File.exists?('package.json') ? JSON.parse(File.read('package.json')) : {}
+          File.exist?('package.json') ? JSON.parse(File.read('package.json')) : {}
         end
     end
   end

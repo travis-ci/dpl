@@ -12,13 +12,13 @@ module Dpl
         tbd
       str
 
-      gem 'chef', '~> 12.0', require: %w(
+      gem 'chef', '~> 17.10', require: %w(
         chef/cookbook/cookbook_version_loader
         chef/cookbook_site_streaming_uploader
         chef/cookbook_uploader
       )
-      gem 'json'
-      gem 'mime-types', '~> 3.2.2'
+      gem 'json', '~> 2.3.1'
+      gem 'mime-types', '~> 3.4.1'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
       gem 'rack'
 

@@ -11,8 +11,8 @@ module Dpl
         tbd
       str
 
-      gem 'puppet', '~> 6.26.0', require: 'puppet/face'
-      gem 'puppet-blacksmith', '~> 4.1.2', require: 'puppet_blacksmith'
+      gem 'puppet', '~> 7.24', require: 'puppet/face'
+      gem 'puppet-blacksmith', '~> 6.1', require: 'puppet_blacksmith'
 
       env :puppetforge
 

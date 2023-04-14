@@ -29,7 +29,7 @@ module Dpl
       end
 
       def parse(path)
-        str = File.exists?(path) ? File.read(path) : ''
+        str = File.exist?(path) ? File.read(path) : ''
         opts = str.lines.select { |line| line.include?('=') }.map(&:strip)
         opts = opts.map { |pair| pair.split('=', 2) }.to_h
         opts.map { |key, value| [strip_prefix(key).to_sym, value] }.to_h

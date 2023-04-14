@@ -90,7 +90,7 @@ module Dpl
       end
 
       def zip_exists?
-        File.exists?(zip_file)
+        File.exist?(zip_file)
       end
 
       def create_zip

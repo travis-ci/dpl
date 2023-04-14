@@ -9,7 +9,7 @@ module Dpl
         tbd
       str
 
-      gem 'ey-core', '~> 3.5'
+      gem 'ey-core', '~> 3.6.4'
 
       required :api_key, [:email, :password]
 

@@ -15,8 +15,8 @@ module Dpl
         tbd
       str
 
-      gem 'octokit', '~> 4.15.0'
-      gem 'mime-types', '~> 3.2.2'
+      gem 'octokit', '~> 5.6.1'
+      gem 'mime-types', '~> 3.4.1'
       gem 'public_suffix', '~> 3.0.3'
 
       env :github, :releases
@@ -212,7 +212,7 @@ module Dpl
       end
 
       def exists?(file)
-        return true if File.exists?(file)
+        return true if File.exist?(file)
         error :missing_file, file
         false
       end

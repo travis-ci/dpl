@@ -85,7 +85,7 @@ module Dpl
         end
 
         def manifest_missing?
-          !File.exists?(manifest)
+          !File.exist?(manifest)
         end
 
         def api
