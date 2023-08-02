@@ -12,8 +12,8 @@ module Dpl
           tbd
         str
 
-        gem 'octokit', '~> 5.6.1'
-        gem 'public_suffix', '~> 3.0.3'
+        gem 'octokit', '~> 7'
+        gem 'public_suffix', '~> 5'
 
         required :token, :deploy_key
 
@@ -225,6 +225,9 @@ module Dpl
 
         def user
           @user ||= api.user
+        rescue => e
+          puts "ERR: #{e.inspect}"
+          puts e.backtrace
         end
 
         def src_dir

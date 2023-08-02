@@ -11,7 +11,7 @@ module Dpl
 
       gem 'aws-sdk-ecr', '~> 1.0'
       # gem 'docker-api', '~> 1.34'
-      gem 'json', '~> 2.3.1'
+      gem 'json'
 
       env :aws
 

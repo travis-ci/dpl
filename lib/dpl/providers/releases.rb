@@ -15,9 +15,9 @@ module Dpl
         tbd
       str
 
-      gem 'octokit', '~> 5.6.1'
+      gem 'octokit', '~> 7'
       gem 'mime-types', '~> 3.4.1'
-      gem 'public_suffix', '~> 3.0.3'
+      gem 'public_suffix', '~> 5'
 
       env :github, :releases
 

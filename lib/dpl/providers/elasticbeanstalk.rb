@@ -18,10 +18,10 @@ module Dpl
         * Optionally waits until the deployment finishes
       str
 
-      gem 'aws-sdk-elasticbeanstalk', '~> 1.0'
-      gem 'aws-sdk-s3', '~> 1.0'
-      gem 'rubyzip', '~> 1.2.2', require: 'zip'
-      gem 'pathspec', '~> 0.2.1', require: 'pathspec'
+      gem 'aws-sdk-elasticbeanstalk', '~> 1'
+      gem 'aws-sdk-s3', '~> 1'
+      gem 'rubyzip', '~> 2.3', require: 'zip'
+      gem 'pathspec', '~> 1.1', require: 'pathspec'
 
       env :aws, :elastic_beanstalk
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'

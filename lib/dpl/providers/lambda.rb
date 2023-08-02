@@ -13,9 +13,9 @@ module Dpl
         tbd
       str
 
-      gem 'aws-sdk-lambda', '~> 1.84.0'
-      gem 'nokogiri', '< 1.12'
-      gem 'rubyzip', '~> 1.2.2', require: 'zip'
+      gem 'aws-sdk-lambda', '~> 1.104.0'
+      gem 'nokogiri', '~> 1.15'
+      gem 'rubyzip', '~> 2.3', require: 'zip'
 
       env :aws, :lambda
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'

@@ -12,8 +12,8 @@ module Dpl
         changes produced by the build, and optionally opening a pull request.
       str
 
-      gem 'octokit', '~> 5.6.1'
-      gem 'public_suffix', '~> 3.0.3'
+      gem 'octokit', '~> 7'
+      gem 'public_suffix', '~> 5'
 
       env :github, :git
 

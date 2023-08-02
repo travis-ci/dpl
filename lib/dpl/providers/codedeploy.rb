@@ -14,7 +14,7 @@ module Dpl
       str
 
       gem 'aws-sdk-codedeploy', '~> 1.0'
-      gem 'aws-sdk-s3', '~> 1.0'
+      gem 'aws-sdk-s3', '~> 1'
 
       env :aws, :codedeploy
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'

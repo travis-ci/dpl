@@ -12,11 +12,10 @@ Gem::Specification.new do |s|
   s.description   = 'Dpl (dee-pee-ell) is a tool made for continuous deployment, running deployments at Travis CI.'
   s.license       = 'MIT'
   s.require_path  = 'lib'
-  s.required_ruby_version = '>= 2.7'
+  s.required_ruby_version = '>= 3.2'
 
   s.executables   = ['dpl']
   s.files         = Dir['{config/**/*,lib/**/*,[A-Z]*}']
 
-  s.add_runtime_dependency 'cl', '~> 1.0'
-  s.add_development_dependency 'rake', '~> 12.3'
+  s.add_development_dependency 'rake', '~> 13.0'
 end
