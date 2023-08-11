@@ -4,7 +4,7 @@ require 'tempfile'
 
 module Dpl
   class Zip < Struct.new(:src, :dest, :opts)
-    ZIP_EXT = %w(.zip .jar)
+    ZIP_EXT = %w[.zip .jar]
 
     def initialize(*)
       require 'zip'

@@ -12,6 +12,7 @@ Aws::EagerLoader.class_eval do
     @loaded << klass_or_module
     klass_or_module.constants.each do |const_name|
       next if const_name == :Tms
+
       path = klass_or_module.autoload?(const_name)
       begin
         require(path) if path

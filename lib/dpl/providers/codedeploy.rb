@@ -13,7 +13,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'aws-sdk-codedeploy', '~> 1.0'
       gem 'aws-sdk-s3', '~> 1'
@@ -25,28 +25,28 @@ STR
       opt '--secret_access_key KEY', 'AWS secret access key', required: true, secret: true
       opt '--application NAME', 'CodeDeploy application name', required: true
       opt '--deployment_group GROUP', 'CodeDeploy deployment group name'
-      opt '--revision_type TYPE', 'CodeDeploy revision type', enum: %w(s3 github), downcase: true
+      opt '--revision_type TYPE', 'CodeDeploy revision type', enum: %w[s3 github], downcase: true
       opt '--commit_id SHA', 'Commit ID in case of GitHub'
       opt '--repository NAME', 'Repository name in case of GitHub'
       opt '--bucket NAME', 'S3 bucket in case of S3'
       opt '--region REGION', 'AWS availability zone', default: 'us-east-1'
-      opt '--file_exists_behavior STR', 'How to handle files that already exist in a deployment target location', enum: %w(disallow overwrite retain), default: 'disallow'
+      opt '--file_exists_behavior STR', 'How to handle files that already exist in a deployment target location', enum: %w[disallow overwrite retain], default: 'disallow'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
       opt '--bundle_type TYPE', 'Bundle type of the revision'
       opt '--key KEY', 'S3 bucket key of the revision'
       opt '--description DESCR', 'Description of the revision', interpolate: true
       opt '--endpoint ENDPOINT', 'S3 endpoint url'
 
-      msgs login:                 'Using Access Key: %{access_key_id}',
-           deploy_triggered:      'Deployment triggered: %s',
-           register_revision:     'Registering app revision with version=%s, etag=%s',
-           waiting_for_deploy:    'Waiting for the deployment to finish ',
-           finished_deploy:       'done: %s.',
-           description:           'Deploy build %{build_number} via Travis CI',
-           missing_bucket:        'Missing required bucket for S3 deployment',
-           missing_key:           'Missing required key for S3 deployment',
+      msgs login: 'Using Access Key: %{access_key_id}',
+           deploy_triggered: 'Deployment triggered: %s',
+           register_revision: 'Registering app revision with version=%s, etag=%s',
+           waiting_for_deploy: 'Waiting for the deployment to finish ',
+           finished_deploy: 'done: %s.',
+           description: 'Deploy build %{build_number} via Travis CI',
+           missing_bucket: 'Missing required bucket for S3 deployment',
+           missing_key: 'Missing required key for S3 deployment',
            unknown_revision_type: 'Unknown revision type %p',
-           unknown_bundle_type:   'Unknown bundle type'
+           unknown_bundle_type: 'Unknown bundle type'
 
       vars :build_number
 
@@ -85,7 +85,7 @@ STR
 
       def wait_until_deployed(id)
         print :waiting_for_deploy
-        status = poll(id) until %w(Succeeded Failed Stopped).include?(status)
+        status = poll(id) until %w[Succeeded Failed Stopped].include?(status)
         case status
         when 'Succeeded'
           info :finished_deploy, status

@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'gleis', '~> 0.8.0'
 
@@ -23,20 +23,20 @@ STR
 
       needs :ssh_key
 
-      cmds login:      'gleis auth login %{username} %{password} --skip-keygen',
-           logout:     'gleis auth logout',
-           validate:   'gleis app status -a %{app}',
-           add_key:    'gleis auth key add %{file} %{key_name}',
+      cmds login: 'gleis auth login %{username} %{password} --skip-keygen',
+           logout: 'gleis auth logout',
+           validate: 'gleis app status -a %{app}',
+           add_key: 'gleis auth key add %{file} %{key_name}',
            remove_key: 'gleis auth key remove %{key_name}',
-           git_url:    'gleis app git -a %{app} -q',
-           deploy:     'git push %{push_opts} -f %{git_url} HEAD:refs/heads/master'
+           git_url: 'gleis app git -a %{app} -q',
+           deploy: 'git push %{push_opts} -f %{git_url} HEAD:refs/heads/master'
 
-      errs login:      'Login failed',
-           validate:   'Application not found',
-           add_key:    'Adding SSH key failed',
+      errs login: 'Login failed',
+           validate: 'Application not found',
+           add_key: 'Adding SSH key failed',
            remove_key: 'Removing key failed',
-           git_url:    'Failed to retrieve Git URL',
-           deploy:     'Deploying application failed'
+           git_url: 'Failed to retrieve Git URL',
+           deploy: 'Deploying application failed'
 
       attr_reader :git_url
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::GitPush do
-  let(:args)    { |e| %W(--token token --branch #{branch}) + args_from_description(e) }
+  let(:args)    { |e| %W[--token token --branch #{branch}] + args_from_description(e) }
   let(:user)    { JSON.dump(login: 'login', name: 'name', email: 'email') }
   let(:headers) { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
   let(:home)    { File.expand_path('~') }
@@ -70,20 +70,20 @@ describe Dpl::Providers::GitPush do
   end
 
   describe 'given --deploy_key ./key --name name --email email', record: true do
-    let(:args) { |e| %w(--branch other) + args_from_description(e) }
+    let(:args) { |e| %w[--branch other] + args_from_description(e) }
 
     it { is_expected.to have_run '[info] Moving deploy key ./key to ~/.dpl/deploy_key' }
     it { is_expected.to have_run '[info] Setting up git-ssh' }
     it { is_expected.to have_run '[info] $ ssh -i ~/.dpl/deploy_key -T git@github.com 2>&1 | grep successful > /dev/null' }
     it { is_expected.to have_run 'ssh -i ~/.dpl/deploy_key -T git@github.com 2>&1 | grep successful > /dev/null' }
-    it { is_expected.to have_run %r(cp .*lib/dpl/assets/git/detect_private_key .git/hooks/pre-commit) }
+    it { is_expected.to have_run %r{cp .*lib/dpl/assets/git/detect_private_key .git/hooks/pre-commit} }
     it { is_expected.to have_run 'git push --quiet "git@github.com:travis-ci/dpl.git" HEAD:"other" > /dev/null 2>&1' }
     it { is_expected.to have_run_in_order }
   end
 
   describe 'given --pull_request', run: false do
-    before { stub_request(:get, %r(repos/.*/pulls)).and_return(body: JSON.dump(prs), headers: { 'Content-Type': 'application/json' }) }
-    before { stub_request(:post, %r(repos/.*/pulls)).and_return(body: JSON.dump(number: 1), headers: { 'Content-Type': 'application/json' }) }
+    before { stub_request(:get, %r{repos/.*/pulls}).and_return(body: JSON.dump(prs), headers: { 'Content-Type': 'application/json' }) }
+    before { stub_request(:post, %r{repos/.*/pulls}).and_return(body: JSON.dump(number: 1), headers: { 'Content-Type': 'application/json' }) }
     before { subject.run }
 
     context 'pr does not exist' do
@@ -91,14 +91,14 @@ describe Dpl::Providers::GitPush do
       let(:body) { JSON.dump(base: 'master', head: 'other', title: 'Update master') }
 
       it { is_expected.to have_run '[info] Pull request #1 created.' }
-      it { expect(WebMock).to have_requested(:post, %r(repos/.*/pulls)).with(body:) }
+      it { expect(WebMock).to have_requested(:post, %r{repos/.*/pulls}).with(body:) }
     end
 
     context 'pr exists' do
       let(:prs) { [head: { ref: 'other' }] }
 
       it { is_expected.to have_run '[info] Pull request exists.' }
-      it { expect(WebMock).not_to have_requested(:post, %r(repos/.*/pulls)) }
+      it { expect(WebMock).not_to have_requested(:post, %r{repos/.*/pulls}) }
     end
   end
 
@@ -132,14 +132,14 @@ describe Dpl::Providers::GitPush do
   end
 
   describe 'with GITHUB credentials in env vars', run: false do
-    let(:args) { %w(--branch other) }
+    let(:args) { %w[--branch other] }
 
     env GITHUB_TOKEN: 'token'
     it { expect { subject.run }.not_to raise_error }
   end
 
   describe 'with GIT credentials in env vars', run: false do
-    let(:args) { %w(--branch other) }
+    let(:args) { %w[--branch other] }
 
     env GIT_TOKEN: 'token'
     it { expect { subject.run }.not_to raise_error }

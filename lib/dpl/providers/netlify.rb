@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       node_js '>= 12.0.0'
 
@@ -31,7 +31,7 @@ STR
       private
 
       def deploy_opts
-        opts_for(%i(site auth dir functions message prod))
+        opts_for(%i[site auth dir functions message prod])
       end
     end
   end

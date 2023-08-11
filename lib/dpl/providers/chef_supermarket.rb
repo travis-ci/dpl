@@ -12,13 +12,13 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
-      gem 'chef', '~> 18', require: %w(
+      gem 'chef', '~> 18', require: %w[
         chef/cookbook/cookbook_version_loader
         chef/cookbook_site_streaming_uploader
         chef/cookbook_uploader
-      )
+      ]
       gem 'json'
       gem 'mime-types', '~> 3.4.1'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
@@ -34,10 +34,10 @@ STR
 
       URL = 'https://supermarket.chef.io/api/v1/cookbooks'
 
-      msgs validate:       'Validating cookbook',
-           upload:         'Uploading cookbook %{name} to %{url}',
-           missing_file:   'Missing file: %s',
-           unknown_error:  'Unknown error while sharing cookbook: %s',
+      msgs validate: 'Validating cookbook',
+           upload: 'Uploading cookbook %{name} to %{url}',
+           missing_file: 'Missing file: %s',
+           unknown_error: 'Unknown error while sharing cookbook: %s',
            version_exists: 'The same version of this cookbook already exists on the Opscode Cookbook Site.'
 
       def setup

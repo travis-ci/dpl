@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::AzureWebApps do
-  let(:args) { |e| %w(--site site --username name --password pass) + args_from_description(e) }
+  let(:args) { |e| %w[--site site --username name --password pass] + args_from_description(e) }
 
   before { |c| subject.run if run?(c) }
 

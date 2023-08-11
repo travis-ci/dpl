@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Datica do
-  let(:args) { |e| %w(--target target) + args_from_description(e) }
+  let(:args) { |e| %w[--target target] + args_from_description(e) }
 
   env TRAVIS_REPO_SLUG: 'repo',
       TRAVIS_BRANCH: 'branch',

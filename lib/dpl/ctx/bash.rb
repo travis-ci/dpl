@@ -137,6 +137,7 @@ module Dpl
       def apts_get(packages)
         packages = packages.reject { |name, cmd = name| which(cmd || name) }
         return unless packages.any?
+
         apt_update
         packages.each { |package, cmd| apt_get(package, cmd || package, update: false) }
       end
@@ -150,6 +151,7 @@ module Dpl
       # @param cmd [String] an executable installed by the package, defaults to the package name
       def apt_get(package, cmd = package, opts = {})
         return if which(cmd)
+
         apt_update unless opts[:update].is_a?(FalseClass)
         shell "sudo apt-get -qq install #{package}", retry: true
       end

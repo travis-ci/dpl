@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       env :cargo
 
@@ -25,7 +25,7 @@ STR
       private
 
       def publish_opts
-        opts_for(%i(token allow_dirty), dashed: true)
+        opts_for(%i[token allow_dirty], dashed: true)
       end
     end
   end

@@ -12,20 +12,20 @@ module Dpl
 
         description sq(<<-STR)
           tbd
-STR
+        STR
 
         opt '--api_key KEY', 'Heroku API key', required: true, secret: true
         opt '--version VERSION', internal: true # used in triggering a build, not sure this should be exposed?
 
-        msgs pack:    'Creating application archive',
-             upload:  'Uploading application archive',
-             build:   'Triggering Heroku build (deployment)',
+        msgs pack: 'Creating application archive',
+             upload: 'Uploading application archive',
+             build: 'Triggering Heroku build (deployment)',
              pending: 'Heroku build still pending',
-             failed:  'Heroku build failed'
+             failed: 'Heroku build failed'
 
-        cmds pack:    'tar -zcf %{escaped_archive_file} --exclude .git .',
-             upload:  'curl %{curl_opts} %{escaped_put_url} -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: %{user_agent}" --data-binary @%{escaped_archive_file}',
-             log:     'curl %{curl_opts} %{escaped_output_stream_url} -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: %{user_agent}"'
+        cmds pack: 'tar -zcf %{escaped_archive_file} --exclude .git .',
+             upload: 'curl %{curl_opts} %{escaped_put_url} -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: %{user_agent}" --data-binary @%{escaped_archive_file}',
+             log: 'curl %{curl_opts} %{escaped_output_stream_url} -H "Accept: application/vnd.heroku+json; version=3" -H "User-Agent: %{user_agent}"'
 
         attr_reader :data
 

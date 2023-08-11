@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Bluemixcloudfoundry do
-  let(:args) { |e| %w(--username name --password pass --organization org --space space) + args_from_description(e) }
+  let(:args) { |e| %w[--username name --password pass --organization org --space space] + args_from_description(e) }
 
   file 'manifest.yml'
   file 'other.yml'
@@ -9,7 +9,7 @@ describe Dpl::Providers::Bluemixcloudfoundry do
   before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
-    it { is_expected.to have_run %r(wget .*cli.run.pivotal.io.* -qO cf.tgz && tar -zxvf cf.tgz) }
+    it { is_expected.to have_run %r{wget .*cli.run.pivotal.io.* -qO cf.tgz && tar -zxvf cf.tgz} }
     it { is_expected.to have_run './cf api api.ng.bluemix.net' }
     it { is_expected.to have_run './cf login -u name -p pass' }
     it { is_expected.to have_run './cf target -o org -s space' }
@@ -51,7 +51,7 @@ describe Dpl::Providers::Bluemixcloudfoundry do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { %w(--organization org --space space) }
+    let(:args) { %w[--organization org --space space] }
 
     env CLOUDFOUNDRY_USERNAME: 'name',
         CLOUDFOUNDRY_PASSWORD: 'password'

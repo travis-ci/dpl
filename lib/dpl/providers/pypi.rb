@@ -11,7 +11,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       env :pypi
 
@@ -32,21 +32,20 @@ STR
       opt '--twine_version VER', format: VERSION
       opt '--wheel_version VER', format: VERSION
 
-      msgs login:        'Authenticated as %{username}',
-           upload_docs:  'Uploading documentation (skip using "skip_upload_docs: true")'
+      msgs login: 'Authenticated as %{username}',
+           upload_docs: 'Uploading documentation (skip using "skip_upload_docs: true")'
 
-      cmds setup_py:     'python setup.py %{distributions}',
-           twine_check:  'twine check dist/*',
+      cmds setup_py: 'python setup.py %{distributions}',
+           twine_check: 'twine check dist/*',
            twine_upload: 'twine upload %{skip_existing_option} -r pypi dist/*',
-           rm_dist:      'rm -rf dist/*',
-           upload_docs:  'python setup.py upload_docs %{docs_dir_option} -r %{server}'
+           rm_dist: 'rm -rf dist/*',
+           upload_docs: 'python setup.py upload_docs %{docs_dir_option} -r %{server}'
 
-      errs install:      'Failed to install pip, setuptools, twine or wheel.',
-           setup_py:     'setup.py failed',
-           twine_check:  'Twine check failed',
+      errs install: 'Failed to install pip, setuptools, twine or wheel.',
+           setup_py: 'setup.py failed',
+           twine_check: 'Twine check failed',
            twine_upload: 'Twine upload failed.',
-           upload_docs:  'Uploading docs failed.'
-
+           upload_docs: 'Uploading docs failed.'
 
       def install
         script :install
@@ -81,7 +80,7 @@ STR
           repository: %{server}
           username: %{username}
           password: %{password}
-RC
+      RC
 
       def write_config
         write_file('~/.pypirc', pypirc)

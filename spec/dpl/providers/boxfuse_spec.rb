@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Boxfuse do
-  let(:args) { |e| %w(--user user --secret 1234) + args_from_description(e) }
+  let(:args) { |e| %w[--user user --secret 1234] + args_from_description(e) }
 
   before { |c| subject.run if run?(c) }
 
   describe 'by default' do
-    it { is_expected.to have_run %r(curl -L https://files.boxfuse.com/.*.tar.gz | tar xz) }
+    it { is_expected.to have_run %r{curl -L https://files.boxfuse.com/.*.tar.gz | tar xz} }
     it { is_expected.to have_run '[info] $ boxfuse/boxfuse run -user="user" -secret="1*******************"' }
     it { is_expected.to have_run 'boxfuse/boxfuse run -user="user" -secret="1234"' }
   end

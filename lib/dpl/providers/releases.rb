@@ -15,7 +15,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'octokit', '~> 7'
       gem 'mime-types', '~> 3.4.1'
@@ -44,24 +44,24 @@ STR
 
       needs :git
 
-      msgs deploy:               'Deploying to repo: %{slug}',
-           local_tag:            'Current tag is: %{local_tag}',
-           login:                'Authenticated as %s',
-           insufficient_scopes:  'Dpl does not have permission to upload assets. Make sure your token has the repo or public_repo scope.',
-           insufficient_perm:    'Release resource not found. Make sure your token belongs to an account which has push permission to this repo.',
-           overwrite_existing:   'File %s already exists, overwriting.',
-           skip_existing:        'File %s already exists, skipping.',
-           upload_file:          'Uploading file %s ...',
-           set_tag_name:         'Setting tag_name to %s',
+      msgs deploy: 'Deploying to repo: %{slug}',
+           local_tag: 'Current tag is: %{local_tag}',
+           login: 'Authenticated as %s',
+           insufficient_scopes: 'Dpl does not have permission to upload assets. Make sure your token has the repo or public_repo scope.',
+           insufficient_perm: 'Release resource not found. Make sure your token belongs to an account which has push permission to this repo.',
+           overwrite_existing: 'File %s already exists, overwriting.',
+           skip_existing: 'File %s already exists, skipping.',
+           upload_file: 'Uploading file %s ...',
+           set_tag_name: 'Setting tag_name to %s',
            set_target_commitish: 'Setting target_commitish to %s',
-           missing_file:         'File %s does not exist.',
-           not_a_file:           '%s is not a file, skipping.'
+           missing_file: 'File %s does not exist.',
+           not_a_file: '%s is not a file, skipping.'
 
       cmds git_fetch_tags:       'git fetch --tags'
 
       URL = 'https://api.github.com/repos/%s/releases/%s'
 
-      OCTOKIT_OPTS = %i(
+      OCTOKIT_OPTS = %i[
         repo
         name
         body
@@ -69,7 +69,7 @@ STR
         release_number
         tag_name
         target_commitish
-      )
+      ]
 
       TIMEOUTS = {
         timeout: 180,
@@ -101,6 +101,7 @@ STR
         file = normalize_filename(path)
         asset = asset(file)
         return info :skip_existing, file if asset && !overwrite?
+
         delete(asset, file) if asset
         info :upload_file, file
         api.upload_asset(url, path, name: file, content_type: content_type(path))
@@ -121,12 +122,14 @@ STR
 
       def with_tag(opts)
         return opts if tag_name? || draft?
+
         info :set_tag_name, local_tag
         opts.merge(tag_name: local_tag)
       end
 
       def with_target_commitish(opts)
         return opts if target_commitish? || !same_repo?
+
         info :set_target_commitish, git_sha
         opts.merge(target_commitish: git_sha)
       end
@@ -215,12 +218,14 @@ STR
 
       def exists?(file)
         return true if File.exist?(file)
+
         error :missing_file, file
         false
       end
 
       def file?(file)
         return true if File.file?(file)
+
         warn :not_a_file, file
         false
       end

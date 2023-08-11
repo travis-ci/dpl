@@ -13,7 +13,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'json'
 
@@ -25,41 +25,41 @@ STR
       opt '--passphrase PHRASE', 'Passphrase as configured on Bintray (if GPG signing is used)'
       opt '--url URL', default: 'https://api.bintray.com', internal: true
 
-      msgs missing_file:    'Missing descriptor file: %{file}',
-           invalid_file:    'Failed to parse descriptor file %{file}',
-           create_package:  'Creating package %{package_name}',
-           package_attrs:   'Adding attributes for package %{package_name}',
-           create_version:  'Creating version %{version_name}',
-           version_attrs:   'Adding attributes for version %{version_name}',
-           upload_file:     'Uploading file %{source} to %{target}',
-           sign_version:    'Signing version %s passphrase',
+      msgs missing_file: 'Missing descriptor file: %{file}',
+           invalid_file: 'Failed to parse descriptor file %{file}',
+           create_package: 'Creating package %{package_name}',
+           package_attrs: 'Adding attributes for package %{package_name}',
+           create_version: 'Creating version %{version_name}',
+           version_attrs: 'Adding attributes for version %{version_name}',
+           upload_file: 'Uploading file %{source} to %{target}',
+           sign_version: 'Signing version %s passphrase',
            publish_version: 'Publishing version %{version_name} of package %{package_name}',
-           missing_path:    'Path: %{path} does not exist.',
-           list_download:   'Listing %{path} in downloads',
-           retrying:        '%{code} response from Bintray. It may take some time for a version to be published, retrying in %{pause} sec ... (%{count}/%{max})',
-           giveup_retries:  'Too many retries failed, giving up, something went wrong.',
+           missing_path: 'Path: %{path} does not exist.',
+           list_download: 'Listing %{path} in downloads',
+           retrying: '%{code} response from Bintray. It may take some time for a version to be published, retrying in %{pause} sec ... (%{count}/%{max})',
+           giveup_retries: 'Too many retries failed, giving up, something went wrong.',
            unexpected_code: 'Unexpected HTTP response code %s while checking if the %s exists' ,
-           request_failed:  '%s %s returned unexpected HTTP response code %s',
+           request_failed: '%s %s returned unexpected HTTP response code %s',
            request_success: 'Bintray response: %s %s. %s'
 
       PATHS = {
-        packages:        '/packages/%{subject}/%{repo}',
-        package:         '/packages/%{subject}/%{repo}/%{package_name}',
-        package_attrs:   '/packages/%{subject}/%{repo}/%{package_name}/attributes',
-        versions:        '/packages/%{subject}/%{repo}/%{package_name}/versions',
-        version:         '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
-        version_attrs:   '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}/attributes',
-        version_sign:    '/gpg/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
+        packages: '/packages/%{subject}/%{repo}',
+        package: '/packages/%{subject}/%{repo}/%{package_name}',
+        package_attrs: '/packages/%{subject}/%{repo}/%{package_name}/attributes',
+        versions: '/packages/%{subject}/%{repo}/%{package_name}/versions',
+        version: '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
+        version_attrs: '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}/attributes',
+        version_sign: '/gpg/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
         version_publish: '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/publish',
-        version_file:    '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{target}',
-        file_metadata:   '/file_metadata/%{subject}/%{repo}/%{target}'
+        version_file: '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{target}',
+        file_metadata: '/file_metadata/%{subject}/%{repo}/%{target}'
       }
 
       MAP = {
-        package: %i(name desc licenses labels vcs_url website_url
-          issue_tracker_url public_download_numbers public_stats),
-        version: %i(name desc released vcs_tag github_release_notes_file
-          github_use_tag_release_notes attributes)
+        package: %i[name desc licenses labels vcs_url website_url
+          issue_tracker_url public_download_numbers public_stats],
+        version: %i[name desc released vcs_tag github_release_notes_file
+          github_use_tag_release_notes attributes]
       }
 
       def install
@@ -87,6 +87,7 @@ STR
         info :create_package
         post(path(:packages), compact(only(package, *MAP[:package])))
         return unless package_attrs
+
         info :package_attrs
         post(path(:package_attrs), package_attrs)
       end
@@ -99,6 +100,7 @@ STR
         info :create_version
         post(path(:versions), compact(only(version, *MAP[:version])))
         return unless version_attrs
+
         info :version_attrs
         post(path(:version_attrs), version_attrs)
       end
@@ -140,6 +142,7 @@ STR
         1.upto(opts[:max]) do |count|
           code = yield
           return if code < 400
+
           info :retrying, opts.merge(count:, code:)
           sleep opts[:pause]
         end
@@ -149,7 +152,8 @@ STR
       def files
         return {} unless files = descriptor[:files]
         return @files if @files
-        keys = %i(path includePattern excludePattern uploadPattern matrixParams listInDownloads)
+
+        keys = %i[path includePattern excludePattern uploadPattern matrixParams listInDownloads]
         files = files.map { |file| file if file[:path] = path_for(file[:includePattern]) }
         @files = files.compact.map { |file| find(*file.values_at(*keys)) }.flatten
       end
@@ -176,6 +180,7 @@ STR
         ix = str.index('(')
         path = ix.to_i == 0 ? str : str[0, ix]
         return path if File.exist?(path)
+
         warn(:missing_path, path:)
         nil
       end
@@ -238,7 +243,7 @@ STR
 
       def descriptor
         @descriptor ||= symbolize(JSON.parse(File.read(file)))
-      rescue => e
+      rescue
         error :invalid_file
       end
 

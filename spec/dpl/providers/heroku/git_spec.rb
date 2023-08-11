@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Heroku do
-  let(:args) { |e| %w(--strategy git) + creds + args_from_description(e) }
+  let(:args) { |e| %w[--strategy git] + creds + args_from_description(e) }
   let(:user) { JSON.dump(email: 'email') }
   let(:dyno) { JSON.dump(attach_url: 'attach_url') }
   let(:pass) { 'key' }
@@ -11,7 +11,7 @@ describe Dpl::Providers::Heroku do
       machine git.heroku.com
         login email
         password #{pass}
-RC
+    RC
   end
 
   before { stub_request(:get, 'https://api.heroku.com/account').and_return(body: user) }
@@ -23,7 +23,7 @@ RC
   before { |c| subject.run if run?(c) }
 
   describe 'using --api_key' do
-    let(:creds) { %w(--api_key key) }
+    let(:creds) { %w[--api_key key] }
 
     describe 'by default', record: true do
       it { is_expected.to have_run '[print] Authenticating ... ' }
@@ -61,14 +61,14 @@ RC
   end
 
   describe 'using --username and --password'  do
-    let(:creds) { %w(--username user --password pass) }
+    let(:creds) { %w[--username user --password pass] }
     let(:pass) { 'pass' }
 
     it { is_expected.to have_written '~/.netrc', netrc }
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { |e| %w(--strategy git) }
+    let(:args) { |e| %w[--strategy git] }
 
     env HEROKU_API_KEY: 'key'
     it { expect { subject.run }.not_to raise_error }

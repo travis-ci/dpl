@@ -12,7 +12,7 @@ module Dpl
       description sq(<<-STR)
         Experimental, generic provider for updating a Git remote branch with
         changes produced by the build, and optionally opening a pull request.
-STR
+      STR
 
       gem 'octokit', '~> 7'
       gem 'public_suffix', '~> 5'
@@ -26,8 +26,8 @@ STR
       opt '--deploy_key PATH', 'Path to a file containing a private deploy key with write access to the repository', see: 'https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys'
       opt '--branch BRANCH', 'Target branch to push to', required: true
       opt '--base_branch BRANCH', 'Base branch to branch off initially, and (optionally) create a pull request for', default: 'master'
-      opt '--name NAME', 'Committer name', note: 'defaults to the GitHub name or login associated with the GitHub token' #, default: :user_name
-      opt '--email EMAIL', 'Committer email', note: 'defaults to the GitHub email associated with the GitHub token' #, default: :user_email
+      opt '--name NAME', 'Committer name', note: 'defaults to the GitHub name or login associated with the GitHub token' # , default: :user_name
+      opt '--email EMAIL', 'Committer email', note: 'defaults to the GitHub email associated with the GitHub token' # , default: :user_email
       opt '--commit_message MSG', default: 'Update %{base_branch}', interpolate: true
       opt '--allow_empty_commit', 'Allow an empty commit to be created'
       opt '--force', 'Whether to push --force', default: false
@@ -39,38 +39,38 @@ STR
 
       needs :git
 
-      msgs login:               'Authenticated as %s',
-           invalid_token:       'The provided GitHub token is invalid (error: %s)',
+      msgs login: 'Authenticated as %s',
+           invalid_token: 'The provided GitHub token is invalid (error: %s)',
            insufficient_scopes: 'Dpl does not have permission to access %{url} using the provided GitHub token. Please make sure the token have the repo or public_repo scope.',
-           same_branch:         'Prevented from pushing to the same branch as the current build branch %{git_branch}. This is meant to prevent infinite build loops. If you do need to push back to the same branch enable `allow_same_branch` and take precautions to prevent infinite loops as needed, for example using conditional builds.',
-           setup_deploy_key:    'Moving deploy key %{deploy_key} to %{path}',
-           check_deploy_key:    'Checking deploy key',
-           setup:               'Source dir: %{src_dir}, branch: %{branch}, base branch: %{base_branch}',
-           git_clone:           'Cloning the branch %{branch} to %{work_dir}',
-           git_branch:          'Switching to branch %{branch}',
-           copy_files:          'Copying %{src_dir} contents to %{work_dir}',
-           git_config:          'Configuring git committer to be: %{name} <%{email}>',
-           git_push:            'Pushing to %{url} HEAD:%{branch}',
-           pr_exists:           'Pull request exists.',
-           pr_created:          'Pull request #%{number} created.',
-           stop:                'There are no changes to commit, stopping.'
+           same_branch: 'Prevented from pushing to the same branch as the current build branch %{git_branch}. This is meant to prevent infinite build loops. If you do need to push back to the same branch enable `allow_same_branch` and take precautions to prevent infinite loops as needed, for example using conditional builds.',
+           setup_deploy_key: 'Moving deploy key %{deploy_key} to %{path}',
+           check_deploy_key: 'Checking deploy key',
+           setup: 'Source dir: %{src_dir}, branch: %{branch}, base branch: %{base_branch}',
+           git_clone: 'Cloning the branch %{branch} to %{work_dir}',
+           git_branch: 'Switching to branch %{branch}',
+           copy_files: 'Copying %{src_dir} contents to %{work_dir}',
+           git_config: 'Configuring git committer to be: %{name} <%{email}>',
+           git_push: 'Pushing to %{url} HEAD:%{branch}',
+           pr_exists: 'Pull request exists.',
+           pr_created: 'Pull request #%{number} created.',
+           stop: 'There are no changes to commit, stopping.'
 
-      cmds git_clone:           'git clone --quiet --branch="%{clone_branch}" "%{remote_url}" . > /dev/null 2>&1',
-           git_branch:          'git checkout -b "%{branch}"',
-           check_deploy_key:    'ssh -i %{key} -T git@github.com 2>&1 | grep successful > /dev/null',
-           copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
-           git_config_email:    'git config user.email %{quoted_email}',
-           git_config_name:     'git config user.name %{quoted_name}',
-           git_add:             'git add -A .',
-           git_commit_hook:     'cp %{path} .git/hooks/pre-commit',
-           git_commit:          'git commit %{git_commit_opts} -q %{git_commit_msg_opts}',
-           git_show:            'git show --stat-count=10 HEAD',
-           git_push:            'git push %{git_push_opts} --quiet "%{remote_url}" HEAD:"%{branch}" > /dev/null 2>&1'
+      cmds git_clone: 'git clone --quiet --branch="%{clone_branch}" "%{remote_url}" . > /dev/null 2>&1',
+           git_branch: 'git checkout -b "%{branch}"',
+           check_deploy_key: 'ssh -i %{key} -T git@github.com 2>&1 | grep successful > /dev/null',
+           copy_files: 'rsync -rl --exclude .git --delete "%{src_dir}/" .',
+           git_config_email: 'git config user.email %{quoted_email}',
+           git_config_name: 'git config user.name %{quoted_name}',
+           git_add: 'git add -A .',
+           git_commit_hook: 'cp %{path} .git/hooks/pre-commit',
+           git_commit: 'git commit %{git_commit_opts} -q %{git_commit_msg_opts}',
+           git_show: 'git show --stat-count=10 HEAD',
+           git_push: 'git push %{git_push_opts} --quiet "%{remote_url}" HEAD:"%{branch}" > /dev/null 2>&1'
 
-      errs copy_files:          'Failed to copy %{src_dir}.',
-           check_deploy_key:    'Failed to authenticate using the deploy key',
-           git_init:            'Failed to create new git repo',
-           git_push:            'Failed to push the build to %{url}:%{branch}'
+      errs copy_files: 'Failed to copy %{src_dir}.',
+           check_deploy_key: 'Failed to authenticate using the deploy key',
+           git_init: 'Failed to create new git repo',
+           git_push: 'Failed to push the build to %{url}:%{branch}'
 
       def validate
         error :same_branch if same_branch? && !allow_same_branch?
@@ -93,6 +93,7 @@ STR
         git_clone
         copy_files
         return info :stop unless git_dirty?
+
         push
         pull_request if pull_request?
       end
@@ -115,6 +116,7 @@ STR
 
       def login_token
         return unless github?
+
         info :login, user.login
         error :insufficient_scopes unless sufficient_scopes?
       rescue Octokit::Unauthorized => e

@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'aws-sdk-ecr', '~> 1.0'
       # gem 'docker-api', '~> 1.34'
@@ -24,14 +24,14 @@ STR
       opt '--target TARGET', 'Comma separated list of partial repository names to push to', eg: 'image-one:tag,image-two', required: true
       opt '--region REGION', 'Comma separated list of regions to push to', default: 'us-east-1'
 
-      msgs login:        'Using Access Key: %{access_key_id}',
-           auth_region:  'Authenticated with %{url}',
-           deploy:       'Pushing image %{source} to regions %{regions} as %{targets}',
+      msgs login: 'Using Access Key: %{access_key_id}',
+           auth_region: 'Authenticated with %{url}',
+           deploy: 'Pushing image %{source} to regions %{regions} as %{targets}',
            image_pushed: 'Pushed image %{source} to region %{region} as %{target}'
 
       cmds login: 'docker login -u %{user} -p %{pass} %{url}',
-           tag:   'docker tag %{source} %{url}/%{repo}:%{tag}',
-           push:  'docker push %{url}/%{repo}'
+           tag: 'docker tag %{source} %{url}/%{repo}:%{tag}',
+           push: 'docker push %{url}/%{repo}'
 
       errs unknown_image: 'Image %{source} not found in the local Docker repository'
 
@@ -43,7 +43,7 @@ STR
       end
 
       def validate
-        # TODO validate the image exists locally
+        # TODO: validate the image exists locally
       end
 
       def deploy
@@ -115,7 +115,7 @@ STR
           event = JSON.parse(event)
           if e = event['error']
             error e
-          elsif %w(Preparing Pushing).include?(event['status'])
+          elsif %w[Preparing Pushing].include?(event['status'])
             nil
           elsif event['id']
             info "#{event['status']} [#{event['id']}]"

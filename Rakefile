@@ -115,11 +115,11 @@ task :release do
             if Rake::Task["release-#{provider}"].invoke
               released << provider
             end
-          rescue => e
+          rescue
             Rake::Task["release-#{provider}"].reenable
           end
         end
-      rescue Faraday::Error => e
+      rescue Faraday::Error
         logger.info yellow('connection failed. retrying')
         retry
       end

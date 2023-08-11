@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       python '>= 2.7', '!= 3.0', '!= 3.1', '!= 3.2', '!= 3.3', '< 3.8'
 
@@ -24,7 +24,7 @@ STR
       opt '--cli_version VER', 'CLI version to install', default: '>=0.11'
 
       cmds status: 'tx status',
-           push:   'tx push --source --no-interactive'
+           push: 'tx push --source --no-interactive'
 
       msgs login:  'Writing ~/.transifexrc (user: %{username}, password: %{password})'
       errs push:   'Failure pushing to Transifex'
@@ -34,7 +34,7 @@ STR
         hostname = %{url}
         username = %{username}
         password = %{password}
-RC
+      RC
 
       def install
         pip_install 'transifex-client', 'tx', cli_version

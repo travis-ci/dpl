@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Gleis do
-  let(:args) { |e| %w(--app app --username user --password pass) + args_from_description(e) }
+  let(:args) { |e| %w[--app app --username user --password pass] + args_from_description(e) }
 
   before { |c| subject.run if run?(c) }
 
@@ -29,7 +29,7 @@ describe Dpl::Providers::Gleis do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { %w(--app app) }
+    let(:args) { %w[--app app] }
 
     env GLEIS_USERNAME: 'user',
         GLEIS_PASSWORD: 'pass'

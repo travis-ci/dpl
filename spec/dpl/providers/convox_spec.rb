@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Convox do
-  let(:args)   { |e| %w(--app app --rack rack --password pass) + args_from_description(e) }
+  let(:args)   { |e| %w[--app app --rack rack --password pass] + args_from_description(e) }
   let(:exists) { true }
 
   let(:desc) do
@@ -35,7 +35,7 @@ describe Dpl::Providers::Convox do
     it { is_expected.to have_env CONVOX_RACK: 'rack' }
     it { is_expected.to have_env CONVOX_CLI: 'convox' }
 
-    it { is_expected.to have_run %r(curl -sL -o \$HOME/bin/convox https://convox.com/cli/linux/convox) }
+    it { is_expected.to have_run %r{curl -sL -o \$HOME/bin/convox https://convox.com/cli/linux/convox} }
     it { is_expected.to have_run '[info] $ convox version --rack rack' }
     it { is_expected.to have_run 'convox version --rack rack' }
     it { is_expected.to have_run '[info] Setting the build environment up for the deployment' }
@@ -76,7 +76,7 @@ describe Dpl::Providers::Convox do
   end
 
   describe 'given --install_url https://install.url' do
-    it { is_expected.to have_run %r(curl -sL -o \$HOME/bin/convox https://install.url) }
+    it { is_expected.to have_run %r{curl -sL -o \$HOME/bin/convox https://install.url} }
   end
 
   describe 'given --update_cli' do
@@ -115,7 +115,7 @@ describe Dpl::Providers::Convox do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { |e| %w(--app app --rack rack) }
+    let(:args) { |e| %w[--app app --rack rack] }
 
     env CONVOX_PASS: 'pass'
 

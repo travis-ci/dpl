@@ -10,7 +10,7 @@ require 'date'
 require 'json'
 require 'dpl'
 
-SKIP = %i(help heroku pages)
+SKIP = %i[help heroku pages]
 
 class Provider < Struct.new(:path)
   def data

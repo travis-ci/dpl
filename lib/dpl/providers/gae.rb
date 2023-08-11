@@ -11,7 +11,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       python '>= 2.7.9'
 
@@ -28,13 +28,13 @@ STR
 
       URL = 'https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz'
 
-      cmds install:   'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
-           login:     'gcloud -q auth activate-service-account --key-file %{keyfile}',
-           deploy:    'gcloud -q app deploy %{config} %{deploy_opts}',
-           cat_logs:  'find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;'
+      cmds install: 'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
+           login: 'gcloud -q auth activate-service-account --key-file %{keyfile}',
+           deploy: 'gcloud -q app deploy %{config} %{deploy_opts}',
+           cat_logs: 'find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;'
 
-      errs install:   'Failed to download Google Cloud SDK.',
-           login:     'Failed to authenticate.'
+      errs install: 'Failed to download Google Cloud SDK.',
+           login: 'Failed to authenticate.'
 
       msgs failed:    'Deployment failed.'
 
@@ -42,6 +42,7 @@ STR
 
       def install
         return unless install_sdk?
+
         shell :install
       end
 
@@ -57,7 +58,7 @@ STR
       private
 
       def deploy_opts
-        opts = [*opts_for(%i(project verbosity version))]
+        opts = [*opts_for(%i[project verbosity version])]
         opts << '--no-promote' unless promote?
         opts << '--no-stop-previous-version' unless stop_previous_version?
         opts.join(' ')

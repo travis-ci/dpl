@@ -16,7 +16,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'aws-sdk-s3', '~> 1'
       gem 'mime-types', '~> 3.4.1'
@@ -33,12 +33,12 @@ STR
       opt '--local_dir DIR', 'Local directory to upload from', default: '.', example: '~/travis/build (absolute path) or ./build (relative path)'
       opt '--glob GLOB', 'Files to upload', default: '**/*'
       opt '--dot_match', 'Upload hidden files starting with a dot'
-      opt '--acl ACL', 'Access control for the uploaded objects', default: 'private', enum: %w(private public_read public_read_write authenticated_read bucket_owner_read bucket_owner_full_control)
+      opt '--acl ACL', 'Access control for the uploaded objects', default: 'private', enum: %w[private public_read public_read_write authenticated_read bucket_owner_read bucket_owner_full_control]
       opt '--detect_encoding', 'HTTP header Content-Encoding for files compressed with gzip and compress utilities'
       opt '--cache_control STR', 'HTTP header Cache-Control to suggest that the browser cache the file', type: :array, default: 'no-cache', enum: [/^no-cache.*/, /^no-store.*/, /^max-age=\d+.*/, /^s-maxage=\d+.*/, /^no-transform/, /^public/, /^private/], note: 'accepts mapping values to globs', eg: 'public: *.css,*.js'
       opt '--expires DATE', 'Date and time that the cached object expires', type: :array, format: /^"?\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .+"?.*$/, note: 'accepts mapping values to globs', eg: '2020-01-01 00:00:00 UTC: *.css,*.js'
       opt '--default_text_charset CHARSET', 'Default character set to append to the content-type of text files'
-      opt '--storage_class CLASS', 'S3 storage class to upload as', default: 'STANDARD', enum: %w(STANDARD STANDARD_IA REDUCED_REDUNDANCY)
+      opt '--storage_class CLASS', 'S3 storage class to upload as', default: 'STANDARD', enum: %w[STANDARD STANDARD_IA REDUCED_REDUNDANCY]
       opt '--server_side_encryption', 'Use S3 Server Side Encryption (SSE-AES256)'
       opt '--index_document_suffix SUFFIX', 'Index document suffix of a S3 website'
       opt '--overwrite', 'Whether or not to overwrite existing files', default: true
@@ -46,15 +46,15 @@ STR
       opt '--max_threads NUM', 'The number of threads to use for S3 file uploads', default: 5, max: 15, type: :integer
       opt '--verbose', 'Be verbose about uploading files'
 
-      msgs login:                 'Using Access Key: %{access_key_id}',
-           default_uri_schema:    'S3 endpoint does not specify a scheme; defaulting to https',
-           access_denied:         'It looks like you tried to write to a bucket that is not yours or does not exist. Please create the bucket before trying to write to it.',
-           checksum_error:        'AWS secret key does not match the access key id',
+      msgs login: 'Using Access Key: %{access_key_id}',
+           default_uri_schema: 'S3 endpoint does not specify a scheme; defaulting to https',
+           access_denied: 'It looks like you tried to write to a bucket that is not yours or does not exist. Please create the bucket before trying to write to it.',
+           checksum_error: 'AWS secret key does not match the access key id',
            invalid_access_key_id: 'Invalid S3 access key id',
-           upload:                'Uploading %s files with up to %s threads ...',
-           upload_file:           'Uploading %s to %s with %s',
-           upload_skipped:        'Skipping %{file}, already exists',
-           upload_failed:         'Failed to upload %s',
+           upload: 'Uploading %s files with up to %s threads ...',
+           upload_file: 'Uploading %s to %s with %s',
+           upload_skipped: 'Skipping %{file}, already exists',
+           upload_failed: 'Failed to upload %s',
            index_document_suffix: 'Setting index document suffix to %s'
 
       DEFAULT_CONTENT_TYPE = 'application/octet-stream'
@@ -108,6 +108,7 @@ STR
       def upload_file(file, opts)
         object = bucket.object(upload_path(file))
         return warn :upload_skipped, file: file if !overwrite && object.exists?
+
         info :upload_file, file, upload_dir || '/', to_pairs(opts)
         object.upload_file(file, opts) || warn(:upload_failed, file)
       end
@@ -152,6 +153,7 @@ STR
 
       def content_type(file)
         return DEFAULT_CONTENT_TYPE unless type = MIME::Types.type_for(file).first
+
         type = "#{type}; charset=#{default_text_charset}" if encoding(file) == 'text' && default_text_charset?
         type.to_s
       end
@@ -167,6 +169,7 @@ STR
       def normalize_endpoint(url)
         uri = URI.parse(url)
         return uri if uri.scheme
+
         info :default_uri_scheme
         URI.parse("https://#{url}")
       end
@@ -234,6 +237,7 @@ STR
 
         def normalize(glob)
           return glob if glob.include?('{')
+
           "{#{glob.split(',').map(&:strip).join(',')}}"
         end
 

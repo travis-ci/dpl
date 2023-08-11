@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Heroku do
-  let(:args) { |e| %w(--strategy api --api_key key) + args_from_description(e) }
+  let(:args) { |e| %w[--strategy api --api_key key] + args_from_description(e) }
   let(:user) { JSON.dump(email: 'email') }
   let(:dyno) { JSON.dump(attach_url: 'attach_url') }
   let(:urls) { JSON.dump(source_blob: { get_url: 'get_url', put_url: 'put_url' })}
@@ -20,11 +20,11 @@ describe Dpl::Providers::Heroku do
     it { is_expected.to have_run '[print] Authenticating ... ' }
     it { is_expected.to have_run '[print] Checking for app dpl ... ' }
     it { is_expected.to have_run '[info] Creating application archive' }
-    it { is_expected.to have_run %r(tar -zcf .*/.dpl.dpl.tgz --exclude \.git \.) }
+    it { is_expected.to have_run %r{tar -zcf .*/.dpl.dpl.tgz --exclude \.git \.} }
     it { is_expected.to have_run '[info] Uploading application archive' }
-    it { is_expected.to have_run %r(curl -sS put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: .*dpl/.*" --data-binary @.*/.dpl.dpl.tgz) }
+    it { is_expected.to have_run %r{curl -sS put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: .*dpl/.*" --data-binary @.*/.dpl.dpl.tgz} }
     it { is_expected.to have_run '[info] Triggering Heroku build (deployment)' }
-    it { is_expected.to have_run %r(curl -sS output_stream_url -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: .*dpl/.*") }
+    it { is_expected.to have_run %r{curl -sS output_stream_url -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: .*dpl/.*"} }
     it { is_expected.to have_run_in_order }
 
     it { is_expected.to have_requested :get, 'https://api.heroku.com/account' }
@@ -39,7 +39,7 @@ describe Dpl::Providers::Heroku do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { |e| %w(--strategy api) }
+    let(:args) { |e| %w[--strategy api] }
 
     env HEROKU_API_KEY: 'key'
     it { expect { subject.run }.not_to raise_error }

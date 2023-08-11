@@ -15,7 +15,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'json'
       gem 'multipart-post', '~> 2.0.0', require: 'net/http/post/multipart'
@@ -34,7 +34,7 @@ STR
       UA  = "Travis CI dpl version=#{Dpl::VERSION}"
 
       msgs deploy: 'Uploading to TestFairy: %s',
-           done:   'Done. Check your build at %s'
+           done: 'Done. Check your build at %s'
 
       def deploy
         info :deploy, pretty_print(params)

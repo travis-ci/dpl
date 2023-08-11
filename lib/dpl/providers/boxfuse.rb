@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       env :boxfuse
 
@@ -25,10 +25,10 @@ STR
       URL = 'https://files.boxfuse.com/com/boxfuse/client/boxfuse-commandline/1.33.0.1460/boxfuse-commandline-1.33.0.1460-linux-x64.tar.gz'
 
       cmds install: 'curl -L %{URL} | tar xz',
-           deploy:  'boxfuse/boxfuse run %{deploy_opts}'
+           deploy: 'boxfuse/boxfuse run %{deploy_opts}'
 
       def validate
-        # TODO check if the config file exists (it seems `boxfuse` doesn't)
+        # TODO: check if the config file exists (it seems `boxfuse` doesn't)
       end
 
       def install
@@ -42,7 +42,7 @@ STR
       private
 
       def deploy_opts
-        opts = [*opts_for(%i(user secret payload app env version), prefix: '-')]
+        opts = [*opts_for(%i[user secret payload app env version], prefix: '-')]
         opts << "-configfile=#{config_file}" if config_file?
         opts << extra_args if extra_args?
         opts.join(' ')

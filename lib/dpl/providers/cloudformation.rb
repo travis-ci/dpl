@@ -10,7 +10,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'aws-sdk-cloudformation', '~> 1.0'
 
@@ -26,25 +26,25 @@ STR
       opt '--promote', 'Deploy changes', default: true, note: 'otherwise a change set is created'
       opt '--role_arn ARN', 'AWS Role ARN'
       opt '--sts_assume_role ARN', 'AWS Role ARN for cross account deployments (assumed by travis using given AWS credentials).'
-      opt '--capabilities STR', 'CloudFormation allowed capabilities', type: :array, enum: %w(CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND), sep: ',', see: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateStack.html'
+      opt '--capabilities STR', 'CloudFormation allowed capabilities', type: :array, enum: %w[CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND], sep: ',', see: 'https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateStack.html'
       opt '--wait', 'Wait for CloutFormation to finish the stack creation and update', default: true
       opt '--wait_timeout SEC', 'How many seconds to wait for stack creation and update.', type: :integer, default: 3600
       opt '--create_timeout SEC', 'How many seconds to wait before the stack status becomes CREATE_FAILED', type: :integer, default: 3600, note: 'valid only when creating a stack'
       opt '--parameters STR', 'key=value pairs or ENV var names', type: :array, eg: 'one=1 or ENV_VAR_TWO'
       opt '--output_file PATH', 'Path to output file to store CloudFormation outputs to'
 
-      msgs login:             'Using Access Key: %{access_key_id}',
-           create_stack:      'Creating stack ...',
-           promote_stack:     'Promoting stack ...',
+      msgs login: 'Using Access Key: %{access_key_id}',
+           create_stack: 'Creating stack ...',
+           promote_stack: 'Promoting stack ...',
            create_change_set: 'Creating change set ...',
-           stack_up_to_date:  'Stack already up to date.',
+           stack_up_to_date: 'Stack already up to date.',
            delete_change_set: 'No changes in stack. Removing changeset.',
-           done:              'Done.',
-           missing_template:  'File does not exist: %{template}',
-           invalid_creds:     'Invalid credentials'
+           done: 'Done.',
+           missing_template: 'File does not exist: %{template}',
+           invalid_creds: 'Invalid credentials'
 
-      strs change_set_name:   'travis-ci-build-%{build_number}-%{now}',
-           change_set_desc:   'Changeset created by Travis CI job for build #%{build_number} (%{git_sha})'
+      strs change_set_name: 'travis-ci-build-%{build_number}-%{now}',
+           change_set_desc: 'Changeset created by Travis CI job for build #%{build_number} (%{git_sha})'
 
       def login
         info :login
@@ -63,6 +63,7 @@ STR
         promote? ? promote : create_change_set(:update)
       rescue Aws::CloudFormation::Errors::ValidationError => e
         raise e unless e.message.start_with?('No updates are to be performed')
+
         info :stack_up_to_date
       end
 
@@ -92,6 +93,7 @@ STR
         info :done
       rescue Aws::Waiters::Errors::FailureStateError => e
         raise e unless change_set_contains_changes?(set)
+
         info :delete_change_set
         client.delete_change_set(change_set_name: set.id)
       end
@@ -114,6 +116,7 @@ STR
         stack && stack.stack_status != 'REVIEW_IN_PROGRESS'
       rescue Aws::CloudFormation::Errors::ValidationError => e
         raise e unless e.message.include?('does not exist')
+
         false
       end
 
@@ -126,7 +129,7 @@ STR
 
       def wait_for(cond, params)
         started_at = Time.now
-        timeout = lambda { |*| throw :failure if Time.now - started_at > wait_timeout }
+        timeout = ->(*) { throw :failure if Time.now - started_at > wait_timeout }
         # params = params.merge(max_attempts: nil, delay: 5, before_wait: timeout)
         client.wait_until(cond, params) { |w| w.before_wait(&timeout) }
       end
@@ -171,6 +174,7 @@ STR
         str = template
         return { template_url: str } if url?(str)
         return { template_body: read(str) } if file?(str)
+
         error(:missing_template)
       end
 
@@ -205,7 +209,7 @@ STR
       end
 
       def url?(str)
-        str =~ %r(^https?://)
+        str =~ %r{^https?://}
       end
 
       class EventStream < Struct.new(:client, :stack_name, :handler)
@@ -241,7 +245,6 @@ STR
           events = []
           described_stack.each_page do |page|
 
-
             if (oldest_new = page.stack_events.index { |e| e.event_id == event.event_id })
               events.concat(page.stack_events[0..oldest_new - 1])
               return [events.first, events.reverse]
@@ -261,8 +264,8 @@ STR
           @mutex ||= Mutex.new
         end
 
-        EVENT_KEYS = %i(timestamp resource_type resource_status logical_resource_id
-          physical_resource_id resource_status_reason)
+        EVENT_KEYS = %i[timestamp resource_type resource_status logical_resource_id
+          physical_resource_id resource_status_reason]
 
         def format_event(event)
           parts = EVENT_KEYS.map { |key| event.send(key) }

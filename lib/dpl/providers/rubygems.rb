@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'gems', '~> 1.1.1'
 
@@ -26,12 +26,12 @@ STR
       opt '--host URL'
 
       msgs login_api_key: 'Authenticating with api key %{api_key}',
-           login_creds:   'Authenticating with username %{username} and password %{password}',
-           setup:         'Setting up host %{host}',
-           gem_lookup:    'Looking up gem %{gem} ... ',
-           gem_found:     'found.',
+           login_creds: 'Authenticating with username %{username} and password %{password}',
+           setup: 'Setting up host %{host}',
+           gem_lookup: 'Looking up gem %{gem} ... ',
+           gem_found: 'found.',
            gem_not_found: 'no such gem.',
-           gem_push:      'Pushing gem %{gem}'
+           gem_push: 'Pushing gem %{gem}'
 
       cmds gem_build: 'gem build %{gemspec}'
 
@@ -39,6 +39,7 @@ STR
 
       def setup
         return unless host?
+
         info :setup
         Gems.host = host
       end

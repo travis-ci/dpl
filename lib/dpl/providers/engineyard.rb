@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'ey-core', '~> 3.6'
 
@@ -25,19 +25,19 @@ STR
       opt '--migrate CMD',   'Engine Yard migration commands'
       opt '--account NAME',  'Engine Yard account name'
 
-      msgs deploy:           'Deploying ...',
-           login:            'Authenticating via email and password ...',
-           write_rc:         'Authenticating via api token ...',
-           authenticated:    'Authenticated as %{name}',
-           invalid_migrate:  'Invalid migration command, try --migrate="rake db:migrate"',
-           envs:             'Checking environment ...',
-           no_env:           'No matching environment found',
-           too_many_envs:    'Multiple environments match, please be more specific: %s',
-           env_entry:        'environment=%s account=%s'
+      msgs deploy: 'Deploying ...',
+           login: 'Authenticating via email and password ...',
+           write_rc: 'Authenticating via api token ...',
+           authenticated: 'Authenticated as %{name}',
+           invalid_migrate: 'Invalid migration command, try --migrate="rake db:migrate"',
+           envs: 'Checking environment ...',
+           no_env: 'No matching environment found',
+           too_many_envs: 'Multiple environments match, please be more specific: %s',
+           env_entry: 'environment=%s account=%s'
 
-      cmds login:  "ey-core login << str\n%{email}\n%{password}\nstr",
+      cmds login: "ey-core login << str\n%{email}\n%{password}\nstr",
            whoami: 'ey-core whoami',
-           envs:   'ey-core environments',
+           envs: 'ey-core environments',
            deploy: 'ey-core deploy %{deploy_opts}'
 
       def login
@@ -75,13 +75,13 @@ STR
 
       def deploy_opts
         opts = [%(--ref="#{git_sha}" --environment="#{env}")]
-        opts << opts_for(%i(app account))
+        opts << opts_for(%i[app account])
         opts << migrate_opt
         opts.join(' ')
       end
 
       def migrate_opt
-        migrate? ? opts_for(%i(migrate)) : '--no-migrate'
+        migrate? ? opts_for(%i[migrate]) : '--no-migrate'
       end
 
       def env
@@ -99,7 +99,7 @@ STR
       def envs
         lines = shell(:envs, echo: false, capture: true).split("\n")[2..-1] || []
         envs = lines.map { |line| line.split('|')[1..-1].map(&:strip) }
-        envs = envs.map { |pair| %i(name account).zip(pair).to_h }
+        envs = envs.map { |pair| %i[name account].zip(pair).to_h }
         envs.select { |env| env[:name] == opts[:env] } if env?
         envs
       end

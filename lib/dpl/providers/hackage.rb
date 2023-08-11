@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       env :hackage
 
@@ -17,12 +17,12 @@ STR
       opt '--password USER', 'Hackage password', required: true, secret: true
       opt '--publish', 'Whether or not to publish the package'
 
-      cmds check:  'cabal check',
-           sdist:  'cabal sdist',
+      cmds check: 'cabal check',
+           sdist: 'cabal sdist',
            upload: 'cabal upload %{upload_opts} %{path}'
 
-      errs check:  'cabal check failed',
-           sdist:  'cabal sdist failed',
+      errs check: 'cabal check failed',
+           sdist: 'cabal sdist failed',
            upload: 'cabal upload failed'
 
       def validate
@@ -42,7 +42,7 @@ STR
       private
 
       def upload_opts
-        opts_for(%i(publish username password))
+        opts_for(%i[publish username password])
       end
 
       def tar_files

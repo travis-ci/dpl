@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Pages do
-  let(:args)    { |e| %w(--github_token token) + args_from_description(e) }
+  let(:args)    { |e| %w[--github_token token] + args_from_description(e) }
   let(:user)    { JSON.dump(login: 'login', name: 'name', email: 'email') }
   let(:headers) { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
   let(:home)    { File.expand_path('~') }
@@ -90,7 +90,7 @@ describe Dpl::Providers::Pages do
   end
 
   describe 'given project_name with a double quote' do
-    let(:args) { |e| %w(--github_token token --project_name project"name) }
+    let(:args) { |e| %w[--github_token token --project_name project"name] }
 
     it { is_expected.to have_run 'git commit -q -m "Deploy project\"name to github.com/travis-ci/dpl.git:gh-pages"' }
   end
@@ -114,7 +114,7 @@ describe Dpl::Providers::Pages do
     it { is_expected.to have_run '[info] Setting up git-ssh' }
     it { is_expected.to have_run '[info] $ ssh -i ~/.dpl/deploy_key -T git@github.com 2>&1 | grep successful > /dev/null' }
     it { is_expected.to have_run 'ssh -i ~/.dpl/deploy_key -T git@github.com 2>&1 | grep successful > /dev/null' }
-    it { is_expected.to have_run %r(cp .*lib/dpl/assets/git/detect_private_key .git/hooks/pre-commit) }
+    it { is_expected.to have_run %r{cp .*lib/dpl/assets/git/detect_private_key .git/hooks/pre-commit} }
     it { is_expected.to have_run 'git push --quiet "git@github.com:travis-ci/dpl.git" "gh-pages":"gh-pages" > /dev/null 2>&1' }
     it { is_expected.to have_run_in_order }
   end
@@ -129,14 +129,14 @@ describe Dpl::Providers::Pages do
   end
 
   describe 'with GITHUB credentials in env vars', run: false do
-    let(:args) { %w(--strategy git) }
+    let(:args) { %w[--strategy git] }
 
     env GITHUB_TOKEN: 'token'
     it { expect { subject.run }.not_to raise_error }
   end
 
   describe 'with PAGES credentials in env vars', run: false do
-    let(:args) { %w(--strategy git) }
+    let(:args) { %w[--strategy git] }
 
     env PAGES_TOKEN: 'token'
     it { expect { subject.run }.not_to raise_error }

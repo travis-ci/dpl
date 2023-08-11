@@ -18,7 +18,7 @@ module Dpl
         * Uploads it to your EB application
         * Optionally deploys to a specific EB environment
         * Optionally waits until the deployment finishes
-STR
+      STR
 
       gem 'aws-sdk-elasticbeanstalk', '~> 1'
       gem 'aws-sdk-s3', '~> 1'
@@ -42,7 +42,7 @@ STR
       opt '--wait_until_deployed_timeout SEC', 'How many seconds to wait for Elastic Beanstalk deployment update.', type: :integer, default: 600
       opt '--debug', internal: true
 
-      msgs login:   'Using Access Key: %{access_key_id}',
+      msgs login: 'Using Access Key: %{access_key_id}',
            zip_add: 'Adding %s'
 
       msgs clean_description: 'Removed non-printable characters from the version description'
@@ -152,7 +152,7 @@ STR
 
       def files
         files = Dir.glob('**/*', File::FNM_DOTMATCH)
-        ignore = %w(.ebignore .gitignore).detect { |file| file?(file) }
+        ignore = %w[.ebignore .gitignore].detect { |file| file?(file) }
         files = filter(files, ignore) if ignore
         files
       end

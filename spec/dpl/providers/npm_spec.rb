@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Npm do
-  let(:args) { |e| %w(--email email --api_key 12345) + args_from_description(e) }
+  let(:args) { |e| %w[--email email --api_key 12345] + args_from_description(e) }
   let(:npmrc_1) { "_auth = 12345\nemail = email" }
   let(:npmrc_2) { '//registry.npmjs.org/:_authToken=12345' }
 
@@ -40,7 +40,6 @@ describe Dpl::Providers::Npm do
     it { is_expected.to have_run 'npm publish . --dry-run' }
   end
 
-
   describe 'npm_version 1' do
     let(:npm_version) { '1' }
 
@@ -74,14 +73,14 @@ describe Dpl::Providers::Npm do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { %w(--email email) }
+    let(:args) { %w[--email email] }
 
     env NPM_API_TOKEN: '12345'
     it { expect { subject.run }.not_to raise_error }
   end
 
   describe 'with credentials in env vars (alias)', run: false do
-    let(:args) { %w(--email email) }
+    let(:args) { %w[--email email] }
 
     env NPM_API_KEY: '12345'
     it { expect { subject.run }.not_to raise_error }

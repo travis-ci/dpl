@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Puppetforge do
-  let(:args) { |e| %w(--username user --password pass) + args_from_description(e) }
+  let(:args) { |e| %w[--username user --password pass] + args_from_description(e) }
   let(:face)  { double(build: nil) }
   let(:forge) { double(username: 'user', push!: nil) }
 
   file 'metadata.json', JSON.dump(name: 'author-module')
-
 
   before { allow(Blacksmith::Forge).to receive(:new).and_return(forge) }
   before { allow(Puppet::Face).to receive(:[]).and_return(face) }

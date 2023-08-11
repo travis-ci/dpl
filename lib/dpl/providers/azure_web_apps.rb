@@ -11,7 +11,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       env :AZURE_WA
 
@@ -24,12 +24,12 @@ STR
       needs :git
 
       cmds checkout: 'git checkout HEAD',
-           add:      'git add . --all --force',
-           commit:   'git commit -m "Cleanup commit"',
-           deploy:   'git push --force --quiet %{url} HEAD:refs/heads/master'
+           add: 'git add . --all --force',
+           commit: 'git commit -m "Cleanup commit"',
+           deploy: 'git push --force --quiet %{url} HEAD:refs/heads/master'
 
-      msgs commit:   'Committing changes to git',
-           deploy:   'Deploying to Azure Web App: %{site}'
+      msgs commit: 'Committing changes to git',
+           deploy: 'Deploying to Azure Web App: %{site}'
 
       errs push:     'Failed pushing to Azure Web Apps'
 

@@ -66,6 +66,7 @@ module Dpl
         info cmd.echo if cmd.echo?
         cmds << cmd.cmd
         return stdout[cmd.key] if stdout.key?(cmd.key)
+
         cmd.capture? ? 'captured_stdout' : true
       end
 
@@ -135,7 +136,7 @@ module Dpl
       end
 
       def git_ls_files
-        %w(one two)
+        %w[one two]
       end
 
       def git_ls_remote?(url, ref)
@@ -236,7 +237,7 @@ module Dpl
           machine #{machine}
             login #{login}
             password #{password}
-RC
+        RC
       end
 
       def tty?

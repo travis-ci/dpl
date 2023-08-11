@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       env :launchpad
 
@@ -18,7 +18,7 @@ STR
       opt '--slug SLUG', 'Launchpad project slug', format: /^~[^\/]+\/[^\/]+\/[^\/]+$/, example: '~user-name/project-name/branch-name'
 
       msgs invalid_credentials: 'Invalid credentials (%s)',
-           unknown_error:       'Error: %s (%s)'
+           unknown_error: 'Error: %s (%s)'
 
       def deploy
         handle_response(post)
@@ -61,7 +61,7 @@ STR
             oauth_timestamp="#{now}",
             oauth_token="#{oauth_token}",
             oauth_version="1.0"
-AUTH
+        AUTH
       end
 
       def nonce

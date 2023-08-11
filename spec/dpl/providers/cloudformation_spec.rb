@@ -2,16 +2,17 @@
 
 describe Dpl::Providers::Cloudformation do
   let(:args) { |e| required + args_from_description(e) }
-  let(:required) { %w(--access_key_id id --secret_access_key key --stack_name stack --template https://template.url) }
+  let(:required) { %w[--access_key_id id --secret_access_key key --stack_name stack --template https://template.url] }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
   let(:stacks) { [] }
   let(:events) { [] }
 
-  %i(create_stack update_stack create_change_set).each do |key|
+  %i[create_stack update_stack create_change_set].each do |key|
     matcher key do |opts = {}|
       match do |*|
         next false unless requests[key].any?
         next true unless opts[:with]
+
         @body = requests[key][0].body.read
         opts[:with].is_a?(Regexp) ? @body =~ opts[:with] : @body.include?(opts[:with])
       end
@@ -27,20 +28,20 @@ describe Dpl::Providers::Cloudformation do
   before do
     Aws.config[:cloudformation] = {
       stub_responses: {
-        create_stack: ->(ctx) {
+        create_stack: lambda { |ctx|
           requests[:create_stack] << ctx.http_request
         },
-        update_stack: ->(ctx) {
+        update_stack: lambda { |ctx|
           requests[:update_stack] << ctx.http_request
         },
-        create_change_set: ->(ctx) {
+        create_change_set: lambda { |ctx|
           requests[:create_change_set] << ctx.http_request
           {
             id: 'id',
             stack_id: 'stack_id'
           }
         },
-        delete_change_set: ->(ctx) {
+        delete_change_set: lambda { |ctx|
           requests[:delete_change_set] << ctx.http_request
         },
         describe_stacks: {
@@ -166,13 +167,13 @@ describe Dpl::Providers::Cloudformation do
   end
 
   describe 'with ~/.aws/credentials', run: false do
-    let(:args) { %w(--stack_name stack --template https://template.url) }
+    let(:args) { %w[--stack_name stack --template https://template.url] }
 
     file '~/.aws/credentials', <<-STR.sub(/^\s*/, '')
       [default]
       aws_access_key_id=id
       aws_secret_access_key=key
-STR
+    STR
 
     before { subject.run }
 

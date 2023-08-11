@@ -20,7 +20,7 @@ module Dpl
 
         Deployment will be marked a failure if the script exits with nonzero
         status.
-STR
+      STR
 
       opt '-s', '--script SCRIPT', 'The script to execute', required: true
 

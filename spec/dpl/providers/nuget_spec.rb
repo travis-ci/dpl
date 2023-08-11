@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Nuget do
-  let(:args) { |e| %w(--api_key secret --registry url) + args_from_description(e) }
+  let(:args) { |e| %w[--api_key secret --registry url] + args_from_description(e) }
 
   before { subject.run }
 

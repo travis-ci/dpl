@@ -11,7 +11,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'puppet', '~> 7.25', require: 'puppet/face'
       gem 'puppet-blacksmith', '~> 7', require: 'puppet_blacksmith'

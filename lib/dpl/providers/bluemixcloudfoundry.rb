@@ -11,7 +11,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       env :cloudfoundry
 
@@ -19,7 +19,7 @@ STR
       opt '--password PASS',       'Bluemix password', required: true, secret: true
       opt '--organization ORG',    'Bluemix organization', required: true
       opt '--space SPACE',         'Bluemix space', required: true
-      opt '--region REGION',       'Bluemix region', default: 'ng', enum: %w(ng eu-gb eu-de au-syd)
+      opt '--region REGION',       'Bluemix region', default: 'ng', enum: %w[ng eu-gb eu-de au-syd]
       opt '--api URL',             'Bluemix api URL'
       opt '--app_name APP',        'Application name'
       opt '--buildpack PACK',      'Buildpack name or Git URL'
@@ -28,25 +28,25 @@ STR
       opt '--logout', default: true, internal: true
 
       API = {
-        'ng':     'api.ng.bluemix.net',
-        'eu-gb':  'api.eu-gb.bluemix.net',
-        'eu-de':  'api.eu-de.bluemix.net',
+        'ng': 'api.ng.bluemix.net',
+        'eu-gb': 'api.eu-gb.bluemix.net',
+        'eu-de': 'api.eu-de.bluemix.net',
         'au-syd': 'api.au-syd.bluemix.net'
       }
 
       cmds install: 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz',
-           api:     './cf api %{api} %{skip_ssl_validation_opt}',
-           login:   './cf login -u %{username} -p %{password}',
-           target:  './cf target -o %{organization} -s %{space}',
-           push:    './cf push %{push_args}',
-           logout:  './cf logout'
+           api: './cf api %{api} %{skip_ssl_validation_opt}',
+           login: './cf login -u %{username} -p %{password}',
+           target: './cf target -o %{organization} -s %{space}',
+           push: './cf push %{push_args}',
+           logout: './cf logout'
 
       errs install: 'Failed to install CLI tools',
-           api:     'Failed to set api %{api}',
-           login:   'Failed to login',
-           target:  'Failed to target organization %{organization}, space %{space}',
-           push:    'Failed to push app',
-           logout:  'Failed to logout'
+           api: 'Failed to set api %{api}',
+           login: 'Failed to login',
+           target: 'Failed to target organization %{organization}, space %{space}',
+           push: 'Failed to push app',
+           logout: 'Failed to logout'
 
       msgs manifest_missing: 'Application must have a manifest.yml for unattended deployment'
 

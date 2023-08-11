@@ -404,7 +404,7 @@ describe Dpl::Ctx::Bash do
       one\tgit://one.git (push)
       two\tgit://two.git (fetch)
       two\tgit://two.git (push)
-OUT
+    OUT
     it { expect(subject.git_remote_urls).to eq ['git://one.git', 'git://two.git'] }
   end
 
@@ -452,6 +452,6 @@ OUT
   end
 
   describe 'tmp_dir' do
-    it { expect(subject.tmp_dir).to match %r(/(tmp|var)/) }
+    it { expect(subject.tmp_dir).to match %r{/(tmp|var)/} }
   end
 end

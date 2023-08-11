@@ -33,7 +33,7 @@ module Dpl
           For example, if your GitHub Pages is configured to use `gh-pages` but the
           deployment is run on the `master` branch, you would have to ensure that the
           `gh-pages` would be updated accordingly during the build.
-STR
+        STR
 
         opt '--repo SLUG', 'GitHub repo slug', default: :repo_slug
         opt '--token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true, alias: :github_token
@@ -42,9 +42,9 @@ STR
                GitHub Pages not found for %{slug}.
                Either the given token has insufficient scope (repo or public_repo), or
                GitHub Pages is not enabled for this repo (see https://github.com/%{slug}/settings)'
-MSG
+        MSG
              timeout: 'GitHub Pages build request timed out',
-             deploy:  'Requesting GitHub Pages build using API'
+             deploy: 'Requesting GitHub Pages build using API'
 
         def validate
           error :not_found unless pages_enabled?
@@ -76,7 +76,7 @@ MSG
 
         rescue Octokit::Forbidden => fb
           error fb.message
-        rescue Timeout::Error => to
+        rescue Timeout::Error
           error :timeout
         end
 
@@ -98,7 +98,7 @@ MSG
 
         def pages_enabled?
           api.pages slug
-        rescue Octokit::NotFound => e
+        rescue Octokit::NotFound
           false
         end
 

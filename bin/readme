@@ -9,7 +9,7 @@ require 'dpl'
 require 'dpl/helper/squiggle'
 require 'dpl/helper/wrap'
 
-SKIP = %i(help heroku pages)
+SKIP = %i[help heroku pages]
 
 CTX = Cl::Ctx.new('dpl')
 
@@ -31,6 +31,7 @@ class Footer < Struct.new(:cmd)
 
   def env
     return unless env = cmd.instance_variable_get(:@env) || cmd.superclass.instance_variable_get(:@env) # TODO
+
     str = env.description(cmd)
     wrap(str, 100)
   end
@@ -39,11 +40,12 @@ class Footer < Struct.new(:cmd)
     The following variable are availabe for interpolation on %s:
 
       %s
-STR
+  STR
 
   def vars
     opts = cmd.opts.select(&:interpolate?)
     return unless opts.any?
+
     opts = opts.map(&:name).map { |name| "`#{name}`" }.join(', ')
     vars = cmd.vars.map { |var| "`#{var}`" }.join(', ')
     VARS % [opts, vars]
@@ -78,7 +80,6 @@ def contributors
   names = names - ['Travis CI']
   names.join(', ')
 end
-
 
 erb = ERB.new(File.read('lib/dpl/assets/dpl/README.erb.md'), nil, '-')
 str = erb.result

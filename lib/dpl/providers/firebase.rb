@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       node_js '>= 8.0.0'
 
@@ -38,7 +38,7 @@ STR
       end
 
       def deploy_opts
-        opts_for(%i(project message token only force))
+        opts_for(%i[project message token only force])
       end
     end
   end

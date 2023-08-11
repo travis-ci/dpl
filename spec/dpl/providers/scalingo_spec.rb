@@ -6,8 +6,8 @@ describe Dpl::Providers::Scalingo do
   before { |c| subject.run if run?(c) }
 
   describe 'given --api_token token', record: true do
-    it { is_expected.to have_run %r(curl --remote-name --location https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz) }
-    it { is_expected.to have_run %r(timeout 60 ./scalingo login --api-token token) }
+    it { is_expected.to have_run %r{curl --remote-name --location https://cli-dl.scalingo.io/release/scalingo_latest_linux_amd64.tar.gz} }
+    it { is_expected.to have_run %r{timeout 60 ./scalingo login --api-token token} }
     it { is_expected.to have_run 'timeout 60 ./scalingo keys-add dpl_tmp_key ~/.dpl/id_rsa.pub' }
     it { is_expected.to have_run 'git push scalingo-dpl HEAD:master -f' }
     it { is_expected.to have_run 'timeout 60 ./scalingo keys-remove dpl_tmp_key' }
@@ -15,11 +15,11 @@ describe Dpl::Providers::Scalingo do
   end
 
   describe 'given --api_key key' do
-    it { is_expected.to have_run %r(timeout 60 ./scalingo login --api-token key) }
+    it { is_expected.to have_run %r{timeout 60 ./scalingo login --api-token key} }
   end
 
   describe 'given --username user --password pass', record: true do
-    it { is_expected.to have_run %r(echo -e "user\npass" | timeout 60 ./scalingo login) }
+    it { is_expected.to have_run %r{echo -e "user\npass" | timeout 60 ./scalingo login} }
   end
 
   describe 'given --api_token key --branch branch' do
@@ -27,11 +27,11 @@ describe Dpl::Providers::Scalingo do
   end
 
   describe 'given --api_token key --app app' do
-    it { is_expected.to have_run %r(./scalingo --app app git-setup --remote scalingo-dpl) }
+    it { is_expected.to have_run %r{./scalingo --app app git-setup --remote scalingo-dpl} }
   end
 
   describe 'given --api_token key --app app --remote remote' do
-    it { is_expected.to have_run %r(./scalingo --app app git-setup --remote remote) }
+    it { is_expected.to have_run %r{./scalingo --app app git-setup --remote remote} }
   end
 
   describe 'invalid credentials', run: false do

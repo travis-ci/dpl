@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Anynines do
-  let(:args) { |e| %w(--username name --password pass --organization org --space space) + args_from_description(e) }
+  let(:args) { |e| %w[--username name --password pass --organization org --space space] + args_from_description(e) }
 
   before { |c| subject.run if run?(c) }
 
@@ -25,7 +25,7 @@ describe Dpl::Providers::Anynines do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { %w(--organization org --space space) }
+    let(:args) { %w[--organization org --space space] }
 
     env ANYNINES_USERNAME: 'name',
         ANYNINES_PASSWORD: 'password'

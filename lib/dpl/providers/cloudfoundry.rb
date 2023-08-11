@@ -11,7 +11,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       env :cloudfoundry
 
@@ -29,16 +29,16 @@ STR
       opt '--logout', default: true, internal: true
 
       cmds install: 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&version=v7&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz',
-           api:     './cf api %{api} %{skip_ssl_validation_opt}',
-           login:   './cf login -u %{username} -p %{password} -o %{organization} -s %{space}',
-           push:    './cf %{push_cmd} %{push_args}',
-           logout:  './cf logout'
+           api: './cf api %{api} %{skip_ssl_validation_opt}',
+           login: './cf login -u %{username} -p %{password} -o %{organization} -s %{space}',
+           push: './cf %{push_cmd} %{push_args}',
+           logout: './cf logout'
 
       errs install: 'Failed to install CLI tools',
-           api:     'Failed to set api %{api}',
-           login:   'Failed to login',
-           push:    'Failed to push app',
-           logout:  'Failed to logout'
+           api: 'Failed to set api %{api}',
+           login: 'Failed to login',
+           push: 'Failed to push app',
+           logout: 'Failed to logout'
 
       msgs manifest_missing: 'Application must have a manifest.yml for unattended deployment'
 

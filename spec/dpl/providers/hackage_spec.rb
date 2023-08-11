@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Hackage do
-  let(:args) { |e| %w(--username user --password pass) + args_from_description(e) }
+  let(:args) { |e| %w[--username user --password pass] + args_from_description(e) }
 
   file 'dist/one.tar.gz'
   file 'dist/two.tar.gz'

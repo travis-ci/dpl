@@ -9,7 +9,7 @@ describe Dpl::Providers::Gcs do
   before { |c| subject.run if run?(c) }
 
   describe 'using --key_file' do
-    let(:args) { |e| %w(--key_file key.json --bucket bucket) + args_from_description(e) }
+    let(:args) { |e| %w[--key_file key.json --bucket bucket] + args_from_description(e) }
 
     describe 'by default', record: true do
       it { is_expected.to have_run 'mv /etc/boto.cfg /tmp/boto.cfg' }
@@ -46,7 +46,7 @@ describe Dpl::Providers::Gcs do
     end
 
     describe 'with credentials in env vars', run: false do
-      let(:args) { %w(--bucket bucket) }
+      let(:args) { %w[--bucket bucket] }
 
       env GCS_ACCESS_KEY_ID: 'token',
           GCS_SECRET_ACCESS_KEY: '12345'
@@ -55,7 +55,7 @@ describe Dpl::Providers::Gcs do
   end
 
   describe 'using --access_key_id and --secret_access_key' do
-    let(:args) { |e| %w(--access_key_id id --secret_access_key 12345 --bucket bucket) + args_from_description(e) }
+    let(:args) { |e| %w[--access_key_id id --secret_access_key 12345 --bucket bucket] + args_from_description(e) }
 
     describe 'by default', record: true do
       it { is_expected.to have_run '[info] Authenticating with access key: i*******************' }

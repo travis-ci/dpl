@@ -44,12 +44,12 @@ module Support
           client.api_requests.map do |req|
             compact(
               operation: req[:operation_name],
-              host:      req[:context].http_request.endpoint.host,
-              path:      req[:context].http_request.endpoint.path,
-              body:      body_from(req[:context].http_request.body),
-              file:      req[:params][:body] && req[:params][:body].path,
-              headers:   req[:context].http_request.headers,
-              request:   req[:context].http_request
+              host: req[:context].http_request.endpoint.host,
+              path: req[:context].http_request.endpoint.path,
+              body: body_from(req[:context].http_request.body),
+              file: req[:params][:body] && req[:params][:body].path,
+              headers: req[:context].http_request.headers,
+              request: req[:context].http_request
             )
           end
         end
@@ -186,9 +186,8 @@ module Support
       end
 
       def put_bucket_website_suffix(suffix)
-        have_requested(:put_bucket_website, body: %r(<Suffix>#{suffix}</Suffix>))
+        have_requested(:put_bucket_website, body: %r{<Suffix>#{suffix}</Suffix>})
       end
     end
   end
 end
-

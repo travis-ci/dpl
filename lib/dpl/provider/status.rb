@@ -3,12 +3,12 @@
 module Dpl
   class Provider < Cl::Cmd
     class Status < Struct.new(:provider, :status, :info)
-      STATUS = %i(dev alpha beta stable deprecated)
+      STATUS = %i[dev alpha beta stable deprecated]
 
       MSG = {
-        dev:        'Support for deployments to %s is in **development**',
-        alpha:      'Support for deployments to %s is in **alpha**',
-        beta:       'Support for deployments to %s is in **beta**',
+        dev: 'Support for deployments to %s is in **development**',
+        alpha: 'Support for deployments to %s is in **alpha**',
+        beta: 'Support for deployments to %s is in **beta**',
         deprecated: 'Support for deployments to %s is *deprecated**',
         pre_stable: 'Please see [Maturity Levels](%s) for details.'
       }

@@ -11,7 +11,7 @@ describe Dpl::Zip do
 
     before { subject.zip }
 
-    it { is_expected.to have_zipped 'test.zip', %w(one) }
+    it { is_expected.to have_zipped 'test.zip', %w[one] }
   end
 
   describe 'given a directory' do
@@ -19,7 +19,7 @@ describe Dpl::Zip do
 
     before { subject.zip }
 
-    it { is_expected.to have_zipped 'test.zip', %w(one two) }
+    it { is_expected.to have_zipped 'test.zip', %w[one two] }
   end
 
   describe 'given a zip file' do

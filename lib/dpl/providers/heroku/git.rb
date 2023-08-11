@@ -12,7 +12,7 @@ module Dpl
 
         description sq(<<-STR)
           tbd
-STR
+        STR
 
         required :api_key, [:username, :password]
 
@@ -24,7 +24,7 @@ STR
         needs :git, :git_http_user_agent
 
         cmds fetch: 'git fetch origin $TRAVIS_BRANCH --unshallow',
-             push:  'git push %{remote} HEAD:refs/heads/master -f'
+             push: 'git push %{remote} HEAD:refs/heads/master -f'
 
         def prepare
           write_netrc if write_netrc?

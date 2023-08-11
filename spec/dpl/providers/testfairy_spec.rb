@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Testfairy do
-  let(:args) { |e| %w(--api_key key --app_file file) + args_from_description(e) }
+  let(:args) { |e| %w[--api_key key --app_file file] + args_from_description(e) }
 
   file 'file'
 
@@ -34,7 +34,7 @@ describe Dpl::Providers::Testfairy do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { %w(--app_file file) }
+    let(:args) { %w[--app_file file] }
 
     env TESTFAIRY_API_KEY: 'key'
     it { expect { subject.run }.not_to raise_error }

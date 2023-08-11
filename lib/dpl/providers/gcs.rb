@@ -13,7 +13,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'mime-types', '~> 3.4.1'
 
@@ -30,17 +30,17 @@ STR
       opt '--local_dir DIR', 'Local directory to upload from', default: '.'
       opt '--upload_dir DIR', 'GCS directory to upload to'
       opt '--dot_match', 'Upload hidden files starting with a dot'
-      opt '--acl ACL', 'Access control to set for uploaded objects', default: 'private', enum: %w(private public-read public-read-write authenticated-read bucket-owner-read bucket-owner-full-control), see: 'https://cloud.google.com/storage/docs/reference-headers#xgoogacl'
+      opt '--acl ACL', 'Access control to set for uploaded objects', default: 'private', enum: %w[private public-read public-read-write authenticated-read bucket-owner-read bucket-owner-full-control], see: 'https://cloud.google.com/storage/docs/reference-headers#xgoogacl'
       opt '--detect_encoding', 'HTTP header Content-Encoding to set for files compressed with gzip and compress utilities.'
       opt '--cache_control HEADER', 'HTTP header Cache-Control to suggest that the browser cache the file.', see: 'https://cloud.google.com/storage/docs/xml-api/reference-headers#cachecontrol'
       opt '--glob GLOB', default: '**/*'
 
-      cmds install:   'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --quiet --path-update false --usage-reporting false --command-completion false',
+      cmds install: 'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --quiet --path-update false --usage-reporting false --command-completion false',
            login_key: 'gcloud auth activate-service-account --key-file=%{key_file}',
-           rsync:     'gsutil %{gs_opts} rsync %{rsync_opts} %{glob} %{target}',
-           copy:      'gsutil %{gs_opts} cp %{copy_opts} -r %{source} %{target}'
+           rsync: 'gsutil %{gs_opts} rsync %{rsync_opts} %{glob} %{target}',
+           copy: 'gsutil %{gs_opts} cp %{copy_opts} -r %{source} %{target}'
 
-      msgs login_key:   'Authenticating with service account key file %{key_file}',
+      msgs login_key: 'Authenticating with service account key file %{key_file}',
            login_creds: 'Authenticating with access key: %{access_key_id}'
 
       errs copy:  'Failed uploading files.'
@@ -51,7 +51,7 @@ STR
         [Credentials]
         gs_access_key_id = %{access_key_id}
         gs_secret_access_key = %{secret_access_key}
-STR
+      STR
 
       path '~/google-cloud-sdk'
       move '/etc/boto.cfg'
@@ -90,7 +90,7 @@ STR
       end
 
       def copy(source)
-        to = [target.sub(%r(/$), ''), source].join('/')
+        to = [target.sub(%r{/$}, ''), source].join('/')
         shell :copy, gs_opts: gs_opts(source), source:, target: to
       end
 

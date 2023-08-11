@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Pages do
-  let(:args)    { |e| %w(--strategy api --github_token token) + args_from_description(e) }
+  let(:args)    { |e| %w[--strategy api --github_token token] + args_from_description(e) }
   let(:user)    { JSON.dump(login: 'login', name: 'name', email: 'email') }
   let(:headers) { { 'Content-Type': 'application/json', 'X-OAuth-Scopes': ['repo'] } }
   let(:cwd)     { File.expand_path('.') }
@@ -59,14 +59,14 @@ describe Dpl::Providers::Pages do
   end
 
   describe 'with GITHUB credentials in env vars', run: false do
-    let(:args) { %w(--strategy api) }
+    let(:args) { %w[--strategy api] }
 
     env GITHUB_TOKEN: 'token'
     it { expect { subject.run }.not_to raise_error }
   end
 
   describe 'with PAGES credentials in env vars', run: false do
-    let(:args) { %w(--strategy api) }
+    let(:args) { %w[--strategy api] }
 
     env PAGES_TOKEN: 'token'
     it { expect { subject.run }.not_to raise_error }

@@ -12,6 +12,7 @@ module Dpl
       def all
         Dir[glob].sort.inject([]) do |gems, path|
           next gems if except.any? { |str| path.include?(str) }
+
           gems + Parse.new(File.read(path)).gems
         end
       end

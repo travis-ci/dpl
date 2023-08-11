@@ -13,15 +13,15 @@ module Dpl
 
       env :heroku
 
-      opt '--strategy NAME', 'Heroku deployment strategy', default: 'api', enum: %w(api git)
+      opt '--strategy NAME', 'Heroku deployment strategy', default: 'api', enum: %w[api git]
       opt '--app APP', 'Heroku app name', default: :repo_name
       opt '--log_level LEVEL', internal: true
 
-      msgs login:     'Authenticating ... ',
-           restart:   'Restarting dynos ... ',
-           validate:  'Checking for app %{app} ... ',
-           run_cmd:   'Running command %s ... ',
-           success:   'success.',
+      msgs login: 'Authenticating ... ',
+           restart: 'Restarting dynos ... ',
+           validate: 'Checking for app %{app} ... ',
+           run_cmd: 'Running command %s ... ',
+           success: 'success.',
            api_error: 'API request failed: %s (see %s)'
 
       URL = 'https://api.heroku.com'
@@ -79,6 +79,7 @@ module Dpl
 
       def headers
         return HEADERS.dup if username && password
+
         HEADERS.merge('Authorization': "Bearer #{api_key}")
       end
 

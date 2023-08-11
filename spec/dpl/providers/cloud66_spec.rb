@@ -15,4 +15,3 @@ describe Dpl::Providers::Cloud66 do
     it { expect { subject.run }.not_to raise_error }
   end
 end
-

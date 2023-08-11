@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Netlify do
-  let(:args) { |e| %w(--auth token --site id) + args_from_description(e) }
+  let(:args) { |e| %w[--auth token --site id] + args_from_description(e) }
 
   before { |c| subject.run if run?(c) }
 
@@ -27,7 +27,7 @@ describe Dpl::Providers::Netlify do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { %w(--site id) }
+    let(:args) { %w[--site id] }
 
     env NETLIFY_AUTH: 'token'
     it { expect { subject.run }.not_to raise_error }

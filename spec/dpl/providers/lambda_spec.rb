@@ -8,7 +8,7 @@ describe Dpl::Providers::Lambda do
 
   let(:responses) do
     {
-      get_function: ->(c) {
+      get_function: lambda { |c|
         exists ? {} : raise(Aws::Lambda::Errors::ResourceNotFoundException.new(c, 'error'))
       },
       create_function: {},
@@ -27,7 +27,7 @@ describe Dpl::Providers::Lambda do
   # opt '--dot_match',                  'Include hidden .* files to the zipped archive'
 
   describe 'function does not exist' do
-    let(:required) { %w(--access_key_id id --secret_access_key key --function_name func --role role --handler_name handler) }
+    let(:required) { %w[--access_key_id id --secret_access_key key --function_name func --role role --handler_name handler] }
     let(:exists) { false }
 
     describe 'by default', record: true do
@@ -108,7 +108,7 @@ describe Dpl::Providers::Lambda do
   end
 
   describe 'function exists' do
-    let(:required) { %w(--access_key_id id --secret_access_key key --function_name func) }
+    let(:required) { %w[--access_key_id id --secret_access_key key --function_name func] }
     let(:exists) { true }
 
     describe 'by default' do
@@ -185,19 +185,19 @@ describe Dpl::Providers::Lambda do
     end
 
     describe 'given --layers one --layers two' do
-      it { is_expected.to update_function_config Layers: %w(one two) }
+      it { is_expected.to update_function_config Layers: %w[one two] }
     end
   end
 
   describe 'with ~/.aws/credentials', run: false do
-    let(:args) { |e| %w(--function_name func --role role --handler_name handler) }
+    let(:args) { |e| %w[--function_name func --role role --handler_name handler] }
     let(:exists) { false }
 
     file '~/.aws/credentials', <<-STR.sub(/^\s*/, '')
       [default]
       aws_access_key_id=access_key_id
       aws_secret_access_key=secret_access_key
-STR
+    STR
 
     before { subject.run }
 
@@ -205,7 +205,7 @@ STR
   end
 
   describe 'with ~/.aws/config', run: false do
-    let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
+    let(:args) { |e| %w[--access_key_id id --secret_access_key secret] }
     let(:exists) { false }
 
     file '~/.aws/config', <<-STR.sub(/^\s*/, '')
@@ -213,7 +213,7 @@ STR
       function_name=func
       handler_name=handler
       role=role
-STR
+    STR
 
     before { subject.run }
 

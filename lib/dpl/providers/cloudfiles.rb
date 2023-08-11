@@ -11,7 +11,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'nokogiri', '~> 1.15'
       gem 'fog-core', '~> 2.3', require: 'fog/core'
@@ -21,7 +21,7 @@ STR
 
       opt '--username USER',  'Rackspace username', required: true
       opt '--api_key KEY',    'Rackspace API key', required: true, secret: true
-      opt '--region REGION',  'Cloudfiles region', required: true, enum: %w(ord dfw syd iad hkg)
+      opt '--region REGION',  'Cloudfiles region', required: true, enum: %w[ord dfw syd iad hkg]
       opt '--container NAME', 'Name of the container that files will be uploaded to', required: true
       opt '--glob GLOB',      'Paths to upload', default: '**/*'
       opt '--dot_match',      'Upload hidden files starting a dot'

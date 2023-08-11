@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Bintray do
-  let(:args) { |e| %w(--user user --key key --file descriptor.json) + args_from_description(e) }
+  let(:args) { |e| %w[--user user --key key --file descriptor.json] + args_from_description(e) }
 
   let(:paths) do
     {
-      package:         %r(/packages/user/repo/name$),
-      packages:        %r(/packages/user/repo$),
-      package_attrs:   %r(/packages/user/repo/name/attributes$),
-      version:         %r(/packages/user/repo/name/versions/0.5$),
-      versions:        %r(/packages/user/repo/name/versions$),
-      version_attrs:   %r(/packages/user/repo/name/versions/0.5/attributes$),
-      version_file:    %r(/content/user/repo/name/0.5/gems/foo.gem$),
-      version_sign:    %r(/gpg/user/repo/name/versions/0.5$),
-      version_publish: %r(/content/user/repo/name/0.5/publish$),
-      file_metadata:   %r(/file_metadata/user/repo/gems/foo.gem)
+      package: %r{/packages/user/repo/name$},
+      packages: %r{/packages/user/repo$},
+      package_attrs: %r{/packages/user/repo/name/attributes$},
+      version: %r{/packages/user/repo/name/versions/0.5$},
+      versions: %r{/packages/user/repo/name/versions$},
+      version_attrs: %r{/packages/user/repo/name/versions/0.5/attributes$},
+      version_file: %r{/content/user/repo/name/0.5/gems/foo.gem$},
+      version_sign: %r{/gpg/user/repo/name/versions/0.5$},
+      version_publish: %r{/content/user/repo/name/0.5/publish$},
+      file_metadata: %r{/file_metadata/user/repo/gems/foo.gem}
     }
   end
 
@@ -92,7 +92,7 @@ describe Dpl::Providers::Bintray do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { %w(--file descriptor.json) }
+    let(:args) { %w[--file descriptor.json] }
 
     env BINTRAY_USER: 'user',
         BINTRAY_KEY: 'key'

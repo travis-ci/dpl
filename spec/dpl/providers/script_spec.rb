@@ -9,4 +9,3 @@ describe Dpl::Providers::Script do
     it { is_expected.to have_run './script' }
   end
 end
-

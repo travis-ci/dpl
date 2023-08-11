@@ -10,6 +10,7 @@ module Memoize
         define_method(name) do |*args|
           raise ArgsError.new('cannot pass arguments to memoized method %p' % name) unless args.empty?
           return instance_variable_get(ivar) if instance_variable_defined?(ivar)
+
           instance_variable_set(ivar, super())
         end
       }

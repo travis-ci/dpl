@@ -11,7 +11,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       env :datica, :catalyze
 
@@ -21,12 +21,12 @@ STR
       needs :git
 
       cmds checkout: 'git checkout HEAD',
-           add:      'git add %{path} --all --force',
-           commit:   'git commit -m "%{message}" --quiet',
-           push:     'git push --force %{target} HEAD:master'
+           add: 'git add %{path} --all --force',
+           commit: 'git commit -m "%{message}" --quiet',
+           push: 'git push --force %{target} HEAD:master'
 
-      msgs commit:   'Committing build files for deployment',
-           push:     'Deploying to Datica: %{target}'
+      msgs commit: 'Committing build files for deployment',
+           push: 'Deploying to Datica: %{target}'
 
       def setup
         commit if git_dirty? && !cleanup?
@@ -49,12 +49,12 @@ STR
         vars.empty? ? 'Local build' : 'Build #%s (%s) of %s@%s' % vars
       end
 
-      VARS = %w(
+      VARS = %w[
         TRAVIS_BUILD_NUMBER
         TRAVIS_COMMIT
         TRAVIS_REPO_SLUG
         TRAVIS_BRANCH
-      )
+      ]
 
       def vars
         @vars ||= ENV.values_at(*VARS).compact

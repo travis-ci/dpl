@@ -9,7 +9,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'json'
 
@@ -32,19 +32,19 @@ STR
       opt '--prepare CMDS', 'Run commands with convox cli available just before deployment', type: :array
 
       # if app and rack are exported to the env, do they need to be passed to these commands?
-      cmds login:    'convox version --rack %{rack}',
+      cmds login: 'convox version --rack %{rack}',
            validate: 'convox apps info --rack %{rack} --app %{app}',
-           create:   'convox apps create %{app} --generation %{generation} --rack %{rack} --wait',
-           update:   'convox update',
-           set_env:  'convox env set %{env} --rack %{rack} --app %{app} --replace',
-           build:    'convox build --rack %{rack} --app %{app} --id --description %{escaped_description}',
-           deploy:   'convox deploy --rack %{rack} --app %{app} --wait --id --description %{escaped_description}'
+           create: 'convox apps create %{app} --generation %{generation} --rack %{rack} --wait',
+           update: 'convox update',
+           set_env: 'convox env set %{env} --rack %{rack} --app %{app} --replace',
+           build: 'convox build --rack %{rack} --app %{app} --id --description %{escaped_description}',
+           deploy: 'convox deploy --rack %{rack} --app %{app} --wait --id --description %{escaped_description}'
 
-      msgs create:   'Application %{app} does not exist on rack %{rack}. Creating it ...',
-           missing:  'Application %{app} does not exist on rack %{rack}.',
+      msgs create: 'Application %{app} does not exist on rack %{rack}. Creating it ...',
+           missing: 'Application %{app} does not exist on rack %{rack}.',
            env_file: 'The given env_file does not exist.',
-           deploy:   'Building and promoting application ...',
-           build:    'Building application ...'
+           deploy: 'Building and promoting application ...',
+           build: 'Building application ...'
 
       errs login:    'Login failed.'
 
@@ -88,6 +88,7 @@ STR
 
       def env_file
         return [] unless env_file?
+
         error :env_file unless file?(super)
         lines = read(super).split("\n").map(&:strip)
         lines.reject(&:empty?)

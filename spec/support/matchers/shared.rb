@@ -15,6 +15,7 @@ module Support
 
       def indent(str)
         return str if str.lines.size < 2
+
         str.lines[0] + str.lines[1..-1].map { |str| "#{' ' * 2}#{str}" }.join
       end
     end

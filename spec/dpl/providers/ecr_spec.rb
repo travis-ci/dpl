@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Ecr do
-  let(:args) { |e| %W(--access_key_id key --secret_access_key secret --source source:1.0) + args_from_description(e) }
+  let(:args) { |e| %W[--access_key_id key --secret_access_key secret --source source:1.0] + args_from_description(e) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
 
   before do
     Aws.config[:ecr] = {
       stub_responses: {
-        get_authorization_token: ->(ctx) {
+        get_authorization_token: lambda { |ctx|
           requests[:get_authorization_token] << ctx.http_request
           region = ctx.http_request.endpoint.to_s.split('.')[2]
           {
@@ -19,7 +19,7 @@ describe Dpl::Providers::Ecr do
             ]
           }
         },
-        get_deployment: ->(ctx) {
+        get_deployment: lambda { |ctx|
           requests[:get_deployment] << ctx.http_request
           { deployment_info: { status: 'Succeeded' } }
         }

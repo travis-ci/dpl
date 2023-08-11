@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Firebase do
-  let(:args) { |e| %w(--token token) + args_from_description(e) }
+  let(:args) { |e| %w[--token token] + args_from_description(e) }
 
   file 'firebase.json'
 

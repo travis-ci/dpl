@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Snap do
-  let(:args) { |e| args_from_description(e) + %w(--token token) }
+  let(:args) { |e| args_from_description(e) + %w[--token token] }
 
   file 'snap'
 
@@ -46,7 +46,7 @@ describe Dpl::Providers::Snap do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { %w(--snap ./snap) }
+    let(:args) { %w[--snap ./snap] }
 
     env SNAP_TOKEN: 'token'
     it { expect { subject.run }.not_to raise_error }

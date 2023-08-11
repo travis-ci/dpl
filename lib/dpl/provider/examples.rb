@@ -66,6 +66,7 @@ module Dpl
 
     def example(opts)
       return unless opts.any?
+
       opts = required_opts.concat(opts).uniq.compact
       Example.new(const, opts)
     end
@@ -119,6 +120,7 @@ module Dpl
       return if opt.type == :flag
       return 1 if opt.type == :integer
       return opt.enum.first if opt.enum?
+
       str = opt.strs.detect { |str| str =~ /^--#{opt.name} (.*)$/ } && $1
       str ? str.downcase : 'str'
     end

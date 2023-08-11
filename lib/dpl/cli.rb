@@ -49,6 +49,7 @@ module Dpl
 
     def with_cmd_opt(args, cmd, pos)
       return args unless opt = args.detect { |arg| arg.start_with?("--#{cmd}") }
+
       ix = args.index(opt)
       args.delete(opt)
       value = opt.include?('=') ? opt.split('=').last : args.delete_at(ix)
@@ -58,11 +59,12 @@ module Dpl
 
     STRATEGIES = {
       'heroku' => 'api',
-      'pages'  => 'git'
+      'pages' => 'git'
     }
 
     def with_strategy_default(args, cmd)
       return args unless default = STRATEGIES[args.first]
+
       args.insert(1, default) if args[1].nil? || args[1].to_s.start_with?('--')
       args
     end
@@ -91,6 +93,7 @@ module Dpl
 
     def suggestions(name)
       return [] unless defined?(DidYouMean)
+
       DidYouMean::SpellChecker.new(dictionary: providers).correct(name)
     end
   end

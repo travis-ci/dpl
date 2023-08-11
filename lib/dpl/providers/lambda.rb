@@ -13,7 +13,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'aws-sdk-lambda', '~> 1.104.0'
       gem 'nokogiri', '~> 1.15'
@@ -35,22 +35,22 @@ STR
       opt '--subnet_ids IDS',         'List of subnet IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSubnets and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--security_group_ids IDS', 'List of security group IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--environment VARS',       'List of Environment Variables to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security', alias: :environment_variables
-      opt '--runtime NAME',           'Lambda runtime to use', note: 'required when creating a new function', default: 'nodejs12.x', enum: %w(nodejs16.x nodejs14.x nodejs12.x python3.8 python3.7 python3.6 python2.7 ruby2.7 ruby2.5 java11 java8 go1.x dotnetcore2.1)
+      opt '--runtime NAME',           'Lambda runtime to use', note: 'required when creating a new function', default: 'nodejs12.x', enum: %w[nodejs16.x nodejs14.x nodejs12.x python3.8 python3.7 python3.6 python2.7 ruby2.7 ruby2.5 java11 java8 go1.x dotnetcore2.1]
       opt '--dead_letter_arn ARN',    'ARN to an SNS or SQS resource used for the dead letter queue.'
       opt '--kms_key_arn ARN',        'KMS key ARN to use to encrypt environment_variables.'
-      opt '--tracing_mode MODE',      'Tracing mode', default: 'PassThrough', enum: %w(Active PassThrough), note: 'Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role'
+      opt '--tracing_mode MODE',      'Tracing mode', default: 'PassThrough', enum: %w[Active PassThrough], note: 'Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role'
       opt '--layers LAYERS',          'Function layer arns', type: :array
       opt '--function_tags TAGS',     'List of tags to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security'
       opt '--publish',                'Create a new version of the code instead of replacing the existing one.'
       opt '--zip PATH',               'Path to a packaged Lambda, a directory to package, or a single file to package', default: '.'
       opt '--dot_match',              'Include hidden .* files to the zipped archive'
 
-      msgs login:           'Using Access Key: %{access_key_id}',
+      msgs login: 'Using Access Key: %{access_key_id}',
            create_function: 'Creating function %{function_name}.',
-           update_config:   'Updating existing function %{function_name}.',
-           update_tags:     'Updating tags.',
-           update_code:     'Updating code.',
-           description:     'Deploy build %{build_number} to AWS Lambda via Travis CI'
+           update_config: 'Updating existing function %{function_name}.',
+           update_tags: 'Updating tags.',
+           update_code: 'Updating code.',
+           description: 'Deploy build %{build_number} to AWS Lambda via Travis CI'
 
       def login
         info :login
@@ -190,9 +190,9 @@ STR
       class Handler < Struct.new(:runtime, :module_name, :handler_name)
         SEP = {
           default: '.',
-          java:    '::',
-          dotnet:  '::',
-          go:      ''
+          java: '::',
+          dotnet: '::',
+          go: ''
         }
 
         def to_s

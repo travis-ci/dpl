@@ -1,7 +1,7 @@
 describe Dpl::Interpolate do
-  let(:provider) { Class.new(Dpl::Provider, &body).new(ctx, %w(--name a-name --password secret)) }
+  let(:provider) { Class.new(Dpl::Provider, &body).new(ctx, %w[--name a-name --password secret]) }
   let(:body) do
-    ->(*) do
+    lambda do |*|
       opt '--name NAME'
       opt '--password PASS', secret: true
     end

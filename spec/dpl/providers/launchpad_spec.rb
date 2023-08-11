@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Launchpad do
-  let(:args) { %w(--slug ~user/project/branch --oauth_token token --oauth_token_secret secret) }
+  let(:args) { %w[--slug ~user/project/branch --oauth_token token --oauth_token_secret secret] }
   let(:url)  { 'https://api.launchpad.net/1.0/~user/project/branch/+code-import' }
   let(:body) { 'ws.op=requestImport' }
 
@@ -25,7 +25,7 @@ describe Dpl::Providers::Launchpad do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { %w(--slug ~user/project/branch --oauth_token token) }
+    let(:args) { %w[--slug ~user/project/branch --oauth_token token] }
 
     env LAUNCHPAD_OAUTH_TOKEN_SECRET: 'secret'
     it { expect { subject.run }.not_to raise_error }

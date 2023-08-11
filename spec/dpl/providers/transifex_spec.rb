@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Transifex do
-  let(:args) { |e| %w(--username user --password pass) + args_from_description(e) }
+  let(:args) { |e| %w[--username user --password pass] + args_from_description(e) }
   let(:rc) { File.read('./home/.transifexrc') }
 
   before { |c| subject.run if run?(c) }
@@ -18,7 +18,7 @@ describe Dpl::Providers::Transifex do
         hostname = https://www.transifex.com
         username = user
         password = pass
-RC
+      RC
     end
   end
 

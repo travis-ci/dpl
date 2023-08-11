@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Engineyard do
-  let(:args)    { |e| %w(--api_key key) + args_from_description(e) }
+  let(:args)    { |e| %w[--api_key key] + args_from_description(e) }
   let(:headers) { { content_type: 'application/json' } }
 
   let(:envs) do
@@ -9,7 +9,7 @@ describe Dpl::Providers::Engineyard do
       ID | Name | Account
       ---|------|-----------
       1  | env  | account
-STR
+    STR
   end
 
   let(:whoami) do
@@ -17,7 +17,7 @@ STR
       User:f7ecb9e2-946c-47ae-8ae1-2ef44aab3486 {
         email : "dpl-test@travis-ci.org"
       }
-STR
+    STR
   end
 
   before do
@@ -84,7 +84,7 @@ STR
         ---|------|-----------
         1  | one  | account
         2  | two  | account
-STR
+      STR
     end
 
     it { expect { subject.run }.to raise_error 'Multiple environments match, please be more specific: environment=one account=account, environment=two account=account' }

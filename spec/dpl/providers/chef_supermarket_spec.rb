@@ -4,7 +4,7 @@ describe Dpl::Providers::ChefSupermarket do
   let(:uploader) { Chef::CookbookUploader }
   let(:site)     { Chef::CookbookSiteStreamingUploader }
 
-  let(:args) { |e| %W(--user_id id --client_key chef.pem --cookbook_category cat) + args_from_description(e) }
+  let(:args) { |e| %W[--user_id id --client_key chef.pem --cookbook_category cat] + args_from_description(e) }
   let(:url)  { 'https://supermarket.chef.io/api/v1/cookbooks' }
 
   file 'chef.pem'
@@ -53,7 +53,7 @@ describe Dpl::Providers::ChefSupermarket do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { %w( --client_key chef.pem --cookbook_category cat) }
+    let(:args) { %w[ --client_key chef.pem --cookbook_category cat] }
 
     env CHEF_USER_ID: 'id'
     it { expect { subject.run }.not_to raise_error }

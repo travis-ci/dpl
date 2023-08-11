@@ -3,7 +3,7 @@
 describe Dpl::Providers::S3 do
   include Support::Matchers::Aws
 
-  let(:args)   { |e| %w(--access_key_id access_key_id --secret_access_key secret_access_key --bucket bucket) + args_from_description(e) }
+  let(:args)   { |e| %w[--access_key_id access_key_id --secret_access_key secret_access_key --bucket bucket] + args_from_description(e) }
   let(:client) { Aws::S3::Client.new(stub_responses: {}) }
 
   file 'one.txt'
@@ -49,52 +49,52 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'given --dot_match' do
-    it { is_expected.to have_run %r(.hidden.txt) }
+    it { is_expected.to have_run %r{.hidden.txt} }
     it { is_expected.to put_object '.hidden.txt' }
   end
 
   describe 'given --storage_class STANDARD_IA' do
-    it { is_expected.to have_run %r(one.txt.* storage_class=STANDARD_IA) }
+    it { is_expected.to have_run %r{one.txt.* storage_class=STANDARD_IA} }
     it { is_expected.to put_object 'one.txt', 'x-amz-storage-class': 'STANDARD_IA' }
   end
 
   describe 'given --acl public_read' do
-    it { is_expected.to have_run %r(one.txt.* acl=public-read) }
+    it { is_expected.to have_run %r{one.txt.* acl=public-read} }
     it { is_expected.to put_object 'one.txt', 'x-amz-acl': 'public-read' }
   end
 
   describe 'given --cache_control public' do
-    it { is_expected.to have_run %r(one.txt.* cache_control=public) }
+    it { is_expected.to have_run %r{one.txt.* cache_control=public} }
     it { is_expected.to put_object 'one.txt', 'cache-control': 'public' }
   end
 
   describe 'given --cache_control max-age=60' do
-    it { is_expected.to have_run %r(one.txt.* cache_control=max-age=60) }
+    it { is_expected.to have_run %r{one.txt.* cache_control=max-age=60} }
     it { is_expected.to put_object 'one.txt', 'cache-control': 'max-age=60' }
   end
 
   describe 'given --cache_control "public, max-age=60: *.txt"' do
-    it { is_expected.to have_run %r(one.txt.* cache_control=public, max-age=60 ) }
+    it { is_expected.to have_run %r{one.txt.* cache_control=public, max-age=60 } }
     it { is_expected.to put_object 'one.txt', 'cache-control': 'public, max-age=60' }
   end
 
   describe 'given --expires "2020-01-01 00:00:00 UTC"' do
-    it { is_expected.to have_run %r(one.txt.* expires=2020-01-01 00:00:00 UTC) }
+    it { is_expected.to have_run %r{one.txt.* expires=2020-01-01 00:00:00 UTC} }
     it { is_expected.to put_object 'one.txt', 'expires': 'Wed, 01 Jan 2020 00:00:00 GMT' }
   end
 
   describe 'given --default_text_charset utf-8' do
-    it { is_expected.to have_run %r(one.txt.* content_type=text/plain; charset=utf-8) }
+    it { is_expected.to have_run %r{one.txt.* content_type=text/plain; charset=utf-8} }
     it { is_expected.to put_object 'one.txt', 'content-type': 'text/plain; charset=utf-8' }
   end
 
   describe 'given --server_side_encryption' do
-    it { is_expected.to have_run %r(one.txt.* server_side_encryption=AES256) }
+    it { is_expected.to have_run %r{one.txt.* server_side_encryption=AES256} }
     it { is_expected.to put_object 'one.txt', 'x-amz-server-side-encryption': 'AES256' }
   end
 
   describe 'given --detect_encoding' do
-    it { is_expected.to have_run %r(one.txt.* content_encoding=text) }
+    it { is_expected.to have_run %r{one.txt.* content_encoding=text} }
     it { is_expected.to put_object 'one.txt', 'content-encoding': 'text' }
   end
 
@@ -125,13 +125,13 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'with ~/.aws/credentials', run: false do
-    let(:args) { |e| %w(--bucket bucket) }
+    let(:args) { |e| %w[--bucket bucket] }
 
     file '~/.aws/credentials', <<-STR.sub(/^\s*/, '')
       [default]
       aws_access_key_id=access_key_id
       aws_secret_access_key=secret_access_key
-STR
+    STR
 
     before { subject.run }
 
@@ -139,13 +139,13 @@ STR
   end
 
   describe 'with ~/.aws/config', run: false do
-    let(:args) { |e| %w(--access_key_id id --secret_access_key key) }
+    let(:args) { |e| %w[--access_key_id id --secret_access_key key] }
 
     file '~/.aws/config', <<-STR.sub(/^\s*/, '')
       [default]
       region=us-other-1
       bucket=other
-STR
+    STR
 
     before { subject.run }
 

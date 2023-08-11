@@ -11,7 +11,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       node_js '>= 8.8.1'
 
@@ -27,7 +27,7 @@ STR
       cmds deploy: 'surge %{project} %{domain}'
 
       msgs invalid_project: '%{project} is not a directory',
-           missing_domain:  'Please set the domain in .travis.yml or in a CNAME file in the project directory'
+           missing_domain: 'Please set the domain in .travis.yml or in a CNAME file in the project directory'
 
       def login
         ENV['SURGE_LOGIN'] ||= opts[:login]

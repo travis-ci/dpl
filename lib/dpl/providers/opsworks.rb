@@ -11,7 +11,7 @@ module Dpl
 
       description sq(<<-STR)
         tbd
-STR
+      STR
 
       gem 'aws-sdk-opsworks', '~> 1.0'
 
@@ -29,17 +29,17 @@ STR
       opt '--update_on_success', 'When wait-until-deployed and updated-on-success are both not given, application source is updated to the current SHA. Ignored when wait-until-deployed is not given.', alias: :update_app_on_success
       opt '--custom_json JSON', 'Custom json options override (overwrites default configuration)'
 
-      msgs login:         'Using Access Key: %{access_key_id}',
+      msgs login: 'Using Access Key: %{access_key_id}',
            create_deploy: 'Creating deployment ... ',
-           done:          'Done: %s',
-           waiting:       'Deploying ',
-           failed:        'Failed.',
-           success:       'Success.',
-           update_app:    'Updating application source branch/revision setting.',
+           done: 'Done: %s',
+           waiting: 'Deploying ',
+           failed: 'Failed.',
+           success: 'Success.',
+           update_app: 'Updating application source branch/revision setting.',
            app_not_found: 'App %s not found.',
-           timeout:       'Timeout: failed to finish deployment within 10 minutes.',
+           timeout: 'Timeout: failed to finish deployment within 10 minutes.',
            service_error: 'Deployment failed. OpsWorks service error: %s',
-           comment:       'Deploy build %{build_number} via Travis CI'
+           comment: 'Deploy build %{build_number} via Travis CI'
 
       def login
         info :login

@@ -3,7 +3,7 @@
 describe Dpl::Providers::Opsworks do
   include Support::Matchers::Aws
 
-  let(:args)   { |e| %w(--access_key_id access_key_id --secret_access_key secret_access_key --app_id app) + args_from_description(e) }
+  let(:args)   { |e| %w[--access_key_id access_key_id --secret_access_key secret_access_key --app_id app] + args_from_description(e) }
   let(:client) { Aws::OpsWorks::Client.new(stub_responses: responses) }
 
   let(:responses) do
@@ -67,14 +67,14 @@ describe Dpl::Providers::Opsworks do
   end
 
   describe 'with ~/.aws/credentials', run: false do
-    let(:args) { |e| %w(--app_id app) }
+    let(:args) { |e| %w[--app_id app] }
     let(:exists) { false }
 
     file '~/.aws/credentials', <<-STR.sub(/^\s*/, '')
       [default]
       aws_access_key_id=access_key_id
       aws_secret_access_key=secret_access_key
-STR
+    STR
 
     before { subject.run }
 
@@ -82,12 +82,12 @@ STR
   end
 
   describe 'with ~/.aws/config', run: false do
-    let(:args) { |e| %w(--access_key_id id --secret_access_key secret) }
+    let(:args) { |e| %w[--access_key_id id --secret_access_key secret] }
 
     file '~/.aws/config', <<-STR.sub(/^\s*/, '')
       [default]
       app_id=app
-STR
+    STR
 
     before { subject.run }
 

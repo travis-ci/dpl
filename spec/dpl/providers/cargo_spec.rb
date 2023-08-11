@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Cargo do
-  let(:args) { |e| %w(--token 1234) + args_from_description(e) }
+  let(:args) { |e| %w[--token 1234] + args_from_description(e) }
 
   before { |c| subject.run if run?(c) }
 

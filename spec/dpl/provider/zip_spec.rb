@@ -22,18 +22,18 @@ describe Dpl::Zip do
   end
 
   describe 'without dot_match' do
-    it { is_expected.to eq %w(. one two two/. two/one two/two) }
+    it { is_expected.to eq %w[. one two two/. two/one two/two] }
   end
 
   describe 'with dot_match' do
     let(:opts) { { dot_match: true } }
 
-    it { is_expected.to eq %w(. .dot one two two/. two/one two/two) }
+    it { is_expected.to eq %w[. .dot one two two/. two/one two/two] }
   end
 
   describe 'src being a subdir' do
     let(:src) { 'two' }
 
-    it { is_expected.to eq %w(. one two) }
+    it { is_expected.to eq %w[. one two] }
   end
 end
