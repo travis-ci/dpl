@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_written do |path, str|
   match do
     path = File.expand_path(path)

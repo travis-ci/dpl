@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dpl/helper/memoize'
 
 module Dpl
@@ -46,26 +48,26 @@ module Dpl
 
       private
 
-        def dealias(key)
-          opt = cmd.opts.detect { |opt| opt.aliases.include?(key) }
-          opt ? opt.name : key
-        end
+      def dealias(key)
+        opt = cmd.opts.detect { |opt| opt.aliases.include?(key) }
+        opt ? opt.name : key
+      end
 
-        def unprefix(key)
-          strs.inject(key) { |key, str| key.sub(/^#{str}_?/, '') }
-        end
+      def unprefix(key)
+        strs.inject(key) { |key, str| key.sub(/^#{str}_?/, '') }
+      end
 
-        def keys
-          keys = cmd.opts.map(&:name) + cmd.opts.map(&:aliases).flatten
-          strs.map { |str| keys.map { |key| keys_for(str, key) } }.flatten
-        end
-        memoize :keys
+      def keys
+        keys = cmd.opts.map(&:name) + cmd.opts.map(&:aliases).flatten
+        strs.map { |str| keys.map { |key| keys_for(str, key) } }.flatten
+      end
+      memoize :keys
 
-        def keys_for(str, key)
-          keys = [["#{str}_", key.upcase].join]
-          keys << [str, key.upcase].join if opts[:allow_skip_underscore]
-          keys
-        end
+      def keys_for(str, key)
+        keys = [["#{str}_", key.upcase].join]
+        keys << [str, key.upcase].join if opts[:allow_skip_underscore]
+        keys
+      end
     end
 
     # should this sit in Cl?

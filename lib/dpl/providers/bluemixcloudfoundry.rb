@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Bluemixcloudfoundry < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'Bluemix Cloud Foundry'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :cloudfoundry
 
@@ -72,25 +74,25 @@ module Dpl
 
       private
 
-        def push_args
-          args = []
-          args << quote(app_name)  if app_name?
-          args << "-f #{manifest}" if manifest?
-          args << "-b #{buildpack}" if buildpack?
-          args.join(' ')
-        end
+      def push_args
+        args = []
+        args << quote(app_name)  if app_name?
+        args << "-f #{manifest}" if manifest?
+        args << "-b #{buildpack}" if buildpack?
+        args.join(' ')
+      end
 
-        def skip_ssl_validation_opt
-          '--skip-ssl-validation' if skip_ssl_validation?
-        end
+      def skip_ssl_validation_opt
+        '--skip-ssl-validation' if skip_ssl_validation?
+      end
 
-        def manifest_missing?
-          !File.exist?(manifest)
-        end
+      def manifest_missing?
+        !File.exist?(manifest)
+      end
 
-        def api
-          super || API[region.to_sym]
-        end
+      def api
+        super || API[region.to_sym]
+      end
     end
   end
 end

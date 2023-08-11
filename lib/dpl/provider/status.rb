@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   class Provider < Cl::Cmd
     class Status < Struct.new(:provider, :status, :info)
@@ -31,29 +33,29 @@ module Dpl
 
       private
 
-        def name
-          provider.full_name
-        end
+      def name
+        provider.full_name
+      end
 
-        def pre_stable?
-          STATUS.index(status) < STATUS.index(:stable)
-        end
+      def pre_stable?
+        STATUS.index(status) < STATUS.index(:stable)
+      end
 
-        def stable?
-          status == :stable
-        end
+      def stable?
+        status == :stable
+      end
 
-        def deprecated?
-          status == :deprecated
-        end
+      def deprecated?
+        status == :deprecated
+      end
 
-        def known?(status)
-          STATUS.include?(status)
-        end
+      def known?(status)
+        STATUS.include?(status)
+      end
 
-        def unknown!(status)
-          raise "Unknown status: #{status.inspect}. Known statuses are: #{STATUS.map(&:inspect).join(', ')}"
-        end
+      def unknown!(status)
+        raise "Unknown status: #{status.inspect}. Known statuses are: #{STATUS.map(&:inspect).join(', ')}"
+      end
     end
   end
 end

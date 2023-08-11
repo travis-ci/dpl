@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dpl/providers/anynines'
 require 'dpl/providers/azure_web_apps'
 require 'dpl/providers/bintray'

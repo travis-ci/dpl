@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Ecr < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       full_name 'AWS ECR'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'aws-sdk-ecr', '~> 1.0'
       # gem 'docker-api', '~> 1.34'
@@ -53,75 +55,75 @@ module Dpl
 
       private
 
-        def push(region, target)
-          url, repo, tag = endpoints[region], *target.split(':')
-          shell :tag, url: url, repo: repo, tag: tag || 'latest'
-          shell :push, url: url, repo: repo
-          info :image_pushed, region: region, target: target
-        end
+      def push(region, target)
+        url, repo, tag = endpoints[region], *target.split(':')
+        shell :tag, url:, repo:, tag: tag || 'latest'
+        shell(:push, url:, repo:)
+        info :image_pushed, region:, target:
+      end
 
-        def auth_regions
-          @endpoints = regions.map { |region| [region, auth_region(region)] }.to_h
-        end
+      def auth_regions
+        @endpoints = regions.map { |region| [region, auth_region(region)] }.to_h
+      end
 
-        def auth_region(region)
-          token = auth_token(region)
-          user, pass = parse_auth(token.authorization_token)
-          url = token.proxy_endpoint
-          shell :login, user: user, pass: pass, url: url, echo: false, silent: true
-          info :auth_region, url: url
-          strip_protocol(url)
-        end
+      def auth_region(region)
+        token = auth_token(region)
+        user, pass = parse_auth(token.authorization_token)
+        url = token.proxy_endpoint
+        shell :login, user:, pass:, url:, echo: false, silent: true
+        info(:auth_region, url:)
+        strip_protocol(url)
+      end
 
-        def auth_token(region)
-          ecr(region).get_authorization_token(registry_ids).authorization_data[0]
-        end
+      def auth_token(region)
+        ecr(region).get_authorization_token(registry_ids).authorization_data[0]
+      end
 
-        def registry_ids
-          account_id? ? { registry_ids: [account_id] } : {}
-        end
+      def registry_ids
+        account_id? ? { registry_ids: [account_id] } : {}
+      end
 
-        def regions
-          # not sure how this was meant to be normalized when being a YAML list
-          region.split(',')
-        end
+      def regions
+        # not sure how this was meant to be normalized when being a YAML list
+        region.split(',')
+      end
 
-        def targets
-          # not sure how this was meant to be normalized when being a YAML list
-          target.split(',')
-        end
+      def targets
+        # not sure how this was meant to be normalized when being a YAML list
+        target.split(',')
+      end
 
-        def creds
-          @creds ||= only(opts, :access_key_id, :secret_access_key)
-        end
+      def creds
+        @creds ||= only(opts, :access_key_id, :secret_access_key)
+      end
 
-        def ecr(region)
-          Aws::ECR::Client.new(region: region, **creds)
-        end
+      def ecr(region)
+        Aws::ECR::Client.new(region:, **creds)
+      end
 
-        def parse_auth(str)
-          user, pass = Base64.decode64(str).split(':')
-          [user, pass.chomp]
-        end
+      def parse_auth(str)
+        user, pass = Base64.decode64(str).split(':')
+        [user, pass.chomp]
+      end
 
-        def strip_protocol(url)
-          url.sub(/^https?:\/\//, '')
-        end
+      def strip_protocol(url)
+        url.sub(/^https?:\/\//, '')
+      end
 
-        def progress(events)
-          events.split("\r\n").each do |event|
-            event = JSON.parse(event)
-            if e = event['error']
-              error e
-            elsif %w(Preparing Pushing).include?(event['status'])
-              nil
-            elsif event['id']
-              info "#{event['status']} [#{event['id']}]"
-            elsif event['status']
-              info event['status']
-            end
+      def progress(events)
+        events.split("\r\n").each do |event|
+          event = JSON.parse(event)
+          if e = event['error']
+            error e
+          elsif %w(Preparing Pushing).include?(event['status'])
+            nil
+          elsif event['id']
+            info "#{event['status']} [#{event['id']}]"
+          elsif event['status']
+            info event['status']
           end
         end
+      end
     end
   end
 end

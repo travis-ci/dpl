@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dpl/helper/squiggle'
 require 'dpl/helper/wrap'
 require 'dpl/provider/status'

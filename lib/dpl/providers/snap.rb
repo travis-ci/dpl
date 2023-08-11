@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Snap < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :stable
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :snap
 

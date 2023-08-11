@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe :test do
   let!(:const) { Class.new(Dpl::Provider, &body) }
 
@@ -5,6 +7,7 @@ describe :test do
 
   describe 'fails during deployment' do
     let(:body) { ->(*) { def deploy; error 'msg' end } }
+
     it { expect { subject.run }.to raise_error(Dpl::Error, 'msg') }
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Silences "Struct::Tms is deprecated" warnings on Ruby 2.6.2 that would
 # otherwise spam hundereds of warnings, on apparently every single const
 # eager loaded (or something). The constant Tms is not used anywhere in

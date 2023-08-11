@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dpl/version'
 require 'net/http'
 require 'securerandom'
@@ -11,9 +13,9 @@ module Dpl
 
       full_name 'TestFairy'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'json'
       gem 'multipart-post', '~> 2.0.0', require: 'net/http/post/multipart'
@@ -43,55 +45,55 @@ module Dpl
 
       private
 
-        def params
-          @params ||= compact(
-            'api_key': api_key,
-            'apk_file': file(app_file),
-            'symbols_file': file(symbols_file),
-            'testers-groups': testers_groups,
-            'notify': bool(notify),
-            'auto-update': bool(auto_update),
-            'advanced-options': advanced_options,
-            'changelog': changelog
-          )
-        end
+      def params
+        @params ||= compact(
+          'api_key': api_key,
+          'apk_file': file(app_file),
+          'symbols_file': file(symbols_file),
+          'testers-groups': testers_groups,
+          'notify': bool(notify),
+          'auto-update': bool(auto_update),
+          'advanced-options': advanced_options,
+          'changelog': changelog
+        )
+      end
 
-        def changelog
-          git_log "--pretty=oneline --abbrev-commit #{commits}" if commits
-        end
+      def changelog
+        git_log "--pretty=oneline --abbrev-commit #{commits}" if commits
+      end
 
-        def commits
-          ENV['TRAVIS_COMMIT_RANGE']
-        end
+      def commits
+        ENV['TRAVIS_COMMIT_RANGE']
+      end
 
-        def request
-          Net::HTTP::Post::Multipart.new(uri.path, params, 'User-Agent' => UA)
-        end
+      def request
+        Net::HTTP::Post::Multipart.new(uri.path, params, 'User-Agent' => UA)
+      end
 
-        def http
-          Net::HTTP.start(uri.host, uri.port, :use_ssl => true)
-        end
+      def http
+        Net::HTTP.start(uri.host, uri.port, use_ssl: true)
+      end
 
-        def uri
-          @uri ||= URI.parse(URL)
-        end
+      def uri
+        @uri ||= URI.parse(URL)
+      end
 
-        def file(path)
-          UploadIO.new(path, '', File.basename(path)) if path
-        end
+      def file(path)
+        UploadIO.new(path, '', File.basename(path)) if path
+      end
 
-        def bool(obj)
-          obj ? 'on' : 'off' unless obj.nil?
-        end
+      def bool(obj)
+        obj ? 'on' : 'off' unless obj.nil?
+      end
 
-        def pretty_print(params)
-          params = params.map do |key, value|
-            value = obfuscate(value) if key == :api_key
-            value = value.path if value.respond_to?(:path)
-            [key, value]
-          end
-          JSON.pretty_generate(params.to_h)
+      def pretty_print(params)
+        params = params.map do |key, value|
+          value = obfuscate(value) if key == :api_key
+          value = value.path if value.respond_to?(:path)
+          [key, value]
         end
+        JSON.pretty_generate(params.to_h)
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Convox < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :dev
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'json'
 
@@ -93,11 +95,11 @@ module Dpl
 
       def description
         description? ? super : JSON.dump(
-          repo_slug: repo_slug,
+          repo_slug:,
           git_commit_sha: git_sha,
           git_commit_message: git_commit_msg,
           git_commit_author: git_author_name,
-          git_tag: git_tag,
+          git_tag:,
           branch: git_branch,
           travis_build_id: ENV['TRAVIS_BUILD_ID'],
           travis_build_number: ENV['TRAVIS_BUILD_NUMBER'],

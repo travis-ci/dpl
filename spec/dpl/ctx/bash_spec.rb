@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stringio'
 
 describe Dpl::Ctx::Bash do
@@ -73,36 +75,42 @@ describe Dpl::Ctx::Bash do
 
   describe 'fold' do
     before { subject.fold('foo') { stdout.puts 'bar' } }
-    it { should have_stdout "travis_fold:start:dpl.1\r\e[K" }
-    it { should have_stdout "\e[33mfoo\e[0m\nbar\n" }
-    it { should have_stdout "\ntravis_fold:end:dpl.1\r\e[K" }
+
+    it { is_expected.to have_stdout "travis_fold:start:dpl.1\r\e[K" }
+    it { is_expected.to have_stdout "\e[33mfoo\e[0m\nbar\n" }
+    it { is_expected.to have_stdout "\ntravis_fold:end:dpl.1\r\e[K" }
   end
 
   describe 'deprecated_opt' do
     describe 'given a symbol' do
       before { subject.deprecate_opt(:old, :new) }
-      it { should have_stderr /Deprecated option old used \(please use new\)/ }
+
+      it { is_expected.to have_stderr /Deprecated option old used \(please use new\)/ }
     end
 
     describe 'given a string' do
       before { subject.deprecate_opt(:old, 'has no effect') }
-      it { should have_stderr /Deprecated option old used \(has no effect\)/ }
+
+      it { is_expected.to have_stderr /Deprecated option old used \(has no effect\)/ }
     end
   end
 
   describe 'info' do
     before { subject.info('str') }
-    it { should have_stdout "str\n" }
+
+    it { is_expected.to have_stdout "str\n" }
   end
 
   describe 'print' do
     before { subject.print('str') }
-    it { should have_stdout /str(?!\n)/ }
+
+    it { is_expected.to have_stdout /str(?!\n)/ }
   end
 
   describe 'warn' do
     before { subject.warn('str') }
-    it { should have_stderr "\e[33;1mstr\e[0m\n" }
+
+    it { is_expected.to have_stderr "\e[33;1mstr\e[0m\n" }
   end
 
   describe 'error' do
@@ -111,6 +119,7 @@ describe Dpl::Ctx::Bash do
 
   describe 'logger' do
     let(:logger) { subject.logger(:debug) }
+
     it { expect(logger).to be_a Logger }
     it { expect(logger.level).to eq Logger::DEBUG }
   end
@@ -120,45 +129,54 @@ describe Dpl::Ctx::Bash do
   describe 'validate_runtimes' do
     describe 'node_js' do
       let(:runtimes) { [[:node_js, ['>= 11.0.0']]] }
+
       before { allow(subject).to receive(:`).with('node -v').and_return(version) }
 
       describe 'satisfied' do
         let(:version) { 'v11.0.0' }
-        it { expect { subject.validate_runtimes(runtimes) }.to_not raise_error }
+
+        it { expect { subject.validate_runtimes(runtimes) }.not_to raise_error }
       end
 
       describe 'fails' do
         let(:version) { 'v10.0.0' }
+
         it { expect { subject.validate_runtimes(runtimes) }.to raise_error 'Failed validating runtimes: node_js (>= 11.0.0)' }
       end
     end
 
     describe 'python' do
       let(:runtimes) { [[:python, ['>= 2.7', '!= 3.0', '!= 3.1', '!= 3.2', '!= 3.3', '< 3.8']]] }
+
       before { allow(subject).to receive(:`).with('python --version 2>&1').and_return(version) }
 
       describe 'satisfied (2.7)' do
         let(:version) { 'Python 2.7.9' }
-        it { expect { subject.validate_runtimes(runtimes) }.to_not raise_error }
+
+        it { expect { subject.validate_runtimes(runtimes) }.not_to raise_error }
       end
 
       describe 'satisfied (2.7)' do
         let(:version) { 'Python 2.7.9' }
-        it { expect { subject.validate_runtimes([[:python, ['= 2.7']]]) }.to_not raise_error }
+
+        it { expect { subject.validate_runtimes([[:python, ['= 2.7']]]) }.not_to raise_error }
       end
 
       describe 'satisfied (2.7.13)' do
         let(:version) { 'Python 2.7.13' }
-        it { expect { subject.validate_runtimes([[:python, ['>= 2.7.9']]]) }.to_not raise_error }
+
+        it { expect { subject.validate_runtimes([[:python, ['>= 2.7.9']]]) }.not_to raise_error }
       end
 
       describe 'satisfied (3.6)' do
         let(:version) { 'Python 3.6' }
-        it { expect { subject.validate_runtimes(runtimes) }.to_not raise_error }
+
+        it { expect { subject.validate_runtimes(runtimes) }.not_to raise_error }
       end
 
       describe 'fails' do
         let(:version) { '3.0.1' }
+
         it { expect { subject.validate_runtimes(runtimes) }.to raise_error 'Failed validating runtimes: python (>= 2.7, != 3.0, != 3.1, != 3.2, != 3.3, < 3.8)' }
       end
     end
@@ -169,23 +187,25 @@ describe Dpl::Ctx::Bash do
     before { allow(subject).to receive(:`).with('which two').and_return('') }
     before { subject.apts_get([['one', 'cmd'], ['two']]) }
 
-    it { should_not call_system }
-    it { should call_system 'sudo apt-get update' }
-    it { should_not call_system 'sudo apt-get -qq install one' }
-    it { should call_system 'sudo apt-get -qq install two' }
+    it { is_expected.not_to call_system }
+    it { is_expected.to call_system 'sudo apt-get update' }
+    it { is_expected.not_to call_system 'sudo apt-get -qq install one' }
+    it { is_expected.to call_system 'sudo apt-get -qq install two' }
   end
 
   describe 'apt_get' do
     describe 'cmd exists' do
       before { allow(subject).to receive(:`).with('which cmd').and_return('/bin/cmd') }
       before { subject.apt_get('name', 'cmd') }
-      it { should_not call_system }
+
+      it { is_expected.not_to call_system }
     end
 
     describe 'cmd does not exist' do
       before { subject.apt_get('name', 'cmd') }
-      it { should call_system 'sudo apt-get update' }
-      it { should call_system 'sudo apt-get -qq install name' }
+
+      it { is_expected.to call_system 'sudo apt-get update' }
+      it { is_expected.to call_system 'sudo apt-get -qq install name' }
     end
   end
 
@@ -193,81 +213,93 @@ describe Dpl::Ctx::Bash do
     describe 'cmd exists' do
       before { allow(subject).to receive(:`).with('which cmd').and_return('/bin/cmd') }
       before { subject.npm_install('name', 'cmd') }
-      it { should_not call_system }
+
+      it { is_expected.not_to call_system }
     end
 
     describe 'cmd does not exist' do
       before { subject.npm_install('name', 'cmd') }
-      it { should call_system 'npm install -g name' }
+
+      it { is_expected.to call_system 'npm install -g name' }
     end
   end
 
   describe 'pip_install' do
     describe 'version req given' do
       before { subject.pip_install('name', 'cmd', '1.0.0') }
-      it { should call_system 'virtualenv --no-site-packages ~/dpl_venv' }
-      it { should call_system 'pip install name==1.0.0' }
+
+      it { is_expected.to call_system 'virtualenv --no-site-packages ~/dpl_venv' }
+      it { is_expected.to call_system 'pip install name==1.0.0' }
     end
 
     describe 'no version req given' do
       before { subject.pip_install('name', 'cmd') }
-      it { should call_system 'virtualenv --no-site-packages ~/dpl_venv' }
-      it { should call_system 'pip install name' }
+
+      it { is_expected.to call_system 'virtualenv --no-site-packages ~/dpl_venv' }
+      it { is_expected.to call_system 'pip install name' }
     end
   end
 
   describe 'shell' do
     describe 'echo' do
       let!(:result) { subject.shell('echo one', echo: true) }
+
       it { expect(result).to be true }
-      it { should have_stdout "echo one\n" }
-      it { should call_system 'echo one' }
+      it { is_expected.to have_stdout "echo one\n" }
+      it { is_expected.to call_system 'echo one' }
     end
 
     describe 'silence' do
       let!(:result) { subject.shell('echo one', silence: true) }
+
       it { expect(result).to be true }
-      it { should call_system 'echo one > /dev/null 2>&1' }
+      it { is_expected.to call_system 'echo one > /dev/null 2>&1' }
     end
 
     describe 'python' do
       let!(:result) { subject.shell('echo one', python: '2.7') }
+
       it { expect(result).to be true }
-      it { should call_system 'source $HOME/virtualenv/python2.7/bin/activate && echo one' }
+      it { is_expected.to call_system 'source $HOME/virtualenv/python2.7/bin/activate && echo one' }
     end
 
     describe 'success' do
       let(:status) { true }
       let!(:result) { subject.shell('echo one', success: 'success') }
+
       it { expect(result).to be true }
-      it { should call_system 'echo one' }
-      it { should have_stdout 'success' }
+      it { is_expected.to call_system 'echo one' }
+      it { is_expected.to have_stdout 'success' }
     end
 
     describe 'assert' do
       let(:status) { false }
       let(:result) { subject.shell('echo one', assert: 'failed') }
+
       it { expect { result }.to raise_error Dpl::Error, 'failed' }
     end
 
     describe 'capture' do
       let(:captures) { ['stdout', '', double(success?: true)] }
       let!(:result) { subject.shell('echo one', capture: true) }
+
       it { expect(result).to eq 'stdout' }
-      it { should call_capture3 'echo one' }
+      it { is_expected.to call_capture3 'echo one' }
     end
 
     describe 'capture (info)' do
       let(:captures) { ['stdout', '', double(success?: true)] }
       let!(:result) { subject.shell('echo one', capture: true, success: 'stdout: %{out}') }
+
       it { expect(result).to eq 'stdout' }
-      it { should call_capture3 'echo one' }
-      it { should have_stdout 'stdout: stdout' }
+      it { is_expected.to call_capture3 'echo one' }
+      it { is_expected.to have_stdout 'stdout: stdout' }
     end
 
     describe 'capture (assert)' do
       let(:captures) { ['', 'stderr', double(success?: false)] }
       let(:result) { subject.shell('echo one', capture: true, assert: 'stderr: %{err}') }
+
       it { expect { result }.to raise_error Dpl::Error, 'stderr: stderr' }
     end
   end
@@ -330,25 +362,28 @@ describe Dpl::Ctx::Bash do
     end
 
     describe 'text' do
-      cmds "file 'one'": "one: ASCII text"
+      cmds "file 'one'": 'one: ASCII text'
       it { expect(subject.encoding('one')).to eq 'text' }
     end
   end
 
   describe 'git_commit_msg' do
     before { allow(subject).to receive(:git_sha).and_return('1234') }
+
     cmds 'git log 1234 -n 1 --pretty=%B': "commit msg\n"
     it { expect(subject.git_commit_msg).to eq 'commit msg' }
   end
 
   describe 'git_author_name' do
     before { allow(subject).to receive(:git_sha).and_return('1234') }
+
     cmds 'git log 1234 -n 1 --pretty=%an': "author name\n"
     it { expect(subject.git_author_name).to eq 'author name' }
   end
 
   describe 'git_author_email' do
     before { allow(subject).to receive(:git_sha).and_return('1234') }
+
     cmds 'git log 1234 -n 1 --pretty=%ae': "author email\n"
     it { expect(subject.git_author_email).to eq 'author email' }
   end
@@ -364,12 +399,12 @@ describe Dpl::Ctx::Bash do
   end
 
   describe 'git_remote_urls' do
-    cmds 'git remote -v': sq(<<-out)
+    cmds 'git remote -v': sq(<<-OUT)
       one\tgit://one.git (fetch)
       one\tgit://one.git (push)
       two\tgit://two.git (fetch)
       two\tgit://two.git (push)
-    out
+OUT
     it { expect(subject.git_remote_urls).to eq ['git://one.git', 'git://two.git'] }
   end
 

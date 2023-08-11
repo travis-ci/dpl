@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Heroku < Provider
@@ -35,7 +37,7 @@ module Dpl
         print :login
         res = http.get('/account')
         handle_error(res) unless res.success?
-        @email = JSON.parse(res.body)["email"]
+        @email = JSON.parse(res.body)['email']
         info :success
       end
 
@@ -59,7 +61,7 @@ module Dpl
         print :run_cmd, cmd
         res = http.post "/apps/#{app}/dynos" do |req|
           req.headers['Content-Type'] = 'application/json'
-          req.body = { command: cmd, attach: true}.to_json
+          req.body = { command: cmd, attach: true }.to_json
         end
         handle_error(res) unless res.success?
         rendezvous(JSON.parse(res.body)['attach_url'])
@@ -67,39 +69,39 @@ module Dpl
 
       private
 
-        def http
-          @http ||= Faraday.new(url: URL, headers: headers) do |http|
-            http.basic_auth(username, password) if username && password
-            http.response :logger, logger, &method(:filter) if log_level?
-            http.adapter Faraday.default_adapter
-          end
+      def http
+        @http ||= Faraday.new(url: URL, headers:) do |http|
+          http.basic_auth(username, password) if username && password
+          http.response :logger, logger, &method(:filter) if log_level?
+          http.adapter Faraday.default_adapter
         end
+      end
 
-        def headers
-          return HEADERS.dup if username && password
-          HEADERS.merge('Authorization': "Bearer #{api_key}")
-        end
+      def headers
+        return HEADERS.dup if username && password
+        HEADERS.merge('Authorization': "Bearer #{api_key}")
+      end
 
-        def filter(logger)
-          logger.filter(/(.*Authorization: ).*/,'\1[REDACTED]')
-        end
+      def filter(logger)
+        logger.filter(/(.*Authorization: ).*/,'\1[REDACTED]')
+      end
 
-        def logger
-          super(log_level)
-        end
+      def logger
+        super(log_level)
+      end
 
-        def handle_error(response)
-          body = JSON.parse(response.body)
-          error :api_error, body['message'], body['url']
-        end
+      def handle_error(response)
+        body = JSON.parse(response.body)
+        error :api_error, body['message'], body['url']
+      end
 
-        def rendezvous(url)
-          Rendezvous.start(url: url)
-        end
+      def rendezvous(url)
+        Rendezvous.start(url:)
+      end
 
         # overwritten in Git, meaningless in Api
-        def username; end
-        def password; end
+      def username; end
+      def password; end
     end
   end
 end

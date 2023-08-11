@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class AzureWebApps < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'Azure Web Apps'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :AZURE_WA
 
@@ -43,19 +45,19 @@ module Dpl
 
       private
 
-        def url
-          URL % [username, password, target, site]
-        end
+      def url
+        URL % [username, password, target, site]
+      end
 
-        def target
-          slot || site
-        end
+      def target
+        slot || site
+      end
 
-        def commit
-          shell :checkout
-          shell :add
-          shell :commit
-        end
+      def commit
+        shell :checkout
+        shell :add
+        shell :commit
+      end
     end
   end
 end

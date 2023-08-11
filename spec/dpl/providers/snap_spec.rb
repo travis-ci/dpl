@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Dpl::Providers::Snap do
   let(:args) { |e| args_from_description(e) + %w(--token token) }
 
@@ -6,19 +8,19 @@ describe Dpl::Providers::Snap do
   before { |c| subject.run if run?(c) }
 
   describe 'given --snap ./snap', record: true do
-    it { should have_run '[apt:get] snapd (snap)' }
-    it { should have_run 'sudo snap install snapcraft --classic' }
-    it { should have_run 'echo "token" | snapcraft login --with -' }
-    it { should have_run 'snapcraft push ./snap --release=edge' }
-    it { should have_run_in_order }
+    it { is_expected.to have_run '[apt:get] snapd (snap)' }
+    it { is_expected.to have_run 'sudo snap install snapcraft --classic' }
+    it { is_expected.to have_run 'echo "token" | snapcraft login --with -' }
+    it { is_expected.to have_run 'snapcraft push ./snap --release=edge' }
+    it { is_expected.to have_run_in_order }
   end
 
   describe 'given --snap ./sn*' do
-    it { should have_run 'snapcraft push ./snap --release=edge' }
+    it { is_expected.to have_run 'snapcraft push ./snap --release=edge' }
   end
 
   describe 'given --snap ./snap --channel channel' do
-    it { should have_run 'snapcraft push ./snap --release=channel' }
+    it { is_expected.to have_run 'snapcraft push ./snap --release=channel' }
   end
 
   describe 'given --snap ./snap', run: false do
@@ -27,11 +29,13 @@ describe Dpl::Providers::Snap do
     env SNAP_TOKEN: 'token'
 
     before { subject.run }
-    it { should have_run 'echo "token" | snapcraft login --with -' }
+
+    it { is_expected.to have_run 'echo "token" | snapcraft login --with -' }
   end
 
   describe 'given --snap ./snap', run: false do
     before { rm 'snap' }
+
     it { expect { subject.run }.to raise_error 'No snap found matching ./snap' }
   end
 
@@ -43,7 +47,8 @@ describe Dpl::Providers::Snap do
 
   describe 'with credentials in env vars', run: false do
     let(:args) { %w(--snap ./snap) }
+
     env SNAP_TOKEN: 'token'
-    it { expect { subject.run }.to_not raise_error }
+    it { expect { subject.run }.not_to raise_error }
   end
 end

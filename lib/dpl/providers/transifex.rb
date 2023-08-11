@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Transifex < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :alpha
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       python '>= 2.7', '!= 3.0', '!= 3.1', '!= 3.2', '!= 3.3', '< 3.8'
 
@@ -27,12 +29,12 @@ module Dpl
       msgs login:  'Writing ~/.transifexrc (user: %{username}, password: %{password})'
       errs push:   'Failure pushing to Transifex'
 
-      RC = sq(<<-rc)
+      RC = sq(<<-RC)
         [%{url}]
         hostname = %{url}
         username = %{username}
         password = %{password}
-      rc
+RC
 
       def install
         pip_install 'transifex-client', 'tx', cli_version
@@ -50,21 +52,21 @@ module Dpl
 
       private
 
-        def write_rc
-          write_file '~/.transifexrc', interpolate(RC, opts, secure: true)
-        end
+      def write_rc
+        write_file '~/.transifexrc', interpolate(RC, opts, secure: true)
+      end
 
-        def username
-          super || 'api'
-        end
+      def username
+        super || 'api'
+      end
 
-        def password
-          super || api_token
-        end
+      def password
+        super || api_token
+      end
 
-        def url
-          hostname.start_with?('https://') ? hostname : "https://#{hostname}"
-        end
+      def url
+        hostname.start_with?('https://') ? hostname : "https://#{hostname}"
+      end
     end
   end
 end

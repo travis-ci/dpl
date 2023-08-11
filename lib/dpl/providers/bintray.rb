@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'uri'
 require 'find'
@@ -9,9 +11,9 @@ module Dpl
 
       status :stable
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'json'
 
@@ -109,7 +111,7 @@ module Dpl
       end
 
       def sign_version
-        body = compact(passphrase: passphrase)
+        body = compact(passphrase:)
         info :sign_version, (passphrase? ? 'with' : 'without')
         post(path(:version_sign), body)
       end
@@ -138,7 +140,7 @@ module Dpl
         1.upto(opts[:max]) do |count|
           code = yield
           return if code < 400
-          info :retrying, opts.merge(count: count, code: code)
+          info :retrying, opts.merge(count:, code:)
           sleep opts[:pause]
         end
         error :giveup_retries
@@ -174,7 +176,7 @@ module Dpl
         ix = str.index('(')
         path = ix.to_i == 0 ? str : str[0, ix]
         return path if File.exist?(path)
-        warn :missing_path, path: path
+        warn(:missing_path, path:)
         nil
       end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Hackage < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :alpha
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :hackage
 
@@ -33,19 +35,19 @@ module Dpl
 
       def deploy
         tar_files.each do |path|
-          shell :upload, path: path
+          shell :upload, path:
         end
       end
 
       private
 
-        def upload_opts
-          opts_for(%i(publish username password))
-        end
+      def upload_opts
+        opts_for(%i(publish username password))
+      end
 
-        def tar_files
-          Dir.glob('dist/*.tar.gz').sort
-        end
+      def tar_files
+        Dir.glob('dist/*.tar.gz').sort
+      end
     end
   end
 end

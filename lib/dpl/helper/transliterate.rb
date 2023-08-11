@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Transliterate
     APPROXIMATIONS = YAML.load(File.read(File.expand_path('../../../../config/transliterate.yml', __FILE__)))

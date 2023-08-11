@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Boxfuse < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :alpha
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :boxfuse
 
@@ -39,12 +41,12 @@ module Dpl
 
       private
 
-        def deploy_opts
-          opts = [*opts_for(%i(user secret payload app env version), prefix: '-')]
-          opts << "-configfile=#{config_file}" if config_file?
-          opts << extra_args if extra_args?
-          opts.join(' ')
-        end
+      def deploy_opts
+        opts = [*opts_for(%i(user secret payload app env version), prefix: '-')]
+        opts << "-configfile=#{config_file}" if config_file?
+        opts << extra_args if extra_args?
+        opts.join(' ')
+      end
     end
   end
 end

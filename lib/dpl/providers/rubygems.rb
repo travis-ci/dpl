@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Rubygems < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :stable
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'gems', '~> 1.1.1'
 
@@ -58,36 +60,36 @@ module Dpl
 
       private
 
-        def login_api_key
-          info :login_api_key
-          Gems.key = api_key
-        end
+      def login_api_key
+        info :login_api_key
+        Gems.key = api_key
+      end
 
-        def login_creds
-          info :login_creds
-          Gems.username, Gems.password = username, password
-        end
+      def login_creds
+        info :login_creds
+        Gems.username, Gems.password = username, password
+      end
 
-        def build
-          Dir[gemspec_glob].each do |gemspec|
-            shell :gem_build, gemspec: gemspec.whitelist
-          end
+      def build
+        Dir[gemspec_glob].each do |gemspec|
+          shell :gem_build, gemspec: gemspec.whitelist
         end
+      end
 
-        def push
-          Dir["#{gem}-*.gem"].each do |file|
-            info :gem_push, gem: file.whitelist
-            info Gems.push(File.new(file), *[host].compact)
-          end
+      def push
+        Dir["#{gem}-*.gem"].each do |file|
+          info :gem_push, gem: file.whitelist
+          info Gems.push(File.new(file), *[host].compact)
         end
+      end
 
-        def gemspec_glob
-          super || "#{gemspec || gem}.gemspec"
-        end
+      def gemspec_glob
+        super || "#{gemspec || gem}.gemspec"
+      end
 
-        def gemspec
-          super.gsub('.gemspec', '') if gemspec?
-        end
+      def gemspec
+        super.gsub('.gemspec', '') if gemspec?
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Pages
@@ -8,9 +10,9 @@ module Dpl
 
         full_name 'GitHub Pages'
 
-        description sq(<<-str)
+        description sq(<<-STR)
           tbd
-        str
+STR
 
         gem 'octokit', '~> 7'
         gem 'public_suffix', '~> 5'
@@ -115,7 +117,7 @@ module Dpl
 
         def setup_deploy_key
           path = '~/.dpl/deploy_key'
-          info :setup_deploy_key, path: path
+          info(:setup_deploy_key, path:)
           mv deploy_key, path
           chmod 0600, path
           setup_git_ssh path
@@ -171,7 +173,7 @@ module Dpl
         end
 
         def git_commit_msg_opts
-          msg = interpolate(commit_message, vars: vars)
+          msg = interpolate(commit_message, vars:)
           msg.split("\n").reject(&:empty?).map { |msg| %(-m #{quote(msg)}) }
         end
 
@@ -239,7 +241,7 @@ module Dpl
         end
 
         def api
-          @api ||= Octokit::Client.new(access_token: token, api_endpoint: api_endpoint)
+          @api ||= Octokit::Client.new(access_token: token, api_endpoint:)
         end
 
         def api_endpoint

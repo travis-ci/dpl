@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Flynn < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'Flynn'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         Flynn provider for Dpl
-      str
+STR
 
       opt '--git URL', 'Flynn Git remote URL', required: true
 
@@ -25,9 +27,9 @@ module Dpl
 
       private
 
-        def remote
-          git
-        end
+      def remote
+        git
+      end
     end
   end
 end

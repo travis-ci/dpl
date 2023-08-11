@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Dpl::Providers::Cloud66 do
   let(:url) { 'https://hook.io/' }
 
@@ -10,7 +12,7 @@ describe Dpl::Providers::Cloud66 do
 
   describe 'with credentials in env vars', run: false do
     env CLOUD66_REDEPLOYMENT_HOOK: 'https://hook.io/'
-    it { expect { subject.run }.to_not raise_error }
+    it { expect { subject.run }.not_to raise_error }
   end
 end
 

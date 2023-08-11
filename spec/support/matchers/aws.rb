@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Support
   module Matchers
     module Aws
@@ -128,13 +130,13 @@ module Support
       end
 
       def have_requested(operation, opts = {})
-        HaveRequested.new(opts.merge(client: client, operation: operation))
+        HaveRequested.new(opts.merge(client:, operation:))
       end
 
       # elasticbeanstalk
 
       def create_app_version(body = nil)
-        have_requested(:create_application_version, compact(body: body))
+        have_requested(:create_application_version, compact(body:))
       end
 
       def update_environment
@@ -180,7 +182,7 @@ module Support
       # s3
 
       def put_object(file, opts = {})
-        have_requested(:put_object, opts.merge(file: file))
+        have_requested(:put_object, opts.merge(file:))
       end
 
       def put_bucket_website_suffix(suffix)

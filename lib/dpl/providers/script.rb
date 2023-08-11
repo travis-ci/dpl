@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Script < Provider
@@ -7,7 +9,7 @@ module Dpl
 
       summary 'Minimal provider that executes a custom command'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         This deployment provider executes a single, custom command. This is
         usually a script that is contained in your repository, but it can be
         any command executable in the build environment.
@@ -18,7 +20,7 @@ module Dpl
 
         Deployment will be marked a failure if the script exits with nonzero
         status.
-      str
+STR
 
       opt '-s', '--script SCRIPT', 'The script to execute', required: true
 

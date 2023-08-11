@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Elasticbeanstalk < Provider
@@ -7,7 +9,7 @@ module Dpl
 
       full_name 'AWS Elastic Beanstalk'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         Deploy to AWS Elastic Beanstalk: https://aws.amazon.com/elasticbeanstalk/
 
         This provider:
@@ -16,7 +18,7 @@ module Dpl
         * Uploads it to your EB application
         * Optionally deploys to a specific EB environment
         * Optionally waits until the deployment finishes
-      str
+STR
 
       gem 'aws-sdk-elasticbeanstalk', '~> 1'
       gem 'aws-sdk-s3', '~> 1'
@@ -53,7 +55,7 @@ module Dpl
 
       def setup
         info :login
-        Aws.config.update(credentials: credentials, region: region)
+        Aws.config.update(credentials:, region:)
       end
 
       def deploy

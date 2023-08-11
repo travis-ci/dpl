@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Dpl::Providers::Heroku do
   let(:args) { |e| %w(--strategy api --api_key key) + args_from_description(e) }
   let(:user) { JSON.dump(email: 'email') }
@@ -15,30 +17,31 @@ describe Dpl::Providers::Heroku do
   # remaining options are tested in heroku/git_spec.rb
 
   describe 'by default', record: true do
-    it { should have_run '[print] Authenticating ... ' }
-    it { should have_run '[print] Checking for app dpl ... ' }
-    it { should have_run '[info] Creating application archive' }
-    it { should have_run %r(tar -zcf .*/.dpl.dpl.tgz --exclude \.git \.) }
-    it { should have_run '[info] Uploading application archive' }
-    it { should have_run %r(curl -sS put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: .*dpl/.*" --data-binary @.*/.dpl.dpl.tgz) }
-    it { should have_run '[info] Triggering Heroku build (deployment)' }
-    it { should have_run %r(curl -sS output_stream_url -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: .*dpl/.*") }
-    it { should have_run_in_order }
+    it { is_expected.to have_run '[print] Authenticating ... ' }
+    it { is_expected.to have_run '[print] Checking for app dpl ... ' }
+    it { is_expected.to have_run '[info] Creating application archive' }
+    it { is_expected.to have_run %r(tar -zcf .*/.dpl.dpl.tgz --exclude \.git \.) }
+    it { is_expected.to have_run '[info] Uploading application archive' }
+    it { is_expected.to have_run %r(curl -sS put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: .*dpl/.*" --data-binary @.*/.dpl.dpl.tgz) }
+    it { is_expected.to have_run '[info] Triggering Heroku build (deployment)' }
+    it { is_expected.to have_run %r(curl -sS output_stream_url -H "Accept: application/vnd.heroku\+json; version=3" -H "User-Agent: .*dpl/.*") }
+    it { is_expected.to have_run_in_order }
 
-    it { should have_requested :get, 'https://api.heroku.com/account' }
-    it { should have_requested :post, 'https://api.heroku.com/sources' }
-    it { should have_requested :get, 'https://api.heroku.com/apps/dpl' }
-    it { should have_requested(:post, 'https://api.heroku.com/apps/dpl/builds').with(body: { source_blob: { url: 'get_url', version: 'sha' } }) }
-    it { should have_requested :get, 'https://api.heroku.com/apps/dpl/builds/1' }
+    it { is_expected.to have_requested :get, 'https://api.heroku.com/account' }
+    it { is_expected.to have_requested :post, 'https://api.heroku.com/sources' }
+    it { is_expected.to have_requested :get, 'https://api.heroku.com/apps/dpl' }
+    it { is_expected.to have_requested(:post, 'https://api.heroku.com/apps/dpl/builds').with(body: { source_blob: { url: 'get_url', version: 'sha' } }) }
+    it { is_expected.to have_requested :get, 'https://api.heroku.com/apps/dpl/builds/1' }
   end
 
   describe 'given --version version' do
-    it { should have_requested(:post, 'https://api.heroku.com/apps/dpl/builds').with(body: { source_blob: { url: 'get_url', version: 'version' } }) }
+    it { is_expected.to have_requested(:post, 'https://api.heroku.com/apps/dpl/builds').with(body: { source_blob: { url: 'get_url', version: 'version' } }) }
   end
 
   describe 'with credentials in env vars', run: false do
     let(:args) { |e| %w(--strategy api) }
+
     env HEROKU_API_KEY: 'key'
-    it { expect { subject.run }.to_not raise_error }
+    it { expect { subject.run }.not_to raise_error }
   end
 end

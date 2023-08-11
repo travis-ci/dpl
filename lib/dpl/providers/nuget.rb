@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Nuget < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       full_name 'nuget'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :nuget, :dotnet
 
@@ -31,9 +33,9 @@ module Dpl
 
       private
 
-        def push_opts
-          opts_for(%i(no_symbols skip_duplicate), dashed: true)
-        end
+      def push_opts
+        opts_for(%i(no_symbols skip_duplicate), dashed: true)
+      end
     end
   end
 end

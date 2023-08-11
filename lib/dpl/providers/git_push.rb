@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class GitPush < Provider
@@ -7,10 +9,10 @@ module Dpl
 
       full_name 'Git (push)'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         Experimental, generic provider for updating a Git remote branch with
         changes produced by the build, and optionally opening a pull request.
-      str
+STR
 
       gem 'octokit', '~> 7'
       gem 'public_suffix', '~> 5'
@@ -107,163 +109,163 @@ module Dpl
 
       private
 
-        def same_branch?
-          git_branch == branch
-        end
+      def same_branch?
+        git_branch == branch
+      end
 
-        def login_token
-          return unless github?
-          info :login, user.login
-          error :insufficient_scopes unless sufficient_scopes?
-        rescue Octokit::Unauthorized => e
-          error :invalid_token, e.message
-        end
+      def login_token
+        return unless github?
+        info :login, user.login
+        error :insufficient_scopes unless sufficient_scopes?
+      rescue Octokit::Unauthorized => e
+        error :invalid_token, e.message
+      end
 
-        def setup_deploy_key
-          path = '~/.dpl/deploy_key'
-          info :setup_deploy_key, path: path
-          mv deploy_key, path
-          chmod 0600, path
-          setup_git_ssh path
-          shell :check_deploy_key, key: path
-        end
+      def setup_deploy_key
+        path = '~/.dpl/deploy_key'
+        info(:setup_deploy_key, path:)
+        mv deploy_key, path
+        chmod 0600, path
+        setup_git_ssh path
+        shell :check_deploy_key, key: path
+      end
 
-        def git_clone
-          shell :git_clone, echo: false
-          shell :git_branch unless branch_exists?
-        end
+      def git_clone
+        shell :git_clone, echo: false
+        shell :git_branch unless branch_exists?
+      end
 
-        def clone_branch
-          branch_exists? ? branch : base_branch
-        end
+      def clone_branch
+        branch_exists? ? branch : base_branch
+      end
 
-        def copy_files
-          shell :copy_files
-        end
+      def copy_files
+        shell :copy_files
+      end
 
-        def git_config
-          shell :git_config_name, echo: false
-          shell :git_config_email, echo: false
-        end
+      def git_config
+        shell :git_config_name, echo: false
+        shell :git_config_email, echo: false
+      end
 
-        def branch_exists?
-          git_ls_remote?(remote_url, branch)
-        end
+      def branch_exists?
+        git_ls_remote?(remote_url, branch)
+      end
 
-        def git_commit
-          shell :git_commit_hook, path: asset(:git, :detect_private_key).path, echo: false if deploy_key?
-          shell :git_add
-          shell :git_commit
-          shell :git_show
-        end
+      def git_commit
+        shell :git_commit_hook, path: asset(:git, :detect_private_key).path, echo: false if deploy_key?
+        shell :git_add
+        shell :git_commit
+        shell :git_show
+      end
 
-        def git_push
-          shell :git_push, echo: false
-        end
+      def git_push
+        shell :git_push, echo: false
+      end
 
-        def git_push_opts
-          '--force' if force?
-        end
+      def git_push_opts
+        '--force' if force?
+      end
 
-        def git_commit_opts
-          ' --allow-empty' if allow_empty_commit?
-        end
+      def git_commit_opts
+        ' --allow-empty' if allow_empty_commit?
+      end
 
-        def git_commit_msg_opts
-          msg = interpolate(commit_message, vars: vars)
-          msg.split("\n").reject(&:empty?).map { |msg| %(-m #{quote(msg)}) }
-        end
+      def git_commit_msg_opts
+        msg = interpolate(commit_message, vars:)
+        msg.split("\n").reject(&:empty?).map { |msg| %(-m #{quote(msg)}) }
+      end
 
-        def name
-          str = super if name?
-          str ||= user_name
-          str = "#{str} (via Travis CI)" if ENV['TRAVIS'] && !name?
-          str
-        end
-        memoize :name
+      def name
+        str = super if name?
+        str ||= user_name
+        str = "#{str} (via Travis CI)" if ENV['TRAVIS'] && !name?
+        str
+      end
+      memoize :name
 
-        def email
-          str = super if email?
-          str || user_email
-        end
-        memoize :email
+      def email
+        str = super if email?
+        str || user_email
+      end
+      memoize :email
 
-        def project_name
-          super || repo_slug
-        end
+      def project_name
+        super || repo_slug
+      end
 
-        def remote_url
-          token? ? https_url_with_token : git_url
-        end
+      def remote_url
+        token? ? https_url_with_token : git_url
+      end
 
-        def https_url_with_token
-          "https://#{token}@#{url}"
-        end
+      def https_url_with_token
+        "https://#{token}@#{url}"
+      end
 
-        def git_url
-          "git@#{host}:#{slug}.git"
-        end
+      def git_url
+        "git@#{host}:#{slug}.git"
+      end
 
-        def url
-          "#{host}/#{slug}.git"
-        end
+      def url
+        "#{host}/#{slug}.git"
+      end
 
-        def slug
-          repo || repo_slug
-        end
+      def slug
+        repo || repo_slug
+      end
 
-        def src_dir
-          @src_dir ||= expand(local_dir)
-        end
+      def src_dir
+        @src_dir ||= expand(local_dir)
+      end
 
-        def work_dir
-          @work_dir ||= tmp_dir
-        end
+      def work_dir
+        @work_dir ||= tmp_dir
+      end
 
-        def sufficient_scopes?
-          scopes.include?('public_repo') || scopes.include?('repo')
-        end
+      def sufficient_scopes?
+        scopes.include?('public_repo') || scopes.include?('repo')
+      end
 
-        def user
-          @user ||= github.user
-        end
+      def user
+        @user ||= github.user
+      end
 
-        def user_name
-          user.name || user.login
-        end
+      def user_name
+        user.name || user.login
+      end
 
-        def user_email
-          user.email
-        end
+      def user_email
+        user.email
+      end
 
-        def scopes
-          @scopes ||= github.scopes
-        end
+      def scopes
+        @scopes ||= github.scopes
+      end
 
-        def pr_exists?
-          !!github.pulls(repo).detect { |pull| pull.head.ref == branch }
-        end
+      def pr_exists?
+        !!github.pulls(repo).detect { |pull| pull.head.ref == branch }
+      end
 
-        def create_pr
-          pr = github.create_pull_request(repo, base_branch, branch, "Update #{base_branch}")
-          info :pr_created, number: pr.number
-        end
+      def create_pr
+        pr = github.create_pull_request(repo, base_branch, branch, "Update #{base_branch}")
+        info :pr_created, number: pr.number
+      end
 
-        def github?
-          host.include?('github') || enterprise?
-        end
+      def github?
+        host.include?('github') || enterprise?
+      end
 
-        def github
-          @github ||= Octokit::Client.new(access_token: token, api_endpoint: api_url, auto_paginate: true)
-        end
+      def github
+        @github ||= Octokit::Client.new(access_token: token, api_endpoint: api_url, auto_paginate: true)
+      end
 
-        def api_url
-          enterprise? ? "https://#{host}/api/v3/" : 'https://api.github.com/'
-        end
+      def api_url
+        enterprise? ? "https://#{host}/api/v3/" : 'https://api.github.com/'
+      end
 
-        def now
-          Time.now
-        end
+      def now
+        Time.now
+      end
     end
   end
 end

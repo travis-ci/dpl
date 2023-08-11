@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module ConfigFile
     def self.included(base)

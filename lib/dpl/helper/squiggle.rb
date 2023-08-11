@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Beloved squiggly heredocs did not exist in Ruby 2.1, which we still want to
 # support, so let's give kudos with a method `sq`.
 module Squiggle

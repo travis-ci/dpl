@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   class Examples < Struct.new(:const)
     def cmds
@@ -81,7 +83,7 @@ module Dpl
   class Example < Struct.new(:const, :opts)
     def config
       config = opts_for(opts)
-      config = config.merge(strategy: strategy) # hmm.
+      config = config.merge(strategy:) # hmm.
       compact(config)
     end
 

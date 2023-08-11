@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 
 # we want this, don't we?
@@ -12,9 +14,9 @@ module Dpl
 
       full_name 'AWS S3'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'aws-sdk-s3', '~> 1'
       gem 'mime-types', '~> 3.4.1'
@@ -80,166 +82,166 @@ module Dpl
 
       private
 
-        def upload
-          info :upload, files.length, max_threads
-          threads = max_threads.times.map { |i| Thread.new(&method(:upload_files)) }
-          threads.each(&:join)
-          info "\n" unless verbose?
+      def upload
+        info :upload, files.length, max_threads
+        threads = max_threads.times.map { |i| Thread.new(&method(:upload_files)) }
+        threads.each(&:join)
+        info "\n" unless verbose?
+      end
+
+      def upload_files
+        while file = files.pop
+          opts = upload_opts(file)
+          progress(file, opts)
+          upload_file(file, opts)
+        end
+      end
+
+      def progress(file, data)
+        if verbose?
+          info :upload_file, file, upload_dir || '/', to_pairs(data)
+        else
+          print '.'
+        end
+      end
+
+      def upload_file(file, opts)
+        object = bucket.object(upload_path(file))
+        return warn :upload_skipped, file: file if !overwrite && object.exists?
+        info :upload_file, file, upload_dir || '/', to_pairs(opts)
+        object.upload_file(file, opts) || warn(:upload_failed, file)
+      end
+
+      def index_document_suffix
+        info :index_document_suffix, super
+        body = { website_configuration: { index_document: { suffix: super } } }
+        bucket.website.put(body)
+      end
+
+      def upload_path(file)
+        [upload_dir, file].compact.join('/')
+      end
+
+      def upload_opts(file)
+        compact(
+          acl:,
+          content_type: content_type(file),
+          content_encoding: detect_encoding? ? encoding(file) : nil,
+          cache_control: match_opt(cache_control, file),
+          expires: match_opt(expires, file),
+          storage_class:,
+          server_side_encryption:
+        )
+      end
+
+      def files
+        @files ||= Dir.glob(*glob).reject { |path| File.directory?(path) }
+      end
+
+      def glob
+        [super, dot_match? ? File::FNM_DOTMATCH : nil].compact
+      end
+
+      def acl
+        super.gsub(/_/, '-') if acl?
+      end
+
+      def server_side_encryption
+        'AES256' if server_side_encryption?
+      end
+
+      def content_type(file)
+        return DEFAULT_CONTENT_TYPE unless type = MIME::Types.type_for(file).first
+        type = "#{type}; charset=#{default_text_charset}" if encoding(file) == 'text' && default_text_charset?
+        type.to_s
+      end
+
+      def compact(hash)
+        hash.reject { |_, value| value.nil? }.to_h
+      end
+
+      def endpoint
+        @endpoint ||= normalize_endpoint(super) if endpoint?
+      end
+
+      def normalize_endpoint(url)
+        uri = URI.parse(url)
+        return uri if uri.scheme
+        info :default_uri_scheme
+        URI.parse("https://#{url}")
+      end
+
+      def handle_error(e)
+        case e
+        when Aws::S3::Errors::InvalidAccessKeyId
+          error :invalid_access_key_id
+        when Aws::S3::Errors::ChecksumError
+          error :checksum_error
+        when Aws::S3::Errors::AccessDenied
+          error :access_denied
+        else
+          error e.message
+        end
+      end
+
+      def bucket
+        @bucket ||= Aws::S3::Resource.new(client:).bucket(super)
+      end
+
+      def client
+        Aws::S3::Client.new(s3_opts)
+      end
+
+      def s3_opts
+        compact(
+          region:,
+          credentials:,
+          endpoint:,
+          force_path_style: force_path_style?
+        )
+      end
+
+      def credentials
+        Aws::Credentials.new(access_key_id, secret_access_key)
+      end
+
+      def to_pairs(hash)
+        hash.map { |pair| pair.join('=') }.join(' ')
+      end
+
+      def match_opt(strs, file)
+        maps = Array(strs).map { |str| Mapping.new(str, file) }
+        maps.map(&:value).compact.first
+      end
+
+      class Mapping < Struct.new(:str, :file)
+        MATCH = File::FNM_DOTMATCH | File::FNM_EXTGLOB
+
+        def value
+          str, glob = parse
+          unquote(str) if match?(glob)
         end
 
-        def upload_files
-          while file = files.pop
-            opts = upload_opts(file)
-            progress(file, opts)
-            upload_file(file, opts)
-          end
+        private
+
+        def unquote(str)
+          str =~ /^"(.*)"$/ && $1 || str
         end
 
-        def progress(file, data)
-          if verbose?
-            info :upload_file, file, upload_dir || '/', to_pairs(data)
-          else
-            print '.'
-          end
+        def match?(glob)
+          glob.nil? || File.fnmatch?(normalize(glob), file, MATCH)
         end
 
-        def upload_file(file, opts)
-          object = bucket.object(upload_path(file))
-          return warn :upload_skipped, file: file if !overwrite && object.exists?
-          info :upload_file, file, upload_dir || '/', to_pairs(opts)
-          object.upload_file(file, opts) || warn(:upload_failed, file)
+        def normalize(glob)
+          return glob if glob.include?('{')
+          "{#{glob.split(',').map(&:strip).join(',')}}"
         end
 
-        def index_document_suffix
-          info :index_document_suffix, super
-          body = { website_configuration: { index_document: { suffix: super } } }
-          bucket.website.put(body)
+        def parse
+          parts = str.split(': ')
+          parts.size > 1 ? [parts[0..-2].join(': '), parts.last] : parts
         end
-
-        def upload_path(file)
-          [upload_dir, file].compact.join('/')
-        end
-
-        def upload_opts(file)
-          compact(
-            acl: acl,
-            content_type: content_type(file),
-            content_encoding: detect_encoding? ? encoding(file) : nil,
-            cache_control: match_opt(cache_control, file),
-            expires: match_opt(expires, file),
-            storage_class: storage_class,
-            server_side_encryption: server_side_encryption
-          )
-        end
-
-        def files
-          @files ||= Dir.glob(*glob).reject { |path| File.directory?(path) }
-        end
-
-        def glob
-          [super, dot_match? ? File::FNM_DOTMATCH : nil].compact
-        end
-
-        def acl
-          super.gsub(/_/, '-') if acl?
-        end
-
-        def server_side_encryption
-          'AES256' if server_side_encryption?
-        end
-
-        def content_type(file)
-          return DEFAULT_CONTENT_TYPE unless type = MIME::Types.type_for(file).first
-          type = "#{type}; charset=#{default_text_charset}" if encoding(file) == 'text' && default_text_charset?
-          type.to_s
-        end
-
-        def compact(hash)
-          hash.reject { |_, value| value.nil? }.to_h
-        end
-
-        def endpoint
-          @endpoint ||= normalize_endpoint(super) if endpoint?
-        end
-
-        def normalize_endpoint(url)
-          uri = URI.parse(url)
-          return uri if uri.scheme
-          info :default_uri_scheme
-          URI.parse("https://#{url}")
-        end
-
-        def handle_error(e)
-          case e
-          when Aws::S3::Errors::InvalidAccessKeyId
-            error :invalid_access_key_id
-          when Aws::S3::Errors::ChecksumError
-            error :checksum_error
-          when Aws::S3::Errors::AccessDenied
-            error :access_denied
-          else
-            error e.message
-          end
-        end
-
-        def bucket
-          @bucket ||= Aws::S3::Resource.new(client: client).bucket(super)
-        end
-
-        def client
-          Aws::S3::Client.new(s3_opts)
-        end
-
-        def s3_opts
-          compact(
-            region: region,
-            credentials: credentials,
-            endpoint: endpoint,
-            force_path_style: force_path_style?
-          )
-        end
-
-        def credentials
-          Aws::Credentials.new(access_key_id, secret_access_key)
-        end
-
-        def to_pairs(hash)
-          hash.map { |pair| pair.join('=') }.join(' ')
-        end
-
-        def match_opt(strs, file)
-          maps = Array(strs).map { |str| Mapping.new(str, file) }
-          maps.map(&:value).compact.first
-        end
-
-        class Mapping < Struct.new(:str, :file)
-          MATCH = File::FNM_DOTMATCH | File::FNM_EXTGLOB
-
-          def value
-            str, glob = parse
-            unquote(str) if match?(glob)
-          end
-
-          private
-
-            def unquote(str)
-              str =~ /^"(.*)"$/ && $1 || str
-            end
-
-            def match?(glob)
-              glob.nil? || File.fnmatch?(normalize(glob), file, MATCH)
-            end
-
-            def normalize(glob)
-              return glob if glob.include?('{')
-              "{#{glob.split(',').map(&:strip).join(',')}}"
-            end
-
-            def parse
-              parts = str.split(': ')
-              parts.size > 1 ? [parts[0..-2].join(': '), parts.last] : parts
-            end
-        end
+      end
     end
   end
 end

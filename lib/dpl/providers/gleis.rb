@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Gleis < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :alpha
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'gleis', '~> 0.8.0'
 
@@ -51,7 +53,7 @@ module Dpl
       end
 
       def add_key(file)
-        shell :add_key, file: file
+        shell :add_key, file:
       end
 
       def deploy
@@ -64,9 +66,9 @@ module Dpl
 
       private
 
-        def push_opts
-          '-v' if verbose?
-        end
+      def push_opts
+        '-v' if verbose?
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Heroku
@@ -8,9 +10,9 @@ module Dpl
 
         full_name 'Heroku Git'
 
-        description sq(<<-str)
+        description sq(<<-STR)
           tbd
-        str
+STR
 
         required :api_key, [:username, :password]
 
@@ -35,17 +37,17 @@ module Dpl
 
         private
 
-          def remote
-            git || "https://git.heroku.com/#{app}.git"
-          end
+        def remote
+          git || "https://git.heroku.com/#{app}.git"
+        end
 
-          def write_netrc?
-            remote.start_with?('https://')
-          end
+        def write_netrc?
+          remote.start_with?('https://')
+        end
 
-          def write_netrc
-            super('git.heroku.com', email, api_key || password)
-          end
+        def write_netrc
+          super('git.heroku.com', email, api_key || password)
+        end
       end
     end
   end

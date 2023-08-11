@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Opsworks < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'AWS OpsWorks'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'aws-sdk-opsworks', '~> 1.0'
 
@@ -58,13 +60,13 @@ module Dpl
 
       def deploy_config
         compact(
-          stack_id: stack_id,
-          app_id: app_id,
+          stack_id:,
+          app_id:,
           command: { name: 'deploy' },
-          comment: comment,
-          custom_json: custom_json,
-          instance_ids: instance_ids,
-          layer_ids: layer_ids
+          comment:,
+          custom_json:,
+          instance_ids:,
+          layer_ids:
         )
       end
 
@@ -89,7 +91,7 @@ module Dpl
 
       def update_config
         {
-          app_id: app_id,
+          app_id:,
           app_source: {
             revision: git_sha,
           }
@@ -127,7 +129,7 @@ module Dpl
       end
 
       def opsworks
-        @opsworks ||= Aws::OpsWorks::Client.new(region: region, credentials: credentials)
+        @opsworks ||= Aws::OpsWorks::Client.new(region:, credentials:)
       end
 
       def credentials

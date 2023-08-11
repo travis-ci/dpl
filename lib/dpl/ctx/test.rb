@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cl'
 require 'stringio'
 require 'dpl/helper/squiggle'
@@ -230,11 +232,11 @@ module Dpl
       end
 
       def write_netrc(machine, login, password)
-        write_file('~/.netrc', sq(<<-rc))
+        write_file('~/.netrc', sq(<<-RC))
           machine #{machine}
             login #{login}
             password #{password}
-        rc
+RC
       end
 
       def tty?

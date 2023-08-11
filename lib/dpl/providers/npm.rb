@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Npm < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'npm'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'json'
 
@@ -60,68 +62,68 @@ module Dpl
 
       private
 
-        def run_scripts
-          run_script.each do |script|
-            shell :run, script: script
-          end
+      def run_scripts
+        run_script.each do |script|
+          shell :run, script:
         end
+      end
 
-        def publish_opts
-          opts_for(%i(access tag dry_run), dashed: true)
-        end
+      def publish_opts
+        opts_for(%i(access tag dry_run), dashed: true)
+      end
 
-        def write_npmrc
-          write_file(npmrc_path, npmrc)
-          info "#{NPMRC} size: #{file_size(npmrc_path)}"
-        end
+      def write_npmrc
+        write_file(npmrc_path, npmrc)
+        info "#{NPMRC} size: #{file_size(npmrc_path)}"
+      end
 
-        def remove_npmrc
-          rm_f npmrc_path
-        end
+      def remove_npmrc
+        rm_f npmrc_path
+      end
 
-        def npmrc_path
-          expand(NPMRC)
-        end
+      def npmrc_path
+        expand(NPMRC)
+      end
 
-        def npmrc
-          if npm_version =~ /^1/ || auth_method == 'auth'
-            "_auth = #{api_token}\nemail = #{email}"
-          else
-            "//#{auth_endpoint}/:_authToken=#{api_token}"
-          end
+      def npmrc
+        if npm_version =~ /^1/ || auth_method == 'auth'
+          "_auth = #{api_token}\nemail = #{email}"
+        else
+          "//#{auth_endpoint}/:_authToken=#{api_token}"
         end
+      end
 
-        def auth_endpoint
-          str = registry
-          str = strip_path(str) if str.include?('npm.pkg.github.com')
-          str = strip_protocol(str).sub(%r(/$), '')
-          str
-        end
+      def auth_endpoint
+        str = registry
+        str = strip_path(str) if str.include?('npm.pkg.github.com')
+        str = strip_protocol(str).sub(%r(/$), '')
+        str
+      end
 
-        def registry
-          super || registry_from_package_json || REGISTRY
-        end
+      def registry
+        super || registry_from_package_json || REGISTRY
+      end
 
-        def registry_from_package_json
-          return unless data = package_json
-          data && data.fetch('publishConfig', {})['registry']
-        end
+      def registry_from_package_json
+        return unless data = package_json
+        data && data.fetch('publishConfig', {})['registry']
+      end
 
-        def strip_path(url)
-          url.sub(URI(url).path, '')
-        end
+      def strip_path(url)
+        url.sub(URI(url).path, '')
+      end
 
-        def strip_protocol(url)
-          url.sub("#{URI(url).scheme}://", '')
-        end
+      def strip_protocol(url)
+        url.sub("#{URI(url).scheme}://", '')
+      end
 
-        def host(url)
-          URI(url).host
-        end
+      def host(url)
+        URI(url).host
+      end
 
-        def package_json
-          File.exist?('package.json') ? JSON.parse(File.read('package.json')) : {}
-        end
+      def package_json
+        File.exist?('package.json') ? JSON.parse(File.read('package.json')) : {}
+      end
     end
   end
 end

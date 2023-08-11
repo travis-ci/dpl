@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Cloudfiles < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'Cloud Files'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'nokogiri', '~> 1.15'
       gem 'fog-core', '~> 2.3', require: 'fog/core'

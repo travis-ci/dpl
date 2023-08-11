@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $: << 'lib'
 require 'dpl/support/gems'
 
@@ -5,8 +7,10 @@ source 'https://rubygems.org'
 ruby '>= 3.2'
 
 gemspec name: 'dpl'
- gem 'cl', path: '../cl'
- gem 'json_pure', '~> 2.6'
+gem 'cl', git: 'https://github.com/zgid123/cl'
+gem 'packagecloud-ruby', git: 'https://github.com/flywirecorp/packagecloud-ruby'
+ #gem 'json_pure', '~> 2.6'
+
 # gem 'regstry', path: '../../registry'
 
 gems = Dpl::Support::Gems.new('lib/dpl/providers/**/*.rb')
@@ -19,3 +23,13 @@ group :test do
   gem 'rspec'
   gem 'webmock'
 end
+
+group :development, :test do
+  gem 'rubocop'
+  gem 'rubocop-performance'
+  gem 'rubocop-rspec'
+  gem 'simplecov-console'
+end
+
+
+gem 'byebug'

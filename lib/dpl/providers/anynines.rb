@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Anynines < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :alpha
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :anynines
 
@@ -54,16 +56,16 @@ module Dpl
 
       private
 
-        def url
-          API
-        end
+      def url
+        API
+      end
 
-        def args
-          args = []
-          args << quote(app_name)  if app_name?
-          args << "-f #{manifest}" if manifest?
-          args.join(' ')
-        end
+      def args
+        args = []
+        args << quote(app_name)  if app_name?
+        args << "-f #{manifest}" if manifest?
+        args.join(' ')
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Hephy < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :beta
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :hephy
 
@@ -51,7 +53,7 @@ module Dpl
       end
 
       def add_key(key)
-        shell :add_key, key: key
+        shell(:add_key, key:)
         wait_for_ssh_access(host, port)
       end
 
@@ -64,7 +66,7 @@ module Dpl
       end
 
       def run_cmd(cmd)
-        shell :run, app: app, cmd: cmd
+        shell :run, app:, cmd:
       end
 
       def remove_key

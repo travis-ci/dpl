@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Openshift < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'OpenShift'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :openshift
 

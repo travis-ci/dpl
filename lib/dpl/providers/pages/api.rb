@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timeout'
 
 module Dpl
@@ -22,7 +24,7 @@ module Dpl
 
         full_name 'GitHub Pages (API)'
 
-        description sq(<<-str)
+        description sq(<<-STR)
           This provider requests GitHub Pages build for the repository given by
           the `--repo` flag, or the current one, if the flag is not given.
           Note that `dpl` does not perform any check about the fitness of the request;
@@ -31,16 +33,16 @@ module Dpl
           For example, if your GitHub Pages is configured to use `gh-pages` but the
           deployment is run on the `master` branch, you would have to ensure that the
           `gh-pages` would be updated accordingly during the build.
-        str
+STR
 
         opt '--repo SLUG', 'GitHub repo slug', default: :repo_slug
         opt '--token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true, alias: :github_token
 
-        msgs not_found: sq(<<-msg),
+        msgs not_found: sq(<<-MSG),
                GitHub Pages not found for %{slug}.
                Either the given token has insufficient scope (repo or public_repo), or
                GitHub Pages is not enabled for this repo (see https://github.com/%{slug}/settings)'
-             msg
+MSG
              timeout: 'GitHub Pages build request timed out',
              deploy:  'Requesting GitHub Pages build using API'
 

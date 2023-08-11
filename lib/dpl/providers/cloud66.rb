@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Cloud66 < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :alpha
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :cloud66
 
@@ -22,23 +24,23 @@ module Dpl
 
       private
 
-        def client
-          Net::HTTP.new(uri.host, uri.port).tap do |client|
-            client.use_ssl = use_ssl?
-          end
+      def client
+        Net::HTTP.new(uri.host, uri.port).tap do |client|
+          client.use_ssl = use_ssl?
         end
+      end
 
-        def request
-          Net::HTTP::Post.new(uri.path)
-        end
+      def request
+        Net::HTTP::Post.new(uri.path)
+      end
 
-        def uri
-          @uri ||= URI.parse(redeployment_hook)
-        end
+      def uri
+        @uri ||= URI.parse(redeployment_hook)
+      end
 
-        def use_ssl?
-          uri.scheme.downcase == 'https'
-        end
+      def use_ssl?
+        uri.scheme.downcase == 'https'
+      end
     end
   end
 end

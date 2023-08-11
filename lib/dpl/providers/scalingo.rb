@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Scalingo < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :alpha
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       env :scalingo
 
@@ -48,7 +50,7 @@ module Dpl
       end
 
       def add_key(key, type = nil)
-        shell :add_key, key: key
+        shell :add_key, key:
       end
 
       def setup

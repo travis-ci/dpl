@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 
 module Dpl
@@ -117,7 +119,7 @@ module Dpl
         obj.is_a?(Array) ? obj.join(' ') : obj.to_s
       end
 
-      def lookup(key)        
+      def lookup(key)
         if vars? && !var?(key)
           UNKNOWN % key
         elsif mod = modifier(key)

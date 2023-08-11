@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 $: << File.expand_path('../../lib', __FILE__)
 
 $stdout.sync = true
@@ -12,7 +14,7 @@ SKIP = %i(help heroku pages)
 
 class Provider < Struct.new(:path)
   def data
-    { name: name, status: status, date: format_date(date) }
+    { name:, status:, date: format_date(date) }
   end
 
   def name

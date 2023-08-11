@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 
 module Dpl
@@ -7,9 +9,9 @@ module Dpl
 
       status :stable
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       node_js '>= 8.8.1'
 
@@ -33,8 +35,8 @@ module Dpl
       end
 
       def validate
-      	error :invalid_project if invalid_project?
-      	error :missing_domain  if missing_domain?
+      	 error :invalid_project if invalid_project?
+      	 error :missing_domain  if missing_domain?
       end
 
       def deploy

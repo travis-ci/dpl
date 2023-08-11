@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'kconv'
 
 module Dpl
@@ -9,9 +11,9 @@ module Dpl
 
       full_name 'Google Cloud Store'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'mime-types', '~> 3.4.1'
 
@@ -45,11 +47,11 @@ module Dpl
 
       URL = 'https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz'
 
-      BOTO = sq(<<-str)
+      BOTO = sq(<<-STR)
         [Credentials]
         gs_access_key_id = %{access_key_id}
         gs_secret_access_key = %{secret_access_key}
-      str
+STR
 
       path '~/google-cloud-sdk'
       move '/etc/boto.cfg'
@@ -70,61 +72,61 @@ module Dpl
 
       private
 
-        def login_key
-          shell :login_key
-        end
+      def login_key
+        shell :login_key
+      end
 
-        def login_creds
-          info :login_creds
-          write_boto
-        end
+      def login_creds
+        info :login_creds
+        write_boto
+      end
 
-        def write_boto
-          write_file '~/.boto', interpolate(BOTO, opts, secure: true), 0600
-        end
+      def write_boto
+        write_file '~/.boto', interpolate(BOTO, opts, secure: true), 0600
+      end
 
-        def files
-          Dir.glob(*glob_args).select { |path| File.file?(path) }
-        end
+      def files
+        Dir.glob(*glob_args).select { |path| File.file?(path) }
+      end
 
-        def copy(source)
-          to = [target.sub(%r(/$), ''), source].join('/')
-          shell :copy, gs_opts: gs_opts(source), source: source, target: to
-        end
+      def copy(source)
+        to = [target.sub(%r(/$), ''), source].join('/')
+        shell :copy, gs_opts: gs_opts(source), source:, target: to
+      end
 
-        def dirname(path)
-          dir = File.dirname(path)
-          dir unless dir.empty? || dir == '.'
-        end
+      def dirname(path)
+        dir = File.dirname(path)
+        dir unless dir.empty? || dir == '.'
+      end
 
-        def gs_opts(path)
-          opts = []
-          opts << %(-h "Cache-Control:#{cache_control}") if cache_control?
-          opts << %(-h "Content-Encoding:#{encoding(path)}") if detect_encoding?
-          opts << %(-h "Content-type:#{mime_type(path)}") if mime_type(path)
-          opts.join(' ') + ' ' if opts.any?
-        end
+      def gs_opts(path)
+        opts = []
+        opts << %(-h "Cache-Control:#{cache_control}") if cache_control?
+        opts << %(-h "Content-Encoding:#{encoding(path)}") if detect_encoding?
+        opts << %(-h "Content-type:#{mime_type(path)}") if mime_type(path)
+        opts.join(' ') + ' ' if opts.any?
+      end
 
-        def copy_opts
-          opts = []
-          opts << %(-a "#{acl}") if acl?
-          opts.join(' ') + ' ' if opts.any?
-        end
+      def copy_opts
+        opts = []
+        opts << %(-a "#{acl}") if acl?
+        opts.join(' ') + ' ' if opts.any?
+      end
 
-        def target
-          "gs://#{bucket}/#{upload_dir}"
-        end
+      def target
+        "gs://#{bucket}/#{upload_dir}"
+      end
 
-        def mime_type(path)
-          type = MIME::Types.type_for(path).first
-          type.to_s if type
-        end
+      def mime_type(path)
+        type = MIME::Types.type_for(path).first
+        type.to_s if type
+      end
 
-        def glob_args
-          args = [glob]
-          args << File::FNM_DOTMATCH if dot_match?
-          args
-        end
+      def glob_args
+        args = [glob]
+        args << File::FNM_DOTMATCH if dot_match?
+        args
+      end
     end
   end
 end

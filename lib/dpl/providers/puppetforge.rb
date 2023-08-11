@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Puppetforge < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'Puppet Forge'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'puppet', '~> 7.25', require: 'puppet/face'
       gem 'puppet-blacksmith', '~> 7', require: 'puppet_blacksmith'

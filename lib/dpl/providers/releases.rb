@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dpl/helper/github'
 
 module Dpl
@@ -11,9 +13,9 @@ module Dpl
 
       full_name 'GitHub Releases'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'octokit', '~> 7'
       gem 'mime-types', '~> 3.4.1'
@@ -202,7 +204,7 @@ module Dpl
       end
 
       def creds
-        username && password ? { login: username, password: password } : { access_token: token }
+        username && password ? { login: username, password: } : { access_token: token }
       end
 
       def files

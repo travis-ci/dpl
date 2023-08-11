@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     # split this up to CodeDeploy::Github and CodeDeploy::S3 using the
@@ -9,9 +11,9 @@ module Dpl
 
       full_name 'AWS Code Deploy'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       gem 'aws-sdk-codedeploy', '~> 1.0'
       gem 'aws-sdk-s3', '~> 1'
@@ -64,18 +66,18 @@ module Dpl
       def register_revision
         info :register_revision, revision_info[:version], revision_info[:e_tag]
         code_deploy.register_application_revision(
-          revision: revision,
+          revision:,
           application_name: application,
-          description: description
+          description:
         )
       end
 
       def create_deployment
         deployment = code_deploy.create_deployment(
-          revision: revision,
+          revision:,
           application_name: application,
           deployment_group_name: deployment_group,
-          description: description,
+          description:,
           file_exists_behavior: file_exists_behavior.upcase
         )
         deployment.deployment_id
@@ -115,17 +117,17 @@ module Dpl
         {
           revision_type: 'S3',
           s3_location: compact(
-            bucket: bucket,
-            bundle_type: bundle_type,
+            bucket:,
+            bundle_type:,
             version: revision_version_info[:version_id],
             e_tag: revision_version_info[:etag],
-            key: key,
+            key:,
           )
         }
       end
 
       def revision_version_info
-        s3.head_object(bucket: bucket, key: key)
+        s3.head_object(bucket:, key:)
       rescue Aws::Errors::ServiceError => e
         error e.message
       end
@@ -134,8 +136,8 @@ module Dpl
         {
           revision_type: 'GitHub',
           git_hub_location: {
-            commit_id:  commit_id,
-            repository: repository
+            commit_id:,
+            repository:
           }
         }
       end
@@ -161,7 +163,7 @@ module Dpl
       end
 
       def description
-        interpolate(super || msg(:description), vars: vars)
+        interpolate(super || msg(:description), vars:)
       end
 
       def build_number
@@ -177,7 +179,7 @@ module Dpl
       end
 
       def client_options
-        compact(region: region, credentials: credentials, endpoint: endpoint)
+        compact(region:, credentials:, endpoint:)
       end
 
       def credentials

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class String
   def whitelist
     @is_whitelisted = true

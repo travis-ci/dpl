@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Gae < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'Google App Engine'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+STR
 
       python '>= 2.7.9'
 
@@ -54,22 +56,22 @@ module Dpl
 
       private
 
-        def deploy_opts
-          opts = [*opts_for(%i(project verbosity version))]
-          opts << '--no-promote' unless promote?
-          opts << '--no-stop-previous-version' unless stop_previous_version?
-          opts.join(' ')
-        end
+      def deploy_opts
+        opts = [*opts_for(%i(project verbosity version))]
+        opts << '--no-promote' unless promote?
+        opts << '--no-stop-previous-version' unless stop_previous_version?
+        opts.join(' ')
+      end
 
-        def failed
-          warn :failed
-          shell :cat_logs
-          error ''
-        end
+      def failed
+        warn :failed
+        shell :cat_logs
+        error ''
+      end
 
-        def project
-          super || File.dirname(build_dir)
-        end
+      def project
+        super || File.dirname(build_dir)
+      end
     end
   end
 end

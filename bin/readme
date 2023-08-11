@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 $: << File.expand_path('../../lib', __FILE__)
 
 require 'ffi-icu'
@@ -33,11 +35,11 @@ class Footer < Struct.new(:cmd)
     wrap(str, 100)
   end
 
-  VARS = sq(<<-str)
+  VARS = sq(<<-STR)
     The following variable are availabe for interpolation on %s:
 
       %s
-  str
+STR
 
   def vars
     opts = cmd.opts.select(&:interpolate?)
