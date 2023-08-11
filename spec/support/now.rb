@@ -16,5 +16,5 @@ require 'zip'
 
 Zip::DOSTime.instance_eval do
   # ugh.
-  def now() = Zip::DOSTime.new()
+  def now = Zip::DOSTime.new
 end

@@ -394,7 +394,7 @@ module Dpl
       def user_agent(*strs)
         strs.unshift "dpl/#{Dpl::VERSION}"
         strs.unshift 'travis/0.1.0' if ENV['TRAVIS']
-        strs = strs.flat_map { |e| Hash === e ? e.map { |k, v| "#{k}/#{v}" } : e }
+        strs = strs.flat_map { |e| e.is_a?(Hash) ? e.map { |k, v| "#{k}/#{v}" } : e }
         strs.join(' ').gsub(/\s+/, ' ').strip
       end
 

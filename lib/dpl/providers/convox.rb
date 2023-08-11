@@ -95,17 +95,21 @@ module Dpl
       end
 
       def description
-        description? ? super : JSON.dump(
-          repo_slug:,
-          git_commit_sha: git_sha,
-          git_commit_message: git_commit_msg,
-          git_commit_author: git_author_name,
-          git_tag:,
-          branch: git_branch,
-          travis_build_id: ENV['TRAVIS_BUILD_ID'],
-          travis_build_number: ENV['TRAVIS_BUILD_NUMBER'],
-          pull_request: ENV['TRAVIS_PULL_REQUEST']
-        )
+        if description?
+          super
+        else
+          JSON.dump(
+            repo_slug:,
+            git_commit_sha: git_sha,
+            git_commit_message: git_commit_msg,
+            git_commit_author: git_author_name,
+            git_tag:,
+            branch: git_branch,
+            travis_build_id: ENV['TRAVIS_BUILD_ID'],
+            travis_build_number: ENV['TRAVIS_BUILD_NUMBER'],
+            pull_request: ENV['TRAVIS_PULL_REQUEST']
+          )
+        end
       end
 
       def export

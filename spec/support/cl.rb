@@ -6,7 +6,7 @@ module Support
       # Beloved squiggly heredocs did not exist in Ruby 2.1.0, which we still
       # want to support, so let's give kudos with this method in the meantime.
       def sq(str)
-        width = str =~ /( *)\S/ && $1.size
+        width = str =~ /( *)\S/ && ::Regexp.last_match(1).size
         str.lines.map { |line| line.gsub(/^ {#{width}}/, '') }.join
       end
     end

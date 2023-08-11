@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'English'
 require 'cl'
 require 'fileutils'
 require 'logger'
@@ -16,7 +17,8 @@ module Dpl
       attr_accessor :folds, :stdout, :stderr, :last_out, :last_err
 
       def initialize(stdout = $stdout, stderr = $stderr)
-        @stdout, @stderr = stdout, stderr
+        @stdout = stdout
+        @stderr = stderr
         @folds = 0
         super('dpl', abort: false)
       end
@@ -27,7 +29,7 @@ module Dpl
       # closes the fold.
       #
       # @param msg [String] the message that will appear on the log fold
-      def fold(msg, &block)
+      def fold(msg)
         self.folds += 1
         print "travis_fold:start:dpl.#{folds}\r\e[K"
         time do
@@ -43,7 +45,7 @@ module Dpl
       # Starts a travis time log tag, calls the block, and closes the tag,
       # including timing information. This makes a timing badge appear on
       # the surrounding log fold.
-      def time(&block)
+      def time
         id = SecureRandom.hex[0, 8]
         start = Time.now.to_i * (10**9)
         print "travis_time:start:#{id}\r\e[K"
@@ -181,7 +183,7 @@ module Dpl
           # Gem.loaded_specs.clear
           gemfile do
             source 'https://rubygems.org'
-            gems.each { |g| gem *g }
+            gems.each { |g| gem(*g) }
           end
           # https://github.com/bundler/bundler/issues/7181
           ENV.replace(env)
@@ -269,8 +271,8 @@ module Dpl
           send(cmd.capture? ? :open3 : :system, cmd.cmd, cmd.opts)
         end
 
-        info cmd.success % { out: last_out } if success? && cmd.success?
-        error cmd.error % { err: last_err } if failed? && cmd.assert?
+        info format(cmd.success, out: last_out) if success? && cmd.success?
+        error format(cmd.error, err: last_err) if failed? && cmd.assert?
 
         success? && cmd.capture? ? last_out.chomp : @last_status
       end
@@ -328,12 +330,12 @@ module Dpl
       # Internal, and not to be used by implementors. $? is a read-only
       # variable, so we use a method that we can stub during tests.
       def last_process_status
-        $?.success?
+        $CHILD_STATUS.success?
       end
 
       # Whether or not the current Ruby process runs with superuser priviledges.
       def sudo?
-        Process::UID.eid == 0
+        Process::UID.eid.zero?
       end
 
       # Returns current repository name

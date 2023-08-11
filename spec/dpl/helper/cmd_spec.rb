@@ -42,7 +42,7 @@ describe Dpl::Cmd do
         let(:body) do
           lambda { |*|
             cmds cmd: 'cmd %{var}'
-            def var() = 'var'
+            def var = 'var'
           }
         end
 

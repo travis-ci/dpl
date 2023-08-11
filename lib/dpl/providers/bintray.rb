@@ -38,7 +38,7 @@ module Dpl
            list_download: 'Listing %{path} in downloads',
            retrying: '%{code} response from Bintray. It may take some time for a version to be published, retrying in %{pause} sec ... (%{count}/%{max})',
            giveup_retries: 'Too many retries failed, giving up, something went wrong.',
-           unexpected_code: 'Unexpected HTTP response code %s while checking if the %s exists' ,
+           unexpected_code: 'Unexpected HTTP response code %s while checking if the %s exists',
            request_failed: '%s %s returned unexpected HTTP response code %s',
            request_success: 'Bintray response: %s %s. %s'
 
@@ -57,9 +57,9 @@ module Dpl
 
       MAP = {
         package: %i[name desc licenses labels vcs_url website_url
-          issue_tracker_url public_download_numbers public_stats],
+                    issue_tracker_url public_download_numbers public_stats],
         version: %i[name desc released vcs_tag github_release_notes_file
-          github_use_tag_release_notes attributes]
+                    github_use_tag_release_notes attributes]
       }.freeze
 
       def install
@@ -138,7 +138,7 @@ module Dpl
         end
       end
 
-      def retrying(opts, &block)
+      def retrying(opts)
         1.upto(opts[:max]) do |count|
           code = yield
           return if code < 400
@@ -178,7 +178,7 @@ module Dpl
 
       def path_for(str)
         ix = str.index('(')
-        path = ix.to_i == 0 ? str : str[0, ix]
+        path = ix.to_i.zero? ? str : str[0, ix]
         return path if File.exist?(path)
 
         warn(:missing_path, path:)
@@ -243,7 +243,7 @@ module Dpl
 
       def descriptor
         @descriptor ||= symbolize(JSON.parse(File.read(file)))
-      rescue
+      rescue StandardError
         error :invalid_file
       end
 
@@ -298,7 +298,7 @@ module Dpl
       def parse(json)
         hash = JSON.parse(json)
         hash.is_a?(Hash) ? hash : {}
-      rescue
+      rescue StandardError
         {}
       end
 

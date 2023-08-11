@@ -100,7 +100,7 @@ module Dpl
       end
 
       def docs_dir_option
-        '--upload-dir ' + docs_dir if docs_dir
+        "--upload-dir #{docs_dir}" if docs_dir
       end
 
       def setuptools_arg

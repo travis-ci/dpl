@@ -49,37 +49,37 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'given --dot_match' do
-    it { is_expected.to have_run %r{.hidden.txt} }
+    it { is_expected.to have_run(/.hidden.txt/) }
     it { is_expected.to put_object '.hidden.txt' }
   end
 
   describe 'given --storage_class STANDARD_IA' do
-    it { is_expected.to have_run %r{one.txt.* storage_class=STANDARD_IA} }
+    it { is_expected.to have_run(/one.txt.* storage_class=STANDARD_IA/) }
     it { is_expected.to put_object 'one.txt', 'x-amz-storage-class': 'STANDARD_IA' }
   end
 
   describe 'given --acl public_read' do
-    it { is_expected.to have_run %r{one.txt.* acl=public-read} }
+    it { is_expected.to have_run(/one.txt.* acl=public-read/) }
     it { is_expected.to put_object 'one.txt', 'x-amz-acl': 'public-read' }
   end
 
   describe 'given --cache_control public' do
-    it { is_expected.to have_run %r{one.txt.* cache_control=public} }
+    it { is_expected.to have_run(/one.txt.* cache_control=public/) }
     it { is_expected.to put_object 'one.txt', 'cache-control': 'public' }
   end
 
   describe 'given --cache_control max-age=60' do
-    it { is_expected.to have_run %r{one.txt.* cache_control=max-age=60} }
+    it { is_expected.to have_run(/one.txt.* cache_control=max-age=60/) }
     it { is_expected.to put_object 'one.txt', 'cache-control': 'max-age=60' }
   end
 
   describe 'given --cache_control "public, max-age=60: *.txt"' do
-    it { is_expected.to have_run %r{one.txt.* cache_control=public, max-age=60 } }
+    it { is_expected.to have_run(/one.txt.* cache_control=public, max-age=60 /) }
     it { is_expected.to put_object 'one.txt', 'cache-control': 'public, max-age=60' }
   end
 
   describe 'given --expires "2020-01-01 00:00:00 UTC"' do
-    it { is_expected.to have_run %r{one.txt.* expires=2020-01-01 00:00:00 UTC} }
+    it { is_expected.to have_run(/one.txt.* expires=2020-01-01 00:00:00 UTC/) }
     it { is_expected.to put_object 'one.txt', 'expires': 'Wed, 01 Jan 2020 00:00:00 GMT' }
   end
 
@@ -89,12 +89,12 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'given --server_side_encryption' do
-    it { is_expected.to have_run %r{one.txt.* server_side_encryption=AES256} }
+    it { is_expected.to have_run(/one.txt.* server_side_encryption=AES256/) }
     it { is_expected.to put_object 'one.txt', 'x-amz-server-side-encryption': 'AES256' }
   end
 
   describe 'given --detect_encoding' do
-    it { is_expected.to have_run %r{one.txt.* content_encoding=text} }
+    it { is_expected.to have_run(/one.txt.* content_encoding=text/) }
     it { is_expected.to put_object 'one.txt', 'content-encoding': 'text' }
   end
 

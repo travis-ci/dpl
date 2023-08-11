@@ -23,7 +23,7 @@ module Dpl
 
       env :github, :releases
 
-      required :token, [:username, :password]
+      required :token, %i[username password]
 
       opt '--token TOKEN', 'GitHub oauth token (needs public_repo or repo permission)', secret: true, alias: :api_key
       opt '--username LOGIN', 'GitHub login name', alias: :user
@@ -142,7 +142,7 @@ module Dpl
 
       def url
         if release_number?
-          URL % [slug, release_number]
+          format(URL, slug, release_number)
         elsif release
           release.rels[:self].href
         else

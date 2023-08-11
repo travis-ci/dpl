@@ -35,8 +35,8 @@ module Dpl
       end
 
       def validate
-         error :invalid_project if invalid_project?
-         error :missing_domain  if missing_domain?
+        error :invalid_project if invalid_project?
+        error :missing_domain  if missing_domain?
       end
 
       def deploy

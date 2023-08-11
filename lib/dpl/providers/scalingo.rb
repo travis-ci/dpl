@@ -13,7 +13,7 @@ module Dpl
 
       env :scalingo
 
-      required :api_token, [:username, :password]
+      required :api_token, %i[username password]
 
       opt '--app APP', default: :repo_name
       opt '--api_token TOKEN', 'Scalingo API token', alias: :api_key, deprecated: :api_key
@@ -49,7 +49,7 @@ module Dpl
         shell api_token ? :login_key : :login_creds, assert: err(:login)
       end
 
-      def add_key(key, type = nil)
+      def add_key(key, _type = nil)
         shell :add_key, key:
       end
 

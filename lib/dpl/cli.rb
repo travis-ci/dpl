@@ -62,7 +62,7 @@ module Dpl
       'pages' => 'git'
     }.freeze
 
-    def with_strategy_default(args, cmd)
+    def with_strategy_default(args, _cmd)
       return args unless default = STRATEGIES[args.first]
 
       args.insert(1, default) if args[1].nil? || args[1].to_s.start_with?('--')

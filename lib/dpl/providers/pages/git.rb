@@ -228,7 +228,7 @@ module Dpl
 
         def user
           @user ||= api.user
-        rescue => e
+        rescue StandardError => e
           puts "ERR: #{e.inspect}"
           puts e.backtrace
         end
@@ -254,7 +254,7 @@ module Dpl
         end
 
         def debug(*args)
-          info *args if verbose?
+          info(*args) if verbose?
         end
       end
     end

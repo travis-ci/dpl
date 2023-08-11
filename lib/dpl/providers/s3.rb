@@ -228,7 +228,7 @@ module Dpl
         private
 
         def unquote(str)
-          str =~ /^"(.*)"$/ && $1 || str
+          str =~ /^"(.*)"$/ && ::Regexp.last_match(1) || str
         end
 
         def match?(glob)

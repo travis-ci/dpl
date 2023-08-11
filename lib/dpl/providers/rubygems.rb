@@ -15,7 +15,7 @@ module Dpl
 
       env :rubygems
 
-      required :api_key, [:username, :password]
+      required :api_key, %i[username password]
 
       opt '--api_key KEY', 'Rubygems api key', secret: true
       opt '--username USER', 'Rubygems user name', alias: :user
@@ -68,7 +68,8 @@ module Dpl
 
       def login_creds
         info :login_creds
-        Gems.username, Gems.password = username, password
+        Gems.username = username
+        Gems.password = password
       end
 
       def build

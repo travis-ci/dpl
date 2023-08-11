@@ -19,7 +19,7 @@ class Version
   end
 
   def satisfies?(str)
-    send *parse(str) || raise(InvalidRequire, MSGS[:require] % str)
+    send(*parse(str) || raise(InvalidRequire, MSGS[:require] % str))
   end
 
   def size
@@ -73,11 +73,11 @@ class Version
   attr_reader :nums
 
   def split(str)
-    str =~ VERSION && [$1, $2, $3].compact.map(&:to_i)
+    str =~ VERSION && [::Regexp.last_match(1), ::Regexp.last_match(2), ::Regexp.last_match(3)].compact.map(&:to_i)
   end
 
   def parse(str)
-    op, version = str =~ REQUIRE && [$1, $2]
+    op, version = str =~ REQUIRE && [::Regexp.last_match(1), ::Regexp.last_match(2)]
     op = '==' if op == '='
     [op, Version.new(version)] if op
   end

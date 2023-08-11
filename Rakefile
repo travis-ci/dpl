@@ -99,7 +99,7 @@ task :release do
   confirm
   released = []
   providers.each do |provider|
-    while !released.include? provider
+    until released.include? provider
       logger.info "checking dpl-#{provider}"
 
       cli = Faraday.new url: 'https://rubygems.org'
@@ -115,7 +115,7 @@ task :release do
             if Rake::Task["release-#{provider}"].invoke
               released << provider
             end
-          rescue
+          rescue StandardError
             Rake::Task["release-#{provider}"].reenable
           end
         end
@@ -162,10 +162,10 @@ providers.each do |provider|
   file "Gemfile-#{provider}" do |t|
     gemfile = top + t.name
     logger.info green("Writing #{gemfile}")
-    gemfile.write %Q(source 'https://rubygems.org'\ngemspec :name => "dpl-#{provider}"\n)
+    gemfile.write %(source 'https://rubygems.org'\ngemspec :name => "dpl-#{provider}"\n)
   end
 
-  desc %Q(Run dpl-#{provider} specs)
+  desc %(Run dpl-#{provider} specs)
   task "spec-#{provider}", [:lines] => [Rake::FileTask[dpl_bin], "Gemfile-#{provider}"] do |_t, args|
     tail = args.lines ? ":#{args.lines}" : ''
     sh 'rm -f $HOME/.npmrc'

@@ -32,15 +32,15 @@ describe Dpl::Providers::Releases do
   matcher :release_json do
     match do |body|
       expect(symbolize(JSON.parse(body))).to include(compact(
-        repo:,
-        name: name_,
-        tag_name:,
-        target_commitish:,
-        release_number:,
-        body: release_notes,
-        prerelease:,
-        draft:
-      ))
+                                                       repo:,
+                                                       name: name_,
+                                                       tag_name:,
+                                                       target_commitish:,
+                                                       release_number:,
+                                                       body: release_notes,
+                                                       prerelease:,
+                                                       draft:
+                                                     ))
     end
   end
 

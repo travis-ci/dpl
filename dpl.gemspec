@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-$: << 'lib'
+$LOAD_PATH << 'lib'
 
 require 'dpl/version'
 

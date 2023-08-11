@@ -109,8 +109,8 @@ module Dpl
                       when 's3'     then s3_revision
                       when 'github' then github_revision
                       when nil      then bucket? ? s3_revision : github_revision
-        else error :unknown_revision_type, revision_type
-        end
+                      else error :unknown_revision_type, revision_type
+                      end
       end
 
       def s3_revision
@@ -159,7 +159,7 @@ module Dpl
       end
 
       def bundle_type
-        super || key =~ /\.(tar|tgz|zip)$/ && $1 || error(:unknown_bundle_type)
+        super || key =~ /\.(tar|tgz|zip)$/ && ::Regexp.last_match(1) || error(:unknown_bundle_type)
       end
 
       def description

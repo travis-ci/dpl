@@ -60,7 +60,7 @@ module Dpl
     end
 
     def without_required(opts)
-      opts = opts - const.required.flatten.map { |key| const.opts[key] }
+      opts -= const.required.flatten.map { |key| const.opts[key] }
       opts - required_opts.map(&:opts)
     end
 
@@ -121,7 +121,7 @@ module Dpl
       return 1 if opt.type == :integer
       return opt.enum.first if opt.enum?
 
-      str = opt.strs.detect { |str| str =~ /^--#{opt.name} (.*)$/ } && $1
+      str = opt.strs.detect { |str| str =~ /^--#{opt.name} (.*)$/ } && ::Regexp.last_match(1)
       str ? str.downcase : 'str'
     end
 

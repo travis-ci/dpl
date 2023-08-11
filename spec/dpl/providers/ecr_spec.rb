@@ -30,7 +30,7 @@ describe Dpl::Providers::Ecr do
   after { Aws.config.clear }
 
   matcher :get_authorization_token do |_params = {}|
-    match { |*| !!requests[:get_authorization_token][0] }
+    match { |*| !requests[:get_authorization_token][0].nil? }
   end
 
   before { subject.run }

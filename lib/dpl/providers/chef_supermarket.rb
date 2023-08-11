@@ -78,7 +78,7 @@ module Dpl
       end
 
       def name_from_json
-        JSON.load(read('metadata.json'))['name'] if file?('metadata.json')
+        JSON.parse(read('metadata.json'))['name'] if file?('metadata.json')
       end
 
       def name_from_rb
@@ -113,7 +113,7 @@ module Dpl
         res = JSON.parse(res)
         unknown_error(res) unless res['error_messages']
         version_exists if res['error_messages'][0].include?('Version already exists')
-        error "#{res['error_messages'][0]}"
+        error (res['error_messages'][0]).to_s
       end
 
       def unknown_error(msg)

@@ -25,7 +25,7 @@ module Dpl
       end
 
       def msg
-        msg = "#{MSG[status] % name}"
+        msg = (MSG[status] % name).to_s
         msg << "(#{info})" if info
         msg << ". #{MSG[:pre_stable] % URL}" if pre_stable?
         msg

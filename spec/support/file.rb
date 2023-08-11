@@ -30,7 +30,7 @@ module Support
         end
       end
 
-      def rm(path)
+      def rm(_path)
         after { chdir(dir) }
       end
 

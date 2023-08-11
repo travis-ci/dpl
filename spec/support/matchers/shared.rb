@@ -6,7 +6,7 @@ module Support
       attr_reader :cmd
 
       def stringify(hash)
-        hash.map { |key, value| [key.to_s, value] }.to_h
+        hash.transform_keys { |key| key.to_s }
       end
 
       def match?(other, str = self.str)
@@ -16,7 +16,7 @@ module Support
       def indent(str)
         return str if str.lines.size < 2
 
-        str.lines[0] + str.lines[1..-1].map { |str| "#{' ' * 2}#{str}" }.join
+        str.lines[0] + str.lines[1..].map { |str| "#{' ' * 2}#{str}" }.join
       end
     end
   end

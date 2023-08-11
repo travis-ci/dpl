@@ -9,7 +9,7 @@ describe Dpl::Providers::Cloudfoundry do
   before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
-    it { is_expected.to have_run %r{wget .*cli.run.pivotal.io.* -qO cf.tgz && tar -zxvf cf.tgz} }
+    it { is_expected.to have_run(/wget .*cli.run.pivotal.io.* -qO cf.tgz && tar -zxvf cf.tgz/) }
     it { is_expected.to have_run './cf api https://api.run.pivotal.io' }
     it { is_expected.to have_run './cf login -u name -p pass -o org -s space' }
     it { is_expected.to have_run './cf push' }

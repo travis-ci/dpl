@@ -21,7 +21,7 @@ module Dpl
 
       env :gcs
 
-      required :key_file, [:access_key_id, :secret_access_key]
+      required :key_file, %i[access_key_id secret_access_key]
 
       opt '--key_file FILE', 'Path to a GCS service account key JSON file'
       opt '--access_key_id ID', 'GCS Interoperable Access Key ID', secret: true
@@ -104,13 +104,13 @@ module Dpl
         opts << %(-h "Cache-Control:#{cache_control}") if cache_control?
         opts << %(-h "Content-Encoding:#{encoding(path)}") if detect_encoding?
         opts << %(-h "Content-type:#{mime_type(path)}") if mime_type(path)
-        opts.join(' ') + ' ' if opts.any?
+        "#{opts.join(' ')} " if opts.any?
       end
 
       def copy_opts
         opts = []
         opts << %(-a "#{acl}") if acl?
-        opts.join(' ') + ' ' if opts.any?
+        "#{opts.join(' ')} " if opts.any?
       end
 
       def target
@@ -119,7 +119,7 @@ module Dpl
 
       def mime_type(path)
         type = MIME::Types.type_for(path).first
-        type.to_s if type
+        type&.to_s
       end
 
       def glob_args

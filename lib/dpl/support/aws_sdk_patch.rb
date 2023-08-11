@@ -17,7 +17,7 @@ Aws::EagerLoader.class_eval do
       begin
         require(path) if path
         const = klass_or_module.const_get(const_name)
-        self.load(const) if Module === const && !@loaded.include?(const)
+        self.load(const) if const.is_a?(Module) && !@loaded.include?(const)
       rescue LoadError
       end
     end

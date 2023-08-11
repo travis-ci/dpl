@@ -13,7 +13,7 @@ module Dpl
 
       gem 'ey-core', '~> 3.6'
 
-      required :api_key, [:email, :password]
+      required :api_key, %i[email password]
 
       env :engineyard, :ey
 
@@ -61,7 +61,7 @@ module Dpl
       end
 
       def whoami
-        shell(:whoami, echo: false, capture: true) =~ /email\s*:\s*"(.+)"/ && $1
+        shell(:whoami, echo: false, capture: true) =~ /email\s*:\s*"(.+)"/ && ::Regexp.last_match(1)
       end
 
       def write_rc
@@ -97,8 +97,8 @@ module Dpl
       end
 
       def envs
-        lines = shell(:envs, echo: false, capture: true).split("\n")[2..-1] || []
-        envs = lines.map { |line| line.split('|')[1..-1].map(&:strip) }
+        lines = shell(:envs, echo: false, capture: true).split("\n")[2..] || []
+        envs = lines.map { |line| line.split('|')[1..].map(&:strip) }
         envs = envs.map { |pair| %i[name account].zip(pair).to_h }
         envs.select { |env| env[:name] == opts[:env] } if env?
         envs

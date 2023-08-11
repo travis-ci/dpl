@@ -71,7 +71,7 @@ module Dpl
       return str if opts[:secure] || !str.blacklisted?
 
       keep = (str.length / (4.0 + str.length / 5).round).round
-      keep = 1 if keep == 0
+      keep = 1 if keep.zero?
       str[0, keep] + '*' * (20 - keep)
     end
 
@@ -96,7 +96,7 @@ module Dpl
         @blacklist_result = false
         str = str.to_s.gsub(PATTERN) do
           @blacklist_result = true
-          normalize(lookup($1.to_sym))
+          normalize(lookup(::Regexp.last_match(1).to_sym))
         end
         @blacklist_result || (args.is_a?(Array) && args.any? { |arg| arg.is_a?(String) && arg.blacklisted? }) ? str.blacklist : str
       end

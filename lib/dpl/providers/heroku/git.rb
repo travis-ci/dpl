@@ -14,7 +14,7 @@ module Dpl
           tbd
         STR
 
-        required :api_key, [:username, :password]
+        required :api_key, %i[username password]
 
         opt '--api_key KEY',   'Heroku API key', secret: true
         opt '--username USER', 'Heroku username', alias: :user

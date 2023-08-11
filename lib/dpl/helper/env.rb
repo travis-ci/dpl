@@ -23,8 +23,8 @@ module Dpl
       def env(cmd)
         @cmd = cmd
         env = @env.select { |key, _| keys.include?(key) }
-        env = env.map { |key, value| [unprefix(key).downcase.to_sym, value] }.to_h
-        env.map { |key, value| [dealias(key), value] }.to_h
+        env = env.transform_keys { |key| unprefix(key).downcase.to_sym }
+        env.transform_keys { |key| dealias(key) }
       end
 
       def description(cmd)
@@ -37,8 +37,8 @@ module Dpl
       def example(cmd)
         return unless opt = cmd.opts.detect { |opt| opt.secret? }
 
-        env = self.strs.map { |str| "`#{str}_#{opt.name.upcase}=<#{opt.name}>`" }
-        env += self.strs.map { |str| "`#{str}#{opt.name.upcase}=<#{opt.name}>`" } if opts[:allow_skip_underscore]
+        env = strs.map { |str| "`#{str}_#{opt.name.upcase}=<#{opt.name}>`" }
+        env += strs.map { |str| "`#{str}#{opt.name.upcase}=<#{opt.name}>`" } if opts[:allow_skip_underscore]
         "E.g. the option `--#{opt.name}` can be given as #{sentence(env)}."
       end
 

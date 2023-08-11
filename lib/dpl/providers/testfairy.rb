@@ -83,7 +83,9 @@ module Dpl
       end
 
       def bool(obj)
-        obj ? 'on' : 'off' unless obj.nil?
+        unless obj.nil?
+          obj ? 'on' : 'off'
+        end
       end
 
       def pretty_print(params)

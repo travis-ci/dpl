@@ -124,7 +124,7 @@ module Dpl
         stream = EventStream.new(client, stack_name, method(:info))
         wait_for(condition, stack_name:) unless test? # hmm.
       ensure
-        stream.stop unless stream.nil?
+        stream&.stop
       end
 
       def wait_for(cond, params)
@@ -244,7 +244,6 @@ module Dpl
 
           events = []
           described_stack.each_page do |page|
-
             if (oldest_new = page.stack_events.index { |e| e.event_id == event.event_id })
               events.concat(page.stack_events[0..oldest_new - 1])
               return [events.first, events.reverse]
@@ -265,7 +264,7 @@ module Dpl
         end
 
         EVENT_KEYS = %i[timestamp resource_type resource_status logical_resource_id
-          physical_resource_id resource_status_reason].freeze
+                        physical_resource_id resource_status_reason].freeze
 
         def format_event(event)
           parts = EVENT_KEYS.map { |key| event.send(key) }

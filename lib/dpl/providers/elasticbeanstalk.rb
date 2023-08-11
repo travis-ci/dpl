@@ -84,7 +84,7 @@ module Dpl
       end
 
       def bucket_path
-        bucket_path? ? "#{super.gsub(/\/*$/, '')}/#{archive_name}" : archive_name
+        bucket_path? ? "#{super.gsub(%r{/*$}, '')}/#{archive_name}" : archive_name
       end
 
       def cwd
@@ -200,7 +200,7 @@ module Dpl
       end
 
       def debug(*args)
-        info *args if debug?
+        info(*args) if debug?
       end
     end
   end

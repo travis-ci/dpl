@@ -58,7 +58,7 @@ module Dpl
           response = api.pages slug
           logger.debug response
 
-          Timeout::timeout(30) do
+          Timeout.timeout(30) do
             until response.status == 'built'
               response = api.pages slug
               logger.debug response

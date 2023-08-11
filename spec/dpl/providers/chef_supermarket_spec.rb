@@ -21,7 +21,7 @@ describe Dpl::Providers::ChefSupermarket do
   end
 
   describe 'by default', record: true do
-    let(:post) { [url, 'id', 'chef.pem', cookbook: '{"category":"cat"}', tarball: 'tarball.tgz'] }
+    let(:post) { [url, 'id', 'chef.pem', { cookbook: '{"category":"cat"}', tarball: 'tarball.tgz' }] }
 
     it { is_expected.to have_run '[info] Validating cookbook' }
     it { is_expected.to have_run '[info] Uploading cookbook dpl to https://supermarket.chef.io/api/v1/cookbooks' }

@@ -46,7 +46,7 @@ module Dpl
       private
 
       def url
-        URL % [username, password, target, site]
+        format(URL, username, password, target, site)
       end
 
       def target

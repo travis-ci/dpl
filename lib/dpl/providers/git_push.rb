@@ -19,7 +19,7 @@ module Dpl
 
       env :github, :git
 
-      required :token, [:deploy_key, :name, :email]
+      required :token, %i[deploy_key name email]
 
       opt '--repo SLUG', 'Repo slug', default: :repo_slug
       opt '--token TOKEN', 'GitHub token with repo permission', secret: true, alias: :github_token

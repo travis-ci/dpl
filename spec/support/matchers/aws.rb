@@ -4,8 +4,10 @@ module Support
   module Matchers
     module Aws
       class Base < Struct.new(:opts)
-        include Support::Helpers, RSpec::Matchers::BuiltIn,
-          RSpec::Mocks::Matchers, RSpec::Mocks::ArgumentMatchers
+        include RSpec::Mocks::ArgumentMatchers
+        include RSpec::Mocks::Matchers
+        include RSpec::Matchers::BuiltIn
+        include Support::Helpers
       end
 
       class HaveRequested < Base

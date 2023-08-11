@@ -15,7 +15,7 @@ module Dpl
 
       opt '--oauth_token TOKEN', 'Launchpad OAuth token', secret: true
       opt '--oauth_token_secret SECRET', 'Launchpad OAuth token secret', secret: true
-      opt '--slug SLUG', 'Launchpad project slug', format: /^~[^\/]+\/[^\/]+\/[^\/]+$/, example: '~user-name/project-name/branch-name'
+      opt '--slug SLUG', 'Launchpad project slug', format: %r{^~[^/]+/[^/]+/[^/]+$}, example: '~user-name/project-name/branch-name'
 
       msgs invalid_credentials: 'Invalid credentials (%s)',
            unknown_error: 'Error: %s (%s)'
@@ -35,7 +35,7 @@ module Dpl
 
       def handle_response(res)
         error :invalid_credentials, res.code if res.code == '401'
-        error :unknown_error, res.body, res.code unless res.kind_of?(Net::HTTPSuccess)
+        error :unknown_error, res.body, res.code unless res.is_a?(Net::HTTPSuccess)
       end
 
       def http
@@ -69,7 +69,7 @@ module Dpl
       end
 
       def now
-        Time::now().to_i
+        Time.now.to_i
       end
 
       def squish(str)

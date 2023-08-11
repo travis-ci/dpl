@@ -96,7 +96,7 @@ module Dpl
       end
 
       def host
-        controller.gsub(/https?:\/\//, '').split(':')[0]
+        controller.gsub(%r{https?://}, '').split(':')[0]
       end
 
       def install_hephy_log_filter

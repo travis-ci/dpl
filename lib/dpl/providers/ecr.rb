@@ -107,7 +107,7 @@ module Dpl
       end
 
       def strip_protocol(url)
-        url.sub(/^https?:\/\//, '')
+        url.sub(%r{^https?://}, '')
       end
 
       def progress(events)

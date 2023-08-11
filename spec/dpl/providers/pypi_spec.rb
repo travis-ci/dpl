@@ -21,7 +21,7 @@ describe Dpl::Providers::Pypi do
   before { |c| subject.run if run?(c) }
 
   describe 'by default', record: true do
-    it { is_expected.to have_run %r{pip install .* setuptools twine wheel} }
+    it { is_expected.to have_run(/pip install .* setuptools twine wheel/) }
     it { is_expected.to have_run '[info] Authenticated as user' }
     it { is_expected.to have_run 'python setup.py sdist' }
     it { is_expected.to have_run 'twine check dist/*' }
@@ -59,15 +59,15 @@ describe Dpl::Providers::Pypi do
   end
 
   describe 'given --setuptools_version 1.0.0' do
-    it { is_expected.to have_run %r{pip install .* setuptools==1.0.0} }
+    it { is_expected.to have_run(/pip install .* setuptools==1.0.0/) }
   end
 
   describe 'given --twine_version 1.0.0' do
-    it { is_expected.to have_run %r{pip install .* twine==1.0.0} }
+    it { is_expected.to have_run(/pip install .* twine==1.0.0/) }
   end
 
   describe 'given --wheel_version 1.0.0' do
-    it { is_expected.to have_run %r{pip install .* wheel==1.0.0} }
+    it { is_expected.to have_run(/pip install .* wheel==1.0.0/) }
   end
 
   describe 'with credentials in env vars', run: false do

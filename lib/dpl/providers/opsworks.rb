@@ -120,7 +120,7 @@ module Dpl
 
       def describe_app
         data = opsworks.describe_apps(app_ids: [app_id])
-        error :app_not_found, app_id unless data[:apps] && data[:apps].any?
+        error :app_not_found, app_id unless data[:apps]&.any?
         data[:apps].first
       end
 
@@ -137,7 +137,7 @@ module Dpl
       end
 
       def timeout(sec, &block)
-        Timeout::timeout(sec, &block)
+        Timeout.timeout(sec, &block)
       rescue Timeout::Error
         error :timeout
       end

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-$: << File.expand_path('../lib', __dir__)
+$LOAD_PATH << File.expand_path('../lib', __dir__)
 
 require 'ffi-icu'
 require 'erb'
@@ -17,7 +17,7 @@ class Header < Struct.new(:cmd)
   include Wrap
 
   def to_s
-    cmd.status.msg if cmd.status && cmd.status.announce?
+    cmd.status.msg if cmd.status&.announce?
   end
 end
 
@@ -48,7 +48,7 @@ class Footer < Struct.new(:cmd)
 
     opts = opts.map(&:name).map { |name| "`#{name}`" }.join(', ')
     vars = cmd.vars.map { |var| "`#{var}`" }.join(', ')
-    VARS % [opts, vars]
+    format(VARS, opts, vars)
   end
 end
 
@@ -77,7 +77,7 @@ def contributors
   names = names.map(&:unicode_normalize)
   names = names.sort { |lft, rgt| collator.compare(lft, rgt) }
   names = names.uniq
-  names = names - ['Travis CI']
+  names -= ['Travis CI']
   names.join(', ')
 end
 
