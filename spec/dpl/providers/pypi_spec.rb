@@ -29,7 +29,7 @@ describe Dpl::Providers::Pypi do
     it { is_expected.to have_run 'rm -rf dist/*' }
     it { is_expected.to have_written '~/.pypirc', pypirc }
     it { is_expected.to have_run_in_order }
-    it { is_expected.not_to have_run /upload_docs/ }
+    it { is_expected.not_to have_run(/upload_docs/) }
   end
 
   describe 'given --server other' do

@@ -25,7 +25,7 @@ describe Dpl::Providers::Surge do
   end
 
   describe 'given --login login --token token' do
-    it { expect { subject.run }.to raise_error /Please set the domain/ }
+    it { expect { subject.run }.to raise_error(/Please set the domain/) }
   end
 
   describe 'given --login login --token token --domain domain --project ./path' do

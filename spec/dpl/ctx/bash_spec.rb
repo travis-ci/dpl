@@ -3,13 +3,13 @@
 require 'stringio'
 
 describe Dpl::Ctx::Bash do
+  subject { described_class.new(stdout, stderr) }
+
   let(:provider) { Class.new(Dpl::Provider).new(ctx, []) }
   let(:stdout) { StringIO.new }
   let(:stderr) { StringIO.new }
   let(:status) { true }
   let(:captures) { ['stdout', '', true] }
-
-  subject { described_class.new(stdout, stderr) }
 
   before { allow(subject).to receive(:`).and_return('') }
   before { allow(Kernel).to receive(:system).and_return status }
@@ -44,7 +44,7 @@ describe Dpl::Ctx::Bash do
   end
 
   matcher :call_system do |cmd, opts = {}|
-    match do |obj|
+    match do |_obj|
       opts = [opts.any? ? opts : nil].compact
       matcher = have_received(:system)
       matcher = matcher.with(cmd, *opts) if cmd
@@ -58,7 +58,7 @@ describe Dpl::Ctx::Bash do
   end
 
   matcher :call_capture3 do |cmd, opts = {}|
-    match do |obj|
+    match do |_obj|
       opts = [opts.any? ? opts : nil].compact
       matcher = have_received(:capture3)
       matcher = matcher.with(cmd, *opts) if cmd
@@ -85,13 +85,13 @@ describe Dpl::Ctx::Bash do
     describe 'given a symbol' do
       before { subject.deprecate_opt(:old, :new) }
 
-      it { is_expected.to have_stderr /Deprecated option old used \(please use new\)/ }
+      it { is_expected.to have_stderr(/Deprecated option old used \(please use new\)/) }
     end
 
     describe 'given a string' do
       before { subject.deprecate_opt(:old, 'has no effect') }
 
-      it { is_expected.to have_stderr /Deprecated option old used \(has no effect\)/ }
+      it { is_expected.to have_stderr(/Deprecated option old used \(has no effect\)/) }
     end
   end
 
@@ -104,7 +104,7 @@ describe Dpl::Ctx::Bash do
   describe 'print' do
     before { subject.print('str') }
 
-    it { is_expected.to have_stdout /str(?!\n)/ }
+    it { is_expected.to have_stdout(/str(?!\n)/) }
   end
 
   describe 'warn' do
@@ -185,7 +185,7 @@ describe Dpl::Ctx::Bash do
   describe 'apts_get' do
     before { allow(subject).to receive(:`).with('which cmd').and_return('/bin/cmd') }
     before { allow(subject).to receive(:`).with('which two').and_return('') }
-    before { subject.apts_get([['one', 'cmd'], ['two']]) }
+    before { subject.apts_get([%w[one cmd], ['two']]) }
 
     it { is_expected.not_to call_system }
     it { is_expected.to call_system 'sudo apt-get update' }
@@ -395,7 +395,7 @@ describe Dpl::Ctx::Bash do
 
   describe 'git_ls_files' do
     cmds 'git ls-files -z': "one\x0two"
-    it { expect(subject.git_ls_files).to eq ['one', 'two'] }
+    it { expect(subject.git_ls_files).to eq %w[one two] }
   end
 
   describe 'git_remote_urls' do

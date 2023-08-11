@@ -236,7 +236,7 @@ module Dpl
           end
         end
 
-          # source: https://github.com/rvedotrc/cfn-events/blob/master/lib/cfn-events/runner.rb
+        # source: https://github.com/rvedotrc/cfn-events/blob/master/lib/cfn-events/runner.rb
         def events_since(event)
           described_stack = describe_stack_events
           stack_events = described_stack.stack_events
@@ -265,7 +265,7 @@ module Dpl
         end
 
         EVENT_KEYS = %i[timestamp resource_type resource_status logical_resource_id
-          physical_resource_id resource_status_reason]
+          physical_resource_id resource_status_reason].freeze
 
         def format_event(event)
           parts = EVENT_KEYS.map { |key| event.send(key) }

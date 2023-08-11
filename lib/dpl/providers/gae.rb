@@ -36,7 +36,7 @@ module Dpl
       errs install: 'Failed to download Google Cloud SDK.',
            login: 'Failed to authenticate.'
 
-      msgs failed:    'Deployment failed.'
+      msgs failed: 'Deployment failed.'
 
       path '~/google-cloud-sdk/bin'
 

@@ -6,8 +6,8 @@ class Version
 
   MSGS = {
     version: 'Unable to parse version: %p',
-    require: 'Unable to parse requirement: %p',
-  }
+    require: 'Unable to parse requirement: %p'
+  }.freeze
 
   VERSION = /^(\d+)(?:\.(\d+))?(?:\.(\d+))?$/
   REQUIRE = /^(~>|>|>=|=|!=|<=|<) (\d+(?:\.\d+)?(?:\.\d+)?)$/

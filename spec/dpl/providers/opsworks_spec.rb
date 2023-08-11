@@ -40,11 +40,11 @@ describe Dpl::Providers::Opsworks do
   end
 
   describe 'given --instance_ids one --instance_ids two' do
-    it { is_expected.to create_deployment InstanceIds: ['one', 'two'] }
+    it { is_expected.to create_deployment InstanceIds: %w[one two] }
   end
 
   describe 'given --layer_ids one --layer_ids two' do
-    it { is_expected.to create_deployment LayerIds: ['one', 'two'] }
+    it { is_expected.to create_deployment LayerIds: %w[one two] }
   end
 
   describe 'given --migrate' do
@@ -67,7 +67,7 @@ describe Dpl::Providers::Opsworks do
   end
 
   describe 'with ~/.aws/credentials', run: false do
-    let(:args) { |e| %w[--app_id app] }
+    let(:args) { |_e| %w[--app_id app] }
     let(:exists) { false }
 
     file '~/.aws/credentials', <<-STR.sub(/^\s*/, '')
@@ -82,7 +82,7 @@ describe Dpl::Providers::Opsworks do
   end
 
   describe 'with ~/.aws/config', run: false do
-    let(:args) { |e| %w[--access_key_id id --secret_access_key secret] }
+    let(:args) { |_e| %w[--access_key_id id --secret_access_key secret] }
 
     file '~/.aws/config', <<-STR.sub(/^\s*/, '')
       [default]

@@ -24,7 +24,7 @@ describe Dpl::Providers::Hephy do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { |e| %w[--controller hephy.hephyapps.com --app app] }
+    let(:args) { |_e| %w[--controller hephy.hephyapps.com --app app] }
 
     env HEPHY_USERNAME: 'user',
         HEPHY_PASSWORD: 'pass'

@@ -7,7 +7,7 @@ module Dpl
     class Asset < Struct.new(:provider, :namespace, :name)
       include FileUtils
 
-      DIR = File.expand_path('../../assets', __FILE__)
+      DIR = File.expand_path('../assets', __dir__)
 
       def copy(target)
         cp path, File.expand_path(target)

@@ -31,7 +31,7 @@ module Dpl
       msgs commit: 'Committing changes to git',
            deploy: 'Deploying to Azure Web App: %{site}'
 
-      errs push:     'Failed pushing to Azure Web Apps'
+      errs push: 'Failed pushing to Azure Web Apps'
 
       URL = 'https://%s:%s@%s.scm.azurewebsites.net:443/%s.git'
 

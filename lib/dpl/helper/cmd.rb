@@ -160,7 +160,7 @@ module Dpl
       "#{str} > /dev/null 2>&1"
     end
 
-      # Activates the Python virtualenv for the given Python version.
+    # Activates the Python virtualenv for the given Python version.
     def python(cmd)
       # "bash -c 'source $HOME/virtualenv/python#{opts[:python]}/bin/activate; #{cmd.gsub(/'/, "'\\\\''")}'"
       "source $HOME/virtualenv/python#{opts[:python]}/bin/activate && #{cmd}"

@@ -46,7 +46,7 @@ module Dpl
            deploy: 'Building and promoting application ...',
            build: 'Building application ...'
 
-      errs login:    'Login failed.'
+      errs login: 'Login failed.'
 
       def install
         script :install

@@ -7,7 +7,7 @@ describe Dpl::Providers::Pages do
   let(:cwd)     { File.expand_path('.') }
   let(:tmp)     { File.expand_path('tmp') }
 
-  let(:pages_response_body) {
+  let(:pages_response_body) do
     {
       "url": 'https://api.github.com/repos/travis-ci/dpl/pages',
       "status": 'built',
@@ -19,9 +19,9 @@ describe Dpl::Providers::Pages do
         "directory": '/'
       }
     }.to_json
-  }
+  end
 
-  let(:pages_latest_builds_response_body) {
+  let(:pages_latest_builds_response_body) do
     {
       "url": 'https://api.github.com/repos/travis-ci/dpl/pages/builds/5472601',
       "status": 'built',
@@ -38,14 +38,14 @@ describe Dpl::Providers::Pages do
       "created_at": '2019-02-10T19:00:49Z',
       "updated_at": '2019-02-10T19:00:51Z'
     }.to_json
-  }
+  end
 
-  let(:pages_build_request_response_body) {
+  let(:pages_build_request_response_body) do
     {
       "url": 'https://api.github.com/repos/travis-ci/dpl/pages/builds/latest',
       "status": 'queued'
     }.to_json
-  }
+  end
 
   before { stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers:) }
   before { stub_request(:get, 'https://api.github.com/repos/travis-ci/dpl/pages').and_return(status: 200, body: pages_response_body, headers:) }

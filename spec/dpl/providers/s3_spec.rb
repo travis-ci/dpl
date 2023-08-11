@@ -125,7 +125,7 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'with ~/.aws/credentials', run: false do
-    let(:args) { |e| %w[--bucket bucket] }
+    let(:args) { |_e| %w[--bucket bucket] }
 
     file '~/.aws/credentials', <<-STR.sub(/^\s*/, '')
       [default]
@@ -139,7 +139,7 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'with ~/.aws/config', run: false do
-    let(:args) { |e| %w[--access_key_id id --secret_access_key key] }
+    let(:args) { |_e| %w[--access_key_id id --secret_access_key key] }
 
     file '~/.aws/config', <<-STR.sub(/^\s*/, '')
       [default]
@@ -154,42 +154,42 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'Mapping', run: false do
+    subject { Dpl::Providers::S3::Mapping.new(opt, path).value }
+
     let(:provider) { described_class.new(ctx, args) }
     let(:path) { 'one.css' }
     let(:opt) { |c| c.description.sub(/^given /, '') }
 
-    subject { Dpl::Providers::S3::Mapping.new(opt, path).value }
-
     it 'given no-cache' do
-      is_expected.to eq 'no-cache'
+      expect(subject).to eq 'no-cache'
     end
 
     it 'given max-age=0' do
-      is_expected.to eq 'max-age=0'
+      expect(subject).to eq 'max-age=0'
     end
 
     it 'given max-age=0: one.css' do
-      is_expected.to eq 'max-age=0'
+      expect(subject).to eq 'max-age=0'
     end
 
     it 'given max-age=0: *.css' do
-      is_expected.to eq 'max-age=0'
+      expect(subject).to eq 'max-age=0'
     end
 
     it 'given max-age=0: *.css, *.js' do
-      is_expected.to eq 'max-age=0'
+      expect(subject).to eq 'max-age=0'
     end
 
     it 'given max-age=0: *.txt' do
-      is_expected.to be nil
+      expect(subject).to be nil
     end
 
     it 'given 2020-01-01 00:00:00 UTC: *.css, *.js' do
-      is_expected.to eq '2020-01-01 00:00:00 UTC'
+      expect(subject).to eq '2020-01-01 00:00:00 UTC'
     end
 
     it 'given "2020-01-01 00:00:00 UTC": *.css, *.js' do
-      is_expected.to eq '2020-01-01 00:00:00 UTC'
+      expect(subject).to eq '2020-01-01 00:00:00 UTC'
     end
   end
 end

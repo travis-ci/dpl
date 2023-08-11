@@ -39,7 +39,7 @@ describe Dpl::Providers::GitPush do
   describe 'given the same branch as the current build branch', run: false do
     let(:branch) { 'git branch' }
 
-    it { expect { subject.run }.to raise_error /Prevented from pushing to the same branch as the current build branch/ }
+    it { expect { subject.run }.to raise_error(/Prevented from pushing to the same branch as the current build branch/) }
   end
 
   describe 'given --repo other/name' do
@@ -103,7 +103,7 @@ describe Dpl::Providers::GitPush do
   end
 
   describe 'given --host other.com --name name --email email' do
-    it { is_expected.not_to have_run /Authenticated as/ }
+    it { is_expected.not_to have_run(/Authenticated as/) }
     it { is_expected.to have_run 'git push --quiet "https://token@other.com/travis-ci/dpl.git" HEAD:"other" > /dev/null 2>&1' }
     it { expect(WebMock).not_to have_requested(:get, api_url) }
   end
@@ -127,8 +127,8 @@ describe Dpl::Providers::GitPush do
     before { subject.run }
 
     it { is_expected.to have_run '[info] There are no changes to commit, stopping.' }
-    it { is_expected.not_to have_run /git commit / }
-    it { is_expected.not_to have_run /git push / }
+    it { is_expected.not_to have_run(/git commit /) }
+    it { is_expected.not_to have_run(/git push /) }
   end
 
   describe 'with GITHUB credentials in env vars', run: false do

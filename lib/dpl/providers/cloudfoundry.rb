@@ -25,7 +25,7 @@ module Dpl
       opt '--manifest FILE',       'Path to the manifest'
       opt '--skip_ssl_validation', 'Skip SSL validation'
       opt '--deployment_strategy STRATEGY', 'Deployment strategy, either rolling or null'
-      opt '--v3',                  'Use the v3 API version to push the application'
+      opt '--v3', 'Use the v3 API version to push the application'
       opt '--logout', default: true, internal: true
 
       cmds install: 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&version=v7&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz',

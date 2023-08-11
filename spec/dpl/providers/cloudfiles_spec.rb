@@ -26,7 +26,7 @@ describe Dpl::Providers::Cloudfiles do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { |e| %w[--region ord --container name] }
+    let(:args) { |_e| %w[--region ord --container name] }
 
     env CLOUDFILES_USERNAME: 'user',
         CLOUDFILES_API_KEY: 'key'

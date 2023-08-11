@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 describe Dpl::Cmd do
+  subject { described_class.new(provider, cmd, opts) }
+
   let(:provider) { Class.new(Dpl::Provider, &body).new(ctx, []) }
   let(:body) { ->(*) {} }
   let(:opts) { {} }
   let(:cmd)  {}
-
-  subject { described_class.new(provider, cmd, opts) }
 
   describe 'cmd' do
     describe 'given a str, interpolating opts' do
@@ -27,20 +27,35 @@ describe Dpl::Cmd do
       end
 
       describe 'interpolating a secure opt' do
-        let(:body) { ->(*) { cmds cmd: 'cmd %{var}'; opt '--var', secret: true } }
+        let(:body) do
+          lambda { |*|
+            cmds cmd: 'cmd %{var}'
+            opt '--var', secret: true
+          }
+        end
         let(:opts) { { var: 'secure' } }
 
         it { expect(subject.cmd).to eq 'cmd secure' }
       end
 
       describe 'interpolating a method' do
-        let(:body) { ->(*) { cmds cmd: 'cmd %{var}'; def var; 'var'; end } }
+        let(:body) do
+          lambda { |*|
+            cmds cmd: 'cmd %{var}'
+            def var() = 'var'
+          }
+        end
 
         it { expect(subject.cmd).to eq 'cmd var' }
       end
 
       describe 'interpolating a const' do
-        let(:body) { ->(c) { cmds cmd: 'cmd %{VAR}'; c.const_set(:VAR, 'var') } }
+        let(:body) do
+          lambda { |c|
+            cmds cmd: 'cmd %{VAR}'
+            c.const_set(:VAR, 'var')
+          }
+        end
 
         it { expect(subject.cmd).to eq 'cmd var' }
       end
@@ -88,7 +103,12 @@ describe Dpl::Cmd do
     end
 
     describe 'given cmd: :cmd, mapping present' do
-      let(:body) { ->(*) { cmds cmd: 'cmd'; errs cmd: 'err %{var}' } }
+      let(:body) do
+        lambda { |*|
+          cmds cmd: 'cmd'
+          errs cmd: 'err %{var}'
+        }
+      end
       let(:opts) { { var: :var } }
       let(:cmd) { :cmd }
 

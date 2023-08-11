@@ -45,8 +45,8 @@ describe Dpl::Providers::Elasticbeanstalk do
     it { is_expected.to create_app_version 'ApplicationName=dpl' }
     it { is_expected.to create_app_version 'Description=commit%20msg' }
     it { is_expected.to create_app_version 'S3Bucket=bucket' }
-    it { is_expected.to create_app_version /S3Key=travis-sha-.*.zip/ }
-    it { is_expected.to create_app_version /VersionLabel=travis-sha.*/ }
+    it { is_expected.to create_app_version(/S3Key=travis-sha-.*.zip/) }
+    it { is_expected.to create_app_version(/VersionLabel=travis-sha.*/) }
     it { is_expected.not_to update_environment }
   end
 
@@ -60,7 +60,7 @@ describe Dpl::Providers::Elasticbeanstalk do
   describe 'given --bucket_path one/two' do
     before { subject.run }
 
-    it { is_expected.to create_app_version /S3Key=one%2Ftwo%2Ftravis-sha-.*.zip/ }
+    it { is_expected.to create_app_version(/S3Key=one%2Ftwo%2Ftravis-sha-.*.zip/) }
   end
 
   describe 'given --description description' do
@@ -87,13 +87,13 @@ describe Dpl::Providers::Elasticbeanstalk do
     before { subject.run }
 
     it { expect(File.exist?('other.zip')).to be true }
-    it { is_expected.to create_app_version /S3Key=travis-sha-.*.zip/ }
+    it { is_expected.to create_app_version(/S3Key=travis-sha-.*.zip/) }
   end
 
   describe 'given --env env --wait_until_deployed', run: false do
     let(:events) { [event_date: Time.now, severity: 'ERROR', message: 'msg'] }
 
-    it { expect { subject.run }.to raise_error /Deployment failed/ }
+    it { expect { subject.run }.to raise_error(/Deployment failed/) }
   end
 
   describe 'with an .ebignore file', run: false do
@@ -119,7 +119,7 @@ describe Dpl::Providers::Elasticbeanstalk do
   end
 
   describe 'with ~/.aws/credentials', run: false do
-    let(:args) { |e| %w[--env env --bucket_name bucket] }
+    let(:args) { |_e| %w[--env env --bucket_name bucket] }
 
     file '~/.aws/credentials', <<-STR.sub(/^\s*/, '')
       [default]
@@ -133,7 +133,7 @@ describe Dpl::Providers::Elasticbeanstalk do
   end
 
   describe 'with ~/.aws/config', run: false do
-    let(:args) { |e| %w[--access_key_id id --secret_access_key secret] }
+    let(:args) { |_e| %w[--access_key_id id --secret_access_key secret] }
 
     file '~/.aws/config', <<-STR.sub(/^\s*/, '')
       [default]

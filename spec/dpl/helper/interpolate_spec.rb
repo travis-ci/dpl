@@ -1,4 +1,6 @@
 describe Dpl::Interpolate do
+  subject { provider.interpolate(str, args, opts) }
+
   let(:provider) { Class.new(Dpl::Provider, &body).new(ctx, %w[--name a-name --password secret]) }
   let(:body) do
     lambda do |*|
@@ -9,10 +11,8 @@ describe Dpl::Interpolate do
   let(:args) { [] }
   let(:opts) { {} }
 
-  subject { provider.interpolate(str, args, opts) }
-
   describe 'obj accessor' do
-    let(:str)  { 'string containing %{password}' }
+    let(:str) { 'string containing %{password}' }
 
     it { is_expected.to eq 'string containing s*******************' }
   end

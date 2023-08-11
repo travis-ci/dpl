@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 describe Dpl::Zip do
+  subject { Dir.glob('**/*', File::FNM_DOTMATCH).sort }
+
   let(:zip)  { described_class.new(src, dest, opts) }
   let(:src)  { '.' }
   let(:dest) { 'file.zip' }
@@ -11,8 +13,6 @@ describe Dpl::Zip do
   file 'one'
   file 'two/one'
   file 'two/two'
-
-  subject { Dir.glob('**/*', File::FNM_DOTMATCH).sort }
 
   before do
     zip.zip

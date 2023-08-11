@@ -54,7 +54,7 @@ module Dpl
         TRAVIS_COMMIT
         TRAVIS_REPO_SLUG
         TRAVIS_BRANCH
-      ]
+      ].freeze
 
       def vars
         @vars ||= ENV.values_at(*VARS).compact

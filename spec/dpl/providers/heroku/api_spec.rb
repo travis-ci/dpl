@@ -4,7 +4,7 @@ describe Dpl::Providers::Heroku do
   let(:args) { |e| %w[--strategy api --api_key key] + args_from_description(e) }
   let(:user) { JSON.dump(email: 'email') }
   let(:dyno) { JSON.dump(attach_url: 'attach_url') }
-  let(:urls) { JSON.dump(source_blob: { get_url: 'get_url', put_url: 'put_url' })}
+  let(:urls) { JSON.dump(source_blob: { get_url: 'get_url', put_url: 'put_url' }) }
   let(:build) { JSON.dump(id: 1, output_stream_url: 'output_stream_url', status: 'succeeded') }
 
   before { stub_request(:get, 'https://api.heroku.com/account').and_return(body: user) }
@@ -39,7 +39,7 @@ describe Dpl::Providers::Heroku do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { |e| %w[--strategy api] }
+    let(:args) { |_e| %w[--strategy api] }
 
     env HEROKU_API_KEY: 'key'
     it { expect { subject.run }.not_to raise_error }

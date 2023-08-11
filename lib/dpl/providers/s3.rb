@@ -84,7 +84,7 @@ module Dpl
 
       def upload
         info :upload, files.length, max_threads
-        threads = max_threads.times.map { |i| Thread.new(&method(:upload_files)) }
+        threads = max_threads.times.map { |_i| Thread.new(&method(:upload_files)) }
         threads.each(&:join)
         info "\n" unless verbose?
       end

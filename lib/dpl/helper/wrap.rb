@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Wrap
-  extend self
+  module_function
 
   def wrap(str, width = 80)
     str.lines.map do |line|

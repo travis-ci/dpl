@@ -55,7 +55,7 @@ describe Dpl::Providers::Cloudformation do
             timestamp: Time.now
           ]
         },
-        describe_change_set: {},
+        describe_change_set: {}
       }
     }
   end

@@ -3,7 +3,7 @@
 module Dpl
   class Provider < Cl::Cmd
     class Status < Struct.new(:provider, :status, :info)
-      STATUS = %i[dev alpha beta stable deprecated]
+      STATUS = %i[dev alpha beta stable deprecated].freeze
 
       MSG = {
         dev: 'Support for deployments to %s is in **development**',
@@ -11,7 +11,7 @@ module Dpl
         beta: 'Support for deployments to %s is in **beta**',
         deprecated: 'Support for deployments to %s is *deprecated**',
         pre_stable: 'Please see [Maturity Levels](%s) for details.'
-      }
+      }.freeze
 
       URL = 'https://github.com/travis-ci/dpl/#maturity-levels'
 

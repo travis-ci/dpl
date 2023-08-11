@@ -78,7 +78,7 @@ module Dpl
     class Interpolator < Struct.new(:str, :obj, :args, :opts)
       include Interpolate
 
-      MODIFIER = %i[obfuscate escape quote]
+      MODIFIER = %i[obfuscate escape quote].freeze
       PATTERN  = /%\{(\$?[\w]+)\}/
       ENV_VAR  = /^\$[A-Z_]+$/
       UPCASE   = /^[A-Z_]+$/

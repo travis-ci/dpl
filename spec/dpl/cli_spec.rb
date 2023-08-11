@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 describe Dpl::Cli do
-  let(:cli) { described_class.new(ctx) }
-
   subject { |e| cli.normalize(e.example_group.description.split(' ')) }
+
+  let(:cli) { described_class.new(ctx) }
 
   describe 'heroku --strategy=api --api_key=key' do
     it { is_expected.to eq %w[heroku api --api_key=key] }

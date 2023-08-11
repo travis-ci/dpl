@@ -53,14 +53,14 @@ module Dpl
         version_publish: '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/publish',
         version_file: '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{target}',
         file_metadata: '/file_metadata/%{subject}/%{repo}/%{target}'
-      }
+      }.freeze
 
       MAP = {
         package: %i[name desc licenses labels vcs_url website_url
           issue_tracker_url public_download_numbers public_stats],
         version: %i[name desc released vcs_tag github_release_notes_file
           github_use_tag_release_notes attributes]
-      }
+      }.freeze
 
       def install
         require 'json'

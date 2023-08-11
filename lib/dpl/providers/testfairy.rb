@@ -31,7 +31,7 @@ module Dpl
       opt '--advanced_options OPTS', 'Comma_separated list of advanced options', example: 'option1,option2'
 
       URL = 'https://upload.testfairy.com/api/upload'
-      UA  = "Travis CI dpl version=#{Dpl::VERSION}"
+      UA  = "Travis CI dpl version=#{Dpl::VERSION}".freeze
 
       msgs deploy: 'Uploading to TestFairy: %s',
            done: 'Done. Check your build at %s'

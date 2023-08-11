@@ -38,7 +38,7 @@ describe Dpl::Providers::Bintray do
   before { |c| subject.run if run?(c) }
 
   describe 'creates a package if it does not exist, and updates package attributes' do
-    let(:package) { { name: 'name', desc: 'desc', licenses: ['MIT'], labels: ['one', 'two', 'three'], vcs_url: 'vcs_url', website_url: 'website_url', issue_tracker_url: 'issue_tracker_url', public_download_numbers: false, public_stats: false } }
+    let(:package) { { name: 'name', desc: 'desc', licenses: ['MIT'], labels: %w[one two three], vcs_url: 'vcs_url', website_url: 'website_url', issue_tracker_url: 'issue_tracker_url', public_download_numbers: false, public_stats: false } }
     let(:attrs)   { [{ name: 'foo', values: ['foo'], type: 'string' }, { name: 'bar', values: [1], type: 'number' }] }
     let(:package_status) { 404 }
 

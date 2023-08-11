@@ -13,7 +13,7 @@ describe Dpl::Providers::Transifex do
     it { is_expected.to have_run_in_order }
 
     it do
-      is_expected.to have_written '~/.transifexrc', sq(<<-RC)
+      expect(subject).to have_written '~/.transifexrc', sq(<<-RC)
         [https://www.transifex.com]
         hostname = https://www.transifex.com
         username = user

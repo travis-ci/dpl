@@ -60,7 +60,7 @@ module Dpl
     STRATEGIES = {
       'heroku' => 'api',
       'pages' => 'git'
-    }
+    }.freeze
 
     def with_strategy_default(args, cmd)
       return args unless default = STRATEGIES[args.first]

@@ -18,7 +18,7 @@ module Dpl
         TIMEOUTS = {
           timeout: 180,
           open_timeout: 180
-        }
+        }.freeze
 
         gem 'octokit', '~> 7'
 
@@ -73,9 +73,8 @@ module Dpl
 
           info "Pages deployed to #{response.html_url}, using commit #{latest_pages_build.commit}"
           logger.debug latest_pages_build
-
-        rescue Octokit::Forbidden => fb
-          error fb.message
+        rescue Octokit::Forbidden => e
+          error e.message
         rescue Timeout::Error
           error :timeout
         end
@@ -101,7 +100,6 @@ module Dpl
         rescue Octokit::NotFound
           false
         end
-
       end
     end
   end

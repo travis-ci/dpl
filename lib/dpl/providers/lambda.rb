@@ -193,7 +193,7 @@ module Dpl
           java: '::',
           dotnet: '::',
           go: ''
-        }
+        }.freeze
 
         def to_s
           [go? ? nil : module_name, sep, handler_name].compact.join

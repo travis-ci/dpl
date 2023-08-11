@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dpl::Providers::Ecr do
-  let(:args) { |e| %W[--access_key_id key --secret_access_key secret --source source:1.0] + args_from_description(e) }
+  let(:args) { |e| %w[--access_key_id key --secret_access_key secret --source source:1.0] + args_from_description(e) }
   let(:requests) { Hash.new { |hash, key| hash[key] = [] } }
 
   before do
@@ -29,7 +29,7 @@ describe Dpl::Providers::Ecr do
 
   after { Aws.config.clear }
 
-  matcher :get_authorization_token do |params = {}|
+  matcher :get_authorization_token do |_params = {}|
     match { |*| !!requests[:get_authorization_token][0] }
   end
 

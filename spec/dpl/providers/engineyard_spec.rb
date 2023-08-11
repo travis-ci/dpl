@@ -74,7 +74,7 @@ describe Dpl::Providers::Engineyard do
   describe 'no env matches', run: false do
     let(:envs) { '' }
 
-    it { expect { subject.run }.to raise_error /No matching environment found/ }
+    it { expect { subject.run }.to raise_error(/No matching environment found/) }
   end
 
   describe 'multiple envs match', run: false do

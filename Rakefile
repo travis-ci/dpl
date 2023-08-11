@@ -130,7 +130,7 @@ task :release do
 end
 
 desc 'Yank all gems'
-task :yank, [:version] do |t, args|
+task :yank, [:version] do |_t, args|
   version = args.version
   confirm 'yank'
   logger.info green("Yanking `dpl` version #{version}")

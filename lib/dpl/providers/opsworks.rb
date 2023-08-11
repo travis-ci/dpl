@@ -93,7 +93,7 @@ module Dpl
         {
           app_id:,
           app_source: {
-            revision: git_sha,
+            revision: git_sha
           }
         }
       end

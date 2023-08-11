@@ -90,7 +90,7 @@ describe Dpl::Providers::Pages do
   end
 
   describe 'given project_name with a double quote' do
-    let(:args) { |e| %w[--github_token token --project_name project"name] }
+    let(:args) { |_e| %w[--github_token token --project_name project"name] }
 
     it { is_expected.to have_run 'git commit -q -m "Deploy project\"name to github.com/travis-ci/dpl.git:gh-pages"' }
   end
@@ -124,8 +124,8 @@ describe Dpl::Providers::Pages do
     before { subject.run }
 
     it { is_expected.to have_run '[info] There are no changes to commit, stopping.' }
-    it { is_expected.not_to have_run /git commit / }
-    it { is_expected.not_to have_run /git push / }
+    it { is_expected.not_to have_run(/git commit /) }
+    it { is_expected.not_to have_run(/git push /) }
   end
 
   describe 'with GITHUB credentials in env vars', run: false do

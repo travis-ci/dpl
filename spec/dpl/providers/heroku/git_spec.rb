@@ -60,7 +60,7 @@ describe Dpl::Providers::Heroku do
     end
   end
 
-  describe 'using --username and --password'  do
+  describe 'using --username and --password' do
     let(:creds) { %w[--username user --password pass] }
     let(:pass) { 'pass' }
 
@@ -68,7 +68,7 @@ describe Dpl::Providers::Heroku do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { |e| %w[--strategy git] }
+    let(:args) { |_e| %w[--strategy git] }
 
     env HEROKU_API_KEY: 'key'
     it { expect { subject.run }.not_to raise_error }

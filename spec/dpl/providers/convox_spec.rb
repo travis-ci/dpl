@@ -68,7 +68,7 @@ describe Dpl::Providers::Convox do
 
   describe 'given --no-promote' do
     it { is_expected.to have_run "convox build --rack rack --app app --id --description #{desc}" }
-    it { is_expected.not_to have_run /convox deploy/ }
+    it { is_expected.not_to have_run(/convox deploy/) }
   end
 
   describe 'given --host host' do
@@ -115,7 +115,7 @@ describe Dpl::Providers::Convox do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { |e| %w[--app app --rack rack] }
+    let(:args) { |_e| %w[--app app --rack rack] }
 
     env CONVOX_PASS: 'pass'
 

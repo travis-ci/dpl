@@ -106,9 +106,9 @@ module Dpl
 
       def revision
         @revision ||= case revision_type
-        when 's3'     then s3_revision
-        when 'github' then github_revision
-        when nil      then bucket? ? s3_revision : github_revision
+                      when 's3'     then s3_revision
+                      when 'github' then github_revision
+                      when nil      then bucket? ? s3_revision : github_revision
         else error :unknown_revision_type, revision_type
         end
       end
@@ -121,7 +121,7 @@ module Dpl
             bundle_type:,
             version: revision_version_info[:version_id],
             e_tag: revision_version_info[:etag],
-            key:,
+            key:
           )
         }
       end

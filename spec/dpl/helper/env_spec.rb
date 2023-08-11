@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 describe Dpl::Env::Env do
+  subject { described_class.new(stringify(env), [*strs, opts]).env(const) }
+
   let(:const) { Class.new(Dpl::Provider) { opt '--two str' } }
   let(:opts)  { {} }
-
-  subject { described_class.new(stringify(env), [*strs, opts]).env(const) }
 
   describe 'env var matching prefix and option' do
     let(:strs) { [:one] }

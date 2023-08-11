@@ -39,7 +39,7 @@ describe Dpl::Providers::Releases do
         release_number:,
         body: release_notes,
         prerelease:,
-        draft:,
+        draft:
       ))
     end
   end

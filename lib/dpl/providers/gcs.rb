@@ -43,7 +43,7 @@ module Dpl
       msgs login_key: 'Authenticating with service account key file %{key_file}',
            login_creds: 'Authenticating with access key: %{access_key_id}'
 
-      errs copy:  'Failed uploading files.'
+      errs copy: 'Failed uploading files.'
 
       URL = 'https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz'
 

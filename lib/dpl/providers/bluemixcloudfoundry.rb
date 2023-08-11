@@ -32,7 +32,7 @@ module Dpl
         'eu-gb': 'api.eu-gb.bluemix.net',
         'eu-de': 'api.eu-de.bluemix.net',
         'au-syd': 'api.au-syd.bluemix.net'
-      }
+      }.freeze
 
       cmds install: 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz',
            api: './cf api %{api} %{skip_ssl_validation_opt}',

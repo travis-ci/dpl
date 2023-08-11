@@ -6,7 +6,7 @@ module Support
       const.extend(Fixtures)
     end
 
-    DIR = ::File.expand_path('../../fixtures', __FILE__)
+    DIR = ::File.expand_path('../fixtures', __dir__)
 
     class << self
       def [](key)

@@ -3,7 +3,7 @@
 describe Dpl::Providers::Codedeploy do
   include Support::Matchers::Aws
 
-  let(:args)   { |e| %w[--access_key_id access_key_id --secret_access_key secret_access_key --application app] + args_from_description(e) }
+  let(:args) { |e| %w[--access_key_id access_key_id --secret_access_key secret_access_key --application app] + args_from_description(e) }
   let(:github_revision) { { revisionType: 'GitHub', gitHubLocation: { repository: 'dpl', commitId: 'sha' } } }
   let(:s3_revision) { { revisionType: 'S3', s3Location: { bucket: 'bucket', bundleType: 'zip', version: 'ObjectVersionId', eTag: 'ETag' } } }
   let(:client) { Aws::CodeDeploy::Client.new(stub_responses: responses[:eb]) }
@@ -103,11 +103,11 @@ describe Dpl::Providers::Codedeploy do
       }
     end
 
-    it { expect { subject.run }.to raise_error(/Failed/)}
+    it { expect { subject.run }.to raise_error(/Failed/) }
   end
 
   describe 'with ~/.aws/credentials', run: false do
-    let(:args) { |e| %w[--application app] }
+    let(:args) { |_e| %w[--application app] }
 
     file '~/.aws/credentials', <<-STR.sub(/^\s*/, '')
       [default]
@@ -121,7 +121,7 @@ describe Dpl::Providers::Codedeploy do
   end
 
   describe 'with ~/.aws/config', run: false do
-    let(:args) { |e| %w[--access_key_id id --secret_access_key secret] }
+    let(:args) { |_e| %w[--access_key_id id --secret_access_key secret] }
 
     file '~/.aws/config', <<-STR.sub(/^\s*/, '')
       [default]

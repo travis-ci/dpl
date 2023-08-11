@@ -34,7 +34,7 @@ describe Dpl::Github do
     '`': '.',
     '{': '.',
     '}': '.',
-    '~': '.',
+    '~': '.'
   }
 
   strs.each do |from, to|

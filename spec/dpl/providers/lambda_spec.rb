@@ -79,11 +79,11 @@ describe Dpl::Providers::Lambda do
     end
 
     describe 'given --subnet_ids one --subnet_ids two' do
-      it { is_expected.to create_function VpcConfig: { SubnetIds: ['one', 'two'] } }
+      it { is_expected.to create_function VpcConfig: { SubnetIds: %w[one two] } }
     end
 
     describe 'given --security_group_ids one --security_group_ids two' do
-      it { is_expected.to create_function VpcConfig: { SecurityGroupIds: ['one', 'two'] } }
+      it { is_expected.to create_function VpcConfig: { SecurityGroupIds: %w[one two] } }
     end
 
     describe 'given --dead_letter_arn arn' do
@@ -153,11 +153,11 @@ describe Dpl::Providers::Lambda do
     end
 
     describe 'given --subnet_ids one --subnet_ids two' do
-      it { is_expected.to update_function_config VpcConfig: { SubnetIds: ['one', 'two'] } }
+      it { is_expected.to update_function_config VpcConfig: { SubnetIds: %w[one two] } }
     end
 
     describe 'given --security_group_ids one --security_group_ids two' do
-      it { is_expected.to update_function_config VpcConfig: { SecurityGroupIds: ['one', 'two'] } }
+      it { is_expected.to update_function_config VpcConfig: { SecurityGroupIds: %w[one two] } }
     end
 
     describe 'given --dead_letter_arn arn' do
@@ -190,7 +190,7 @@ describe Dpl::Providers::Lambda do
   end
 
   describe 'with ~/.aws/credentials', run: false do
-    let(:args) { |e| %w[--function_name func --role role --handler_name handler] }
+    let(:args) { |_e| %w[--function_name func --role role --handler_name handler] }
     let(:exists) { false }
 
     file '~/.aws/credentials', <<-STR.sub(/^\s*/, '')
@@ -205,7 +205,7 @@ describe Dpl::Providers::Lambda do
   end
 
   describe 'with ~/.aws/config', run: false do
-    let(:args) { |e| %w[--access_key_id id --secret_access_key secret] }
+    let(:args) { |_e| %w[--access_key_id id --secret_access_key secret] }
     let(:exists) { false }
 
     file '~/.aws/config', <<-STR.sub(/^\s*/, '')

@@ -65,7 +65,7 @@ module Dpl
       end
 
       def nonce
-        rand(36 ** 32).to_s(36)
+        rand(36**32).to_s(36)
       end
 
       def now

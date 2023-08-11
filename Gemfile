@@ -9,7 +9,7 @@ ruby '>= 3.2'
 gemspec name: 'dpl'
 gem 'cl', git: 'https://github.com/zgid123/cl'
 gem 'packagecloud-ruby', git: 'https://github.com/flywirecorp/packagecloud-ruby'
- # gem 'json_pure', '~> 2.6'
+# gem 'json_pure', '~> 2.6'
 
 # gem 'regstry', path: '../../registry'
 

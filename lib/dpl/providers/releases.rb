@@ -69,12 +69,12 @@ module Dpl
         release_number
         tag_name
         target_commitish
-      ]
+      ].freeze
 
       TIMEOUTS = {
         timeout: 180,
         open_timeout: 180
-      }
+      }.freeze
 
       def validate
         info :deploy

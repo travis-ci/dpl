@@ -45,11 +45,11 @@ module Dpl
       # the surrounding log fold.
       def time(&block)
         id = SecureRandom.hex[0, 8]
-        start = Time.now.to_i * (10 ** 9)
+        start = Time.now.to_i * (10**9)
         print "travis_time:start:#{id}\r\e[K"
         yield
       ensure
-        finish = Time.now.to_i * (10 ** 9)
+        finish = Time.now.to_i * (10**9)
         duration = finish - start
         print "\ntravis_time:end:#{id}:start=#{start},finish=#{finish},duration=#{duration}\r\e[K"
       end

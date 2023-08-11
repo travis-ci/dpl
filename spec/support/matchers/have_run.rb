@@ -14,7 +14,7 @@ module Support
       def matches?(cmd)
         cmds << str if cmds
         @cmd = cmd
-        cmd.ctx.cmds.any? { |cmd, opts| match?(cmd) }
+        cmd.ctx.cmds.any? { |cmd, _opts| match?(cmd) }
       end
 
       def description

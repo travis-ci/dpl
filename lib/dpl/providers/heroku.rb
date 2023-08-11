@@ -28,8 +28,8 @@ module Dpl
 
       HEADERS = {
         'Accept': 'application/vnd.heroku+json; version=3',
-        'User-Agent': user_agent,
-      }
+        'User-Agent': user_agent
+      }.freeze
 
       attr_reader :email
 
@@ -84,7 +84,7 @@ module Dpl
       end
 
       def filter(logger)
-        logger.filter(/(.*Authorization: ).*/,'\1[REDACTED]')
+        logger.filter(/(.*Authorization: ).*/, '\1[REDACTED]')
       end
 
       def logger
@@ -100,7 +100,7 @@ module Dpl
         Rendezvous.start(url:)
       end
 
-        # overwritten in Git, meaningless in Api
+      # overwritten in Git, meaningless in Api
       def username; end
       def password; end
     end
