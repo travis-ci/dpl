@@ -120,8 +120,10 @@ describe Dpl::Providers::Pages do
   end
 
   describe 'working dir not dirty', run: false do
-    before { allow(ctx).to receive(:git_dirty?).and_return false }
-    before { subject.run }
+    before do
+      allow(ctx).to receive(:git_dirty?).and_return false
+      subject.run
+    end
 
     it { is_expected.to have_run '[info] There are no changes to commit, stopping.' }
     it { is_expected.not_to have_run(/git commit /) }

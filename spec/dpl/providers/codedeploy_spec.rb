@@ -22,16 +22,16 @@ describe Dpl::Providers::Codedeploy do
     }
   end
 
-  let(:github_revision) { { revisionType: 'GitHub', gitHubLocation: { repository: 'dpl', commitId: 'sha' } } }
-  let(:s3_revision) { { revisionType: 'S3', s3Location: { bucket: 'bucket', bundleType: 'zip', version: 'ObjectVersionId', eTag: 'ETag' } } }
-
   env TRAVIS_BUILD_NUMBER: 1
 
-  before { allow(Aws::CodeDeploy::Client).to receive(:new).and_return(client) }
-  before { allow(Aws::S3::Client).to receive(:new).and_return(s3) }
-  before { |c| subject.run if run?(c) }
+  before do
+    allow(Aws::CodeDeploy::Client).to receive(:new).and_return(client)
+    allow(Aws::S3::Client).to receive(:new).and_return(s3)
+  end
 
+  before { |c| subject.run if run?(c) }
   before { |c| subject.run unless c.metadata[:run].is_a?(FalseClass) }
+
   after { Aws.config.clear }
 
   describe 'by default', record: true do
@@ -131,8 +131,10 @@ describe Dpl::Providers::Codedeploy do
       key=bundle.zip
     STR
 
-    before { s3_revision[:s3Location][:key] = 'bundle.zip' }
-    before { subject.run }
+    before do
+      s3_revision[:s3Location][:key] = 'bundle.zip'
+      subject.run
+    end
 
     it { is_expected.to create_deployment revision: s3_revision }
   end

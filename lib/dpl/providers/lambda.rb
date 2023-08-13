@@ -34,13 +34,13 @@ module Dpl
       opt '--memory_size MB',         'Amount of memory in MB to allocate to this Lambda', default: 128
       opt '--subnet_ids IDS',         'List of subnet IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSubnets and ec2:DescribeVpcs permission for the user of the access/secret key to work'
       opt '--security_group_ids IDS', 'List of security group IDs to be added to the function', type: :array, note: 'Needs the ec2:DescribeSecurityGroups and ec2:DescribeVpcs permission for the user of the access/secret key to work'
-      opt '--environment VARS',       'List of Environment Variables to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security', alias: :environment_variables
+      opt '--environment VARS',       'List of Environment Variables to add to the function', type: :array, format: /[\w-]+=.+/, note: 'Can be encrypted for added security', alias: :environment_variables
       opt '--runtime NAME',           'Lambda runtime to use', note: 'required when creating a new function', default: 'nodejs12.x', enum: %w[nodejs16.x nodejs14.x nodejs12.x python3.8 python3.7 python3.6 python2.7 ruby2.7 ruby2.5 java11 java8 go1.x dotnetcore2.1]
       opt '--dead_letter_arn ARN',    'ARN to an SNS or SQS resource used for the dead letter queue.'
       opt '--kms_key_arn ARN',        'KMS key ARN to use to encrypt environment_variables.'
       opt '--tracing_mode MODE',      'Tracing mode', default: 'PassThrough', enum: %w[Active PassThrough], note: 'Needs xray:PutTraceSegments xray:PutTelemetryRecords on the role'
       opt '--layers LAYERS',          'Function layer arns', type: :array
-      opt '--function_tags TAGS',     'List of tags to add to the function', type: :array, format: /[\w\-]+=.+/, note: 'Can be encrypted for added security'
+      opt '--function_tags TAGS',     'List of tags to add to the function', type: :array, format: /[\w-]+=.+/, note: 'Can be encrypted for added security'
       opt '--publish',                'Create a new version of the code instead of replacing the existing one.'
       opt '--zip PATH',               'Path to a packaged Lambda, a directory to package, or a single file to package', default: '.'
       opt '--dot_match',              'Include hidden .* files to the zipped archive'
@@ -79,15 +79,13 @@ module Dpl
       end
 
       def update
-        begin
-          arn = update_config
-          client.wait_until(:function_updated, { function_name: })
-          update_tags(arn) if function_tags?
-          client.wait_until(:function_updated, { function_name: })
-          update_code
-        rescue Aws::Waiters::Errors::WaiterFailed
-          error 'Update timed out.'
-        end
+        arn = update_config
+        client.wait_until(:function_updated, { function_name: })
+        update_tags(arn) if function_tags?
+        client.wait_until(:function_updated, { function_name: })
+        update_code
+      rescue Aws::Waiters::Errors::WaiterFailed
+        error 'Update timed out.'
       end
 
       def update_config

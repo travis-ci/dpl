@@ -18,8 +18,11 @@ describe Dpl::Providers::Lambda do
     }
   end
 
-  before { allow(Aws::Lambda::Client).to receive(:new).and_return(client) }
-  before { allow_any_instance_of(Aws::Lambda::Client).to receive(:wait_until).and_return({}) }
+  before do
+    allow(Aws::Lambda::Client).to receive(:new).and_return(client)
+    allow_any_instance_of(Aws::Lambda::Client).to receive(:wait_until).and_return({})
+  end
+
   before { |c| subject.run if run?(c) }
 
   file 'one'

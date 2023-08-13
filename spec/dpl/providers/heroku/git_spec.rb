@@ -14,12 +14,15 @@ describe Dpl::Providers::Heroku do
     RC
   end
 
-  before { stub_request(:get, 'https://api.heroku.com/account').and_return(body: user) }
-  before { stub_request(:get, 'https://api.heroku.com/apps/dpl') }
-  before { stub_request(:get, 'https://api.heroku.com/apps/other') }
-  before { stub_request(:post, 'https://api.heroku.com/apps/dpl/dynos').and_return(body: dyno) }
-  before { stub_request(:delete, 'https://api.heroku.com/apps/dpl/dynos') }
-  before { allow(Rendezvous).to receive(:start) }
+  before do
+    stub_request(:get, 'https://api.heroku.com/account').and_return(body: user)
+    stub_request(:get, 'https://api.heroku.com/apps/dpl')
+    stub_request(:get, 'https://api.heroku.com/apps/other')
+    stub_request(:post, 'https://api.heroku.com/apps/dpl/dynos').and_return(body: dyno)
+    stub_request(:delete, 'https://api.heroku.com/apps/dpl/dynos')
+    allow(Rendezvous).to receive(:start)
+  end
+
   before { |c| subject.run if run?(c) }
 
   describe 'using --api_key' do

@@ -7,8 +7,11 @@ describe Dpl::Providers::Puppetforge do
 
   file 'metadata.json', JSON.dump(name: 'author-module')
 
-  before { allow(Blacksmith::Forge).to receive(:new).and_return(forge) }
-  before { allow(Puppet::Face).to receive(:[]).and_return(face) }
+  before do
+    allow(Blacksmith::Forge).to receive(:new).and_return(forge)
+    allow(Puppet::Face).to receive(:[]).and_return(face)
+  end
+
   before { |c| subject.run if run?(c) }
 
   describe 'by default' do

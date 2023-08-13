@@ -47,10 +47,12 @@ describe Dpl::Providers::Pages do
     }.to_json
   end
 
-  before { stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers:) }
-  before { stub_request(:get, 'https://api.github.com/repos/travis-ci/dpl/pages').and_return(status: 200, body: pages_response_body, headers:) }
-  before { stub_request(:get, 'https://api.github.com/repos/travis-ci/dpl/pages/builds/latest').and_return(status: 200, body: pages_latest_builds_response_body, headers:) }
-  before { stub_request(:post, 'https://api.github.com/repos/travis-ci/dpl/pages/builds').and_return(status: 200, body: pages_build_request_response_body, headers:) }
+  before do
+    stub_request(:get, 'https://api.github.com/user').and_return(status: 200, body: user, headers:)
+    stub_request(:get, 'https://api.github.com/repos/travis-ci/dpl/pages').and_return(status: 200, body: pages_response_body, headers:)
+    stub_request(:get, 'https://api.github.com/repos/travis-ci/dpl/pages/builds/latest').and_return(status: 200, body: pages_latest_builds_response_body, headers:)
+    stub_request(:post, 'https://api.github.com/repos/travis-ci/dpl/pages/builds').and_return(status: 200, body: pages_build_request_response_body, headers:)
+  end
 
   before { |c| subject.run if run?(c) }
 

@@ -69,25 +69,25 @@ module Dpl
       args
     end
 
-    def error(e)
-      msg = "\e[31m#{e.message}\e[0m"
-      msg = [msg, *e.backtrace].join("\n") if backtrace?(e)
+    def error(err)
+      msg = "\e[31m#{err.message}\e[0m"
+      msg = [msg, *err.backtrace].join("\n") if backtrace?(e)
       abort msg
     end
 
-    def backtrace?(e)
-      e.respond_to?(:backtrace?) && e.backtrace?
+    def backtrace?(err)
+      err.respond_to?(:backtrace?) && err.backtrace?
     end
 
-    def unknown_provider(e)
-      msg = "\e[31m#{e.message}\e[0m"
-      msg << "\nDid you mean: #{e.suggestions.join(', ')}?" if e.suggestions.any?
+    def unknown_provider(err)
+      msg = "\e[31m#{err.message}\e[0m"
+      msg << "\nDid you mean: #{err.suggestions.join(', ')}?" if err.suggestions.any?
       abort msg
     end
 
-    def unknown_option(e)
-      msg = "\e[31m#{e.message}\e[0m"
-      msg << "\nDid you mean: #{e.suggestions.join(', ')}?" if e.suggestions.any?
+    def unknown_option(err)
+      msg = "\e[31m#{err.message}\e[0m"
+      msg << "\nDid you mean: #{err.suggestions.join(', ')}?" if err.suggestions.any?
       abort msg
     end
 

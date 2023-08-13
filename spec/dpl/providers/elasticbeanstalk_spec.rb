@@ -9,7 +9,6 @@ describe Dpl::Providers::Elasticbeanstalk do
 
   let(:client)   { Aws::ElasticBeanstalk::Client.new(stub_responses: responses) }
   let(:s3)       { Aws::S3::Client.new(stub_responses: true) }
-  let(:events)   { [] }
 
   let(:responses) do
     {
@@ -33,8 +32,11 @@ describe Dpl::Providers::Elasticbeanstalk do
   file 'one'
   file 'two'
 
-  before { allow(Aws::ElasticBeanstalk::Client).to receive(:new).and_return(client) }
-  before { allow(Aws::S3::Client).to receive(:new).and_return(s3) }
+  before do
+    allow(Aws::ElasticBeanstalk::Client).to receive(:new).and_return(client)
+    allow(Aws::S3::Client).to receive(:new).and_return(s3)
+  end
+
   before { |c| subject.run if run?(c) }
 
   describe 'by default' do

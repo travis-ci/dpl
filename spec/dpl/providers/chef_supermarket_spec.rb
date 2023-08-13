@@ -39,15 +39,19 @@ describe Dpl::Providers::ChefSupermarket do
   end
 
   describe 'with a file metadata.rb', run: false do
-    before { rm 'metadata.json' }
-    before { subject.run }
+    before do
+      rm 'metadata.json'
+      subject.run
+    end
 
     it { is_expected.to have_run '[info] Uploading cookbook dpl to https://supermarket.chef.io/api/v1/cookbooks' }
   end
 
   describe 'missing both metadata.json and metadata.rb', run: false do
-    before { rm 'metadata.json' }
-    before { rm 'metadata.rb' }
+    before do
+      rm 'metadata.json'
+      rm 'metadata.rb'
+    end
 
     it { expect { subject.run }.to raise_error 'Missing file: metadata.json or metadata.rb' }
   end

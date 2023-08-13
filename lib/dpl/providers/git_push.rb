@@ -175,7 +175,7 @@ module Dpl
 
       def git_commit_msg_opts
         msg = interpolate(commit_message, vars:)
-        msg.split("\n").reject(&:empty?).map { |msg| %(-m #{quote(msg)}) }
+        msg.split("\n").reject(&:empty?).map { |message| %(-m #{quote(message)}) }
       end
 
       def name

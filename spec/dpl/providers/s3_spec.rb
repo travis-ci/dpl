@@ -118,8 +118,10 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'with no mime-type being found', run: false do
-    before { allow(MIME::Types).to receive(:type_for).and_return [] }
-    before { subject.run }
+    before do
+      allow(MIME::Types).to receive(:type_for).and_return []
+      subject.run
+    end
 
     it { is_expected.not_to put_object 'one.txt', 'content-type': 'text/plain; charset=utf-8' }
   end
@@ -154,42 +156,42 @@ describe Dpl::Providers::S3 do
   end
 
   describe 'Mapping', run: false do
-    subject { Dpl::Providers::S3::Mapping.new(opt, path).value }
+    subject(:s3) { Dpl::Providers::S3::Mapping.new(opt, path).value }
 
     let(:provider) { described_class.new(ctx, args) }
     let(:path) { 'one.css' }
     let(:opt) { |c| c.description.sub(/^given /, '') }
 
     it 'given no-cache' do
-      expect(subject).to eq 'no-cache'
+      expect(s3).to eq 'no-cache'
     end
 
     it 'given max-age=0' do
-      expect(subject).to eq 'max-age=0'
+      expect(s3).to eq 'max-age=0'
     end
 
     it 'given max-age=0: one.css' do
-      expect(subject).to eq 'max-age=0'
+      expect(s3).to eq 'max-age=0'
     end
 
     it 'given max-age=0: *.css' do
-      expect(subject).to eq 'max-age=0'
+      expect(s3).to eq 'max-age=0'
     end
 
     it 'given max-age=0: *.css, *.js' do
-      expect(subject).to eq 'max-age=0'
+      expect(s3).to eq 'max-age=0'
     end
 
     it 'given max-age=0: *.txt' do
-      expect(subject).to be nil
+      expect(s3).to be nil
     end
 
     it 'given 2020-01-01 00:00:00 UTC: *.css, *.js' do
-      expect(subject).to eq '2020-01-01 00:00:00 UTC'
+      expect(s3).to eq '2020-01-01 00:00:00 UTC'
     end
 
     it 'given "2020-01-01 00:00:00 UTC": *.css, *.js' do
-      expect(subject).to eq '2020-01-01 00:00:00 UTC'
+      expect(s3).to eq '2020-01-01 00:00:00 UTC'
     end
   end
 end

@@ -82,11 +82,13 @@ describe Dpl::Providers::GitPush do
   end
 
   describe 'given --pull_request', run: false do
-    before { stub_request(:get, %r{repos/.*/pulls}).and_return(body: JSON.dump(prs), headers: { 'Content-Type': 'application/json' }) }
-    before { stub_request(:post, %r{repos/.*/pulls}).and_return(body: JSON.dump(number: 1), headers: { 'Content-Type': 'application/json' }) }
-    before { subject.run }
+    before do
+      stub_request(:get, %r{repos/.*/pulls}).and_return(body: JSON.dump(prs), headers: { 'Content-Type': 'application/json' })
+      stub_request(:post, %r{repos/.*/pulls}).and_return(body: JSON.dump(number: 1), headers: { 'Content-Type': 'application/json' })
+      subject.run
+    end
 
-    context 'pr does not exist' do
+    context 'when pr does not exist' do
       let(:prs) { [] }
       let(:body) { JSON.dump(base: 'master', head: 'other', title: 'Update master') }
 
@@ -94,7 +96,7 @@ describe Dpl::Providers::GitPush do
       it { expect(WebMock).to have_requested(:post, %r{repos/.*/pulls}).with(body:) }
     end
 
-    context 'pr exists' do
+    context 'when pr exists' do
       let(:prs) { [head: { ref: 'other' }] }
 
       it { is_expected.to have_run '[info] Pull request exists.' }
@@ -123,8 +125,10 @@ describe Dpl::Providers::GitPush do
   end
 
   describe 'working dir not dirty', run: false do
-    before { allow(ctx).to receive(:git_dirty?).and_return false }
-    before { subject.run }
+    before do
+      allow(ctx).to receive(:git_dirty?).and_return false
+      subject.run
+    end
 
     it { is_expected.to have_run '[info] There are no changes to commit, stopping.' }
     it { is_expected.not_to have_run(/git commit /) }

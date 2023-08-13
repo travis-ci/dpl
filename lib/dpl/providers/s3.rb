@@ -174,8 +174,8 @@ module Dpl
         URI.parse("https://#{url}")
       end
 
-      def handle_error(e)
-        case e
+      def handle_error(err)
+        case err
         when Aws::S3::Errors::InvalidAccessKeyId
           error :invalid_access_key_id
         when Aws::S3::Errors::ChecksumError
@@ -183,7 +183,7 @@ module Dpl
         when Aws::S3::Errors::AccessDenied
           error :access_denied
         else
-          error e.message
+          error err.message
         end
       end
 

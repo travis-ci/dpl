@@ -20,13 +20,16 @@ describe Dpl::Providers::Releases do
   file 'one_two'
   file 'two'
 
-  before { stub_request(:get, %r{/user$}).and_return(status: 200, body: user, headers:) }
-  before { stub_request(:get, %r{/releases\?}).and_return(status: 200, body: releases, headers:) }
-  before { stub_request(:get, %r{/releases/1$}).and_return(status: 200, body: release, headers:) }
-  before { stub_request(:get, %r{/releases/1/assets\?}).and_return(status: 200, body: assets, headers:) }
-  before { stub_request(:patch, %r{/releases/1$}) }
-  before { stub_request(:post, %r{/releases/1/assets\?}) }
-  before { stub_request(:delete, %r{/releases/1/assets/1$}) }
+  before do
+    stub_request(:get, %r{/user$}).and_return(status: 200, body: user, headers:)
+    stub_request(:get, %r{/releases\?}).and_return(status: 200, body: releases, headers:)
+    stub_request(:get, %r{/releases/1$}).and_return(status: 200, body: release, headers:)
+    stub_request(:get, %r{/releases/1/assets\?}).and_return(status: 200, body: assets, headers:)
+    stub_request(:patch, %r{/releases/1$})
+    stub_request(:post, %r{/releases/1/assets\?})
+    stub_request(:delete, %r{/releases/1/assets/1$})
+  end
+
   before { |c| subject.run if run?(c) }
 
   matcher :release_json do

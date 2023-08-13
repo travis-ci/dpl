@@ -61,6 +61,7 @@ describe Dpl::Providers::Cloudformation do
   end
 
   before { |c| subject.run unless c.metadata[:run].is_a?(FalseClass) }
+
   after { Aws.config.clear }
 
   env ONE: '1'

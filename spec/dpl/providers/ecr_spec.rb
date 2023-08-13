@@ -25,6 +25,7 @@ describe Dpl::Providers::Ecr do
         }
       }
     }
+    subject.run
   end
 
   after { Aws.config.clear }
@@ -32,8 +33,6 @@ describe Dpl::Providers::Ecr do
   matcher :get_authorization_token do |_params = {}|
     match { |*| !requests[:get_authorization_token][0].nil? }
   end
-
-  before { subject.run }
 
   describe 'given --target one:tag', record: true do
     it { is_expected.to get_authorization_token }
@@ -51,7 +50,6 @@ describe Dpl::Providers::Ecr do
   end
 
   describe 'given --region us-east-1,us-west-1 --target one:tag,two:tag' do
-    it { is_expected.to have_run 'docker login -u user -p pass https://account_id.dkr.ecr.us-east-1.amazonaws.com' }
     it { is_expected.to have_run 'docker login -u user -p pass https://account_id.dkr.ecr.us-east-1.amazonaws.com' }
 
     it { is_expected.to have_run 'docker tag source:1.0 account_id.dkr.ecr.us-east-1.amazonaws.com/one:tag' }

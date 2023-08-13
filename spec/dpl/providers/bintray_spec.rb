@@ -24,16 +24,18 @@ describe Dpl::Providers::Bintray do
   file 'descriptor.json', fixture(:bintray, 'descriptor.json')
   file 'build/bin/foo.gem'
 
-  before { stub_request(:head, paths[:package]).and_return status: package_status }
-  before { stub_request(:head, paths[:version]).and_return status: version_status }
-  before { stub_request(:post, paths[:packages]) }
-  before { stub_request(:post, paths[:package_attrs]) }
-  before { stub_request(:post, paths[:versions]) }
-  before { stub_request(:post, paths[:version_attrs]) }
-  before { stub_request(:put,  paths[:version_file]) }
-  before { stub_request(:post, paths[:version_sign]) }
-  before { stub_request(:post, paths[:version_publish]) }
-  before { stub_request(:put,  paths[:file_metadata]) }
+  before do
+    stub_request(:head, paths[:package]).and_return status: package_status
+    stub_request(:head, paths[:version]).and_return status: version_status
+    stub_request(:post, paths[:packages])
+    stub_request(:post, paths[:package_attrs])
+    stub_request(:post, paths[:versions])
+    stub_request(:post, paths[:version_attrs])
+    stub_request(:put,  paths[:version_file])
+    stub_request(:post, paths[:version_sign])
+    stub_request(:post, paths[:version_publish])
+    stub_request(:put,  paths[:file_metadata])
+  end
 
   before { |c| subject.run if run?(c) }
 

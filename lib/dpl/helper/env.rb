@@ -35,7 +35,7 @@ module Dpl
       end
 
       def example(cmd)
-        return unless opt = cmd.opts.detect { |opt| opt.secret? }
+        return unless opt = cmd.opts.detect { |option| option.secret? }
 
         env = strs.map { |str| "`#{str}_#{opt.name.upcase}=<#{opt.name}>`" }
         env += strs.map { |str| "`#{str}#{opt.name.upcase}=<#{opt.name}>`" } if opts[:allow_skip_underscore]
@@ -51,7 +51,7 @@ module Dpl
       private
 
       def dealias(key)
-        opt = cmd.opts.detect { |opt| opt.aliases.include?(key) }
+        opt = cmd.opts.detect { |option| option.aliases.include?(key) }
         opt ? opt.name : key
       end
 

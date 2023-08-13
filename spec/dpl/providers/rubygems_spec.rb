@@ -9,8 +9,11 @@ describe Dpl::Providers::Rubygems do
   file 'other.gemspec'
   file 'other-0.0.1.gem', 'other'
 
-  before { stub_request(:get, %r{/gems/.+json}).and_return(body: JSON.dump(name:)) }
-  before { stub_request(:post, %r{/gems}).and_return(body: "Successfully registered gem: #{name}") }
+  before do
+    stub_request(:get, %r{/gems/.+json}).and_return(body: JSON.dump(name:))
+    stub_request(:post, %r{/gems}).and_return(body: "Successfully registered gem: #{name}")
+  end
+
   before { |c| subject.run if run?(c) }
 
   describe 'given --api_key 1234', record: true do

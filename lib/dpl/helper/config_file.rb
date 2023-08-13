@@ -38,7 +38,7 @@ module Dpl
       end
 
       def strip_prefix(str)
-        opts[:prefix] ? str.sub(/^#{opts[:prefix]}[\-_]?/, '') : str
+        opts[:prefix] ? str.sub(/^#{opts[:prefix]}[-_]?/, '') : str
       end
     end
 

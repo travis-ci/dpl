@@ -60,7 +60,7 @@ module Dpl
 
         vars = superclass.respond_to?(:vars) ? superclass.vars : []
         reject = %i[flag array internal interpolate secret]
-        opts = reject.inject(self.opts) { |opts, attr| opts.reject(&:"#{attr}?") }
+        opts = reject.inject(self.opts) { |options, attr| options.reject(&:"#{attr}?") }
         @vars = vars.dup.concat(opts.map(&:name)).uniq.sort - [:strategy]
       end
 

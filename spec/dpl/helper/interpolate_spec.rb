@@ -1,5 +1,5 @@
 describe Dpl::Interpolate do
-  subject { provider.interpolate(str, args, opts) }
+  subject(:interpolate) { provider.interpolate(str, args, opts) }
 
   let(:provider) { Class.new(Dpl::Provider, &body).new(ctx, %w[--name a-name --password secret]) }
   let(:body) do
@@ -49,7 +49,7 @@ describe Dpl::Interpolate do
   describe 'interpolating an undefined const' do
     let(:str) { 'string containing %{CONST}' }
 
-    it { expect { subject }.to raise_error KeyError, 'CONST' }
+    it { expect { interpolate }.to raise_error KeyError, 'CONST' }
   end
 
   describe 'safelisting vars' do

@@ -7,11 +7,14 @@ describe Dpl::Providers::Heroku do
   let(:urls) { JSON.dump(source_blob: { get_url: 'get_url', put_url: 'put_url' }) }
   let(:build) { JSON.dump(id: 1, output_stream_url: 'output_stream_url', status: 'succeeded') }
 
-  before { stub_request(:get, 'https://api.heroku.com/account').and_return(body: user) }
-  before { stub_request(:post, 'https://api.heroku.com/sources').and_return(body: urls) }
-  before { stub_request(:get, 'https://api.heroku.com/apps/dpl') }
-  before { stub_request(:post, 'https://api.heroku.com/apps/dpl/builds').and_return(body: build) }
-  before { stub_request(:get, 'https://api.heroku.com/apps/dpl/builds/1').and_return(body: build) }
+  before do
+    stub_request(:get, 'https://api.heroku.com/account').and_return(body: user)
+    stub_request(:post, 'https://api.heroku.com/sources').and_return(body: urls)
+    stub_request(:get, 'https://api.heroku.com/apps/dpl')
+    stub_request(:post, 'https://api.heroku.com/apps/dpl/builds').and_return(body: build)
+    stub_request(:get, 'https://api.heroku.com/apps/dpl/builds/1').and_return(body: build)
+  end
+
   before { |c| subject.run if run?(c) }
 
   # remaining options are tested in heroku/git_spec.rb
