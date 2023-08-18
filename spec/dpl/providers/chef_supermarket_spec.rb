@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'chef/knife'
 
 describe Dpl::Providers::ChefSupermarket do
   let(:uploader) { Chef::CookbookUploader }

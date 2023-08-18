@@ -16,9 +16,10 @@ module Dpl
 
       gem 'chef', '~> 18', require: %w[
         chef/cookbook/cookbook_version_loader
-        chef/cookbook_site_streaming_uploader
         chef/cookbook_uploader
       ]
+
+      gem 'knife', git: 'https://github.com/chef/chef'
       gem 'json'
       gem 'mime-types', '~> 3.4.1'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
