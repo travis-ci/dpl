@@ -30,5 +30,3 @@ group :development, :test do
   gem 'rubocop-rspec'
   gem 'simplecov-console'
 end
-
-gem 'byebug'

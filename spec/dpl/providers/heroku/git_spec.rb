@@ -46,9 +46,9 @@ describe Dpl::Providers::Heroku do
     end
 
     describe 'given --log_level debug' do
-      it { is_expected.to have_logged 'get https://api.heroku.com/account' }
+      it { is_expected.to have_logged 'GET https://api.heroku.com/account' }
       it { is_expected.to have_logged 'Accept: "application/vnd.heroku+json; version=3"' }
-      it { is_expected.to have_logged 'Status: 200' }
+      it { is_expected.to have_logged 'Status 200' }
     end
 
     describe 'given --run restart' do
