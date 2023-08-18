@@ -19,7 +19,6 @@ module Dpl
         chef/cookbook_uploader
       ]
 
-      gem 'knife', git: 'https://github.com/chef/chef'
       gem 'json'
       gem 'mime-types', '~> 3.4.1'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
@@ -60,7 +59,7 @@ module Dpl
       private
 
       def upload
-        res = Chef::CookbookSiteStreamingUploader.post(URL, user_id, client_key, params)
+        res = Chef::Knife::Core::CookbookSiteStreamingUploader.post(URL, user_id, client_key, params)
         handle_error(res.body) if res.code.to_i != 201
       end
 
@@ -99,7 +98,7 @@ module Dpl
       end
 
       def build_dir
-        @build_dir ||= Chef::CookbookSiteStreamingUploader.create_build_dir(cookbook)
+        @build_dir ||= Chef::Knife::Core::CookbookSiteStreamingUploader.create_build_dir(cookbook)
       end
 
       def validate_file(path)

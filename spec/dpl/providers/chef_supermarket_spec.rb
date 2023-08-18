@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require 'chef/knife'
 
+require 'dpl/helper/cookbook_site_streaming_uploader'
 describe Dpl::Providers::ChefSupermarket do
   let(:uploader) { Chef::CookbookUploader }
-  let(:site)     { Chef::CookbookSiteStreamingUploader }
+  let(:site)     { Chef::Knife::Core::CookbookSiteStreamingUploader }
 
   let(:args) { |e| %w[--user_id id --client_key chef.pem --cookbook_category cat] + args_from_description(e) }
   let(:url)  { 'https://supermarket.chef.io/api/v1/cookbooks' }
