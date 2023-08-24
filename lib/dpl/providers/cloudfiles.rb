@@ -15,7 +15,7 @@ module Dpl
 
       gem 'nokogiri', '~> 1.15'
       gem 'fog-core', '~> 2.3', require: 'fog/core'
-      gem 'fog-rackspace', '~> 0.1.6', require: 'fog/rackspace'
+      gem 'fog-rackspace', '~> 0.1.6', git: 'https://github.com/travis-oss/fog-rackspace', require: 'fog/rackspace'
 
       env :cloudfiles
 
