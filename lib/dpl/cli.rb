@@ -71,7 +71,7 @@ module Dpl
 
     def error(err)
       msg = "\e[31m#{err.message}\e[0m"
-      msg = [msg, *err.backtrace].join("\n") if backtrace?(e)
+      msg = [msg, *err.backtrace].join("\n") if backtrace?(err)
       abort msg
     end
 
