@@ -18,7 +18,7 @@ module Dpl
     # Python version will be activated before executing the command.
     def cmd(secure = true)
       cmd = lookup(:cmd, key) || missing(:cmd, key)
-      cmd = interpolate(cmd, opts, secure:).strip
+      cmd = interpolate(cmd, opts, secure: secure).strip
       cmd = silence(cmd) if silence?
       cmd = python(cmd) if python?
       cmd

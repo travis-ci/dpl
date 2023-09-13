@@ -27,6 +27,7 @@ module Dpl
 
       class Parse < Struct.new(:code)
         def gems
+          return [] unless sexp
           walk(*sexp).flatten.each_slice(3).to_a
         end
 

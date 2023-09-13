@@ -64,7 +64,7 @@ module Dpl
       end
 
       def params
-        { cookbook: json(category:), tarball: }
+        { cookbook: json(category: category), tarball: tarball}
       end
 
       def tarball

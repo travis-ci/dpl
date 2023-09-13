@@ -4,7 +4,7 @@ $LOAD_PATH << 'lib'
 require 'dpl/support/gems'
 
 source 'https://rubygems.org'
-ruby '>= 3.2'
+ruby '>= 3'
 
 gemspec name: 'dpl'
 gem 'cl', git: 'https://github.com/zgid123/cl'

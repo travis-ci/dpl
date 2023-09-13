@@ -84,7 +84,7 @@ module Dpl
   class Example < Struct.new(:const, :opts)
     def config
       config = opts_for(opts)
-      config = config.merge(strategy:) # hmm.
+      config = config.merge(strategy: strategy) # hmm.
       compact(config)
     end
 

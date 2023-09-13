@@ -113,7 +113,7 @@ module Dpl
       end
 
       def sign_version
-        body = compact(passphrase:)
+        body = compact(passphrase: passphrase)
         info :sign_version, (passphrase? ? 'with' : 'without')
         post(path(:version_sign), body)
       end
@@ -143,7 +143,7 @@ module Dpl
           code = yield
           return if code < 400
 
-          info :retrying, opts.merge(count:, code:)
+          info :retrying, opts.merge(count: count, code: code)
           sleep opts[:pause]
         end
         error :giveup_retries
@@ -181,7 +181,7 @@ module Dpl
         path = ix.to_i.zero? ? str : str[0, ix]
         return path if File.exist?(path)
 
-        warn(:missing_path, path:)
+        warn(:missing_path, path: path)
         nil
       end
 
