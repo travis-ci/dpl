@@ -25,7 +25,7 @@ jobs:
       - node --version
       script:
       - .travis/test_install
-      rvm: 2.7
+      rvm: 3.1
     - <<: *job
       language: python
       python: 2.7
