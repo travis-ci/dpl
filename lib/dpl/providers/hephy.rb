@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Hephy < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :beta
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       env :hephy
 
@@ -23,19 +25,19 @@ module Dpl
 
       INSTALL = 'https://raw.githubusercontent.com/teamhephy/workflow-cli/master/install-v2.sh'
 
-      cmds install:    'curl -sSL %{INSTALL} | bash -x -s %{cli_version} && mv deis ~/.dpl',
-           login:      'deis login %{controller} --username=%{username} --password=%{password}',
-           add_key:    'deis keys:add %{key}',
-           validate:   'deis apps:info --app=%{app}',
-           deploy:     'filter_log git push %{verbose} %{url} HEAD:refs/heads/master -f',
-           run:        'deis run -a %{app} -- %{cmd}',
+      cmds install: 'curl -sSL %{INSTALL} | bash -x -s %{cli_version} && mv deis ~/.dpl',
+           login: 'deis login %{controller} --username=%{username} --password=%{password}',
+           add_key: 'deis keys:add %{key}',
+           validate: 'deis apps:info --app=%{app}',
+           deploy: 'filter_log git push %{verbose} %{url} HEAD:refs/heads/master -f',
+           run: 'deis run -a %{app} -- %{cmd}',
            remove_key: 'deis keys:remove %{key_name}'
 
-      errs login:      'Login failed.',
-           add_key:    'Adding keys failed.',
-           validate:   'Application could not be verified.',
-           deploy:     'Deploying application failed.',
-           run:        'Running command failed.',
+      errs login: 'Login failed.',
+           add_key: 'Adding keys failed.',
+           validate: 'Application could not be verified.',
+           deploy: 'Deploying application failed.',
+           run: 'Running command failed.',
            remove_key: 'Removing keys failed.'
 
       def install
@@ -51,7 +53,7 @@ module Dpl
       end
 
       def add_key(key)
-        shell :add_key, key: key
+        shell(:add_key, key:)
         wait_for_ssh_access(host, port)
       end
 
@@ -64,7 +66,7 @@ module Dpl
       end
 
       def run_cmd(cmd)
-        shell :run, app: app, cmd: cmd
+        shell :run, app:, cmd:
       end
 
       def remove_key
@@ -94,7 +96,7 @@ module Dpl
       end
 
       def host
-        controller.gsub(/https?:\/\//, '').split(':')[0]
+        controller.gsub(%r{https?://}, '').split(':')[0]
       end
 
       def install_hephy_log_filter

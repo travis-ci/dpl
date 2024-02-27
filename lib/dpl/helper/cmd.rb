@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   # Represents a shell command
   class Cmd < Struct.new(:provider, :key, :opts)
@@ -141,27 +143,27 @@ module Dpl
 
     private
 
-      def lookup(type, *keys)
-        str = provider.send(type, *keys) if provider
-        str || keys.detect { |key| key.is_a?(String) }
-      end
+    def lookup(type, *keys)
+      str = provider.send(type, *keys) if provider
+      str || keys.detect { |key| key.is_a?(String) }
+    end
 
-      def missing(type, *keys)
-        raise("Could not find #{type}: #{keys.compact.map(&:inspect).join(', ')}")
-      end
+    def missing(type, *keys)
+      raise("Could not find #{type}: #{keys.compact.map(&:inspect).join(', ')}")
+    end
 
-      def interpolate(str, args, opts = {})
-        provider ? provider.interpolate(str, args, opts) : str
-      end
+    def interpolate(str, args, opts = {})
+      provider ? provider.interpolate(str, args, opts) : str
+    end
 
-      def silence(str)
-        "#{str} > /dev/null 2>&1"
-      end
+    def silence(str)
+      "#{str} > /dev/null 2>&1"
+    end
 
-      # Activates the Python virtualenv for the given Python version.
-      def python(cmd)
-        # "bash -c 'source $HOME/virtualenv/python#{opts[:python]}/bin/activate; #{cmd.gsub(/'/, "'\\\\''")}'"
-        "source $HOME/virtualenv/python#{opts[:python]}/bin/activate && #{cmd}"
-      end
+    # Activates the Python virtualenv for the given Python version.
+    def python(cmd)
+      # "bash -c 'source $HOME/virtualenv/python#{opts[:python]}/bin/activate; #{cmd.gsub(/'/, "'\\\\''")}'"
+      "source $HOME/virtualenv/python#{opts[:python]}/bin/activate && #{cmd}"
+    end
   end
 end

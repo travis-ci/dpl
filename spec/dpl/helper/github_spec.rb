@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Dpl::Github do
   subject { described_class.normalize_filename(from) }
 
@@ -32,13 +34,14 @@ describe Dpl::Github do
     '`': '.',
     '{': '.',
     '}': '.',
-    '~': '.',
+    '~': '.'
   }
 
   strs.each do |from, to|
     describe from.to_s do
       let(:from) { from.to_s }
-      it { should eq to }
+
+      it { is_expected.to eq to }
     end
   end
 end

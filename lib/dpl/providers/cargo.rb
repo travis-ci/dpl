@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Cargo < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :stable
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       env :cargo
 
@@ -22,9 +24,9 @@ module Dpl
 
       private
 
-        def publish_opts
-          opts_for(%i(token allow_dirty), dashed: true)
-        end
+      def publish_opts
+        opts_for(%i[token allow_dirty], dashed: true)
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Cloudfiles < Provider
@@ -7,19 +9,19 @@ module Dpl
 
       full_name 'Cloud Files'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
-      gem 'nokogiri', '< 1.12'
-      gem 'fog-core', '= 2.1.0', require: 'fog/core'
-      gem 'fog-rackspace', '~> 0.1.6', require: 'fog/rackspace'
+      gem 'nokogiri', '~> 1.15'
+      gem 'fog-core', '~> 2.3', require: 'fog/core'
+      gem 'fog-rackspace', '~> 0.1.6', git: 'https://github.com/travis-oss/fog-rackspace', require: 'fog/rackspace'
 
       env :cloudfiles
 
       opt '--username USER',  'Rackspace username', required: true
       opt '--api_key KEY',    'Rackspace API key', required: true, secret: true
-      opt '--region REGION',  'Cloudfiles region', required: true, enum: %w(ord dfw syd iad hkg)
+      opt '--region REGION',  'Cloudfiles region', required: true, enum: %w[ord dfw syd iad hkg]
       opt '--container NAME', 'Name of the container that files will be uploaded to', required: true
       opt '--glob GLOB',      'Paths to upload', default: '**/*'
       opt '--dot_match',      'Upload hidden files starting a dot'

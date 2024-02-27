@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dpl/providers/anynines'
 require 'dpl/providers/azure_web_apps'
 require 'dpl/providers/bintray'
@@ -31,7 +33,7 @@ require 'dpl/providers/npm'
 require 'dpl/providers/nuget'
 require 'dpl/providers/openshift'
 require 'dpl/providers/opsworks'
-require 'dpl/providers/packagecloud'
+# require 'dpl/providers/packagecloud'
 require 'dpl/providers/pages'
 require 'dpl/providers/puppetforge'
 require 'dpl/providers/pypi'

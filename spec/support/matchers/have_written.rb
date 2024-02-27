@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_written do |path, str|
   match do
     path = File.expand_path(path)
-    path = path.sub("#{File.expand_path('~')}", './home')
+    path = path.sub(File.expand_path('~').to_s, './home')
     str = str.chomp
     @file = File.read(path).chomp
     @file == str

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'uri'
 require 'find'
@@ -9,11 +11,11 @@ module Dpl
 
       status :stable
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
-      gem 'json', '~> 2.3.1'
+      gem 'json'
 
       env :bintray
 
@@ -23,42 +25,42 @@ module Dpl
       opt '--passphrase PHRASE', 'Passphrase as configured on Bintray (if GPG signing is used)'
       opt '--url URL', default: 'https://api.bintray.com', internal: true
 
-      msgs missing_file:    'Missing descriptor file: %{file}',
-           invalid_file:    'Failed to parse descriptor file %{file}',
-           create_package:  'Creating package %{package_name}',
-           package_attrs:   'Adding attributes for package %{package_name}',
-           create_version:  'Creating version %{version_name}',
-           version_attrs:   'Adding attributes for version %{version_name}',
-           upload_file:     'Uploading file %{source} to %{target}',
-           sign_version:    'Signing version %s passphrase',
+      msgs missing_file: 'Missing descriptor file: %{file}',
+           invalid_file: 'Failed to parse descriptor file %{file}',
+           create_package: 'Creating package %{package_name}',
+           package_attrs: 'Adding attributes for package %{package_name}',
+           create_version: 'Creating version %{version_name}',
+           version_attrs: 'Adding attributes for version %{version_name}',
+           upload_file: 'Uploading file %{source} to %{target}',
+           sign_version: 'Signing version %s passphrase',
            publish_version: 'Publishing version %{version_name} of package %{package_name}',
-           missing_path:    'Path: %{path} does not exist.',
-           list_download:   'Listing %{path} in downloads',
-           retrying:        '%{code} response from Bintray. It may take some time for a version to be published, retrying in %{pause} sec ... (%{count}/%{max})',
-           giveup_retries:  'Too many retries failed, giving up, something went wrong.',
-           unexpected_code: 'Unexpected HTTP response code %s while checking if the %s exists' ,
-           request_failed:  '%s %s returned unexpected HTTP response code %s',
+           missing_path: 'Path: %{path} does not exist.',
+           list_download: 'Listing %{path} in downloads',
+           retrying: '%{code} response from Bintray. It may take some time for a version to be published, retrying in %{pause} sec ... (%{count}/%{max})',
+           giveup_retries: 'Too many retries failed, giving up, something went wrong.',
+           unexpected_code: 'Unexpected HTTP response code %s while checking if the %s exists',
+           request_failed: '%s %s returned unexpected HTTP response code %s',
            request_success: 'Bintray response: %s %s. %s'
 
       PATHS = {
-        packages:        '/packages/%{subject}/%{repo}',
-        package:         '/packages/%{subject}/%{repo}/%{package_name}',
-        package_attrs:   '/packages/%{subject}/%{repo}/%{package_name}/attributes',
-        versions:        '/packages/%{subject}/%{repo}/%{package_name}/versions',
-        version:         '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
-        version_attrs:   '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}/attributes',
-        version_sign:    '/gpg/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
+        packages: '/packages/%{subject}/%{repo}',
+        package: '/packages/%{subject}/%{repo}/%{package_name}',
+        package_attrs: '/packages/%{subject}/%{repo}/%{package_name}/attributes',
+        versions: '/packages/%{subject}/%{repo}/%{package_name}/versions',
+        version: '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
+        version_attrs: '/packages/%{subject}/%{repo}/%{package_name}/versions/%{version_name}/attributes',
+        version_sign: '/gpg/%{subject}/%{repo}/%{package_name}/versions/%{version_name}',
         version_publish: '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/publish',
-        version_file:    '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{target}',
-        file_metadata:   '/file_metadata/%{subject}/%{repo}/%{target}'
-      }
+        version_file: '/content/%{subject}/%{repo}/%{package_name}/%{version_name}/%{target}',
+        file_metadata: '/file_metadata/%{subject}/%{repo}/%{target}'
+      }.freeze
 
       MAP = {
-        package: %i(name desc licenses labels vcs_url website_url
-          issue_tracker_url public_download_numbers public_stats),
-        version: %i(name desc released vcs_tag github_release_notes_file
-          github_use_tag_release_notes attributes)
-      }
+        package: %i[name desc licenses labels vcs_url website_url
+                    issue_tracker_url public_download_numbers public_stats],
+        version: %i[name desc released vcs_tag github_release_notes_file
+                    github_use_tag_release_notes attributes]
+      }.freeze
 
       def install
         require 'json'
@@ -85,6 +87,7 @@ module Dpl
         info :create_package
         post(path(:packages), compact(only(package, *MAP[:package])))
         return unless package_attrs
+
         info :package_attrs
         post(path(:package_attrs), package_attrs)
       end
@@ -97,6 +100,7 @@ module Dpl
         info :create_version
         post(path(:versions), compact(only(version, *MAP[:version])))
         return unless version_attrs
+
         info :version_attrs
         post(path(:version_attrs), version_attrs)
       end
@@ -134,10 +138,11 @@ module Dpl
         end
       end
 
-      def retrying(opts, &block)
+      def retrying(opts)
         1.upto(opts[:max]) do |count|
           code = yield
           return if code < 400
+
           info :retrying, opts.merge(count: count, code: code)
           sleep opts[:pause]
         end
@@ -147,7 +152,8 @@ module Dpl
       def files
         return {} unless files = descriptor[:files]
         return @files if @files
-        keys = %i(path includePattern excludePattern uploadPattern matrixParams listInDownloads)
+
+        keys = %i[path includePattern excludePattern uploadPattern matrixParams listInDownloads]
         files = files.map { |file| file if file[:path] = path_for(file[:includePattern]) }
         @files = files.compact.map { |file| find(*file.values_at(*keys)) }.flatten
       end
@@ -172,9 +178,10 @@ module Dpl
 
       def path_for(str)
         ix = str.index('(')
-        path = ix.to_i == 0 ? str : str[0, ix]
+        path = ix.to_i.zero? ? str : str[0, ix]
         return path if File.exist?(path)
-        warn :missing_path, path: path
+
+        warn(:missing_path, path: path)
         nil
       end
 
@@ -236,7 +243,7 @@ module Dpl
 
       def descriptor
         @descriptor ||= symbolize(JSON.parse(File.read(file)))
-      rescue => e
+      rescue StandardError
         error :invalid_file
       end
 
@@ -291,7 +298,7 @@ module Dpl
       def parse(json)
         hash = JSON.parse(json)
         hash.is_a?(Hash) ? hash : {}
-      rescue
+      rescue StandardError
         {}
       end
 

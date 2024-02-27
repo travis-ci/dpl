@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 
 module Dpl
@@ -67,15 +69,16 @@ module Dpl
     # length of the original string.
     def obfuscate(str, opts = {})
       return str if opts[:secure] || !str.blacklisted?
+
       keep = (str.length / (4.0 + str.length / 5).round).round
-      keep = 1 if keep == 0
+      keep = 1 if keep.zero?
       str[0, keep] + '*' * (20 - keep)
     end
 
     class Interpolator < Struct.new(:str, :obj, :args, :opts)
       include Interpolate
 
-      MODIFIER = %i(obfuscate escape quote)
+      MODIFIER = %i[obfuscate escape quote].freeze
       PATTERN  = /%\{(\$?[\w]+)\}/
       ENV_VAR  = /^\$[A-Z_]+$/
       UPCASE   = /^[A-Z_]+$/
@@ -93,7 +96,7 @@ module Dpl
         @blacklist_result = false
         str = str.to_s.gsub(PATTERN) do
           @blacklist_result = true
-          normalize(lookup($1.to_sym))
+          normalize(lookup(::Regexp.last_match(1).to_sym))
         end
         @blacklist_result || (args.is_a?(Array) && args.any? { |arg| arg.is_a?(String) && arg.blacklisted? }) ? str.blacklist : str
       end
@@ -108,6 +111,7 @@ module Dpl
 
       def secrets(str)
         return [] unless str.is_a?(String) && str.blacklisted?
+
         opts = obj.class.opts.select(&:secret?)
         secrets = opts.map { |opt| obj.opts[opt.name] }.compact
         secrets.select { |secret| str.include?(secret) }
@@ -117,7 +121,7 @@ module Dpl
         obj.is_a?(Array) ? obj.join(' ') : obj.to_s
       end
 
-      def lookup(key)        
+      def lookup(key)
         if vars? && !var?(key)
           UNKNOWN % key
         elsif mod = modifier(key)

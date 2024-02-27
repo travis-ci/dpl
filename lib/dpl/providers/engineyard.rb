@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Engineyard < Provider
@@ -5,13 +7,13 @@ module Dpl
 
       status :alpha
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
-      gem 'ey-core', '~> 3.6.4'
+      gem 'ey-core', '~> 3.6'
 
-      required :api_key, [:email, :password]
+      required :api_key, %i[email password]
 
       env :engineyard, :ey
 
@@ -23,19 +25,19 @@ module Dpl
       opt '--migrate CMD',   'Engine Yard migration commands'
       opt '--account NAME',  'Engine Yard account name'
 
-      msgs deploy:           'Deploying ...',
-           login:            'Authenticating via email and password ...',
-           write_rc:         'Authenticating via api token ...',
-           authenticated:    'Authenticated as %{name}',
-           invalid_migrate:  'Invalid migration command, try --migrate="rake db:migrate"',
-           envs:             'Checking environment ...',
-           no_env:           'No matching environment found',
-           too_many_envs:    'Multiple environments match, please be more specific: %s',
-           env_entry:        'environment=%s account=%s'
+      msgs deploy: 'Deploying ...',
+           login: 'Authenticating via email and password ...',
+           write_rc: 'Authenticating via api token ...',
+           authenticated: 'Authenticated as %{name}',
+           invalid_migrate: 'Invalid migration command, try --migrate="rake db:migrate"',
+           envs: 'Checking environment ...',
+           no_env: 'No matching environment found',
+           too_many_envs: 'Multiple environments match, please be more specific: %s',
+           env_entry: 'environment=%s account=%s'
 
-      cmds login:  "ey-core login << str\n%{email}\n%{password}\nstr",
+      cmds login: "ey-core login << str\n%{email}\n%{password}\nstr",
            whoami: 'ey-core whoami',
-           envs:   'ey-core environments',
+           envs: 'ey-core environments',
            deploy: 'ey-core deploy %{deploy_opts}'
 
       def login
@@ -54,58 +56,58 @@ module Dpl
 
       private
 
-        def authenticate
-          shell :login, echo: false, capture: true
-        end
+      def authenticate
+        shell :login, echo: false, capture: true
+      end
 
-        def whoami
-          shell(:whoami, echo: false, capture: true) =~ /email\s*:\s*"(.+)"/ && $1
-        end
+      def whoami
+        shell(:whoami, echo: false, capture: true) =~ /email\s*:\s*"(.+)"/ && ::Regexp.last_match(1)
+      end
 
-        def write_rc
-          info :write_rc
-          write_file '~/.ey-core', "https://api.engineyard.com/: #{api_key}"
-        end
+      def write_rc
+        info :write_rc
+        write_file '~/.ey-core', "https://api.engineyard.com/: #{api_key}"
+      end
 
-        def invalid_migrate?
-          migrate.is_a?(TrueClass) || migrate == 'true'
-        end
+      def invalid_migrate?
+        migrate.is_a?(TrueClass) || migrate == 'true'
+      end
 
-        def deploy_opts
-          opts = [%(--ref="#{git_sha}" --environment="#{env}")]
-          opts << opts_for(%i(app account))
-          opts << migrate_opt
-          opts.join(' ')
-        end
+      def deploy_opts
+        opts = [%(--ref="#{git_sha}" --environment="#{env}")]
+        opts << opts_for(%i[app account])
+        opts << migrate_opt
+        opts.join(' ')
+      end
 
-        def migrate_opt
-          migrate? ? opts_for(%i(migrate)) : '--no-migrate'
-        end
+      def migrate_opt
+        migrate? ? opts_for(%i[migrate]) : '--no-migrate'
+      end
 
-        def env
-          @env ||= super || detect_env(envs)
-        end
+      def env
+        @env ||= super || detect_env(envs)
+      end
 
-        def detect_env(envs)
-          case envs.size
-          when 1 then envs.first[:name]
-          when 0 then error :no_env
-          else too_many_envs(envs)
-          end
+      def detect_env(envs)
+        case envs.size
+        when 1 then envs.first[:name]
+        when 0 then error :no_env
+        else too_many_envs(envs)
         end
+      end
 
-        def envs
-          lines = shell(:envs, echo: false, capture: true).split("\n")[2..-1] || []
-          envs = lines.map { |line| line.split('|')[1..-1].map(&:strip) }
-          envs = envs.map { |pair| %i(name account).zip(pair).to_h }
-          envs.select { |env| env[:name] == opts[:env] } if env?
-          envs
-        end
+      def envs
+        lines = shell(:envs, echo: false, capture: true).split("\n")[2..] || []
+        envs = lines.map { |line| line.split('|')[1..].map(&:strip) }
+        envs = envs.map { |pair| %i[name account].zip(pair).to_h }
+        envs.select { |env| env[:name] == opts[:env] } if env?
+        envs
+      end
 
-        def too_many_envs(envs)
-          envs = envs.map { |env| msg(:env_entry) % env.values_at(:name, :account) }
-          error msg(:too_many_envs) % envs.join(', ')
-        end
+      def too_many_envs(envs)
+        envs = envs.map { |env| msg(:env_entry) % env.values_at(:name, :account) }
+        error msg(:too_many_envs) % envs.join(', ')
+      end
     end
   end
 end

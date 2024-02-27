@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'ripper'
 
 module Support
   module Gemfile
-    extend self
+    module_function
 
     def gems
-      code = ::File.read(::File.expand_path('../../../Gemfile', __FILE__))
+      code = ::File.read(::File.expand_path('../../Gemfile', __dir__))
       sexp = Ripper.sexp(code)
       walk(*sexp)
     end

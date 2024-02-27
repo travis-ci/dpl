@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Snap < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :stable
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       env :snap
 
@@ -18,18 +20,19 @@ module Dpl
       apt 'snapd', 'snap'
 
       cmds apt_get_update: 'sudo apt-get update -qq',
-           update_snapd:   'sudo apt-get install snapd',
-           install:        'sudo snap install snapcraft --classic',
-           login:          'echo "%{token}" | snapcraft login --with -',
-           deploy:         'snapcraft push %{snap_path} --release=%{channel}'
+           update_snapd: 'sudo apt-get install snapd',
+           install: 'sudo snap install snapcraft --classic',
+           login: 'echo "%{token}" | snapcraft login --with -',
+           deploy: 'snapcraft push %{snap_path} --release=%{channel}'
 
-      msgs login:          'Attemping to login ...',
-           no_snaps:       'No snap found matching %{snap}',
+      msgs login: 'Attemping to login ...',
+           no_snaps: 'No snap found matching %{snap}',
            multiple_snaps: 'Multiple snaps found matching %{snap}: %{snap_paths}',
-           deploy:         'Pushing snap %{snap_path}'
+           deploy: 'Pushing snap %{snap_path}'
 
       def install
         return if which 'snapcraft'
+
         shell :apt_get_update
         shell :update_snapd
         shell :install

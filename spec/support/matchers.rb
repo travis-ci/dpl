@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'support/matchers/aws'
 require 'support/matchers/have_deprecated'
 require 'support/matchers/have_env'

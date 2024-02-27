@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Support
   module Helpers
     def only(hash, *keys)

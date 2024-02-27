@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_zipped do |path, files|
   match do
     expect(File.exist?(path)).to be true

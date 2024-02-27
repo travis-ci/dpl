@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'dpl/helper/squiggle'
 require 'dpl/helper/wrap'
 require 'dpl/provider/status'
 
-# TODO figure out how to allow adding domain specific behavior like this to Cl
+# TODO: figure out how to allow adding domain specific behavior like this to Cl
 class Cl::Opt
   OPTS << :interpolate
 
@@ -55,9 +57,10 @@ module Dpl
       def vars(*vars)
         return self.vars.concat(vars) if vars.any?
         return @vars if instance_variable_defined?(:@vars)
+
         vars = superclass.respond_to?(:vars) ? superclass.vars : []
-        reject = %i(flag array internal interpolate secret)
-        opts = reject.inject(self.opts) { |opts, attr| opts.reject(&:"#{attr}?") }
+        reject = %i[flag array internal interpolate secret]
+        opts = reject.inject(self.opts) { |options, attr| options.reject(&:"#{attr}?") }
         @vars = vars.dup.concat(opts.map(&:name)).uniq.sort - [:strategy]
       end
 
@@ -108,6 +111,7 @@ module Dpl
 
       def runtimes(name = nil, requirements = nil)
         return @runtimes ||= [] unless name
+
         runtimes << [name, requirements]
       end
 
@@ -121,6 +125,7 @@ module Dpl
       # @return Previously declared apt packages if no arguments were given.
       def apt(package = nil, cmd = nil)
         return apt << [package, cmd].compact if package
+
         @apt ||= self == Provider ? [] : superclass.apt.dup
       end
 
@@ -144,6 +149,7 @@ module Dpl
       # @return Previously declared gems if no arguments were given
       def gem(name = nil, version = nil, opts = {})
         return gem << [name, version, opts] if name
+
         @gem ||= self == Provider ? [] : superclass.gem.dup
       end
 
@@ -161,6 +167,7 @@ module Dpl
       # @return Previously declared NPM packages if no arguments are given.
       def npm(package = nil, cmd = nil)
         return npm << [package, cmd].compact if package
+
         @npm ||= self == Provider ? [] : superclass.npm.dup
       end
 
@@ -181,6 +188,7 @@ module Dpl
       # @return Previously declared Python packages if no arguments are given.
       def pip(package = nil, cmd = nil, version = nil)
         return pip << [package, cmd, version].compact if package
+
         @pip ||= self == Provider ? [] : superclass.pip.dup
       end
 
@@ -223,6 +231,7 @@ module Dpl
       # commands.
       def cmds(cmds = nil)
         return self.cmds.update(cmds) if cmds
+
         @cmds ||= self == Provider ? {} : superclass.cmds.dup
       end
 
@@ -265,6 +274,7 @@ module Dpl
       # commands.
       def errs(errs = nil)
         return self.errs.update(errs) if errs
+
         @errs ||= self == Provider ? {} : superclass.errs.dup
       end
 
@@ -327,11 +337,13 @@ module Dpl
       # @return Previously declared msgs if no argument is given.
       def msgs(msgs = nil)
         return self.msgs.update(msgs) if msgs
+
         @msgs ||= self == Provider ? {} : superclass.msgs.dup
       end
 
       def strs(strs = nil)
         return self.strs.update(strs) if strs
+
         @strs ||= self == Provider ? {} : superclass.strs.dup
       end
 
@@ -342,6 +354,7 @@ module Dpl
       # @return Previously declared artifacts to keep if no argument is given.
       def keep(*paths)
         return keep.concat(paths) if paths.any?
+
         @keep ||= self == Provider ? [] : superclass.keep.dup
       end
 
@@ -364,6 +377,7 @@ module Dpl
       # @return Previously declared features needed if no argument is given.
       def needs(*features)
         return needs.concat(features) if features.any?
+
         @needs ||= self == Provider ? [] : superclass.needs.dup
       end
 
@@ -380,7 +394,7 @@ module Dpl
       def user_agent(*strs)
         strs.unshift "dpl/#{Dpl::VERSION}"
         strs.unshift 'travis/0.1.0' if ENV['TRAVIS']
-        strs = strs.flat_map { |e| Hash === e ? e.map { |k, v| "#{k}/#{v}" } : e }
+        strs = strs.flat_map { |e| e.is_a?(Hash) ? e.map { |k, v| "#{k}/#{v}" } : e }
         strs.join(' ').gsub(/\s+/, ' ').strip
       end
 

@@ -1,12 +1,13 @@
 # frozen_string_literal: true
+
 class Version
   InvalidVersion = Class.new(ArgumentError)
   InvalidRequire = Class.new(ArgumentError)
 
   MSGS = {
     version: 'Unable to parse version: %p',
-    require: 'Unable to parse requirement: %p',
-  }
+    require: 'Unable to parse requirement: %p'
+  }.freeze
 
   VERSION = /^(\d+)(?:\.(\d+))?(?:\.(\d+))?$/
   REQUIRE = /^(~>|>|>=|=|!=|<=|<) (\d+(?:\.\d+)?(?:\.\d+)?)$/
@@ -18,7 +19,7 @@ class Version
   end
 
   def satisfies?(str)
-    send *parse(str) || raise(InvalidRequire, MSGS[:require] % str)
+    send(*parse(str) || raise(InvalidRequire, MSGS[:require] % str))
   end
 
   def size
@@ -69,15 +70,15 @@ class Version
 
   private
 
-    attr_reader :nums
+  attr_reader :nums
 
-    def split(str)
-      str =~ VERSION && [$1, $2, $3].compact.map(&:to_i)
-    end
+  def split(str)
+    str =~ VERSION && [::Regexp.last_match(1), ::Regexp.last_match(2), ::Regexp.last_match(3)].compact.map(&:to_i)
+  end
 
-    def parse(str)
-      op, version = str =~ REQUIRE && [$1, $2]
-      op = '==' if op == '='
-      [op, Version.new(version)] if op
-    end
+  def parse(str)
+    op, version = str =~ REQUIRE && [::Regexp.last_match(1), ::Regexp.last_match(2)]
+    op = '==' if op == '='
+    [op, Version.new(version)] if op
+  end
 end
