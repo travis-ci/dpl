@@ -6,7 +6,7 @@ require 'dpl/support/gems'
 source 'https://rubygems.org'
 ruby '>= 3'
 
-gemspec name: 'travis_dpl_test'
+gemspec name: 'dpl'
 # gem 'travis-cl'
 # gem 'travis-packagecloud-ruby'
 # gem 'json_pure', '~> 2.6'
