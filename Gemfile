@@ -6,9 +6,9 @@ require 'dpl/support/gems'
 source 'https://rubygems.org'
 ruby '>= 3'
 
-gemspec name: 'dpl'
-gem 'cl', git: 'https://github.com/zgid123/cl'
-gem 'packagecloud-ruby', git: 'https://github.com/flywirecorp/packagecloud-ruby'
+gemspec name: 'travis_dpl_test'
+# gem 'travis-cl'
+# gem 'travis-packagecloud-ruby'
 # gem 'json_pure', '~> 2.6'
 
 # gem 'regstry', path: '../../registry'
