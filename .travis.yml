@@ -18,8 +18,8 @@ jobs:
       if: commit_message !~ /skip:test_dependencies/ AND env(SKIP_TEST_DEPENDENCIES) IS blank
       cache: false
       install:
-      # - rvm install 3.1.2
-      # - rvm use 3.1.2
+      - rvm install 3.1.2
+      - rvm use 3.1.2
       # - gem update bundler
       # - bundle install
       - gem build dpl.gemspec
