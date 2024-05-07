@@ -9,7 +9,7 @@ ruby '>= 3'
 gemspec name: 'dpl'
 gem 'travis-cl'
 gem 'travis-packagecloud-ruby'
-gem 'json', '~> 2.3.1'
+# gem 'json', '~> 2.3.1'
 # gem 'json_pure', '~> 2.6'
 
 # gem 'regstry', path: '../../registry'
