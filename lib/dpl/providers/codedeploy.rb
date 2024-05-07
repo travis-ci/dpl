@@ -15,6 +15,7 @@ module Dpl
         tbd
       STR
 
+      gem 'nokogiri', '~> 1.15'
       gem 'aws-sdk-codedeploy', '~> 1.0'
       gem 'aws-sdk-s3', '~> 1'
 
