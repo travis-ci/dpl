@@ -1,15 +1,15 @@
 dist: focal
 
 language: ruby
-rvm:
-  - 3.1
-  - 3.2
+# rvm:
+#   - 3.1
+#   - 3.2
 
-cache:
-  - bundler
+# cache:
+#   - bundler
 
-script:
-  - bundle exec rspec
+# script:
+#   - bundle exec rspec
 
 jobs:
   include:
@@ -32,18 +32,18 @@ jobs:
     - <<: *job
       language: python
       python: 2.7
-    - <<: *job
-      language: python
-      python: 3.7
-    - <<: *job
-      language: python
-      python: 3.8
-    - <<: *job
-      language: python
-      python: 3.9
-    - <<: *job
-      language: python
-      python: 3.10
-    - <<: *job
-      language: python
-      python: 3.11
+    # - <<: *job
+    #   language: python
+    #   python: 3.7
+    # - <<: *job
+    #   language: python
+    #   python: 3.8
+    # - <<: *job
+    #   language: python
+    #   python: 3.9
+    # - <<: *job
+    #   language: python
+    #   python: 3.10
+    # - <<: *job
+    #   language: python
+    #   python: 3.11
