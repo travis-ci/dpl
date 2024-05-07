@@ -19,7 +19,7 @@ module Dpl
       STR
 
       gem 'aws-sdk-s3', '~> 1'
-      gem 'mime-types', '~> 3.4.1'
+      gem 'mime-types', '~> 3.5.2'
 
       env :aws, :s3
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'

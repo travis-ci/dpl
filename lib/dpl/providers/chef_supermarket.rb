@@ -20,7 +20,7 @@ module Dpl
       ]
 
       gem 'json', '~> 2.3.1'
-      gem 'mime-types', '~> 3.4.1'
+      gem 'mime-types', '~> 3.5.2'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
       gem 'rack'
 

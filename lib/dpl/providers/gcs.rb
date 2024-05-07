@@ -15,7 +15,7 @@ module Dpl
         tbd
       STR
 
-      gem 'mime-types', '~> 3.4.1'
+      gem 'mime-types', '~> 3.5.2'
 
       python '>= 2.7.9'
 
