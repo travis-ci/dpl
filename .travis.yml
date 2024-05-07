@@ -21,13 +21,13 @@ jobs:
       - rvm install 3.1.2
       - rvm use 3.1.2
       - gem update bundler
-      - bundle install
       - gem build dpl.gemspec
       - gem install dpl-*.gem
       - nvm install 12.22.0
       - nvm use 12.22.0
       - node --version
       script:
+      - bundle install
       - .travis/test_install
     - <<: *job
       language: python
