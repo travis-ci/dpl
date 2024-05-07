@@ -7,8 +7,8 @@ source 'https://rubygems.org'
 ruby '>= 3'
 
 gemspec name: 'dpl'
-# gem 'travis-cl'
-# gem 'travis-packagecloud-ruby'
+gem 'travis-cl'
+gem 'travis-packagecloud-ruby'
 # gem 'json_pure', '~> 2.6'
 
 # gem 'regstry', path: '../../registry'

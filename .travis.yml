@@ -18,6 +18,10 @@ jobs:
       if: commit_message !~ /skip:test_dependencies/ AND env(SKIP_TEST_DEPENDENCIES) IS blank
       cache: false
       install:
+      # - rvm install 3.1.2
+      # - rvm use 3.1.2
+      # - gem update bundler
+      # - bundle install
       - gem build dpl.gemspec
       - gem install dpl-*.gem
       - nvm install 12.22.0
@@ -25,7 +29,6 @@ jobs:
       - node --version
       script:
       - .travis/test_install
-      rvm: 3.1
     - <<: *job
       language: python
       python: 2.7
