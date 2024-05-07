@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-$: << File.expand_path('../../lib', __FILE__)
+# frozen_string_literal: true
+
+$LOAD_PATH << File.expand_path('../lib', __dir__)
 
 require 'ffi-icu'
 require 'erb'
@@ -7,7 +9,7 @@ require 'dpl'
 require 'dpl/helper/squiggle'
 require 'dpl/helper/wrap'
 
-SKIP = %i(help heroku pages)
+SKIP = %i[help heroku pages].freeze
 
 CTX = Cl::Ctx.new('dpl')
 
@@ -15,7 +17,7 @@ class Header < Struct.new(:cmd)
   include Wrap
 
   def to_s
-    cmd.status.msg if cmd.status && cmd.status.announce?
+    cmd.status.msg if cmd.status&.announce?
   end
 end
 
@@ -29,22 +31,24 @@ class Footer < Struct.new(:cmd)
 
   def env
     return unless env = cmd.instance_variable_get(:@env) || cmd.superclass.instance_variable_get(:@env) # TODO
+
     str = env.description(cmd)
     wrap(str, 100)
   end
 
-  VARS = sq(<<-str)
+  VARS = sq(<<-STR)
     The following variable are availabe for interpolation on %s:
 
       %s
-  str
+  STR
 
   def vars
     opts = cmd.opts.select(&:interpolate?)
     return unless opts.any?
+
     opts = opts.map(&:name).map { |name| "`#{name}`" }.join(', ')
     vars = cmd.vars.map { |var| "`#{var}`" }.join(', ')
-    VARS % [opts, vars]
+    format(VARS, opts, vars)
   end
 end
 
@@ -73,10 +77,9 @@ def contributors
   names = names.map(&:unicode_normalize)
   names = names.sort { |lft, rgt| collator.compare(lft, rgt) }
   names = names.uniq
-  names = names - ['Travis CI']
+  names -= ['Travis CI']
   names.join(', ')
 end
-
 
 erb = ERB.new(File.read('lib/dpl/assets/dpl/README.erb.md'), nil, '-')
 str = erb.result

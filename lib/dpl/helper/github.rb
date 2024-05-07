@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dpl/helper/transliterate'
 
 # I18n.load_path << File.expand_path('config/transliterate.yml')

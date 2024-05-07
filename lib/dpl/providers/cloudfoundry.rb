@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Cloudfoundry < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'Cloud Foundry'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       env :cloudfoundry
 
@@ -23,20 +25,20 @@ module Dpl
       opt '--manifest FILE',       'Path to the manifest'
       opt '--skip_ssl_validation', 'Skip SSL validation'
       opt '--deployment_strategy STRATEGY', 'Deployment strategy, either rolling or null'
-      opt '--v3',                  'Use the v3 API version to push the application'
+      opt '--v3', 'Use the v3 API version to push the application'
       opt '--logout', default: true, internal: true
 
       cmds install: 'test $(uname) = "Linux" && rel="linux64-binary" || rel="macosx64"; wget "https://cli.run.pivotal.io/stable?release=${rel}&version=v7&source=github" -qO cf.tgz && tar -zxvf cf.tgz && rm cf.tgz',
-           api:     './cf api %{api} %{skip_ssl_validation_opt}',
-           login:   './cf login -u %{username} -p %{password} -o %{organization} -s %{space}',
-           push:    './cf %{push_cmd} %{push_args}',
-           logout:  './cf logout'
+           api: './cf api %{api} %{skip_ssl_validation_opt}',
+           login: './cf login -u %{username} -p %{password} -o %{organization} -s %{space}',
+           push: './cf %{push_cmd} %{push_args}',
+           logout: './cf logout'
 
       errs install: 'Failed to install CLI tools',
-           api:     'Failed to set api %{api}',
-           login:   'Failed to login',
-           push:    'Failed to push app',
-           logout:  'Failed to logout'
+           api: 'Failed to set api %{api}',
+           login: 'Failed to login',
+           push: 'Failed to push app',
+           logout: 'Failed to logout'
 
       msgs manifest_missing: 'Application must have a manifest.yml for unattended deployment'
 
@@ -63,25 +65,25 @@ module Dpl
 
       private
 
-        def push_cmd
-          v3? ? 'v3-push' : 'push'
-        end
+      def push_cmd
+        v3? ? 'v3-push' : 'push'
+      end
 
-        def push_args
-          args = []
-          args << quote(app_name)  if app_name?
-          args << "-f #{manifest}" if manifest?
-          args << "--strategy #{deployment_strategy}" if deployment_strategy?
-          args.join(' ')
-        end
+      def push_args
+        args = []
+        args << quote(app_name)  if app_name?
+        args << "-f #{manifest}" if manifest?
+        args << "--strategy #{deployment_strategy}" if deployment_strategy?
+        args.join(' ')
+      end
 
-        def skip_ssl_validation_opt
-          '--skip-ssl-validation' if skip_ssl_validation?
-        end
+      def skip_ssl_validation_opt
+        '--skip-ssl-validation' if skip_ssl_validation?
+      end
 
-        def manifest_missing?
-          !File.exist?(manifest)
-        end
+      def manifest_missing?
+        !File.exist?(manifest)
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 
 module Dpl
@@ -7,13 +9,13 @@ module Dpl
 
       status :stable
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       node_js '>= 8.8.1'
 
-      gem 'json', '~> 2.3.1'
+      gem 'json'
       npm :surge
       env :surge
 
@@ -25,7 +27,7 @@ module Dpl
       cmds deploy: 'surge %{project} %{domain}'
 
       msgs invalid_project: '%{project} is not a directory',
-           missing_domain:  'Please set the domain in .travis.yml or in a CNAME file in the project directory'
+           missing_domain: 'Please set the domain in .travis.yml or in a CNAME file in the project directory'
 
       def login
         ENV['SURGE_LOGIN'] ||= opts[:login]
@@ -33,8 +35,8 @@ module Dpl
       end
 
       def validate
-      	error :invalid_project if invalid_project?
-      	error :missing_domain  if missing_domain?
+        error :invalid_project if invalid_project?
+        error :missing_domain  if missing_domain?
       end
 
       def deploy

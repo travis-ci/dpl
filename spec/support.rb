@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'support/cl'
 require 'support/ctx'
 require 'support/env'

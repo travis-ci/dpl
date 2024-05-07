@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cl'
 require 'stringio'
 require 'dpl/helper/squiggle'
@@ -42,7 +44,11 @@ module Dpl
       def gem_require(name, version = nil, opts = {})
         # not sure why this is needed. bundler should take care of this, but
         # it does not for octokit for whatever reason
-        require opts[:require] || name rescue nil
+        begin
+          require opts[:require] || name
+        rescue StandardError
+          nil
+        end
         cmds << "[gem:require] #{name} (#{version}, #{opts})"
       end
 
@@ -54,16 +60,17 @@ module Dpl
         cmds << "[pip:install] #{name} (#{cmd}, #{version})"
       end
 
-      def ssh_keygen(name, file)
+      def ssh_keygen(_name, file)
         File.open(file, 'w+') { |f| f.write('private-key') }
         File.open("#{file}.pub", 'w+') { |f| f.write('ssh-rsa public-key') }
       end
 
-      def shell(cmd, opts = {})
+      def shell(cmd, _opts = {})
         info cmd.msg if cmd.msg?
         info cmd.echo if cmd.echo?
         cmds << cmd.cmd
         return stdout[cmd.key] if stdout.key?(cmd.key)
+
         cmd.capture? ? 'captured_stdout' : true
       end
 
@@ -128,15 +135,15 @@ module Dpl
         true
       end
 
-      def git_log(args)
+      def git_log(_args)
         'commits'
       end
 
       def git_ls_files
-        %w(one two)
+        %w[one two]
       end
 
-      def git_ls_remote?(url, ref)
+      def git_ls_remote?(_url, _ref)
         true
       end
 
@@ -168,7 +175,7 @@ module Dpl
         '1'
       end
 
-      def which(cmd)
+      def which(_cmd)
         false
       end
 
@@ -177,10 +184,9 @@ module Dpl
         'tmp'
       end
 
-      def sleep(*)
-      end
+      def sleep(*); end
 
-      def encoding(path)
+      def encoding(_path)
         'text'
       end
 
@@ -195,7 +201,7 @@ module Dpl
       end
 
       def file_size(path)
-        File.size(path.sub("#{File.expand_path('~')}", './home'))
+        File.size(path.sub(File.expand_path('~').to_s, './home'))
       end
 
       def move_files(paths)
@@ -222,19 +228,19 @@ module Dpl
         cmds << [:chmod, perm, path].join(' ')
       end
 
-      def write_file(path, content, chmod = nil)
+      def write_file(path, content, _chmod = nil)
         path = File.expand_path(path)
-        path = path.sub("#{File.expand_path('~')}", './home')
+        path = path.sub(File.expand_path('~').to_s, './home')
         FileUtils.mkdir_p(File.dirname(path))
         File.open(path, 'w+') { |f| f.write(content) }
       end
 
       def write_netrc(machine, login, password)
-        write_file('~/.netrc', sq(<<-rc))
+        write_file('~/.netrc', sq(<<-RC))
           machine #{machine}
             login #{login}
             password #{password}
-        rc
+        RC
       end
 
       def tty?

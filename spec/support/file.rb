@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 require 'yaml'
 
@@ -17,11 +19,18 @@ module Support
       end
 
       def chdir(dir)
-        before { @cwd = Dir.pwd; chdir(dir) }
-        after  { chdir(@cwd); rm_r(dir) }
+        before do
+          @cwd = Dir.pwd
+          chdir(dir)
+        end
+
+        after do
+          chdir(@cwd)
+          rm_r(dir)
+        end
       end
 
-      def rm(path)
+      def rm(_path)
         after { chdir(dir) }
       end
 

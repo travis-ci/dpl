@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dpl/helper/github'
 
 module Dpl
@@ -11,17 +13,17 @@ module Dpl
 
       full_name 'GitHub Releases'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
-      gem 'octokit', '~> 5.6.1'
+      gem 'octokit', '~> 7'
       gem 'mime-types', '~> 3.4.1'
-      gem 'public_suffix', '~> 3.0.3'
+      gem 'public_suffix', '~> 5'
 
       env :github, :releases
 
-      required :token, [:username, :password]
+      required :token, %i[username password]
 
       opt '--token TOKEN', 'GitHub oauth token (needs public_repo or repo permission)', secret: true, alias: :api_key
       opt '--username LOGIN', 'GitHub login name', alias: :user
@@ -42,24 +44,24 @@ module Dpl
 
       needs :git
 
-      msgs deploy:               'Deploying to repo: %{slug}',
-           local_tag:            'Current tag is: %{local_tag}',
-           login:                'Authenticated as %s',
-           insufficient_scopes:  'Dpl does not have permission to upload assets. Make sure your token has the repo or public_repo scope.',
-           insufficient_perm:    'Release resource not found. Make sure your token belongs to an account which has push permission to this repo.',
-           overwrite_existing:   'File %s already exists, overwriting.',
-           skip_existing:        'File %s already exists, skipping.',
-           upload_file:          'Uploading file %s ...',
-           set_tag_name:         'Setting tag_name to %s',
+      msgs deploy: 'Deploying to repo: %{slug}',
+           local_tag: 'Current tag is: %{local_tag}',
+           login: 'Authenticated as %s',
+           insufficient_scopes: 'Dpl does not have permission to upload assets. Make sure your token has the repo or public_repo scope.',
+           insufficient_perm: 'Release resource not found. Make sure your token belongs to an account which has push permission to this repo.',
+           overwrite_existing: 'File %s already exists, overwriting.',
+           skip_existing: 'File %s already exists, skipping.',
+           upload_file: 'Uploading file %s ...',
+           set_tag_name: 'Setting tag_name to %s',
            set_target_commitish: 'Setting target_commitish to %s',
-           missing_file:         'File %s does not exist.',
-           not_a_file:           '%s is not a file, skipping.'
+           missing_file: 'File %s does not exist.',
+           not_a_file: '%s is not a file, skipping.'
 
       cmds git_fetch_tags:       'git fetch --tags'
 
       URL = 'https://api.github.com/repos/%s/releases/%s'
 
-      OCTOKIT_OPTS = %i(
+      OCTOKIT_OPTS = %i[
         repo
         name
         body
@@ -67,12 +69,12 @@ module Dpl
         release_number
         tag_name
         target_commitish
-      )
+      ].freeze
 
       TIMEOUTS = {
         timeout: 180,
         open_timeout: 180
-      }
+      }.freeze
 
       def validate
         info :deploy
@@ -99,6 +101,7 @@ module Dpl
         file = normalize_filename(path)
         asset = asset(file)
         return info :skip_existing, file if asset && !overwrite?
+
         delete(asset, file) if asset
         info :upload_file, file
         api.upload_asset(url, path, name: file, content_type: content_type(path))
@@ -119,12 +122,14 @@ module Dpl
 
       def with_tag(opts)
         return opts if tag_name? || draft?
+
         info :set_tag_name, local_tag
         opts.merge(tag_name: local_tag)
       end
 
       def with_target_commitish(opts)
         return opts if target_commitish? || !same_repo?
+
         info :set_target_commitish, git_sha
         opts.merge(target_commitish: git_sha)
       end
@@ -137,7 +142,7 @@ module Dpl
 
       def url
         if release_number?
-          URL % [slug, release_number]
+          format(URL, slug, release_number)
         elsif release
           release.rels[:self].href
         else
@@ -202,7 +207,7 @@ module Dpl
       end
 
       def creds
-        username && password ? { login: username, password: password } : { access_token: token }
+        username && password ? { login: username, password: } : { access_token: token }
       end
 
       def files
@@ -213,12 +218,14 @@ module Dpl
 
       def exists?(file)
         return true if File.exist?(file)
+
         error :missing_file, file
         false
       end
 
       def file?(file)
         return true if File.file?(file)
+
         warn :not_a_file, file
         false
       end

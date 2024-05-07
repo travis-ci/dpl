@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'dpl/cli'
 require 'dpl/ctx'
 require 'dpl/provider'

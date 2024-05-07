@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module ConfigFile
     def self.included(base)
@@ -32,11 +34,11 @@ module Dpl
         str = File.exist?(path) ? File.read(path) : ''
         opts = str.lines.select { |line| line.include?('=') }.map(&:strip)
         opts = opts.map { |pair| pair.split('=', 2) }.to_h
-        opts.map { |key, value| [strip_prefix(key).to_sym, value] }.to_h
+        opts.transform_keys { |key| strip_prefix(key).to_sym }
       end
 
       def strip_prefix(str)
-        opts[:prefix] ? str.sub(/^#{opts[:prefix]}[\-_]?/, '') : str
+        opts[:prefix] ? str.sub(/^#{opts[:prefix]}[-_]?/, '') : str
       end
     end
 

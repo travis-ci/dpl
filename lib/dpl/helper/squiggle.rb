@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Beloved squiggly heredocs did not exist in Ruby 2.1, which we still want to
 # support, so let's give kudos with a method `sq`.
 module Squiggle
@@ -16,7 +18,7 @@ module Squiggle
   #   while this line sits on the same level as the first line.
   # str
   def sq(str)
-    width = str =~ /( *)\S/ && $1.size
+    width = str =~ /( *)\S/ && ::Regexp.last_match(1).size
     str.lines.map { |line| line.gsub(/^ {#{width}}/, '') }.join
   end
 end

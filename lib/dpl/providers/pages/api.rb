@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timeout'
 
 module Dpl
@@ -16,13 +18,13 @@ module Dpl
         TIMEOUTS = {
           timeout: 180,
           open_timeout: 180
-        }
+        }.freeze
 
-        gem 'octokit', '~> 5.6.1'
+        gem 'octokit', '~> 7'
 
         full_name 'GitHub Pages (API)'
 
-        description sq(<<-str)
+        description sq(<<-STR)
           This provider requests GitHub Pages build for the repository given by
           the `--repo` flag, or the current one, if the flag is not given.
           Note that `dpl` does not perform any check about the fitness of the request;
@@ -31,18 +33,18 @@ module Dpl
           For example, if your GitHub Pages is configured to use `gh-pages` but the
           deployment is run on the `master` branch, you would have to ensure that the
           `gh-pages` would be updated accordingly during the build.
-        str
+        STR
 
         opt '--repo SLUG', 'GitHub repo slug', default: :repo_slug
         opt '--token TOKEN', 'GitHub oauth token with repo permission', required: true, secret: true, alias: :github_token
 
-        msgs not_found: sq(<<-msg),
+        msgs not_found: sq(<<-MSG),
                GitHub Pages not found for %{slug}.
                Either the given token has insufficient scope (repo or public_repo), or
                GitHub Pages is not enabled for this repo (see https://github.com/%{slug}/settings)'
-             msg
+        MSG
              timeout: 'GitHub Pages build request timed out',
-             deploy:  'Requesting GitHub Pages build using API'
+             deploy: 'Requesting GitHub Pages build using API'
 
         def validate
           error :not_found unless pages_enabled?
@@ -56,7 +58,7 @@ module Dpl
           response = api.pages slug
           logger.debug response
 
-          Timeout::timeout(30) do
+          Timeout.timeout(30) do
             until response.status == 'built'
               response = api.pages slug
               logger.debug response
@@ -71,10 +73,9 @@ module Dpl
 
           info "Pages deployed to #{response.html_url}, using commit #{latest_pages_build.commit}"
           logger.debug latest_pages_build
-
-        rescue Octokit::Forbidden => fb
-          error fb.message
-        rescue Timeout::Error => to
+        rescue Octokit::Forbidden => e
+          error e.message
+        rescue Timeout::Error
           error :timeout
         end
 
@@ -96,10 +97,9 @@ module Dpl
 
         def pages_enabled?
           api.pages slug
-        rescue Octokit::NotFound => e
+        rescue Octokit::NotFound
           false
         end
-
       end
     end
   end

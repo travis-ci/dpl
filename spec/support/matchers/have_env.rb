@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Support
   module Matchers
     class HaveEnv < Struct.new(:env)
