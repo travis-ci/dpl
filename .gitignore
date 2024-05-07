@@ -30,3 +30,4 @@ tmp
 # System Files
 .DS_Store
 Thumbs.db
+.tool-versions
