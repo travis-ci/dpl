@@ -28,7 +28,7 @@ jobs:
       - node --version
       script:
       - bundle install
-      - .travis/test_install
+      - bundle exec .travis/test_install
     - <<: *job
       language: python
       python: 2.7
