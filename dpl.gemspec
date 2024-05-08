@@ -17,7 +17,9 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 3'
 
   s.executables   = ['dpl']
-  s.files         = Dir['{config/**/*,lib/**/*,[A-Z]*}']
+  s.files         = Dir['{config/**/*,lib/**/*,[A-Z]*}'].reject { _1.match(/dpl.+\.gem/) }
 
+  s.add_runtime_dependency 'travis-cl'
+  s.add_runtime_dependency 'travis-packagecloud-ruby'
   s.add_development_dependency 'rake', '~> 13.0'
 end
