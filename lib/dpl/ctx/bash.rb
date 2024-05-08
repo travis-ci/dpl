@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'English'
 require 'cl'
 require 'fileutils'
 require 'logger'
@@ -14,7 +17,8 @@ module Dpl
       attr_accessor :folds, :stdout, :stderr, :last_out, :last_err
 
       def initialize(stdout = $stdout, stderr = $stderr)
-        @stdout, @stderr = stdout, stderr
+        @stdout = stdout
+        @stderr = stderr
         @folds = 0
         super('dpl', abort: false)
       end
@@ -25,7 +29,7 @@ module Dpl
       # closes the fold.
       #
       # @param msg [String] the message that will appear on the log fold
-      def fold(msg, &block)
+      def fold(msg)
         self.folds += 1
         print "travis_fold:start:dpl.#{folds}\r\e[K"
         time do
@@ -41,13 +45,13 @@ module Dpl
       # Starts a travis time log tag, calls the block, and closes the tag,
       # including timing information. This makes a timing badge appear on
       # the surrounding log fold.
-      def time(&block)
+      def time
         id = SecureRandom.hex[0, 8]
-        start = Time.now.to_i * (10 ** 9)
+        start = Time.now.to_i * (10**9)
         print "travis_time:start:#{id}\r\e[K"
         yield
       ensure
-        finish = Time.now.to_i * (10 ** 9)
+        finish = Time.now.to_i * (10**9)
         duration = finish - start
         print "\ntravis_time:end:#{id}:start=#{start},finish=#{finish},duration=#{duration}\r\e[K"
       end
@@ -135,6 +139,7 @@ module Dpl
       def apts_get(packages)
         packages = packages.reject { |name, cmd = name| which(cmd || name) }
         return unless packages.any?
+
         apt_update
         packages.each { |package, cmd| apt_get(package, cmd || package, update: false) }
       end
@@ -148,6 +153,7 @@ module Dpl
       # @param cmd [String] an executable installed by the package, defaults to the package name
       def apt_get(package, cmd = package, opts = {})
         return if which(cmd)
+
         apt_update unless opts[:update].is_a?(FalseClass)
         shell "sudo apt-get -qq install #{package}", retry: true
       end
@@ -177,7 +183,7 @@ module Dpl
           # Gem.loaded_specs.clear
           gemfile do
             source 'https://rubygems.org'
-            gems.each { |g| gem *g }
+            gems.each { |g| gem(*g) }
           end
           # https://github.com/bundler/bundler/issues/7181
           ENV.replace(env)
@@ -265,8 +271,8 @@ module Dpl
           send(cmd.capture? ? :open3 : :system, cmd.cmd, cmd.opts)
         end
 
-        info cmd.success % { out: last_out } if success? && cmd.success?
-        error cmd.error % { err: last_err } if failed? && cmd.assert?
+        info format(cmd.success, out: last_out) if success? && cmd.success?
+        error format(cmd.error, err: last_err) if failed? && cmd.assert?
 
         success? && cmd.capture? ? last_out.chomp : @last_status
       end
@@ -324,12 +330,12 @@ module Dpl
       # Internal, and not to be used by implementors. $? is a read-only
       # variable, so we use a method that we can stub during tests.
       def last_process_status
-        $?.success?
+        $CHILD_STATUS.success?
       end
 
       # Whether or not the current Ruby process runs with superuser priviledges.
       def sudo?
-        Process::UID.eid == 0
+        Process::UID.eid.zero?
       end
 
       # Returns current repository name
@@ -491,14 +497,14 @@ module Dpl
       def move_files(paths)
         paths.each do |path|
           target = "#{tmp_dir}/#{File.basename(path)}"
-          mv(path, target) if File.exists?(path)
+          mv(path, target) if File.exist?(path)
         end
       end
 
       def unmove_files(paths)
         paths.each do |path|
           source = "#{tmp_dir}/#{File.basename(path)}"
-          mv(source, path) if File.exists?(source)
+          mv(source, path) if File.exist?(source)
         end
       end
 

@@ -14,3 +14,19 @@ setuptools*.zip
 stubs
 vendor
 tmp
+
+# Ignore editor specific configs
+/.idea
+/.vscode
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.generators
+.rakeTasks
+
+# System Files
+.DS_Store
+Thumbs.db

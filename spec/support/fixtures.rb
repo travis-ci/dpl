@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Support
   module Fixtures
     def self.included(const)
       const.extend(Fixtures)
     end
 
-    DIR = ::File.expand_path('../../fixtures', __FILE__)
+    DIR = ::File.expand_path('../fixtures', __dir__)
 
     class << self
       def [](key)

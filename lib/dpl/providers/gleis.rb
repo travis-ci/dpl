@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Gleis < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :alpha
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       gem 'gleis', '~> 0.8.0'
 
@@ -21,20 +23,20 @@ module Dpl
 
       needs :ssh_key
 
-      cmds login:      'gleis auth login %{username} %{password} --skip-keygen',
-           logout:     'gleis auth logout',
-           validate:   'gleis app status -a %{app}',
-           add_key:    'gleis auth key add %{file} %{key_name}',
+      cmds login: 'gleis auth login %{username} %{password} --skip-keygen',
+           logout: 'gleis auth logout',
+           validate: 'gleis app status -a %{app}',
+           add_key: 'gleis auth key add %{file} %{key_name}',
            remove_key: 'gleis auth key remove %{key_name}',
-           git_url:    'gleis app git -a %{app} -q',
-           deploy:     'git push %{push_opts} -f %{git_url} HEAD:refs/heads/master'
+           git_url: 'gleis app git -a %{app} -q',
+           deploy: 'git push %{push_opts} -f %{git_url} HEAD:refs/heads/master'
 
-      errs login:      'Login failed',
-           validate:   'Application not found',
-           add_key:    'Adding SSH key failed',
+      errs login: 'Login failed',
+           validate: 'Application not found',
+           add_key: 'Adding SSH key failed',
            remove_key: 'Removing key failed',
-           git_url:    'Failed to retrieve Git URL',
-           deploy:     'Deploying application failed'
+           git_url: 'Failed to retrieve Git URL',
+           deploy: 'Deploying application failed'
 
       attr_reader :git_url
 
@@ -51,7 +53,7 @@ module Dpl
       end
 
       def add_key(file)
-        shell :add_key, file: file
+        shell :add_key, file:
       end
 
       def deploy
@@ -64,9 +66,9 @@ module Dpl
 
       private
 
-        def push_opts
-          '-v' if verbose?
-        end
+      def push_opts
+        '-v' if verbose?
+      end
     end
   end
 end

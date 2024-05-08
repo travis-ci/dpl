@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Datica < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       register :datica, :catalyze
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       env :datica, :catalyze
 
@@ -19,12 +21,12 @@ module Dpl
       needs :git
 
       cmds checkout: 'git checkout HEAD',
-           add:      'git add %{path} --all --force',
-           commit:   'git commit -m "%{message}" --quiet',
-           push:     'git push --force %{target} HEAD:master'
+           add: 'git add %{path} --all --force',
+           commit: 'git commit -m "%{message}" --quiet',
+           push: 'git push --force %{target} HEAD:master'
 
-      msgs commit:   'Committing build files for deployment',
-           push:     'Deploying to Datica: %{target}'
+      msgs commit: 'Committing build files for deployment',
+           push: 'Deploying to Datica: %{target}'
 
       def setup
         commit if git_dirty? && !cleanup?
@@ -36,27 +38,27 @@ module Dpl
 
       private
 
-        def commit
-          info :commit
-          shell :checkout
-          shell :add
-          shell :commit
-        end
+      def commit
+        info :commit
+        shell :checkout
+        shell :add
+        shell :commit
+      end
 
-        def message
-          vars.empty? ? 'Local build' : 'Build #%s (%s) of %s@%s' % vars
-        end
+      def message
+        vars.empty? ? 'Local build' : 'Build #%s (%s) of %s@%s' % vars
+      end
 
-        VARS = %w(
-          TRAVIS_BUILD_NUMBER
-          TRAVIS_COMMIT
-          TRAVIS_REPO_SLUG
-          TRAVIS_BRANCH
-        )
+      VARS = %w[
+        TRAVIS_BUILD_NUMBER
+        TRAVIS_COMMIT
+        TRAVIS_REPO_SLUG
+        TRAVIS_BRANCH
+      ].freeze
 
-        def vars
-          @vars ||= ENV.values_at(*VARS).compact
-        end
+      def vars
+        @vars ||= ENV.values_at(*VARS).compact
+      end
     end
   end
 end
