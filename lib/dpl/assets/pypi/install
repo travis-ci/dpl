@@ -1,4 +1,4 @@
 #!/bin/bash
-if [ -z ${VIRTUAL_ENV+x} ]; then export PIP_USER=yes; fi &&
+if [ -z "${VIRTUAL_ENV}" ]; then export PIP_USER=yes; fi &&
 wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel &&
 pip install --upgrade --ignore-installed %{setuptools_arg} %{twine_arg} %{wheel_arg}
