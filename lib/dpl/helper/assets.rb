@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 
 module Dpl
@@ -5,7 +7,7 @@ module Dpl
     class Asset < Struct.new(:provider, :namespace, :name)
       include FileUtils
 
-      DIR = File.expand_path('../../assets', __FILE__)
+      DIR = File.expand_path('../assets', __dir__)
 
       def copy(target)
         cp path, File.expand_path(target)
@@ -16,7 +18,7 @@ module Dpl
       end
 
       def exists?
-        File.exists?(path)
+        File.exist?(path)
       end
 
       def unknown

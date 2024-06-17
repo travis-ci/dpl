@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 describe Dpl::Providers::Cloudfiles do
   let(:storage) { Fog::Storage.new(provider: 'rackspace', rackspace_username: 'user', rackspace_api_key: 'key', rackspace_region: 'ord') }
-  let(:args) { |e| %w(--username user --api_key key --region ord --container name) + args_from_description(e) }
+  let(:args) { |e| %w[--username user --api_key key --region ord --container name] + args_from_description(e) }
   let(:dirs) { storage.directories }
 
   file :one
@@ -24,11 +26,11 @@ describe Dpl::Providers::Cloudfiles do
   end
 
   describe 'with credentials in env vars', run: false do
-    let(:args) { |e| %w(--region ord --container name) }
+    let(:args) { |_e| %w[--region ord --container name] }
 
     env CLOUDFILES_USERNAME: 'user',
         CLOUDFILES_API_KEY: 'key'
 
-    it { expect { subject.run }.to_not raise_error }
+    it { expect { subject.run }.not_to raise_error }
   end
 end

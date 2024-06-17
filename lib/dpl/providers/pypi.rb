@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Pypi < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'PyPI'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       env :pypi
 
@@ -30,21 +32,20 @@ module Dpl
       opt '--twine_version VER', format: VERSION
       opt '--wheel_version VER', format: VERSION
 
-      msgs login:        'Authenticated as %{username}',
-           upload_docs:  'Uploading documentation (skip using "skip_upload_docs: true")'
+      msgs login: 'Authenticated as %{username}',
+           upload_docs: 'Uploading documentation (skip using "skip_upload_docs: true")'
 
-      cmds setup_py:     'python setup.py %{distributions}',
-           twine_check:  'twine check dist/*',
+      cmds setup_py: 'python setup.py %{distributions}',
+           twine_check: 'twine check dist/*',
            twine_upload: 'twine upload %{skip_existing_option} -r pypi dist/*',
-           rm_dist:      'rm -rf dist/*',
-           upload_docs:  'python setup.py upload_docs %{docs_dir_option} -r %{server}'
+           rm_dist: 'rm -rf dist/*',
+           upload_docs: 'python setup.py upload_docs %{docs_dir_option} -r %{server}'
 
-      errs install:      'Failed to install pip, setuptools, twine or wheel.',
-           setup_py:     'setup.py failed',
-           twine_check:  'Twine check failed',
+      errs install: 'Failed to install pip, setuptools, twine or wheel.',
+           setup_py: 'setup.py failed',
+           twine_check: 'Twine check failed',
            twine_upload: 'Twine upload failed.',
-           upload_docs:  'Uploading docs failed.'
-
+           upload_docs: 'Uploading docs failed.'
 
       def install
         script :install
@@ -71,7 +72,7 @@ module Dpl
 
       private
 
-        PYPIRC = sq(<<-rc)
+      PYPIRC = sq(<<-RC)
           [distutils]
           index-servers = pypi
               pypi
@@ -79,46 +80,46 @@ module Dpl
           repository: %{server}
           username: %{username}
           password: %{password}
-        rc
+      RC
 
-        def write_config
-          write_file('~/.pypirc', pypirc)
-        end
+      def write_config
+        write_file('~/.pypirc', pypirc)
+      end
 
-        def pypirc
-          interpolate(PYPIRC, opts, secure: true)
-        end
+      def pypirc
+        interpolate(PYPIRC, opts, secure: true)
+      end
 
-        def upload_docs
-          info :upload_docs
-          shell :upload_docs
-        end
+      def upload_docs
+        info :upload_docs
+        shell :upload_docs
+      end
 
-        def skip_existing_option
-          '--skip-existing' if skip_existing?
-        end
+      def skip_existing_option
+        '--skip-existing' if skip_existing?
+      end
 
-        def docs_dir_option
-          '--upload-dir ' + docs_dir if docs_dir
-        end
+      def docs_dir_option
+        "--upload-dir #{docs_dir}" if docs_dir
+      end
 
-        def setuptools_arg
-          version_arg(:setuptools)
-        end
+      def setuptools_arg
+        version_arg(:setuptools)
+      end
 
-        def twine_arg
-          version_arg(:twine)
-        end
+      def twine_arg
+        version_arg(:twine)
+      end
 
-        def wheel_arg
-          version_arg(:wheel)
-        end
+      def wheel_arg
+        version_arg(:wheel)
+      end
 
-        def version_arg(name)
-          arg = name.to_s
-          arg << "==#{send(:"#{name}_version")}" if send(:"#{name}_version") =~ VERSION
-          arg
-        end
+      def version_arg(name)
+        arg = name.to_s
+        arg << "==#{send(:"#{name}_version")}" if send(:"#{name}_version") =~ VERSION
+        arg
+      end
     end
   end
 end

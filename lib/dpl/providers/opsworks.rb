@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Opsworks < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'AWS OpsWorks'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       gem 'aws-sdk-opsworks', '~> 1.0'
 
@@ -27,17 +29,17 @@ module Dpl
       opt '--update_on_success', 'When wait-until-deployed and updated-on-success are both not given, application source is updated to the current SHA. Ignored when wait-until-deployed is not given.', alias: :update_app_on_success
       opt '--custom_json JSON', 'Custom json options override (overwrites default configuration)'
 
-      msgs login:         'Using Access Key: %{access_key_id}',
+      msgs login: 'Using Access Key: %{access_key_id}',
            create_deploy: 'Creating deployment ... ',
-           done:          'Done: %s',
-           waiting:       'Deploying ',
-           failed:        'Failed.',
-           success:       'Success.',
-           update_app:    'Updating application source branch/revision setting.',
+           done: 'Done: %s',
+           waiting: 'Deploying ',
+           failed: 'Failed.',
+           success: 'Success.',
+           update_app: 'Updating application source branch/revision setting.',
            app_not_found: 'App %s not found.',
-           timeout:       'Timeout: failed to finish deployment within 10 minutes.',
+           timeout: 'Timeout: failed to finish deployment within 10 minutes.',
            service_error: 'Deployment failed. OpsWorks service error: %s',
-           comment:       'Deploy build %{build_number} via Travis CI'
+           comment: 'Deploy build %{build_number} via Travis CI'
 
       def login
         info :login
@@ -58,13 +60,13 @@ module Dpl
 
       def deploy_config
         compact(
-          stack_id: stack_id,
-          app_id: app_id,
+          stack_id:,
+          app_id:,
           command: { name: 'deploy' },
-          comment: comment,
-          custom_json: custom_json,
-          instance_ids: instance_ids,
-          layer_ids: layer_ids
+          comment:,
+          custom_json:,
+          instance_ids:,
+          layer_ids:
         )
       end
 
@@ -89,9 +91,9 @@ module Dpl
 
       def update_config
         {
-          app_id: app_id,
+          app_id:,
           app_source: {
-            revision: git_sha,
+            revision: git_sha
           }
         }
       end
@@ -118,7 +120,7 @@ module Dpl
 
       def describe_app
         data = opsworks.describe_apps(app_ids: [app_id])
-        error :app_not_found, app_id unless data[:apps] && data[:apps].any?
+        error :app_not_found, app_id unless data[:apps]&.any?
         data[:apps].first
       end
 
@@ -127,7 +129,7 @@ module Dpl
       end
 
       def opsworks
-        @opsworks ||= Aws::OpsWorks::Client.new(region: region, credentials: credentials)
+        @opsworks ||= Aws::OpsWorks::Client.new(region:, credentials:)
       end
 
       def credentials
@@ -135,7 +137,7 @@ module Dpl
       end
 
       def timeout(sec, &block)
-        Timeout::timeout(sec, &block)
+        Timeout.timeout(sec, &block)
       rescue Timeout::Error
         error :timeout
       end

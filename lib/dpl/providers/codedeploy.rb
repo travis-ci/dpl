@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     # split this up to CodeDeploy::Github and CodeDeploy::S3 using the
@@ -9,12 +11,12 @@ module Dpl
 
       full_name 'AWS Code Deploy'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       gem 'aws-sdk-codedeploy', '~> 1.0'
-      gem 'aws-sdk-s3', '~> 1.0'
+      gem 'aws-sdk-s3', '~> 1'
 
       env :aws, :codedeploy
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
@@ -23,28 +25,28 @@ module Dpl
       opt '--secret_access_key KEY', 'AWS secret access key', required: true, secret: true
       opt '--application NAME', 'CodeDeploy application name', required: true
       opt '--deployment_group GROUP', 'CodeDeploy deployment group name'
-      opt '--revision_type TYPE', 'CodeDeploy revision type', enum: %w(s3 github), downcase: true
+      opt '--revision_type TYPE', 'CodeDeploy revision type', enum: %w[s3 github], downcase: true
       opt '--commit_id SHA', 'Commit ID in case of GitHub'
       opt '--repository NAME', 'Repository name in case of GitHub'
       opt '--bucket NAME', 'S3 bucket in case of S3'
       opt '--region REGION', 'AWS availability zone', default: 'us-east-1'
-      opt '--file_exists_behavior STR', 'How to handle files that already exist in a deployment target location', enum: %w(disallow overwrite retain), default: 'disallow'
+      opt '--file_exists_behavior STR', 'How to handle files that already exist in a deployment target location', enum: %w[disallow overwrite retain], default: 'disallow'
       opt '--wait_until_deployed', 'Wait until the deployment has finished'
       opt '--bundle_type TYPE', 'Bundle type of the revision'
       opt '--key KEY', 'S3 bucket key of the revision'
       opt '--description DESCR', 'Description of the revision', interpolate: true
       opt '--endpoint ENDPOINT', 'S3 endpoint url'
 
-      msgs login:                 'Using Access Key: %{access_key_id}',
-           deploy_triggered:      'Deployment triggered: %s',
-           register_revision:     'Registering app revision with version=%s, etag=%s',
-           waiting_for_deploy:    'Waiting for the deployment to finish ',
-           finished_deploy:       'done: %s.',
-           description:           'Deploy build %{build_number} via Travis CI',
-           missing_bucket:        'Missing required bucket for S3 deployment',
-           missing_key:           'Missing required key for S3 deployment',
+      msgs login: 'Using Access Key: %{access_key_id}',
+           deploy_triggered: 'Deployment triggered: %s',
+           register_revision: 'Registering app revision with version=%s, etag=%s',
+           waiting_for_deploy: 'Waiting for the deployment to finish ',
+           finished_deploy: 'done: %s.',
+           description: 'Deploy build %{build_number} via Travis CI',
+           missing_bucket: 'Missing required bucket for S3 deployment',
+           missing_key: 'Missing required key for S3 deployment',
            unknown_revision_type: 'Unknown revision type %p',
-           unknown_bundle_type:   'Unknown bundle type'
+           unknown_bundle_type: 'Unknown bundle type'
 
       vars :build_number
 
@@ -64,18 +66,18 @@ module Dpl
       def register_revision
         info :register_revision, revision_info[:version], revision_info[:e_tag]
         code_deploy.register_application_revision(
-          revision: revision,
+          revision:,
           application_name: application,
-          description: description
+          description:
         )
       end
 
       def create_deployment
         deployment = code_deploy.create_deployment(
-          revision: revision,
+          revision:,
           application_name: application,
           deployment_group_name: deployment_group,
-          description: description,
+          description:,
           file_exists_behavior: file_exists_behavior.upcase
         )
         deployment.deployment_id
@@ -83,7 +85,7 @@ module Dpl
 
       def wait_until_deployed(id)
         print :waiting_for_deploy
-        status = poll(id) until %w(Succeeded Failed Stopped).include?(status)
+        status = poll(id) until %w[Succeeded Failed Stopped].include?(status)
         case status
         when 'Succeeded'
           info :finished_deploy, status
@@ -104,28 +106,28 @@ module Dpl
 
       def revision
         @revision ||= case revision_type
-        when 's3'     then s3_revision
-        when 'github' then github_revision
-        when nil      then bucket? ? s3_revision : github_revision
-        else error :unknown_revision_type, revision_type
-        end
+                      when 's3'     then s3_revision
+                      when 'github' then github_revision
+                      when nil      then bucket? ? s3_revision : github_revision
+                      else error :unknown_revision_type, revision_type
+                      end
       end
 
       def s3_revision
         {
           revision_type: 'S3',
           s3_location: compact(
-            bucket: bucket,
-            bundle_type: bundle_type,
+            bucket:,
+            bundle_type:,
             version: revision_version_info[:version_id],
             e_tag: revision_version_info[:etag],
-            key: key,
+            key:
           )
         }
       end
 
       def revision_version_info
-        s3.head_object(bucket: bucket, key: key)
+        s3.head_object(bucket:, key:)
       rescue Aws::Errors::ServiceError => e
         error e.message
       end
@@ -134,8 +136,8 @@ module Dpl
         {
           revision_type: 'GitHub',
           git_hub_location: {
-            commit_id:  commit_id,
-            repository: repository
+            commit_id:,
+            repository:
           }
         }
       end
@@ -157,11 +159,11 @@ module Dpl
       end
 
       def bundle_type
-        super || key =~ /\.(tar|tgz|zip)$/ && $1 || error(:unknown_bundle_type)
+        super || key =~ /\.(tar|tgz|zip)$/ && ::Regexp.last_match(1) || error(:unknown_bundle_type)
       end
 
       def description
-        interpolate(super || msg(:description), vars: vars)
+        interpolate(super || msg(:description), vars:)
       end
 
       def build_number
@@ -177,7 +179,7 @@ module Dpl
       end
 
       def client_options
-        compact(region: region, credentials: credentials, endpoint: endpoint)
+        compact(region:, credentials:, endpoint:)
       end
 
       def credentials

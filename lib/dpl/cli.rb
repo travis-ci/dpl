@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cl'
 
 module Dpl
@@ -47,6 +49,7 @@ module Dpl
 
     def with_cmd_opt(args, cmd, pos)
       return args unless opt = args.detect { |arg| arg.start_with?("--#{cmd}") }
+
       ix = args.index(opt)
       args.delete(opt)
       value = opt.include?('=') ? opt.split('=').last : args.delete_at(ix)
@@ -56,39 +59,41 @@ module Dpl
 
     STRATEGIES = {
       'heroku' => 'api',
-      'pages'  => 'git'
-    }
+      'pages' => 'git'
+    }.freeze
 
-    def with_strategy_default(args, cmd)
+    def with_strategy_default(args, _cmd)
       return args unless default = STRATEGIES[args.first]
+
       args.insert(1, default) if args[1].nil? || args[1].to_s.start_with?('--')
       args
     end
 
-    def error(e)
-      msg = "\e[31m#{e.message}\e[0m"
-      msg = [msg, *e.backtrace].join("\n") if backtrace?(e)
+    def error(err)
+      msg = "\e[31m#{err.message}\e[0m"
+      msg = [msg, *err.backtrace].join("\n") if backtrace?(err)
       abort msg
     end
 
-    def backtrace?(e)
-      e.respond_to?(:backtrace?) && e.backtrace?
+    def backtrace?(err)
+      err.respond_to?(:backtrace?) && err.backtrace?
     end
 
-    def unknown_provider(e)
-      msg = "\e[31m#{e.message}\e[0m"
-      msg << "\nDid you mean: #{e.suggestions.join(', ')}?" if e.suggestions.any?
+    def unknown_provider(err)
+      msg = "\e[31m#{err.message}\e[0m"
+      msg << "\nDid you mean: #{err.suggestions.join(', ')}?" if err.suggestions.any?
       abort msg
     end
 
-    def unknown_option(e)
-      msg = "\e[31m#{e.message}\e[0m"
-      msg << "\nDid you mean: #{e.suggestions.join(', ')}?" if e.suggestions.any?
+    def unknown_option(err)
+      msg = "\e[31m#{err.message}\e[0m"
+      msg << "\nDid you mean: #{err.suggestions.join(', ')}?" if err.suggestions.any?
       abort msg
     end
 
     def suggestions(name)
       return [] unless defined?(DidYouMean)
+
       DidYouMean::SpellChecker.new(dictionary: providers).correct(name)
     end
   end
