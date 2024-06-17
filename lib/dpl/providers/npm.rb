@@ -86,7 +86,10 @@ module Dpl
       end
 
       def npmrc
-        if npm_version =~ /^1/ || auth_method == 'auth'
+        npm_version_major = npm_version.split('.').first.to_i
+        if npm_version_major >= 10
+          "//#{auth_endpoint}/:_auth=#{api_token}\nemail = #{email}"
+        elsif npm_version =~ /^1/ || auth_method == 'auth'
           "_auth = #{api_token}\nemail = #{email}"
         else
           "//#{auth_endpoint}/:_authToken=#{api_token}"
