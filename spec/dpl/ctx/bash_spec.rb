@@ -236,14 +236,14 @@ describe Dpl::Ctx::Bash do
     describe 'version req given' do
       before { bash.pip_install('name', 'cmd', '1.0.0') }
 
-      it { is_expected.to call_system 'virtualenv --no-site-packages ~/dpl_venv' }
+      it { is_expected.to call_system 'virtualenv ~/dpl_venv' }
       it { is_expected.to call_system 'pip install name==1.0.0' }
     end
 
     describe 'no version req given' do
       before { bash.pip_install('name', 'cmd') }
 
-      it { is_expected.to call_system 'virtualenv --no-site-packages ~/dpl_venv' }
+      it { is_expected.to call_system 'virtualenv ~/dpl_venv' }
       it { is_expected.to call_system 'pip install name' }
     end
   end

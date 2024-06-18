@@ -18,6 +18,7 @@ module Dpl
         tbd
       STR
 
+      gem 'nokogiri', '~> 1.15'
       gem 'aws-sdk-s3', '~> 1'
       gem 'mime-types', '~> 3.4.1'
 

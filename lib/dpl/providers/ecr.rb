@@ -11,6 +11,7 @@ module Dpl
         tbd
       STR
 
+      gem 'nokogiri', '~> 1.15'
       gem 'aws-sdk-ecr', '~> 1.0'
       # gem 'docker-api', '~> 1.34'
       gem 'json'

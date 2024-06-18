@@ -212,7 +212,7 @@ module Dpl
       def pip_install(package, cmd = package, version = nil)
         ENV['VIRTUAL_ENV'] = File.expand_path('~/dpl_venv')
         ENV['PATH'] = File.expand_path("~/dpl_venv/bin:#{ENV['PATH']}")
-        shell 'virtualenv --no-site-packages ~/dpl_venv', echo: true
+        shell 'virtualenv ~/dpl_venv', echo: true
         shell 'pip install urllib3[secure]'
         cmd = "pip install #{package}"
         cmd << pip_version(version) if version
