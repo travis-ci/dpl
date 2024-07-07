@@ -1,5 +1,13 @@
 # Changelog
 
+## dpl v2.0.3-beta.1 (2022-03-15)
+
+* Deprecate support for Ruby 2.2
+
+## dpl v2.0.2-beta.1 (2020-09-15)
+
+* Add AWS ECR support
+
 ## dpl v2.0.1-beta.3 (unreleased)
 
 * Change git_push to use the GitHub token's user name and email as the

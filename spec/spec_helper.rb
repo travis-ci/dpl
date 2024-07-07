@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ENV.delete('TRAVIS_TAG')
 
 require 'coveralls'

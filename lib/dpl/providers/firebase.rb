@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Firebase < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :stable
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       node_js '>= 8.0.0'
 
@@ -28,7 +30,7 @@ module Dpl
       msgs missing_config: 'Missing firebase.json'
 
       def validate
-        error :missing_config unless File.exists?('firebase.json')
+        error :missing_config unless File.exist?('firebase.json')
       end
 
       def deploy
@@ -36,7 +38,7 @@ module Dpl
       end
 
       def deploy_opts
-        opts_for(%i(project message token only force))
+        opts_for(%i[project message token only force])
       end
     end
   end

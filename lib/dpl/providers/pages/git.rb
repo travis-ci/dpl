@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Pages
@@ -8,12 +10,12 @@ module Dpl
 
         full_name 'GitHub Pages'
 
-        description sq(<<-str)
+        description sq(<<-STR)
           tbd
-        str
+        STR
 
-        gem 'octokit', '~> 4.15.0'
-        gem 'public_suffix', '~> 3.0.3'
+        gem 'octokit', '~> 7'
+        gem 'public_suffix', '~> 5'
 
         required :token, :deploy_key
 
@@ -36,45 +38,45 @@ module Dpl
 
         needs :git
 
-        msgs login:               'Authenticated as %s',
-             invalid_token:       'The provided GitHub token is invalid (error: %s)',
+        msgs login: 'Authenticated as %s',
+             invalid_token: 'The provided GitHub token is invalid (error: %s)',
              insufficient_scopes: 'Dpl does not have permission to access %{url} using the provided GitHub token. Please make sure the token have the repo or public_repo scope.',
-             setup_deploy_key:    'Moving deploy key %{deploy_key} to %{path}',
-             check_deploy_key:    'Checking deploy key',
-             deploy:              'Deploying branch %{target_branch} to %{url}',
-             keep_history:        'The deployment is configured to preserve the target branch if it exists on remote.',
-             work_dir:            'Using temporary work directory %{work_dir}',
-             committer_from_gh:   'The repo is configured to use committer user and email.',
-             setup_dir:           'The source dir for deployment is %s',
-             git_clone:           'Cloning the branch %{target_branch} from the remote repo',
-             git_init:            'Initializing local git repo',
-             git_checkout:        'Checking out orphan branch %{target_branch}',
-             copy_files:          'Copying %{src_dir} contents to %{work_dir}',
-             git_config:          'Configuring git committer to be %{name} <%{email}>',
-             prepare:             'Preparing to deploy %{target_branch} branch to gh-pages',
-             git_push:            'Pushing to %{url}',
-             stop:                'There are no changes to commit, stopping.'
+             setup_deploy_key: 'Moving deploy key %{deploy_key} to %{path}',
+             check_deploy_key: 'Checking deploy key',
+             deploy: 'Deploying branch %{target_branch} to %{url}',
+             keep_history: 'The deployment is configured to preserve the target branch if it exists on remote.',
+             work_dir: 'Using temporary work directory %{work_dir}',
+             committer_from_gh: 'The repo is configured to use committer user and email.',
+             setup_dir: 'The source dir for deployment is %s',
+             git_clone: 'Cloning the branch %{target_branch} from the remote repo',
+             git_init: 'Initializing local git repo',
+             git_checkout: 'Checking out orphan branch %{target_branch}',
+             copy_files: 'Copying %{src_dir} contents to %{work_dir}',
+             git_config: 'Configuring git committer to be %{name} <%{email}>',
+             prepare: 'Preparing to deploy %{target_branch} branch to gh-pages',
+             git_push: 'Pushing to %{url}',
+             stop: 'There are no changes to commit, stopping.'
 
-        cmds git_clone:           'git clone --quiet --branch="%{target_branch}" --depth=1 "%{remote_url}" . > /dev/null 2>&1',
-             git_init:            'git init .',
-             git_checkout:        'git checkout --orphan "%{target_branch}"',
-             check_deploy_key:    'ssh -i %{key} -T git@github.com 2>&1 | grep successful > /dev/null',
-             copy_files:          'rsync -rl --exclude .git --delete "%{src_dir}/" .',
-             git_config_email:    'git config user.email %{quoted_email}',
-             git_config_name:     'git config user.name %{quoted_name}',
-             deployment_file:     'touch "deployed at %{now} by %{name}"',
-             cname:               'echo "%{fqdn}" > CNAME',
-             git_add:             'git add -A .',
-             git_commit_hook:     'cp %{path} .git/hooks/pre-commit',
-             git_commit:          'git commit %{git_commit_opts} -q %{git_commit_msg_opts}',
-             git_show:            'git show --stat-count=10 HEAD',
-             git_push:            'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
+        cmds git_clone: 'git clone --quiet --branch="%{target_branch}" --depth=1 "%{remote_url}" . > /dev/null 2>&1',
+             git_init: 'git init .',
+             git_checkout: 'git checkout --orphan "%{target_branch}"',
+             check_deploy_key: 'ssh -i %{key} -T git@%{url} 2>&1 | grep successful > /dev/null',
+             copy_files: 'rsync -rl --exclude .git --delete "%{src_dir}/" .',
+             git_config_email: 'git config user.email %{quoted_email}',
+             git_config_name: 'git config user.name %{quoted_name}',
+             deployment_file: 'touch "deployed at %{now} by %{name}"',
+             cname: 'echo "%{fqdn}" > CNAME',
+             git_add: 'git add -A .',
+             git_commit_hook: 'cp %{path} .git/hooks/pre-commit',
+             git_commit: 'git commit %{git_commit_opts} -q %{git_commit_msg_opts}',
+             git_show: 'git show --stat-count=10 HEAD',
+             git_push: 'git push%{git_push_opts} --quiet "%{remote_url}" "%{target_branch}":"%{target_branch}" > /dev/null 2>&1'
 
-        errs copy_files:          'Failed to copy %{src_dir}.',
-             check_deploy_key:    'Failed to authenticate using the deploy key',
-             git_init:            'Failed to create new git repo',
-             git_checkout:        'Failed to create the orphan branch',
-             git_push:            'Failed to push the build to %{url}:%{target_branch}'
+        errs copy_files: 'Failed to copy %{src_dir}.',
+             check_deploy_key: 'Failed to authenticate using the deploy key',
+             git_init: 'Failed to create new git repo',
+             git_checkout: 'Failed to create the orphan branch',
+             git_push: 'Failed to push the build to %{url}:%{target_branch}'
 
         def login
           token? ? login_token : setup_deploy_key
@@ -97,6 +99,7 @@ module Dpl
           git_clone? ? git_clone : git_init
           copy_files
           return info :stop if git_clone? && !git_dirty?
+
           git_config
           git_commit
           git_push
@@ -115,11 +118,11 @@ module Dpl
 
         def setup_deploy_key
           path = '~/.dpl/deploy_key'
-          info :setup_deploy_key, path: path
+          info(:setup_deploy_key, path:)
           mv deploy_key, path
           chmod 0600, path
           setup_git_ssh path
-          shell :check_deploy_key, key: path
+          shell :check_deploy_key, key: path, url: opts[:url]
         end
 
         def git_clone?
@@ -171,8 +174,8 @@ module Dpl
         end
 
         def git_commit_msg_opts
-          msg = interpolate(commit_message, vars: vars)
-          msg.split("\n").reject(&:empty?).map { |msg| %(-m #{quote(msg)}) }
+          msg = interpolate(commit_message, vars:)
+          msg.split("\n").reject(&:empty?).map { |message| %(-m #{quote(message)}) }
         end
 
         def git_push_opts
@@ -225,6 +228,9 @@ module Dpl
 
         def user
           @user ||= api.user
+        rescue StandardError => e
+          puts "ERR: #{e.inspect}"
+          puts e.backtrace
         end
 
         def src_dir
@@ -236,7 +242,7 @@ module Dpl
         end
 
         def api
-          @api ||= Octokit::Client.new(access_token: token, api_endpoint: api_endpoint)
+          @api ||= Octokit::Client.new(access_token: token, api_endpoint:)
         end
 
         def api_endpoint
@@ -248,7 +254,7 @@ module Dpl
         end
 
         def debug(*args)
-          info *args if verbose?
+          info(*args) if verbose?
         end
       end
     end

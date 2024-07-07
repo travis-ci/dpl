@@ -1,12 +1,9 @@
-language: ruby
-dist: xenial
+dist: focal
 
+language: ruby
 rvm:
-- 2.2.7
-- 2.3.8
-- 2.4.5
-- 2.5.3
-- 2.6.2
+  - 3.1
+  - 3.2
 
 cache:
   - bundler
@@ -23,23 +20,27 @@ jobs:
       install:
       - gem build dpl.gemspec
       - gem install dpl-*.gem
+      - nvm install 12.22.0
+      - nvm use 12.22.0
       - node --version
       script:
       - .travis/test_install
-      rvm: 2.2.7
-    - <<: *job
-      rvm: 2.3.8
-    - <<: *job
-      rvm: 2.4.5
-    - <<: *job
-      rvm: 2.5.3
-    - <<: *job
-      rvm: 2.6.2
+      rvm: 3.1
     - <<: *job
       language: python
       python: 2.7
     - <<: *job
       language: python
-      python: 3.6
-
-
+      python: 3.7
+    - <<: *job
+      language: python
+      python: 3.8
+    - <<: *job
+      language: python
+      python: 3.9
+    - <<: *job
+      language: python
+      python: 3.10
+    - <<: *job
+      language: python
+      python: 3.11

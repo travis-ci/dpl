@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Convox < Provider
@@ -5,9 +7,9 @@ module Dpl
 
       status :dev
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       gem 'json'
 
@@ -30,21 +32,21 @@ module Dpl
       opt '--prepare CMDS', 'Run commands with convox cli available just before deployment', type: :array
 
       # if app and rack are exported to the env, do they need to be passed to these commands?
-      cmds login:    'convox version --rack %{rack}',
+      cmds login: 'convox version --rack %{rack}',
            validate: 'convox apps info --rack %{rack} --app %{app}',
-           create:   'convox apps create %{app} --generation %{generation} --rack %{rack} --wait',
-           update:   'convox update',
-           set_env:  'convox env set %{env} --rack %{rack} --app %{app} --replace',
-           build:    'convox build --rack %{rack} --app %{app} --id --description %{escaped_description}',
-           deploy:   'convox deploy --rack %{rack} --app %{app} --wait --id --description %{escaped_description}'
+           create: 'convox apps create %{app} --generation %{generation} --rack %{rack} --wait',
+           update: 'convox update',
+           set_env: 'convox env set %{env} --rack %{rack} --app %{app} --replace',
+           build: 'convox build --rack %{rack} --app %{app} --id --description %{escaped_description}',
+           deploy: 'convox deploy --rack %{rack} --app %{app} --wait --id --description %{escaped_description}'
 
-      msgs create:   'Application %{app} does not exist on rack %{rack}. Creating it ...',
-           missing:  'Application %{app} does not exist on rack %{rack}.',
+      msgs create: 'Application %{app} does not exist on rack %{rack}. Creating it ...',
+           missing: 'Application %{app} does not exist on rack %{rack}.',
            env_file: 'The given env_file does not exist.',
-           deploy:   'Building and promoting application ...',
-           build:    'Building application ...'
+           deploy: 'Building and promoting application ...',
+           build: 'Building application ...'
 
-      errs login:    'Login failed.'
+      errs login: 'Login failed.'
 
       def install
         script :install
@@ -86,23 +88,28 @@ module Dpl
 
       def env_file
         return [] unless env_file?
+
         error :env_file unless file?(super)
         lines = read(super).split("\n").map(&:strip)
         lines.reject(&:empty?)
       end
 
       def description
-        description? ? super : JSON.dump(
-          repo_slug: repo_slug,
-          git_commit_sha: git_sha,
-          git_commit_message: git_commit_msg,
-          git_commit_author: git_author_name,
-          git_tag: git_tag,
-          branch: git_branch,
-          travis_build_id: ENV['TRAVIS_BUILD_ID'],
-          travis_build_number: ENV['TRAVIS_BUILD_NUMBER'],
-          pull_request: ENV['TRAVIS_PULL_REQUEST']
-        )
+        if description?
+          super
+        else
+          JSON.dump(
+            repo_slug:,
+            git_commit_sha: git_sha,
+            git_commit_message: git_commit_msg,
+            git_commit_author: git_author_name,
+            git_tag:,
+            branch: git_branch,
+            travis_build_id: ENV['TRAVIS_BUILD_ID'],
+            travis_build_number: ENV['TRAVIS_BUILD_NUMBER'],
+            pull_request: ENV['TRAVIS_PULL_REQUEST']
+          )
+        end
       end
 
       def export

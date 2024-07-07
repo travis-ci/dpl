@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 module Support
   module Matchers
     module Aws
       class Base < Struct.new(:opts)
-        include Support::Helpers, RSpec::Matchers::BuiltIn,
-          RSpec::Mocks::Matchers, RSpec::Mocks::ArgumentMatchers
+        include RSpec::Mocks::ArgumentMatchers
+        include RSpec::Mocks::Matchers
+        include RSpec::Matchers::BuiltIn
+        include Support::Helpers
       end
 
       class HaveRequested < Base
@@ -42,12 +46,12 @@ module Support
           client.api_requests.map do |req|
             compact(
               operation: req[:operation_name],
-              host:      req[:context].http_request.endpoint.host,
-              path:      req[:context].http_request.endpoint.path,
-              body:      body_from(req[:context].http_request.body),
-              file:      req[:params][:body] && req[:params][:body].path,
-              headers:   req[:context].http_request.headers,
-              request:   req[:context].http_request
+              host: req[:context].http_request.endpoint.host,
+              path: req[:context].http_request.endpoint.path,
+              body: body_from(req[:context].http_request.body),
+              file: req[:params][:body] && req[:params][:body].path,
+              headers: req[:context].http_request.headers,
+              request: req[:context].http_request
             )
           end
         end
@@ -128,13 +132,13 @@ module Support
       end
 
       def have_requested(operation, opts = {})
-        HaveRequested.new(opts.merge(client: client, operation: operation))
+        HaveRequested.new(opts.merge(client:, operation:))
       end
 
       # elasticbeanstalk
 
       def create_app_version(body = nil)
-        have_requested(:create_application_version, compact(body: body))
+        have_requested(:create_application_version, compact(body:))
       end
 
       def update_environment
@@ -180,13 +184,12 @@ module Support
       # s3
 
       def put_object(file, opts = {})
-        have_requested(:put_object, opts.merge(file: file))
+        have_requested(:put_object, opts.merge(file:))
       end
 
       def put_bucket_website_suffix(suffix)
-        have_requested(:put_bucket_website, body: %r(<Suffix>#{suffix}</Suffix>))
+        have_requested(:put_bucket_website, body: %r{<Suffix>#{suffix}</Suffix>})
       end
     end
   end
 end
-

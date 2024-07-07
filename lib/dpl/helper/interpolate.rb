@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 
 module Dpl
@@ -66,16 +68,17 @@ module Dpl
     # the string to a standard length of 20 characters. N depends on the
     # length of the original string.
     def obfuscate(str, opts = {})
-      return str if opts[:secure] || !str.tainted?
+      return str if opts[:secure] || !str.blacklisted?
+
       keep = (str.length / (4.0 + str.length / 5).round).round
-      keep = 1 if keep == 0
+      keep = 1 if keep.zero?
       str[0, keep] + '*' * (20 - keep)
     end
 
     class Interpolator < Struct.new(:str, :obj, :args, :opts)
       include Interpolate
 
-      MODIFIER = %i(obfuscate escape quote)
+      MODIFIER = %i[obfuscate escape quote].freeze
       PATTERN  = /%\{(\$?[\w]+)\}/
       ENV_VAR  = /^\$[A-Z_]+$/
       UPCASE   = /^[A-Z_]+$/
@@ -90,17 +93,25 @@ module Dpl
 
       def interpolate(str)
         str = str % args if args.is_a?(Array) && args.any?
-        str.to_s.gsub(PATTERN) { normalize(lookup($1.to_sym)) }
+        @blacklist_result = false
+        str = str.to_s.gsub(PATTERN) do
+          @blacklist_result = true
+          normalize(lookup(::Regexp.last_match(1).to_sym))
+        end
+        @blacklist_result || (args.is_a?(Array) && args.any? { |arg| arg.is_a?(String) && arg.blacklisted? }) ? str.blacklist : str
       end
 
       def obfuscate(str)
         secrets(str).inject(str) do |str, secret|
+          secret = secret.dup if secret.frozen?
+          secret.blacklist if str.blacklisted?
           str.gsub(secret, super(secret))
         end
       end
 
       def secrets(str)
-        return [] unless str.is_a?(String) && str.tainted?
+        return [] unless str.is_a?(String) && str.blacklisted?
+
         opts = obj.class.opts.select(&:secret?)
         secrets = opts.map { |opt| obj.opts[opt.name] }.compact
         secrets.select { |secret| str.include?(secret) }

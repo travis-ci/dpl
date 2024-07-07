@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Netlify < Provider
@@ -5,9 +7,11 @@ module Dpl
 
       status :stable
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
+
+      node_js '>= 12.0.0'
 
       npm 'netlify-cli', 'netlify'
 
@@ -26,9 +30,9 @@ module Dpl
 
       private
 
-        def deploy_opts
-          opts_for(%i(site auth dir functions message prod))
-        end
+      def deploy_opts
+        opts_for(%i[site auth dir functions message prod])
+      end
     end
   end
 end

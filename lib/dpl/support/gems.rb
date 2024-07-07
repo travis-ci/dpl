@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ripper'
 
 module Dpl
@@ -10,6 +12,7 @@ module Dpl
       def all
         Dir[glob].sort.inject([]) do |gems, path|
           next gems if except.any? { |str| path.include?(str) }
+
           gems + Parse.new(File.read(path)).gems
         end
       end
@@ -24,6 +27,7 @@ module Dpl
 
       class Parse < Struct.new(:code)
         def gems
+          return [] unless sexp
           walk(*sexp).flatten.each_slice(3).to_a
         end
 
@@ -54,9 +58,9 @@ module Dpl
             walk(*nodes[0])
           when :string_content
             nodes[0][1]
-          # when :void_stmt
-          # else
-          #   raise key.to_s
+            # when :void_stmt
+            # else
+            #   raise key.to_s
           end
         end
 

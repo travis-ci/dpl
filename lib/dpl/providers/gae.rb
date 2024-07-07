@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Gae < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'Google App Engine'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       python '>= 2.7.9'
 
@@ -26,20 +28,21 @@ module Dpl
 
       URL = 'https://dl.google.com/dl/cloudsdk/channels/rapid/google-cloud-sdk.tar.gz'
 
-      cmds install:   'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
-           login:     'gcloud -q auth activate-service-account --key-file %{keyfile}',
-           deploy:    'gcloud -q app deploy %{config} %{deploy_opts}',
-           cat_logs:  'find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;'
+      cmds install: 'curl -L %{URL} | tar xz -C ~ && ~/google-cloud-sdk/install.sh --path-update false --usage-reporting false --command-completion false',
+           login: 'gcloud -q auth activate-service-account --key-file %{keyfile}',
+           deploy: 'gcloud -q app deploy %{config} %{deploy_opts}',
+           cat_logs: 'find $HOME/.config/gcloud/logs -type f -print -exec cat {} \;'
 
-      errs install:   'Failed to download Google Cloud SDK.',
-           login:     'Failed to authenticate.'
+      errs install: 'Failed to download Google Cloud SDK.',
+           login: 'Failed to authenticate.'
 
-      msgs failed:    'Deployment failed.'
+      msgs failed: 'Deployment failed.'
 
       path '~/google-cloud-sdk/bin'
 
       def install
         return unless install_sdk?
+
         shell :install
       end
 
@@ -54,22 +57,22 @@ module Dpl
 
       private
 
-        def deploy_opts
-          opts = [*opts_for(%i(project verbosity version))]
-          opts << '--no-promote' unless promote?
-          opts << '--no-stop-previous-version' unless stop_previous_version?
-          opts.join(' ')
-        end
+      def deploy_opts
+        opts = [*opts_for(%i[project verbosity version])]
+        opts << '--no-promote' unless promote?
+        opts << '--no-stop-previous-version' unless stop_previous_version?
+        opts.join(' ')
+      end
 
-        def failed
-          warn :failed
-          shell :cat_logs
-          error ''
-        end
+      def failed
+        warn :failed
+        shell :cat_logs
+        error ''
+      end
 
-        def project
-          super || File.dirname(build_dir)
-        end
+      def project
+        super || File.dirname(build_dir)
+      end
     end
   end
 end

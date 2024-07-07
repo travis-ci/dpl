@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Openshift < Provider
@@ -7,9 +9,9 @@ module Dpl
 
       full_name 'OpenShift'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         tbd
-      str
+      STR
 
       env :openshift
 
@@ -19,14 +21,14 @@ module Dpl
       opt '--app APP',         'OpenShift application', default: :repo_name
 
       cmds install: 'curl %{URL} | tar xz',
-           login:   './oc login --token=%{token} --server=%{server}',
+           login: './oc login --token=%{token} --server=%{server}',
            prepare: './oc project %{project}',
-           deploy:  './oc start-build %{app} --follow --commit %{git_sha}'
+           deploy: './oc start-build %{app} --follow --commit %{git_sha}'
 
       errs install: 'CLI tool installation failed',
-           login:   'Authentication failed',
+           login: 'Authentication failed',
            prepare: 'Unable to select project %{project}',
-           deploy:  'Deployment failed'
+           deploy: 'Deployment failed'
 
       URL = 'https://mirror.openshift.com/pub/openshift-v4/clients/oc/4.1/linux/oc.tar.gz'
 

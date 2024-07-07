@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Dpl
   module Providers
     class Elasticbeanstalk < Provider
@@ -7,7 +9,7 @@ module Dpl
 
       full_name 'AWS Elastic Beanstalk'
 
-      description sq(<<-str)
+      description sq(<<-STR)
         Deploy to AWS Elastic Beanstalk: https://aws.amazon.com/elasticbeanstalk/
 
         This provider:
@@ -16,12 +18,12 @@ module Dpl
         * Uploads it to your EB application
         * Optionally deploys to a specific EB environment
         * Optionally waits until the deployment finishes
-      str
+      STR
 
-      gem 'aws-sdk-elasticbeanstalk', '~> 1.0'
-      gem 'aws-sdk-s3', '~> 1.0'
-      gem 'rubyzip', '~> 1.2.2', require: 'zip'
-      gem 'pathspec', '~> 0.2.1', require: 'pathspec'
+      gem 'aws-sdk-elasticbeanstalk', '~> 1'
+      gem 'aws-sdk-s3', '~> 1'
+      gem 'rubyzip', '~> 2.3', require: 'zip'
+      gem 'pathspec', '~> 1.1', require: 'pathspec'
 
       env :aws, :elastic_beanstalk
       config '~/.aws/credentials', '~/.aws/config', prefix: 'aws'
@@ -41,7 +43,7 @@ module Dpl
       opt '--wait_until_deployed_timeout SEC', 'How many seconds to wait for Elastic Beanstalk deployment update.', type: :integer, default: 600
       opt '--debug', internal: true
 
-      msgs login:   'Using Access Key: %{access_key_id}',
+      msgs login: 'Using Access Key: %{access_key_id}',
            login_token: 'Using Access Key: %{access_key_id}, Session Token: %{session_token}',
            zip_add: 'Adding %s'
 
@@ -55,7 +57,7 @@ module Dpl
 
       def setup
         info :login
-        Aws.config.update(credentials: credentials, region: region)
+        Aws.config.update(credentials:, region:)
       end
 
       def deploy
@@ -84,7 +86,7 @@ module Dpl
       end
 
       def bucket_path
-        bucket_path? ? "#{super.gsub(/\/*$/, '')}/#{archive_name}" : archive_name
+        bucket_path? ? "#{super.gsub(%r{/*$}, '')}/#{archive_name}" : archive_name
       end
 
       def cwd
@@ -92,7 +94,7 @@ module Dpl
       end
 
       def zip_exists?
-        File.exists?(zip_file)
+        File.exist?(zip_file)
       end
 
       def create_zip
@@ -152,7 +154,7 @@ module Dpl
 
       def files
         files = Dir.glob('**/*', File::FNM_DOTMATCH)
-        ignore = %w(.ebignore .gitignore).detect { |file| file?(file) }
+        ignore = %w[.ebignore .gitignore].detect { |file| file?(file) }
         files = filter(files, ignore) if ignore
         files
       end
@@ -200,7 +202,7 @@ module Dpl
       end
 
       def debug(*args)
-        info *args if debug?
+        info(*args) if debug?
       end
     end
   end
