@@ -12,6 +12,7 @@ module Dpl
         tbd
       STR
 
+      gem 'nokogiri', '~> 1.15'
       gem 'aws-sdk-cloudformation', '~> 1.0'
 
       env :aws, :cloudformation

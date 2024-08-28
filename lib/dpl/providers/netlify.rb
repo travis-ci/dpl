@@ -11,7 +11,7 @@ module Dpl
         tbd
       STR
 
-      node_js '>= 12.0.0'
+      node_js '>= 18.14.0'
 
       npm 'netlify-cli', 'netlify'
 

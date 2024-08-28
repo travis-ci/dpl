@@ -13,6 +13,7 @@ module Dpl
         tbd
       STR
 
+      gem 'nokogiri', '~> 1.15'
       gem 'aws-sdk-opsworks', '~> 1.0'
 
       env :aws, :opsworks

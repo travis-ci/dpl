@@ -20,6 +20,7 @@ module Dpl
         * Optionally waits until the deployment finishes
       STR
 
+      gem 'nokogiri', '~> 1.15'
       gem 'aws-sdk-elasticbeanstalk', '~> 1'
       gem 'aws-sdk-s3', '~> 1'
       gem 'rubyzip', '~> 2.3', require: 'zip'
