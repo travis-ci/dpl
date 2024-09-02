@@ -14,11 +14,15 @@ module Dpl
         tbd
       STR
 
+      gem 'date', '~> 3.3.4'
+      gem 'time', '0.3.0'
       gem 'chef', '~> 18', require: %w[
         chef/cookbook/cookbook_version_loader
         chef/cookbook_uploader
       ]
 
+      gem 'uri', '0.13.0'
+      gem 'logger', '1.6.0'
       gem 'json'
       gem 'mime-types', '~> 3.4.1'
       gem 'net-telnet', '~> 0.1.0' if ruby_pre?('2.3')
@@ -64,7 +68,7 @@ module Dpl
       end
 
       def params
-        { cookbook: json(category: category), tarball: tarball}
+        { cookbook: json(category: category), tarball: tarball }
       end
 
       def tarball
