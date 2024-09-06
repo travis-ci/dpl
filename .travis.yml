@@ -6,5 +6,5 @@ script:
   - git fetch origin master
   - git branch -v -a
   - git checkout -b master origin/master
-  - .travis/trigger -t $TRAVIS_API_TOKEN -b master
+  - .travis/trigger -t $TRAVIS_API_TOKEN_2 -b master
   - sleep 3
