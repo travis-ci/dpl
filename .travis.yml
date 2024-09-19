@@ -1,5 +1,4 @@
 dist: focal
-group: previous
 
 language: ruby
 rvm:
