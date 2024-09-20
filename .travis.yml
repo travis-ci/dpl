@@ -22,7 +22,7 @@ jobs:
       - rvm use 3.3 --install --binary --fuzzy
       - gem build dpl.gemspec
       - gem install dpl-*.gem
-      - gem update --system
+      # - gem update --system # do not update rubygems as it is not always a step in the build process
       - nvm install 18.20.2
       - nvm use 18.20.2
       - node --version
