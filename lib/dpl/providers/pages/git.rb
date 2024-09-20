@@ -14,8 +14,6 @@ module Dpl
           tbd
         STR
 
-        gem 'uri', '0.13.0'
-        gem 'logger', '1.6.0'
         gem 'octokit', '~> 7'
         gem 'public_suffix', '~> 5'
 
@@ -122,7 +120,7 @@ module Dpl
           path = '~/.dpl/deploy_key'
           info(:setup_deploy_key, path:)
           mv deploy_key, path
-          chmod 0600, path
+          chmod 0o600, path
           setup_git_ssh path
           shell :check_deploy_key, key: path, url: opts[:url]
         end
