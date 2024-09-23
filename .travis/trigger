@@ -104,18 +104,19 @@ uri = URI.parse(opts[:url] || 'https://api.travis-ci.com/repo/travis-ci%2Fdpl/re
 body = {
   request: {
     branch: opts[:branch],
-    message: "test dpl (#{opts[:branch]}) #{ARGV.any? ? ARGV.join(', ') : '(all providers)'} #{Time.now}",
-    config: {
-      merge_mode: :replace,
-      env: {
-        global: {
-          ID: SecureRandom.hex
-        }
-      },
-      matrix: {
-        include: jobs(opts)
-      }
-    }
+    # message: "test dpl (#{opts[:branch]}) #{ARGV.any? ? ARGV.join(', ') : '(all providers)'} #{Time.now}",
+    # config: {
+    #   merge_mode: :replace,
+    #   env: {
+    #     global: {
+    #       ID: SecureRandom.hex
+    #     }
+    #   },
+    #   matrix: {
+    #     include: jobs(opts)
+    #   }
+    # }
+    message: 'test dpl'
   }
 }
 
