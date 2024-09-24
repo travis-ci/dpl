@@ -1,10 +1,7 @@
 dist: focal
 
 language: ruby
-rvm:
-  - 3.1
-  - 3.2
-  - 3.3
+rvm: 3.3.5
 
 cache:
   - bundler
@@ -19,7 +16,7 @@ jobs:
       if: commit_message !~ /skip:test_dependencies/ AND env(SKIP_TEST_DEPENDENCIES) IS blank
       cache: false
       install:
-      - rvm use 3.3 --install --binary --fuzzy
+      - rvm use 3.3.5 --install --binary --fuzzy
       - gem build dpl.gemspec
       - gem install dpl-*.gem
       # - gem update --system # do not update rubygems as it is not always a step in the build process
@@ -28,7 +25,7 @@ jobs:
       - node --version
       script:
       - .travis/test_install
-      rvm: 3.3
+      rvm: 3.3.5
     - <<: *job
       language: python
       python: 2.7
