@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description   = 'Dpl (dee-pee-ell) is a tool made for continuous deployment, running deployments at Travis CI.'
   s.license       = 'MIT'
   s.require_path  = 'lib'
-  s.required_ruby_version = '>= 3.1'
+  s.required_ruby_version = '>= 3.3.5'
 
   s.executables   = ['dpl']
   s.files         = Dir['{config/**/*,lib/**/*,[A-Z]*}'].reject { _1.match(/dpl.+\.gem/) }
