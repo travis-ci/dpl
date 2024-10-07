@@ -14,13 +14,13 @@ Gem::Specification.new do |s|
   s.description   = 'Dpl (dee-pee-ell) is a tool made for continuous deployment, running deployments at Travis CI.'
   s.license       = 'MIT'
   s.require_path  = 'lib'
-  s.required_ruby_version = '>= 3'
+  s.required_ruby_version = '>= 3.1'
 
   s.executables   = ['dpl']
   s.files         = Dir['{config/**/*,lib/**/*,[A-Z]*}'].reject { _1.match(/dpl.+\.gem/) }
 
+  s.add_runtime_dependency 'net-http', '~> 0.4.1'
   s.add_runtime_dependency 'travis-cl'
   s.add_runtime_dependency 'travis-packagecloud-ruby'
-  s.add_runtime_dependency 'net-http', '~> 0.4.1'
   s.add_development_dependency 'rake', '~> 13.0'
 end

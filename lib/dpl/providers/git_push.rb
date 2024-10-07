@@ -14,6 +14,7 @@ module Dpl
         changes produced by the build, and optionally opening a pull request.
       STR
 
+      gem 'logger', '1.6.0'
       gem 'octokit', '~> 7'
       gem 'public_suffix', '~> 5'
 
@@ -127,7 +128,7 @@ module Dpl
         path = '~/.dpl/deploy_key'
         info(:setup_deploy_key, path:)
         mv deploy_key, path
-        chmod 0600, path
+        chmod 0o600, path
         setup_git_ssh path
         shell :check_deploy_key, key: path
       end
