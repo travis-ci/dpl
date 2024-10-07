@@ -183,7 +183,9 @@ module Dpl
           # Gem.loaded_specs.clear
           gemfile do
             source 'https://rubygems.org'
-            gems.each { |g| gem(*g) }
+            gems.each do |g|
+              gem(*g)
+            end
           end
           # https://github.com/bundler/bundler/issues/7181
           ENV.replace(env)
