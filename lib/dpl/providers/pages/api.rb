@@ -20,7 +20,7 @@ module Dpl
           open_timeout: 180
         }.freeze
 
-        gem 'logger', '1.6.0'
+        gem 'logger', '~> 1.6.0'
         gem 'octokit', '~> 7'
 
         full_name 'GitHub Pages (API)'
