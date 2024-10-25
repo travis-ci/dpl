@@ -158,7 +158,7 @@ module Dpl
         end
 
         def git_push
-          shell :git_push, echo: false
+          shell :git_push, echo: true
         end
 
         def git_status
