@@ -22,7 +22,6 @@ module Dpl
 
         gem 'logger', '1.6.0'
         gem 'octokit', '~> 7'
-        gem 'uri', '0.13.1'
 
         full_name 'GitHub Pages (API)'
 
