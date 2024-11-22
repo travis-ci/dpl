@@ -13,7 +13,6 @@ gemspec name: 'dpl'
 
 # gem 'regstry', path: '../../registry'
 gem 'logger', '1.6.0'
-gem 'uri', ' 1.0.2'
 
 gems = Dpl::Support::Gems.new('lib/dpl/providers/**/*.rb')
 gems.each do |name, version, opts|
