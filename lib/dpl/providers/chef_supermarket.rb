@@ -17,6 +17,7 @@ module Dpl
       gem 'logger', '1.6.0'
       gem 'date', '~> 3.3.4'
       gem 'time', '0.3.0'
+      gem 'timeout', '0.4.1'
       gem 'chef', '~> 18', require: %w[
         chef/cookbook/cookbook_version_loader
         chef/cookbook_uploader
