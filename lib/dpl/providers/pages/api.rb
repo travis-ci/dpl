@@ -22,6 +22,7 @@ module Dpl
 
         gem 'logger', '1.6.0'
         gem 'octokit', '~> 7'
+        gem 'timeout', '0.4.1'
 
         full_name 'GitHub Pages (API)'
 
