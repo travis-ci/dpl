@@ -20,7 +20,7 @@ gems.each do |name, version, opts|
 end
 
 group :test do
-  gem 'coveralls'
+  gem 'coveralls_reborn', require: false
   gem 'rspec'
   gem 'webmock'
 end
