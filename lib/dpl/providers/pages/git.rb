@@ -14,7 +14,6 @@ module Dpl
           tbd
         STR
 
-        # gem 'logger', '1.6.0'
         gem 'octokit', '~> 7'
         gem 'public_suffix', '~> 5'
 

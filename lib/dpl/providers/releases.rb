@@ -17,7 +17,6 @@ module Dpl
         tbd
       STR
 
-      # gem 'logger', '1.6.0'
       gem 'octokit', '~> 7'
       gem 'mime-types', '~> 3.4.1'
       gem 'public_suffix', '~> 5'

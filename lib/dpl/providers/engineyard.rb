@@ -11,7 +11,6 @@ module Dpl
         tbd
       STR
 
-      # gem 'logger', '1.6.0'
       gem 'ey-core', '~> 3.6'
 
       required :api_key, %i[email password]
