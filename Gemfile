@@ -18,7 +18,7 @@ gems.each do |name, version, opts|
   gem name, version, opts
 end
 
-gem 'logger', '~> 1.6.0'
+gem 'logger', '~> 1.6.2'
 
 group :test do
   gem 'coveralls'
