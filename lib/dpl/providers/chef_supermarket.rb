@@ -14,7 +14,7 @@ module Dpl
         tbd
       STR
 
-      gem 'logger', '1.6.0'
+      # gem 'logger', '1.6.0'
       gem 'date', '~> 3.3.4'
       gem 'time', '0.3.0'
       gem 'timeout', '0.4.1'

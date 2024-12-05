@@ -11,7 +11,7 @@ module Dpl
         tbd
       STR
 
-      gem 'logger', '1.6.0'
+      # gem 'logger', '1.6.0'
       gem 'gleis', '~> 0.8.0'
 
       env :gleis

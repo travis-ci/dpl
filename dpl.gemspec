@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.executables   = ['dpl']
   s.files         = Dir['{config/**/*,lib/**/*,[A-Z]*}'].reject { _1.match(/dpl.+\.gem/) }
 
+  s.add_runtime_dependency 'logger', '~> 1.6.0'
   s.add_runtime_dependency 'net-http', '~> 0.6.0'
   s.add_runtime_dependency 'travis-cl'
   s.add_runtime_dependency 'travis-packagecloud-ruby'
