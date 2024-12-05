@@ -13,7 +13,6 @@ module Dpl
         tbd
       STR
 
-      gem 'logger', '1.6.0'
       gem 'nokogiri', '~> 1.15'
       gem 'fog-core', '~> 2.3', require: 'fog/core'
       gem 'fog-rackspace', '~> 0.1.6', git: 'https://github.com/travis-oss/fog-rackspace', require: 'fog/rackspace'

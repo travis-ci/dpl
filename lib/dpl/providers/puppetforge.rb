@@ -13,7 +13,6 @@ module Dpl
         tbd
       STR
 
-      gem 'logger', '1.6.0'
       gem 'racc', '~> 1.7'
       gem 'puppet', '~> 7.25', require: 'puppet/face'
       gem 'puppet-blacksmith', '~> 7', require: 'puppet_blacksmith'

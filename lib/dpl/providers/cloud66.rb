@@ -11,8 +11,6 @@ module Dpl
         tbd
       STR
 
-      gem 'logger', '1.6.0'
-
       env :cloud66
 
       opt '--redeployment_hook URL', 'The redeployment hook URL', required: true, secret: true
