@@ -1,0 +1,11 @@
+#!/bin/bash
+
+docker system prune -f
+docker pull localhost:5000/dpl-target
+
+id=$(docker run localhost:5000/dpl-target)
+
+echo "expected: $ID"
+echo "actual: $id"
+
+[[ $id == $ID ]] || exit 1
