@@ -30,6 +30,10 @@ jobs:
       - .travis/test_install
       rvm: 3.3
     - <<: *job
+      dist: bionic
+    - <<: *job
+      dist: jammy
+    - <<: *job
       language: python
       python: 2.7
     - <<: *job
