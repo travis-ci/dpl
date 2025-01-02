@@ -143,7 +143,7 @@ Dpl supports the following providers:
   * [Surge](#surge)
   * [TestFairy](#testfairy)
   * [Transifex](#transifex)
-
+  * [Ruby](#ruby) <!-- Pd3f1 -->
 
 ### Anynines
 
@@ -2324,6 +2324,31 @@ Examples:
 
 Options can be given via env vars if prefixed with `TRANSIFEX_`. E.g. the option `--api_token` can
 be given as `TRANSIFEX_API_TOKEN=<api_token>`.
+
+### Ruby <!-- Pd3f1 -->
+
+Support for running tests on Ruby versions 3.1, 3.2, and 3.3 is in **alpha**. Please see [Maturity Levels](https://github.com/travis-ci/dpl/#maturity-levels) for details. <!-- P6a5a -->
+
+```
+Usage: dpl ruby [options]
+
+Summary:
+
+  Ruby GitHub Actions workflow
+
+Description:
+
+  This workflow runs tests on Ruby versions 3.1, 3.2, and 3.3.
+
+Options:
+
+  --trigger EVENT      Trigger the workflow on push and pull request events (type: string, required) <!-- P815e -->
+
+Examples:
+
+  dpl ruby --trigger push
+  dpl ruby --trigger pull_request
+```
 
 ## Contributing to Dpl
 
