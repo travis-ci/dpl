@@ -48,12 +48,12 @@ describe Dpl::Providers::Cloudformation do
           stacks:
         },
         describe_stack_events: {
-          stack_events: [
+          stack_events: {
             stack_id: 'id',
             stack_name: 'stack',
             event_id: '1',
             timestamp: Time.now
-          ]
+          }
         },
         describe_change_set: {}
       }
