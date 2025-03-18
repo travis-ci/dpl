@@ -82,7 +82,9 @@ module Dpl
       def create_stack
         info :create_stack
         params = { timeout_in_minutes: create_timeout, on_failure: 'ROLLBACK' }
-        client.create_stack(common_params.merge(params))
+        stack_params = common_params.merge!(params)
+        puts stack_params.inspect
+        client.create_stack(stack_params)
         stream_events(stack_name, :stack_create_complete) if wait?
         info :done
       end
