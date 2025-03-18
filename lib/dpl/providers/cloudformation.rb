@@ -161,8 +161,8 @@ module Dpl
       def parameters
         @parameters ||= Array(super).map do |str|
           key, value = str.split('=', 2)
-          { parameter_key: key, parameter_value: value || ENV[key] }
-        end
+          [key, value || ENV[key]]
+        end.to_h
       end
 
       def create_timeout
