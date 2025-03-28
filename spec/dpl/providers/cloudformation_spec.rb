@@ -29,20 +29,20 @@ describe Dpl::Providers::Cloudformation do
     Aws.config[:cloudformation] = {
       stub_responses: {
         create_stack: lambda { |ctx|
-          requests[:create_stack] << ctx.http_request
+          requests[:create_stack] = ctx.http_request
         },
         update_stack: lambda { |ctx|
-          requests[:update_stack] << ctx.http_request
+          requests[:update_stack] = ctx.http_request
         },
         create_change_set: lambda { |ctx|
-          requests[:create_change_set] << ctx.http_request
+          requests[:create_change_set] = ctx.http_request
           {
             id: 'id',
             stack_id: 'stack_id'
           }
         },
         delete_change_set: lambda { |ctx|
-          requests[:delete_change_set] << ctx.http_request
+          requests[:delete_change_set] = ctx.http_request
         },
         describe_stacks: {
           stacks:
