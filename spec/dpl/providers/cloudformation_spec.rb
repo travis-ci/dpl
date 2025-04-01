@@ -30,7 +30,7 @@ describe Dpl::Providers::Cloudformation do
       stub_responses: {
         create_stack: lambda { |ctx|
           requests[:create_stack] << ctx.http_request
-          { stack_id: 'id' }
+          {}
         },
         update_stack: lambda { |ctx|
           requests[:update_stack] << ctx.http_request
