@@ -30,9 +30,11 @@ describe Dpl::Providers::Cloudformation do
       stub_responses: {
         create_stack: lambda { |ctx|
           requests[:create_stack] << ctx.http_request
+          {}
         },
         update_stack: lambda { |ctx|
           requests[:update_stack] << ctx.http_request
+          {}
         },
         create_change_set: lambda { |ctx|
           requests[:create_change_set] << ctx.http_request
@@ -43,6 +45,7 @@ describe Dpl::Providers::Cloudformation do
         },
         delete_change_set: lambda { |ctx|
           requests[:delete_change_set] << ctx.http_request
+          {}
         },
         describe_stacks: {
           stacks:
