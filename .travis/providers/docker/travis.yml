@@ -1,0 +1,21 @@
+language: shell
+
+services:
+  - docker
+
+script: true
+
+before_deploy:
+  - docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
+deploy:
+  - provider: docker
+    registry: localhost:5000
+    context: .travis/providers/docker
+    image: dpl-image
+    target: dpl-target
+    build_arg: id=$ID
+    test: true
+
+after_deploy:
+  - .travis/providers/docker/test || TRAVIS_TEST_RESULT=$?
