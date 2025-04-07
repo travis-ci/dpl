@@ -31,6 +31,7 @@ module Dpl
 
       opt '--access_key_id ID', 'AWS Access Key ID', required: true, secret: true
       opt '--secret_access_key KEY', 'AWS Secret Key', required: true, secret: true
+      opt '--session_token TOKEN', 'AWS Session Token', required: false, secret: true
       opt '--region REGION', 'AWS Region the Elastic Beanstalk app is running in', default: 'us-east-1'
       opt '--app NAME', 'Elastic Beanstalk application name', default: :repo_name
       opt '--env NAME', 'Elastic Beanstalk environment name to be updated.'
@@ -44,6 +45,7 @@ module Dpl
       opt '--debug', internal: true
 
       msgs login: 'Using Access Key: %{access_key_id}',
+           login_token: 'Using Access Key: %{access_key_id}, Session Token: %{session_token}',
            zip_add: 'Adding %s'
 
       msgs clean_description: 'Removed non-printable characters from the version description'
@@ -51,7 +53,7 @@ module Dpl
       attr_reader :started, :object, :version
 
       def login
-        info :login
+        info(session_token ? :login_token : :login)
       end
 
       def setup
@@ -174,7 +176,7 @@ module Dpl
       end
 
       def credentials
-        Aws::Credentials.new(access_key_id, secret_access_key)
+        Aws::Credentials.new(access_key_id, secret_access_key, session_token)
       end
 
       def s3
