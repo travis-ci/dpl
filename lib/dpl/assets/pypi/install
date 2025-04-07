@@ -1,4 +1,5 @@
 #!/bin/bash
 if [ -z ${VIRTUAL_ENV+x} ]; then export PIP_USER=yes; fi &&
-wget -nv -O - https://bootstrap.pypa.io/get-pip.py | python - --no-setuptools --no-wheel &&
+if [ $(python -c 'import sys; print(sys.version_info[0])') = '2' ]; then export VERSION=2.7/; fi &&
+wget -nv -O - https://bootstrap.pypa.io/${VERSION}get-pip.py | python - --no-setuptools --no-wheel &&
 pip install --upgrade --ignore-installed %{setuptools_arg} %{twine_arg} %{wheel_arg}
