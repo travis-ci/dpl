@@ -22,7 +22,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'logger', '~> 1.7.0'
   s.add_runtime_dependency 'net-http', '~> 0.6.0'
   s.add_runtime_dependency 'travis-cl'
-  s.add_runtime_dependency 'travis-packagecloud-ruby'
+  # s.add_runtime_dependency 'travis-packagecloud-ruby'
+  s.add_development_dependency 'package_cloud'
   s.add_runtime_dependency 'uri', '~> 1.0.2'
   s.add_development_dependency 'rake', '~> 13.0'
 end
