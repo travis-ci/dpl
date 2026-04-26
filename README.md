@@ -295,7 +295,7 @@ Options can be given via env vars if prefixed with `[AWS_|CODEDEPLOY_]`. E.g. th
 `--access_key_id` can be given as `AWS_ACCESS_KEY_ID=<access_key_id>` or
 `CODEDEPLOY_ACCESS_KEY_ID=<access_key_id>`.
 
-The following variable are availabe for interpolation on `description`:
+The following variable are available for interpolation on `description`:
 
   `application`, `bucket`, `bundle_type`, `commit_id`, `deployment_group`, `endpoint`, `file_exists_behavior`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `key`, `region`, `repository`, `revision_type`, `build_number`
 
@@ -474,7 +474,7 @@ Options can be given via env vars if prefixed with `[AWS_|LAMBDA_]`. E.g. the op
 `--access_key_id` can be given as `AWS_ACCESS_KEY_ID=<access_key_id>` or
 `LAMBDA_ACCESS_KEY_ID=<access_key_id>`.
 
-The following variable are availabe for interpolation on `description`:
+The following variable are available for interpolation on `description`:
 
   `dead_letter_arn`, `function_name`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `handler_name`, `kms_key_arn`, `memory_size`, `module_name`, `region`, `role`, `runtime`, `timeout`, `tracing_mode`, `zip`
 
@@ -1222,7 +1222,7 @@ Examples:
 Options can be given via env vars if prefixed with `[GITHUB_|GIT_]`. E.g. the option `--token` can
 be given as `GITHUB_TOKEN=<token>` or `GIT_TOKEN=<token>`.
 
-The following variable are availabe for interpolation on `commit_message`:
+The following variable are available for interpolation on `commit_message`:
 
   `base_branch`, `branch`, `deploy_key`, `email`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `host`, `local_dir`, `name`, `repo`
 
@@ -1287,7 +1287,7 @@ Examples:
 Options can be given via env vars if prefixed with `[GITHUB_|PAGES_]`. E.g. the option `--token` can
 be given as `GITHUB_TOKEN=<token>` or `PAGES_TOKEN=<token>`.
 
-The following variable are availabe for interpolation on `commit_message`:
+The following variable are available for interpolation on `commit_message`:
 
   `deploy_key`, `email`, `fqdn`, `git_author_email`, `git_author_name`, `git_branch`, `git_commit_author`, `git_commit_msg`, `git_sha`, `git_tag`, `local_dir`, `name`, `project_name`, `repo`, `target_branch`, `url`
 
